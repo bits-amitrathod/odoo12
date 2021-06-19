@@ -1,6 +1,6 @@
 <odoo>
     <data  noupdate="1">
-        <record id="seq_sfnumber" model="ir.sequence">
+       <record id="seq_sfnumber" model="ir.sequence">
             <field name="name">Sale Force</field>
             <field name="code">sale.force.no</field>
             <!--<field name="prefix">SF</field>-->
@@ -10,24 +10,24 @@
         </record>
     </data>
     <data>
-        <record id="view_form_prioritization_customer" model="ir.ui.view">
+        <record id="view_form_prioritization_customer1" model="ir.ui.view">
             <field name="name">Prioritization customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="priority" eval="20"/>
             <field name="arch" type="xml">
-                <button name="toggle_active" position="before">
+                <div name="button_box" position="inside">
                     <button class="oe_stat_button" name="action_view_notification" type="object" icon="fa-bell">
                         <span class="o_stat_text">In-Stock Notification</span>
                     </button>
                     <button class="oe_stat_button" name="action_import_template" type="object" icon="fa-upload"
-                            attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
+                            attrs="{'invisible':['|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <span class="o_stat_text">Import Template</span>
                     </button>
                     <!--<button class="oe_stat_button" name="action_gl_account" type="object" icon="fa-child">
                         <span class="o_stat_text">GL Account</span>
                     </button>-->
-                </button>
+                </div>
                 <field name="vat" position="after">
                     <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
                            placeholder="****       e.g. A**2"/>
@@ -39,11 +39,14 @@
                     <field name="is_share"/>
                     <field name="sale_margine"/>
                 </field>
-                <field name="lang" position="after">
+                <field name="active_lang_count" position="after">
+                    <field name="lang"/>
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}" invisible="1"/>
                     <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <!--<field name="charity"/>-->
                     <field name="is_parent" invisible="1"/>
                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="carrier_info"
@@ -54,7 +57,7 @@
                 </field>
                 <xpath expr="/form/sheet/notebook/page[@name='sales_purchases']" position="after">
                     <page name="prioritization" string="Customer Priority Configuration"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <field name="prioritization_ids" mode="tree,form" widget="one2many_selectable">
                             <form>
                                 <group>
@@ -77,7 +80,7 @@
                                 </group>
                             </form>
                             <tree editable="bottom">
-                                <field name="sequence" widget="handle"/>
+<!--                                <field name="sequence" widget="handle"/>-->
                                 <field name="product_id"/>
                                 <field name="sku_code" readonly="True"/>
                                 <field name="lst_price" readonly="True"/>
@@ -108,7 +111,7 @@
                         </field>
                     </page>
                     <page name="prioritization" string="Global Priority Configuration"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False),('prioritization', '==', False)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False),('prioritization', '==', False)]}">
                         <group>
                             <group>
                                 <field name="auto_allocate"/>
@@ -150,7 +153,7 @@
         </record>
 
         <record id="view_form_prioritization_normal" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
+<!--            <field name="sequence" eval="1"/>-->
             <field name="name">Prioritization normal form</field>
             <field name="model">prioritization.transient</field>
             <field name="mode">primary</field>
@@ -184,7 +187,7 @@
             <field name="name">Create Customer</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">res.partner</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">tree,form</field>
             <field name="context">{'default_customer':1, 'search_default_customer':1, 'default_company_type':
                 'company','default_is_company': 1}
@@ -205,7 +208,7 @@
             <field name="name">Multiple Update Operations</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">prioritization.transient</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="help" type="html">
@@ -265,7 +268,7 @@
             </field>
         </record>
 
-        <record id="view_template_property_form_for_update_cost" model="ir.ui.view">
+        <!--<record id="view_template_property_form_for_update_cost" model="ir.ui.view">
             <field name="name">Product Update Cost</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="stock_account.view_template_property_form"/>
@@ -274,21 +277,21 @@
                     <attribute name="class">o_row</attribute>
                 </xpath>
             </field>
-        </record>
+        </record>-->
 
         <record id="product_form_for_mfg_uom" model="ir.ui.view">
             <field name="name">product.product.form_for_mfg_uom</field>
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-                <xpath expr="/form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
+                <xpath expr="//form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
                     <field name="manufacturer_uom" groups="uom.group_uom" options="{'no_create': True}"/>
                     <field name="actual_uom" groups="uom.group_uom" options="{'no_create': True}"/>
                 </xpath>
             </field>
         </record>
 
-        <record id="contact_form_ex" model="ir.ui.view">
+        <record id="contact_form_ex_stockhawk" model="ir.ui.view">
             <field name="name">res.partner.form_ex</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -299,7 +302,7 @@
                         <field name="gl_account"/>
                     </div>
                 </xpath>
-                <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[2]/field[@name='name']"
+                <xpath expr="/form/sheet/notebook/page[1]/field[@name='child_ids']/form[1]/sheet/group/group[1]/field[@name='name']"
                        position="after">
                     <field name="gl_account" placeholder=" GL Account No.." widget="one2many"/>
                 </xpath>
@@ -358,7 +361,7 @@
             <field name="name">Notification Setting</field>
             <field name="res_model">res.partner</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="domain"></field>
             <field name="context">{
                 'customer_id':[],
@@ -378,7 +381,7 @@
             <field name="name">Gl Account Setting</field>
             <field name="res_model">gl.account</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Click here to create a new gl Account.
@@ -409,7 +412,7 @@
         <record id="prioritization_run_scheduler" model="ir.actions.act_window">
             <field name="name">Run Scheduler</field>
             <field name="res_model">prioritization.cron.schedular</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="target">new</field>
         </record>
@@ -437,7 +440,7 @@
             <field name="subject">
                 <![CDATA[GL Account No Response for user <${(object.company_id.email or user.email)|safe}>]]></field>
             <field name="body_html">${ctx['body']}</field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="action_send_prioritization_credential_email" model="ir.actions.server">
@@ -452,7 +455,7 @@
         </record>
 
         <record id="view_stockhawk_sales_order" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
+<!--            <field name="sequence" eval="1"/>-->
             <field name="name">Sales Order</field>
             <field name="model">sale.order.line</field>
             <field name="mode">primary</field>
@@ -467,7 +470,7 @@
                     <field name="qty_delivered" string="Delivered Quantity"/>
                     <field name="price_unit" string="Unit Price"/>
                     <field name="price_subtotal" string="Total"/>
-                    <field name="ex_sale_order_confirm_date" string="Date Sold"/>
+<!--                    <field name="ex_sale_order_confirm_date" string="Date Sold"/>-->
                 </tree>
             </field>
         </record>
@@ -491,7 +494,7 @@
             <field name="res_model">sale.order.line</field>
             <field name="view_id" ref="view_stockhawk_sales_order"/>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('state', '=', 'sale'), ('order_id.team_id.team_type', '=', 'engine')]</field>
+<!--            <field name="domain">[('state', '=', 'sale'), ('order_id.team_id.team_type', '=', 'engine')]</field>-->
             <field name="search_view_id" ref="sale_order_line_filter"/>
             <field name="context">{'search_default_group_by_order_id': 1}</field>
         </record>
@@ -528,12 +531,12 @@
                 </p>
 
             ]]></field>
-            <field name="user_signature" eval="False"/>
+<!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <!-- Stockhawk Sales Order Export -->
         <record id="view_stockhawk_sales_order" model="ir.ui.view">
-            <field name="sequence" eval="1"/>
+<!--            <field name="sequence" eval="1"/>-->
             <field name="name">Sales Order</field>
             <field name="model">sale.order.line</field>
             <field name="mode">primary</field>
@@ -548,7 +551,7 @@
                     <field name="qty_delivered" string="Delivered Quantity"/>
                     <field name="price_unit" string="Unit Price"/>
                     <field name="price_subtotal" string="Total"/>
-                    <field name="ex_sale_order_confirm_date" string="Date Sold"/>
+<!--                    <field name="ex_sale_order_confirm_date" string="Date Sold"/>-->
                 </tree>
             </field>
         </record>
@@ -572,7 +575,7 @@
             <field name="res_model">sale.order.line</field>
             <field name="view_id" ref="view_stockhawk_sales_order"/>
             <field name="view_mode">tree,form</field>
-            <field name="domain">[('state', '=', 'sale'), ('order_id.team_id.team_type', '=', 'engine')]</field>
+<!--            <field name="domain">[('state', '=', 'sale'), ('order_id.team_id.team_type', '=', 'engine')]</field>-->
             <field name="search_view_id" ref="sale_order_line_filter"/>
             <field name="context">{'search_default_group_by_order_id': 1}</field>
         </record>

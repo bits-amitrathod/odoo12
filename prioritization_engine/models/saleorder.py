@@ -23,7 +23,7 @@ class SaleOrder(models.Model):
         ('done', 'Locked'),
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
-    ], string='Status', readonly=True, copy=False, index=True, track_visibility='onchange', default='draft')
+    ], string='Status', readonly=True, copy=False, index=True, tracking=True, default='draft')
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
@@ -34,12 +34,11 @@ class SaleOrder(models.Model):
         ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
 
-    order_processor = fields.Many2one('res.users', string='Order Processor', index=True, track_visibility='onchange',
+    order_processor = fields.Many2one('res.users', string='Order Processor', index=True, tracking=True,
                               default=lambda self: self.env.user)
 
     gl_account = fields.Char("GL Account", store=False, compute='_get_gl_account', readonly=True)
 
-    @api.multi
     def _get_gl_account(self):
         for order in self:
             if order.partner_id and order.partner_id.gl_account:
@@ -49,16 +48,22 @@ class SaleOrder(models.Model):
                             order.gl_account = order.gl_account + ", " + gl_acnt.name
                         else:
                             order.gl_account = gl_acnt.name
+            else:
+                order.gl_account = None
 
-    @api.onchange('client_order_ref')
-    def update_account_invoice_purchase_order(self):
-        self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
+    # @api.onchange('client_order_ref')
+    # def update_account_invoice_purchase_order(self):
+    #     self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
 
-    @api.multi
+    def print_quotation(self):
+        self.filtered(lambda s: s.state == 'draft').write({'state': 'sent'})
+
+        return self.env.ref('sale.action_report_saleorder') \
+            .with_context(discard_logo_check=True).report_action(self)
+
     def action_void(self):
         return self.write({'state': 'void'})
 
-    @api.multi
     def unlink(self):
         for order in self:
             if order.state not in ('draft', 'cancel', 'void'):
@@ -71,28 +76,40 @@ class SaleOrder(models.Model):
         if len(multi) >= 1:
             return multi.action_assign()
 
-    @api.multi
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('sale_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.do_unreserve()
 
-    @api.multi
+    def force_quotation_send(self):
+        for order in self:
+            email_act = order.action_quotation_send()
+            if email_act and email_act.get('context'):
+                email_ctx = email_act['context']
+                email_ctx.update(default_email_from=order.company_id.email, force_send=False)
+                order.with_context(**email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
+        return True
+
+    def _find_mail_template(self, force_confirmation_template=False):
+        template_id = False
+
+        if force_confirmation_template or (self.state == 'sale' and not self.env.context.get('proforma', False)):
+            template_id = int(self.env['ir.config_parameter'].sudo().get_param('sale.default_confirmation_template'))
+            template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
+            if not template_id:
+                template_id = self.env['ir.model.data'].xmlid_to_res_id('sale.mail_template_sale_confirmation', raise_if_not_found=False)
+        if not template_id:
+            template_id = self.env['ir.model.data'].xmlid_to_res_id('prioritization_engine.email_template_sale_custom', raise_if_not_found=False)
+        return template_id
+
     def action_quotation_send(self):
-        _logger.info('saleorder -> action_quotation_send()')
-        """
-        This function opens a window to compose an email, with the edi sale template message loaded by default
-        """
+        ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
         self.ensure_one()
-        ir_model_data = self.env['ir.model.data']
-        try:
-            template_id = ir_model_data.get_object_reference('prioritization_engine', 'email_template_sale_custom')[1]
-        except ValueError:
-            template_id = False
-        try:
-            compose_form_id = ir_model_data.get_object_reference('mail', 'email_compose_message_wizard_form')[1]
-        except ValueError:
-            compose_form_id = False
+        template_id = self._find_mail_template()
+        lang = self.env.context.get('lang')
+        template = self.env['mail.template'].browse(template_id)
+        if template.lang:
+            lang = template._render_lang(self.ids)[self.id]
         ctx = {
             'default_model': 'sale.order',
             'default_res_id': self.ids[0],
@@ -102,10 +119,11 @@ class SaleOrder(models.Model):
             'mark_so_as_sent': True,
             'custom_layout': "mail.mail_notification_paynow",
             'proforma': self.env.context.get('proforma', False),
-            'force_email': True
+            'force_email': True,
+            'model_description': self.with_context(lang=lang).type_name,
         }
 
-        if self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id. \
+        if self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.\
                 document_id and self.order_line[0].customer_request_id.document_id.email_from:
             ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
         else:
@@ -113,18 +131,17 @@ class SaleOrder(models.Model):
 
         return {
             'type': 'ir.actions.act_window',
-            'view_type': 'form',
             'view_mode': 'form',
             'res_model': 'mail.compose.message',
-            'views': [(compose_form_id, 'form')],
-            'view_id': compose_form_id,
+            'views': [(False, 'form')],
+            'view_id': False,
             'target': 'new',
             'context': ctx,
         }
 
-    @api.multi
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
+        self.add_note_in_delivery()
         if self.team_id.team_type == 'engine':
             user = None
             current_user = self.env['res.users'].browse(self._context.get('uid'))
@@ -135,24 +152,49 @@ class SaleOrder(models.Model):
             self.update({'user_id': user.id})
 
             # Send email to Salesperson and Admin when sales order accepted(Confirm)
-            upload_type = None
-            salesperson_email = None
-            if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
-                    self.order_line[0].customer_request_id.document_id.source:
-                upload_type = self.order_line[0].customer_request_id.document_id.source
-            if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
-                salesperson_email = self.user_id.partner_id.email
-            elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
-                    and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
-                salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
-            if self.sale_note:
-                note = self.sale_note
-            else:
-                note = ""
+            # upload_type = None
+            # salesperson_email = None
+            # if self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.document_id and \
+            #         self.order_line[0].customer_request_id.document_id.source:
+            #     upload_type = self.order_line[0].customer_request_id.document_id.source
+            # if self.user_id and self.user_id.partner_id and self.user_id.partner_id.email:
+            #     salesperson_email = self.user_id.partner_id.email
+            # elif self.partner_id and self.partner_id.parent_id and self.partner_id.parent_id.user_id \
+            #         and self.partner_id.parent_id.user_id.partner_id and self.partner_id.parent_id.user_id.partner_id.email:
+            #     salesperson_email = self.partner_id.parent_id.user_id.partner_id.email
+            # if self.sale_note:
+            #     note = self.sale_note
+            # else:
+            #     note = ""
             # self._send_sales_order_accepted_email(self.partner_id.display_name, self.name, self.state,
             #                                       salesperson_email, upload_type, note)
 
         return res
+
+    def add_note_in_delivery(self):
+        # Add note in pick delivery
+        if self.state and self.state in 'sale':
+            for pick in self.picking_ids:
+                pick.note = self.sale_note
+
+        if self.carrier_id and self.state and self.state in 'sale':
+            self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write(
+                {'carrier_id': self.carrier_id.id})
+
+        # if 'sale_note' in val or self.sale_note:
+        if self.sale_note and self.team_id.team_type != 'engine':
+            body = self.sale_note
+            for stk_picking in self.picking_ids:
+                stock_picking_val = {
+                    'body': body,
+                    'model': 'stock.picking',
+                    'message_type': 'notification',
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'res_id': stk_picking.id,
+                    'author_id': self.env.user.partner_id.id,
+                }
+                self.env['mail.message'].sudo().create(stock_picking_val)
 
     def _send_sales_order_accepted_email(self, customer_name, sales_order_name, sales_order_status, salespersonEmail,
                                          upload_type, note):
@@ -168,7 +210,6 @@ class SaleOrder(models.Model):
             _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
 
-    @api.multi
     def get_share_url(self, redirect=False, signup_partner=False, pid=None):
         """Override for sales order.
 
@@ -181,6 +222,7 @@ class SaleOrder(models.Model):
             auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
             return self.get_portal_url(query_string='&%s' % auth_param)
         return super(SaleOrder, self)._get_share_url(redirect, signup_partner, pid)
+
 
 class SaleOrderLinePrioritization(models.Model):
     _inherit = "sale.order.line"
@@ -196,8 +238,8 @@ class SaleOrderLinePrioritization(models.Model):
                                   related='product_id.product_tmpl_id.name')
     ex_sale_order_customer = fields.Char("Customer", store=False, readonly=True, related='order_id.partner_id.name')
     ex_sale_order_name = fields.Char("#Sale Order", store=False, readonly=True, related='order_id.name')
-    ex_sale_order_confirm_date = fields.Datetime("Date Sold", store=False, readonly=True,
-                                                 related='order_id.confirmation_date')
+    # ex_sale_order_confirm_date = fields.Datetime("Date Sold", store=False, readonly=True,
+    #                                              related='order_id.confirmation_date')
     ex_product_oem = fields.Char("Product OEM", store=False, readonly=True, related='product_id.product_brand_id.name')
     # manufacturer_uom = fields.Char('Manufacturer Unit of Measure',related='product_id.product_tmpl_id.manufacturer_uom.name')
     manufacturer_uom = fields.Many2one('uom.uom',
@@ -205,7 +247,7 @@ class SaleOrderLinePrioritization(models.Model):
                                        readonly=True)
     product_uom = fields.Many2one('uom.uom', string='Unit of Measure')
 
-    '''@api.multi
+    '''#@api.multi
     def _get_customer_request_count(self):
         print(self)
         print(self.customer_request_id)
@@ -219,7 +261,6 @@ class SaleOrderLinePrioritization(models.Model):
         elif self.order_id.delivery_count > 1:
             raise ValidationError(_('Picking is not possible for multiple delivery please do picking inside Delivery'))
 
-    @api.multi
     @api.onchange('product_id')
     def product_id_change(self):
         if not self.product_id:
@@ -316,71 +357,90 @@ class SaleOrderLinePrioritization(models.Model):
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    @api.multi
     def button_validate(self):
-        _logger.info("stock :stock_picking_prioritization  button_validate called.....")
-        _logger.info("stock :stock_picking_prioritization parnter hold status %r :", self.partner_id)
+        # Clean-up the context key at validation to avoid forcing the creation of immediate
+        # transfers.
+        ctx = dict(self.env.context)
+        ctx.pop('default_immediate_transfer', None)
+        self = self.with_context(ctx)
 
-        self.ensure_one()
-        if not self.move_lines and not self.move_line_ids:
-            raise UserError(_('Please add some lines to move'))
+        # Sanity checks.
+        pickings_without_moves = self.browse()
+        pickings_without_quantities = self.browse()
+        pickings_without_lots = self.browse()
+        products_without_lots = self.env['product.product']
+        for picking in self:
+            if not picking.move_lines and not picking.move_line_ids:
+                pickings_without_moves |= picking
 
-        # If no lots when needed, raise error
-        picking_type = self.picking_type_id
-        precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
-        no_quantities_done = all(
-            float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in self.move_line_ids)
-        no_reserved_quantities = all(
-            float_is_zero(move_line.product_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in
-            self.move_line_ids)
-        if no_reserved_quantities and no_quantities_done:
-            raise UserError(_(
-                'You cannot validate a transfer if you have not processed any quantity. You should rather cancel the transfer.'))
-        if self.partner_id.on_hold:
-            if picking_type.code == "outgoing":
-                raise UserError(_(
-                    'Customer is on hold. You cannot validate a transfer.'))
-        if picking_type.use_create_lots or picking_type.use_existing_lots:
-            lines_to_check = self.move_line_ids
-            if not no_quantities_done:
-                lines_to_check = lines_to_check.filtered(
-                    lambda line: float_compare(line.qty_done, 0, precision_rounding=line.product_uom_id.rounding))
+            picking.message_subscribe([self.env.user.partner_id.id])
+            picking_type = picking.picking_type_id
+            precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
+            no_quantities_done = all(float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in picking.move_line_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
+            no_reserved_quantities = all(float_is_zero(move_line.product_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in picking.move_line_ids)
+            if no_reserved_quantities and no_quantities_done:
+                pickings_without_quantities |= picking
 
-            for line in lines_to_check:
-                product = line.product_id
-                if product and product.tracking != 'none':
-                    if not line.lot_name and not line.lot_id:
-                        raise UserError(_('You need to supply a lot/serial number for %s.') % product.display_name)
+            if self.partner_id.on_hold:
+                if picking_type.code == "outgoing":
+                    raise UserError(_('Customer is on hold. You cannot validate a transfer.'))
+
+            if picking_type.use_create_lots or picking_type.use_existing_lots:
+                lines_to_check = picking.move_line_ids
+                if not no_quantities_done:
+                    lines_to_check = lines_to_check.filtered(lambda line: float_compare(line.qty_done, 0, precision_rounding=line.product_uom_id.rounding))
+                for line in lines_to_check:
+                    product = line.product_id
+                    if product and product.tracking != 'none':
+                        if not line.lot_name and not line.lot_id:
+                            pickings_without_lots |= picking
+                            products_without_lots |= product
                     elif line.qty_done == 0:
                         raise UserError(_(
                             'You cannot validate a transfer if you have not processed any quantity for %s.') % product.display_name)
 
-        if no_quantities_done:
-            view = self.env.ref('stock.view_immediate_transfer')
-            wiz = self.env['stock.immediate.transfer'].create({'pick_ids': [(4, self.id)]})
-            return {'name': _('Immediate Transfer?'), 'type': 'ir.actions.act_window', 'view_type': 'form',
-                    'view_mode': 'form', 'res_model': 'stock.immediate.transfer', 'views': [(view.id, 'form')],
-                    'view_id': view.id, 'target': 'new', 'res_id': wiz.id, 'context': self.env.context, }
+        if not self._should_show_transfers():
+            if pickings_without_moves:
+                raise UserError(_('Please add some items to move.'))
+            if pickings_without_quantities:
+                raise UserError(self._get_without_quantities_error_message())
+            if pickings_without_lots:
+                raise UserError(_('You need to supply a Lot/Serial number for products %s.') % ', '.join(products_without_lots.mapped('display_name')))
+        else:
+            message = ""
+            if pickings_without_moves:
+                message += _('Transfers %s: Please add some items to move.') % ', '.join(pickings_without_moves.mapped('name'))
+            if pickings_without_quantities:
+                message += _('\n\nTransfers %s: You cannot validate these transfers if no quantities are reserved nor done. To force these transfers, switch in edit more and encode the done quantities.') % ', '.join(pickings_without_quantities.mapped('name'))
+            if pickings_without_lots:
+                message += _('\n\nTransfers %s: You need to supply a Lot/Serial number for products %s.') % (', '.join(pickings_without_lots.mapped('name')), ', '.join(products_without_lots.mapped('display_name')))
+            if message:
+                raise UserError(message.lstrip())
 
-        if self._get_overprocessed_stock_moves() and not self._context.get('skip_overprocessed_check'):
-            view = self.env.ref('stock.view_overprocessed_transfer')
-            wiz = self.env['stock.overprocessed.transfer'].create({'picking_id': self.id})
-            return {'type': 'ir.actions.act_window', 'view_type': 'form', 'view_mode': 'form',
-                    'res_model': 'stock.overprocessed.transfer', 'views': [(view.id, 'form')], 'view_id': view.id,
-                    'target': 'new', 'res_id': wiz.id, 'context': self.env.context, }
+        # Run the pre-validation wizards. Processing a pre-validation wizard should work on the
+        # moves and/or the context and never call `_action_done`.
+        if not self.env.context.get('button_validate_picking_ids'):
+            self = self.with_context(button_validate_picking_ids=self.ids)
+        res = self._pre_action_done_hook()
+        if res is not True:
+            return res
 
-        # Check backorder should check for other barcodes
-        if self._check_backorder():
-            return self.action_generate_backorder_wizard()
-        self.action_done()
+        # Call `_action_done`.
+        if self.env.context.get('picking_ids_not_to_backorder'):
+            pickings_not_to_backorder = self.browse(self.env.context['picking_ids_not_to_backorder'])
+            pickings_to_backorder = self - pickings_not_to_backorder
+        else:
+            pickings_not_to_backorder = self.env['stock.picking']
+            pickings_to_backorder = self
+        pickings_not_to_backorder.with_context(cancel_backorder=True)._action_done()
+        pickings_to_backorder.with_context(cancel_backorder=False)._action_done()
 
         if picking_type.code == "outgoing":
             if self.state == 'done' and self.carrier_tracking_ref:
                 self.env['sale.order'].search([('name', '=', self.origin)]).write({'carrier_track_ref': self.carrier_tracking_ref})
 
-        return
+        return True
 
-    @api.multi
     def send_to_shipper(self):
         print("inside send to shipper")
         print(self.carrier_tracking_ref)
@@ -401,7 +461,7 @@ class StockPicking(models.Model):
 
 
 class AccountInvoice(models.Model):
-    _inherit = 'account.invoice'
+    _inherit = 'account.move'
     expiration_date = fields.Date("Expiration Date")
     note = fields.Char("Customer Message")
     memo = fields.Char("Memo")
@@ -415,7 +475,7 @@ class AccountInvoice(models.Model):
 
     '''name = fields.Char(string='Purchase Order#', index=True,
                        readonly=True, states={'draft': [('readonly', False)]},
-                       help='The name that will be used on account move lines')  
+                       help='The name that will be used on account move lines')
 
       origin = fields.Char(string='Sale Order#',
                          help="Reference of the document that produced this invoice.",
@@ -426,23 +486,26 @@ class AccountInvoice(models.Model):
     tracking_reference = fields.Char(string=' TrackingReference', store=False,
                                      compute='_getSalesOerderPickingOutTrackingReference', readonly=True)
 
-    @api.multi
     def _setInvoicePurchaseOrder(self):
         for order in self:
-            if order.origin == order.name:
-                order.purchase_order = ""
-            else:
-                order.purchase_order = order.name
+            order.purchase_order = None
+            # if order.origin == order.name:
+            #     order.purchase_order = ""
+            # else:
+            #     order.purchase_order = order.name
 
-    @api.multi
     def _getSalesOerderPickingOutTrackingReference(self):
         for order in self:
-            if order.origin:
+            if order.stock_move_id and order.stock_move_id.picking_id and order.stock_move_id.picking_id.carrier_tracking_ref and order.stock_move_id.picking_id.state == 'done':
                 order.env.cr.execute(
-                    "select carrier_tracking_ref from stock_picking WHERE origin like '" + order.origin + "' and state like 'done' and name like 'WH/OUT/%' limit 1")
+                    "select carrier_tracking_ref from stock_picking WHERE id =" + order.stock_move_id.picking_id.id + " name like 'WH/OUT/%' limit 1")
                 query_result = order.env.cr.dictfetchone()
                 if query_result and query_result['carrier_tracking_ref']:
                     order.tracking_reference = query_result['carrier_tracking_ref']
+                else:
+                    order.tracking_reference = None
+            else:
+                order.tracking_reference = None
 
 
 class SaleOrderReport(models.Model):

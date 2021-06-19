@@ -9,31 +9,28 @@ var core = require('web.core');
 var ActionManager = require('web.ActionManager');
 var Widget = require('web.Widget');
 var AbstractField = require('web.AbstractField');
-var Widget = require('web.Widget');
 var web_client = require('web.web_client');
 var fieldRegistry = require('web.field_registry');
-var FieldOne2Many=fieldRegistry.get("one2many");
+var FieldOne2Many = require('web.relational_fields').FieldOne2Many;
+//var FieldOne2Many=fieldRegistry.get("one2many");
 var dialogs = require('web.view_dialogs');
 var rpc = require('web.rpc')
 var _t = core._t;
 var One2ManySelectable = FieldOne2Many.extend({
     template: "One2ManySelectable",
-/**
-     * @fixme: weird interaction with the parent for the $buttons handling
-     *
-     * @override
-     * @returns {Deferred}
-     */
 
     events: {
         "click .cf_button_confirm": "action_selected_lines",
         "click .cf_button_import": "searchCreatePopup",
     },
+
     start: function () {
-        //console.log("inside start");
-        this._super.apply(this, arguments);
-        var result=this._super.apply(this, arguments);
-    	return result;
+        console.log("inside start");
+        //this._super.apply(this, arguments);
+//        var result = this._super.apply(this, arguments);
+//        console.log(result);
+//    	return result;
+    	return this._super.apply(this, arguments);
     },
 
    _render: function () {
@@ -56,9 +53,7 @@ var One2ManySelectable = FieldOne2Many.extend({
 				return false;
 			}
 
-            //console.log(records)
             selected_ids.forEach(function(seletedId) {
-             //console.log(seletedId);
               records.forEach(function(record) {
 
                     if(record.id==seletedId){
@@ -91,25 +86,12 @@ var One2ManySelectable = FieldOne2Many.extend({
                 views: [[false, "form"]],
                 target: 'new',
                 context: {'selected_ids':ids},
-                view_type : 'form',
-                view_mode : 'form'
+                view_mode : 'form',
+                view_type: "form",
             });
 		},
 
-	/*action_selected_line: function(e)
-	{
-	        e.preventDefault();
-	        var action = {
-                    name: _t("Multiple Selection"),
-                    type: 'ir.actions.act_window',
-                    res_model: 'product.product',
-                    view_mode: 'tree,form',
-                    view_type: 'form',
-                    views:[[false, "list"]],
-                    target: 'new',
-            };
-            var returnVal=this.do_action(action);
-	},*/
+
 	reinitialize: function (value) {
         this.isDirty = false;
         this.floating = false;
@@ -141,6 +123,8 @@ var One2ManySelectable = FieldOne2Many.extend({
 
 });
 fieldRegistry.add("one2many_selectable", One2ManySelectable);
-return One2ManySelectable;
+return {
+    One2ManySelectable: One2ManySelectable,
+};
 
 });

@@ -6,6 +6,7 @@
     'author': 'Benchmark IT Solutions',
     'depends': ['base', 'sale'],
     'data': [
+        'security/ir.model.access.csv',
         'views/groupby_view.xml',
         'report/group_by_sales_person_report.xml',
         'report/group_by_sales_person_temp.xml',

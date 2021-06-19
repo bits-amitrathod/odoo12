@@ -124,7 +124,7 @@ class LotHistory(models.Model):
                     END AS type,
                     sale_order.name               AS event,
                     
-                    sale_order.confirmation_date  AS event_date,
+                    sale_order.date_order  AS event_date,
                     CASE  WHEN stock_picking.name LIKE 'WH/OUT%' THEN (stock_move_line.qty_done * -1) 
                     WHEN stock_picking.name LIKE 'WH/PULL%' THEN (stock_move_line.qty_done * -1) 
                     WHEN stock_picking.name LIKE 'WH/PICK%' THEN (stock_move_line.qty_done * -1)
@@ -201,7 +201,7 @@ class LotHistory(models.Model):
                 product_template.name as description,
                 'Adjustment Scrap' as type,
                 stock_scrap.name as event,
-                stock_scrap.date_expected as event_date,
+                stock_scrap.date_done as event_date,
                 stock_scrap.scrap_qty * -1 as change,
                 stock_production_lot.name as lot_no,
                 stock_scrap.product_id as product_id

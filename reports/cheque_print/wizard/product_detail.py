@@ -33,7 +33,7 @@ class ProductDetail(models.TransientModel):
     ], string='According to', default = 'by_units')
     no_of_products = fields.Integer(string='Number of Products to Display', default = '5')
 
-    @api.multi
+    #@api.multi
     def check_report(self):
         data = {}
         data['form'] = self.read(['start_date', 'end_date', 'top_products', 'no_of_products'])[0]

@@ -13,9 +13,9 @@ class ProductSaleByCountPopUp(models.TransientModel):
     _name = 'popup.returned.sales'
 
     compute_at_date = fields.Selection([
-        (0, 'All '),
-        (1, 'Date Range ')
-    ], string="Compute", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'All '),
+        ('1', 'Date Range ')
+    ], string="Compute", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default=fields.date.today())
 
@@ -74,10 +74,11 @@ class ResPartnerExtension(models.Model):
     sales_person = fields.Integer(default=0, compute='_check_sales_person', store=True)
 
 
-    @api.multi
+    #@api.multi
     def _check_sales_person(self):
         for record in self:
-            if record.sale_team_id and record.sale_team_id.team_type == 'sales':
-                record.sales_person = 1
-            else:
-                record.sales_person = 0
+            pass
+            # if record.sale_team_id and record.sale_team_id.team_type == 'sales':
+            #     record.sales_person = 1
+            # else:
+            #     record.sales_person = 0

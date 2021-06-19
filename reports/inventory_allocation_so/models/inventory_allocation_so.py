@@ -26,7 +26,7 @@ class inventory_allocation_so(models.Model):
                                    readonly=True)
     cost = fields.Float(string="Cost",compute='_compute_so_allocation')
 
-    @api.multi
+    #@api.multi
     def _compute_so_allocation(self):
         for this in self:
             this.so_allocation = True
@@ -34,7 +34,7 @@ class inventory_allocation_so(models.Model):
                 this.product_quantity = int(sale_order.product_qty)
                 this.product_uom_qty = str(int(float(sale_order.product_qty )))+ " "+this.product_uom
                 this.cost=(sale_order.purchase_price)
-    @api.model_cr
+    # @api.model_cr
     def init(self):
         self.init_table()
 
@@ -83,7 +83,7 @@ class inventory_allocation_so(models.Model):
 
         self._cr.execute(sql_query)
 
-    @api.model_cr
+    # @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

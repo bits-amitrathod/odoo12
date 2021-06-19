@@ -25,9 +25,9 @@ class MarginsReportPopup(models.TransientModel):
     sale_order_id = fields.Many2one('sale.order', string='SO Number', required=False)
 
     date_range = fields.Selection([
-        (0, 'This Month '),
-        (1, 'Date Range'),
-    ], string="Date Range", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'This Month '),
+        ('1', 'Date Range'),
+    ], string="Date Range", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     start_date = fields.Date('Start Date', default=fields.date.today())
 

@@ -23,7 +23,6 @@ class PortalWizardUser(models.TransientModel):
     _inherit = 'portal.wizard.user'
     _description = 'Portal User Config'
 
-    @api.multi
     def _send_email(self):
         """ send notification email to a new portal user """
         if not self.env.user.email:

@@ -10,6 +10,12 @@ from odoo.tools import float_compare
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
+    commitment_date = fields.Datetime('Commitment Date', copy=False,
+                                      states={'done': [('readonly', True)], 'cancel': [('readonly', True)]},
+                                      help="This is the delivery date promised to the customer. "
+                                           "If set, the delivery order will be scheduled based on "
+                                           "this date rather than product lead times.")
+
     workflow_process_id = fields.Many2one(
         comodel_name='sale.workflow.process',
         string='Automatic Workflow',
@@ -60,7 +66,7 @@ class SaleOrder(models.Model):
                        'message': workflow.warning}
             return {'warning': warning}
 
-    @api.multi
+    #@api.multi
     def action_invoice_create(self, grouped=False, final=False):
         for order in self:
             if not order.workflow_process_id.invoice_service_delivery:

@@ -13,7 +13,7 @@ class BdAccountClosedReportPopup(models.TransientModel):
     delivery_start_date = fields.Date('Revenue Start Date')
     delivery_end_date = fields.Date('Revenue End Date')
 
-    # @api.multi
+    # #@api.multi
     def open_table(self):
 
         start_date = self.string_to_date(str(self.start_date))

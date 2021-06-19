@@ -12,27 +12,29 @@ _logger = logging.getLogger(__name__)
 class CustomerContract(models.Model):
     _inherit = "res.partner"
 
+    exclude_in_stock_product_ids = fields.One2many('exclude.product.in.stock', 'partner_id')
+
     def _get_default_user_id(self):
         res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
         if res_users:
             return res_users.id
 
     account_manager_cust = fields.Many2one('res.users', string="Key Account(KA)", domain="[('active', '=', True)"
-                                                                                         ",('share','=',False)]", track_visibility='onchange')
+                                                                                         ",('share','=',False)]", tracking=True)
     user_id = fields.Many2one('res.users', string='Business Development(BD)', help='The internal user in charge of this contact.',
-                              default=_get_default_user_id, track_visibility='onchange')
+                              default=_get_default_user_id, tracking=True)
 
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
-                                           domain="[('active', '=', True), ('share','=',False)]", track_visibility='onchange')
+                                           domain="[('active', '=', True), ('share','=',False)]", tracking=True)
 
-    order_quota = fields.Float(string="Order Quota", help="Number of transactions", track_visibility='onchange',
+    order_quota = fields.Float(string="Order Quota", help="Number of transactions", tracking=True,
                                digits=dp.get_precision('Product Price'))
 
-    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", track_visibility='onchange')
+    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", tracking=True)
 
-    reinstated_date = fields.Datetime(string='Reinstated Date', track_visibility='onchange')
+    reinstated_date = fields.Datetime(string='Reinstated Date', tracking=True)
 
-    charity = fields.Boolean(string='Is a Charity?', track_visibility='onchange')
+    charity = fields.Boolean(string='Is a Charity?', tracking=True)
 
     display_reinstated_date_flag = fields.Integer(default=0, compute="_display_reinstated_date_flag")
 
@@ -40,14 +42,20 @@ class CustomerContract(models.Model):
 
     @api.depends('category_id')
     def _display_reinstated_date_flag(self):
+        reinstated_date_flag = False
         for record in self:
-            for category_id in record.category_id:
-                if category_id.id == 31:
-                    self.display_reinstated_date_flag = 1
+            if record and record.category_id:
+                for category_id in record.category_id:
+                    if category_id.name.strip().upper() == 'REINSTATED':
+                        reinstated_date_flag = True
+        if reinstated_date_flag:
+            self.display_reinstated_date_flag = 1
+        else:
+            self.display_reinstated_date_flag = 0
 
     @api.onchange('parent_id')
     def onchange_parent_id(self):
-        self.customer = True
+        self.customer_rank = 1
         account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
         if account_payment_term:
             self.property_payment_term_id = account_payment_term.id
@@ -62,14 +70,22 @@ class sale_order(models.Model):
     carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
     delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
     account_manager = fields.Many2one('res.users', store=True, readonly=True, string="Key Account",
-                                      compute="get_account_manager", track_visibility='onchange')
-    user_id = fields.Many2one('res.users', string='Business Development', index=True, track_visibility='onchange',
+                                      compute="get_account_manager", tracking=True)
+    user_id = fields.Many2one('res.users', string='Business Development', index=True, tracking=True,
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
-                                       compute="get_national_account", track_visibility='onchange')
+                                       compute="get_national_account", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
 
-    @api.one
+    @api.model
+    def _get_default_team(self):
+        return self.env['crm.team']._get_default_team_id()
+
+    team_id = fields.Many2one(
+        'crm.team', 'Sales Team',
+        change_default=True, default=_get_default_team, tracking=True, check_company=True,  # Unrequired company
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
     def _get_user(self):
         if self.env.user.email == "jtennant@surgicalproductsolutions.com":
             self.field_read_only = 0
@@ -87,12 +103,10 @@ class sale_order(models.Model):
         else:
             self.is_signature = 0
 
-    @api.one
     def get_account_manager(self):
         for so in self:
             so.account_manager = so.partner_id.account_manager_cust.id
 
-    @api.one
     def get_national_account(self):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
@@ -154,7 +168,6 @@ class sale_order(models.Model):
     def write(self, val):
         super(sale_order, self).write(val)
         # Add note in pick delivery
-
         if self.state and self.state in 'sale':
             for pick in self.picking_ids:
                 pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
@@ -177,7 +190,6 @@ class sale_order(models.Model):
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
 
-    @api.one
     def _get_carrier_tracking_ref(self):
         for so in self:
             stock_picking = self.env['stock.picking'].search([('origin', '=', so.name), ('picking_type_id', '=', 5),
@@ -188,51 +200,48 @@ class sale_order(models.Model):
                     break
             break
 
-    @api.one
     def _get_delivery_method_readonly_flag(self):
+        delivery_method_flag = 1
         for sale_ordr in self:
             if sale_ordr.state in ('draft', 'sent', 'sale'):
                 if sale_ordr.state == 'sale':
                     stock_pickings = self.env['stock.picking'].search(
                         [('sale_id', '=', sale_ordr.id), ('picking_type_id', '=', 1)])
                     for stock_picking in stock_pickings:
-                        if stock_picking.state == 'assigned' or stock_picking.state == 'draft' or stock_picking.state == 'waiting' \
-                                or stock_picking.state == 'confirmed' or stock_picking.state == 'confirmed':
-                            sale_ordr.delivery_method_readonly_flag = 1
-                            return 1
+                        if stock_picking.state in ('assigned', 'draft', 'waiting', 'confirmed'):
+                            delivery_method_flag = 1
                         else:
-                            sale_ordr.delivery_method_readonly_flag = 0
-                            return 0
+                            delivery_method_flag = 0
                 else:
-                    sale_ordr.delivery_method_readonly_flag = 1
-                    return 1
+                    delivery_method_flag = 1
+        sale_ordr.delivery_method_readonly_flag = delivery_method_flag
+        return delivery_method_flag
 
     @api.onchange('carrier_id')
     def onchange_carrier_id(self):
         if self.state in ('draft', 'sent', 'sale'):
-            self.delivery_price = 0.0
+            # self.delivery_price = 0.0
             self.delivery_rating_success = False
             self.delivery_message = False
 
-    @api.multi
-    def set_delivery_line(self):
-        # Remove delivery products from the sales order
-        self._remove_delivery_line()
+    # def set_delivery_line(self):
+    #     # Remove delivery products from the sales order
+    #     self._remove_delivery_line()
 
-        for order in self:
-            if order.state not in ('draft', 'sent', 'sale'):
-                raise UserError(_('You can add delivery price only on unconfirmed quotations.'))
-            elif not order.carrier_id:
-                raise UserError(_('No carrier set for this order.'))
-            elif not order.delivery_rating_success:
-                raise UserError(_('Please use "Check price" in order to compute a shipping price for this quotation.'))
-            else:
-                price_unit = order.carrier_id.rate_shipment(order)['price']
-                # TODO check whether it is safe to use delivery_price here
-                order._create_delivery_line(order.carrier_id, price_unit)
-            if order.carrier_id and order.state in 'sale':
-                self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
-        return True
+        # for order in self:
+        #     if order.state not in ('draft', 'sent', 'sale'):
+        #         raise UserError(_('You can add delivery price only on unconfirmed quotations.'))
+        #     elif not order.carrier_id:
+        #         raise UserError(_('No carrier set for this order.'))
+        #     elif not order.delivery_rating_success:
+        #         raise UserError(_('Please use "Check price" in order to compute a shipping price for this quotation.'))
+        #     else:
+        #         price_unit = order.carrier_id.rate_shipment(order)['price']
+        #         # TODO check whether it is safe to use delivery_price here
+        #         order._create_delivery_line(order.carrier_id, price_unit)
+        #     if order.carrier_id and order.state in 'sale':
+        #         self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
+        # return True
 
     def get_delivery_price(self):
         for order in self.filtered(lambda o: o.state in ('draft', 'sent', 'sale') and len(o.order_line) > 0):
@@ -249,7 +258,6 @@ class sale_order(models.Model):
                 order.delivery_price = 0.0
                 order.delivery_message = res['error_message']
 
-    @api.multi
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         if self.partner_id and self.partner_id.account_manager_cust and self.partner_id.account_manager_cust.id:
@@ -276,7 +284,6 @@ class StockPicking(models.Model):
     #         sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
     #         stock_picking.note = sale_order.sale_note
 
-    @api.multi
     def button_validate(self):
         action = super(StockPicking, self).button_validate()
 
@@ -312,7 +319,6 @@ class StockPicking(models.Model):
                     self.update_sale_order_line(sale_order, self.carrier_id, self.carrier_price)
         return action
 
-    @api.one
     def cancel_shipment(self):
         self.carrier_id.cancel_shipment(self)
         msg = "Shipment %s cancelled" % self.carrier_tracking_ref
@@ -322,7 +328,6 @@ class StockPicking(models.Model):
         sale_order.carrier_track_ref = False
 
     def update_sale_order_line(self, sale_order, carrier, price_unit):
-
         sale_order_line = self.env['sale.order.line'].search([('order_id', '=', sale_order.id), ('is_delivery', '=', True)])
 
         if len(sale_order_line) == 1:
@@ -361,7 +366,8 @@ class StockPicking(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
-                
+
+
 class ResUsers(models.Model):
     _inherit = "res.users"
 
@@ -369,7 +375,7 @@ class ResUsers(models.Model):
     def create(self, vals_list):
         users = super(ResUsers, self.with_context(default_customer=False)).create(vals_list)
         for user in users:
-            user.partner_id.write({'customer': True})
+            user.partner_id.write({'customer_rank': 1})
             account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
             if account_payment_term:
                 user.partner_id.write({'property_payment_term_id': account_payment_term.id,

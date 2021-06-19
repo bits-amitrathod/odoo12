@@ -11,7 +11,7 @@ class PrioritizationScheduler(models.Model):
     _name = 'prioritization.cron.schedular'
 
     @api.model
-    @api.multi
+    #@api.multi
     def process_prioritization_scheduler(self):
         _logger.info('In PrioritizationScheduler')
         try:

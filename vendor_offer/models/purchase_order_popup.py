@@ -16,15 +16,24 @@ class PurchaseOrderPopUp(models.TransientModel):
         if packing:
             return packing.id
 
+    def _get_default_weight(self):
+        order = self.env['purchase.order'].browse(self._context['active_id'])
+        val = 0
+        for obj in order.order_line:
+            val = val+obj.product_id.weight
+        if val == 0:
+            val = 5.00
+        return val
+
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade',
                                  domain="[('delivery_type','=','fedex')]", default=_get_default_carrier)
     product_packaging = fields.Many2one('product.packaging', string='Package',
                                         domain="[('package_carrier_type','=','fedex')]", default=_get_default_packaging)
-    weight = fields.Float('Weight', default=5.00)
+    weight = fields.Float('Weight', default=_get_default_weight)
     package_count = fields.Integer("Packages Count", default=1)
 
     @api.constrains('package_count')
-    @api.one
+    #@api.one
     def _check_package_count(self):
         if self.package_count:
             package_count = self.package_count

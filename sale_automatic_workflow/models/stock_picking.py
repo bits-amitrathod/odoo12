@@ -14,7 +14,7 @@ class StockPicking(models.Model):
         string='Sale Workflow Process'
     )
 
-    @api.multi
+    #@api.multi
     def validate_picking(self):
         for picking in self:
             picking.force_assign()

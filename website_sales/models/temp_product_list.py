@@ -6,11 +6,12 @@ import operator
 
 class TempProductList(models.Model):
     _name = 'quotation.product.list'
+    _description = ""
     _auto = False
 
     product_list = {}
 
-    @api.model_cr
+
     def init(self):
         self.init_table()
 
@@ -71,7 +72,8 @@ class TempProductList(models.Model):
                                      product_template.actual_quantity > 0 and
                                      product_template.sale_ok = True and product_template.is_published = True and
                                      product_template.active = True)
-                                WHERE product_product.active = True ) as a              
+                                Where product_product.active = True and product_product.id NOT IN (Select product_id 
+                                from public.exclude_product_in_stock where partner_id = """ + str(parent_partner_id) + """)) as a         
                         ON(sale_order_line.product_id = a.id)
                         """
             groupby = """ 
@@ -134,8 +136,17 @@ class TempProductList(models.Model):
                 temp_list.update(product_data)
             customer_data={partner.id:temp_list}
             self.product_list.update(customer_data)
+        else:
+            # This Code For only console error resolve purposr
+            self.env.cr.execute('''
+                         CREATE OR REPLACE VIEW %s AS (
+                         SELECT  so.id AS id,
+                                 so.name AS name
+                         FROM sale_order so
+                         )''' % (self._table)
+                                )
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 
@@ -152,7 +163,7 @@ class TempProductList(models.Model):
                 partner_product_list.get(product_id)['select'] = select
 
     def get_product_list(self, partner_id):
-        product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'],
-                                                                               x[1]['product_sku']))
+        product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(), key=lambda x: (x[1]['product_brand_name'] if x[1]['product_brand_name'] else "Test",
+                                                                               x[1]['product_sku'] if x[1]['product_sku'] else "Test"))
 
         return self.product_list[self.get_parent(partner_id)], product_list_sorted

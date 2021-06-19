@@ -11,12 +11,11 @@
     'category': 'Uncategorized',
     'version': '0.1',
 
-    # any module necessary for this one to work correctly
+    # any module necessary for this one to work correctlyd
     'depends': ['base', 'vendor_offer'],
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
         'security/ir.model.access.csv',

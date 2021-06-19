@@ -24,7 +24,7 @@ class ReturnrdSales(models.Model):
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
 
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -50,6 +50,6 @@ class ReturnrdSales(models.Model):
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
         self._cr.execute(sql_query)
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()

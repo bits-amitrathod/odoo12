@@ -4,7 +4,7 @@
         <record model="ir.ui.view" id="trending_report_list6">
               <field name="name">purchase.vendor.view.list</field>
               <field name="model">res.partner</field>
-                <field name="priority">20</field>
+<!--                <field name="priority">20</field>-->
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" >
                     <field name="name" string="Customer Name"/>
@@ -28,7 +28,7 @@
          <record model="ir.ui.view" id="trending_report_list12">
               <field name="name">purchase.vendor.view.list</field>
               <field name="model">res.partner</field>
-               <field name="priority">21</field>
+<!--               <field name="priority">21</field>-->
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" >
                     <field name="name" string="Customer Name"/>
@@ -76,24 +76,24 @@
        <record id="trending_report_list6_id" model="ir.actions.act_window">
             <field name="name">Trending Report</field>
             <field name="res_model">popup.trending.report</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="context">{"code":6}</field>
             <!--<field name="search_view_id" ref="base.view_res_partner_filter"/>-->
-            <field name="priority">51</field>
+<!--            <field name="priority">51</field>-->
             <field name="view_id" ref="trending_report_popup_view"/>
        </record>
 
         <record id="trending_report_list12_id" model="ir.actions.act_window">
             <field name="name">Trending Report</field>
             <field name="res_model">popup.trending.report</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="context">{"code":12}</field>
             <!--<field name="search_view_id" ref="base.view_res_partner_filter"/>-->
-            <field name="priority">51</field>
+<!--            <field name="priority">51</field>-->
             <field name="view_id" ref="trending_report_popup_view"/>
        </record>
 

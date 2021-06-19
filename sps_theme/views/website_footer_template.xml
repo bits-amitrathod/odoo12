@@ -128,10 +128,10 @@
                     <div class="col-md-8 col-sm-8 px-3 px-md-0">
                         <div class="contact-detail">
                             <div class="detail">
-                                <a href="javascript:void(0)" title=""> info@surgicalproductsolutions.com</a>.
+                                <a href="javascript:void(0)" title=""> info@surgicalproductsolutions.com</a>
                             </div>
                             <div class="detail">
-                                <a href="javascript:void(0)" title=""> 412.564.1280 </a>.
+                                <a href="javascript:void(0)" title=""> 412.564.1280 </a>
                             </div>
 
                         </div>
@@ -145,9 +145,9 @@
         </xpath>
     </template>
 
-    <template id="layout_footer_copyright_template" inherit_id="website.layout" name="Footer Copyright">
+   <!-- <template id="layout_footer_copyright_template" inherit_id="website.layout" name="Footer Copyright">
         <xpath expr="//footer//div[hasclass('o_footer_copyright')]" position="replace">
 
         </xpath>
-    </template>
+    </template>-->
 </odoo>

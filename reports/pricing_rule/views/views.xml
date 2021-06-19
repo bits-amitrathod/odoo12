@@ -22,7 +22,7 @@
     <record id="action_price_rule_customer" model="ir.actions.act_window">
           <field name="name">Price Rules</field>
           <field name="res_model">inventory.pricing_rules_popup</field>
-          <field name="view_type">form</field>
+          <!-- <field name="view_type">form</field> -->
           <field name="view_mode">form</field>
           <field name="view_id" ref="inventory_for_pricing_rule_list_id"/>
           <field name="target">new</field>
@@ -33,12 +33,12 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false" >
-                <field name="currency_id" invisible="1"/>
-                <field name="product_id" invisible="1"/>
-                <field name="customer_name" invisible="1"/>
-                <field name="product_code"/>
-                <field name="product_name"/>
-                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="currency_id" invisible="1" optional="show"/>
+                <field name="product_id" invisible="1" optional="show"/>
+                <field name="customer_name" invisible="1" optional="show"/>
+                <field name="product_code" optional="show"/>
+                <field name="product_name" optional="show"/>
+                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
             </tree>
           </field>
     </record>

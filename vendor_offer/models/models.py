@@ -74,6 +74,7 @@ class VendorOffer(models.Model):
     _inherit = "purchase.order"
 
     vendor_offer_data = fields.Boolean()
+    partner_id1 = fields.Many2one('res.partner', string='Vendor1', required=True)
     status_ven = fields.Char(store=True, string="Status", copy=False)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
@@ -134,7 +135,7 @@ class VendorOffer(models.Model):
     notes_activity = fields.One2many('purchase.notes.activity', 'order_id', string='Notes')
 
     accelerator = fields.Boolean(string="Accelerator")
-    priority = fields.Selection([
+    ven_priority = fields.Selection([
         ('low', 'Low'),
         ('medium', 'Medium'),
         ('high', 'High')], string='Priority')
@@ -266,7 +267,7 @@ class VendorOffer(models.Model):
         temp = self.offer_type
         self.super_user_email = super_user.email
 
-    @api.multi
+    #@api.multi
     def _compute_show_validate(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
         if len(multi) == 1 and self.picking_count == 1:
@@ -286,13 +287,13 @@ class VendorOffer(models.Model):
         if len(multi) >= 1:
             return multi.action_assign()
 
-    @api.multi
+    #@api.multi
     def do_unreserve(self):
         multi = self.env['stock.picking'].search([('purchase_id', '=', self.id)])
         if len(multi) >= 1:
             return multi.do_unreserve()
 
-    @api.multi
+    #@api.multi
     def action_duplicate_vendor_offer(self):
         new_po = self.copy()
         return {
@@ -306,7 +307,7 @@ class VendorOffer(models.Model):
             'target': 'main',
         }
 
-    @api.multi
+    #@api.multi
     def copy(self, default=None):
         if self.vendor_offer_data:
             self = self.with_context({'vendor_offer_data': True, 'disable_export': True})
@@ -435,6 +436,13 @@ class VendorOffer(models.Model):
                             'amount_total': credit_amount_total
                         })
             else:
+                order.rt_price_subtotal_amt = False;
+                order.rt_price_total_amt = False;
+                order.rt_price_tax_amt = False;
+                order.billed_retail_untaxed = False;
+                order.billed_retail_total = False;
+                order.billed_offer_untaxed = False;
+                order.billed_offer_total = False;
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = product_retail = rt_price_total = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
@@ -472,7 +480,7 @@ class VendorOffer(models.Model):
 
                 super(VendorOffer, self)._amount_all()
 
-    @api.multi
+    #@api.multi
     def action_send_offer_email(self):
         '''
         This function opens a window to compose an email, with the edi purchase template message loaded by default
@@ -485,9 +493,11 @@ class VendorOffer(models.Model):
         ir_model_data = self.env['ir.model.data']
         try:
             if self.env.context.get('send_rfq', False):
-                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+                template_id = \
+                ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
             else:
-                template_id = ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+                template_id = \
+                ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
 
         except ValueError:
             template_id = False
@@ -519,7 +529,8 @@ class VendorOffer(models.Model):
         if {'default_template_id', 'default_model', 'default_res_id'} <= ctx.keys():
             template = self.env['mail.template'].browse(ctx['default_template_id'])
             if template and template.lang:
-                lang = template._render_template(template.lang, ctx['default_model'], ctx['default_res_id'])
+                # lang = template._render_template(template.lang,[ctx['default_model'], ctx['default_res_id']])
+                lang = template._render_lang([ctx['default_res_id']])[ctx['default_res_id']]
 
         self = self.with_context(lang=lang)
         if self.temp_payment_term != temp_payment_term or self.status != 'ven_sent':
@@ -540,7 +551,7 @@ class VendorOffer(models.Model):
             'context': ctx,
         }
 
-    @api.multi
+    #@api.multi
     def action_print_vendor_offer(self):
         self.temp_payment_term = self.payment_term_id.name
         if (self.payment_term_id.name == False):
@@ -554,7 +565,7 @@ class VendorOffer(models.Model):
         self.write({'status': 'ven_sent', 'state': 'ven_sent'})
         return self.env.ref('vendor_offer.action_report_vendor_offer').report_action(self)
 
-    @api.multi
+    #@api.multi
     def action_confirm_vendor_offer(self):
         self.write({
             'accepted_date': fields.date.today(),
@@ -568,7 +579,7 @@ class VendorOffer(models.Model):
 
         return super(VendorOffer, self).button_confirm()
 
-    @api.multi
+    #@api.multi
     def action_button_confirm(self):
         print('in   action_button_confirm ')
         if self.env.context.get('vendor_offer_data'):
@@ -597,7 +608,7 @@ class VendorOffer(models.Model):
 
             self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
-    @api.multi
+    #@api.multi
     def action_button_confirm_api_cash(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
         self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
@@ -618,7 +629,7 @@ class VendorOffer(models.Model):
 
         self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
-    @api.multi
+    #@api.multi
     def action_button_confirm_api_credit(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
 
@@ -640,7 +651,7 @@ class VendorOffer(models.Model):
 
         self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
-    @api.multi
+    #@api.multi
     def button_confirm(self):
         for order in self:
             if order.state not in ['ven_draft', 'draft', 'sent', 'ven_sent']:
@@ -657,7 +668,7 @@ class VendorOffer(models.Model):
                 order.write({'state': 'to approve'})
         return True
 
-    @api.multi
+    #@api.multi
     def action_confirm_offer_both(self):
 
         # if self.offer_type == 'cashcredit':
@@ -686,7 +697,7 @@ class VendorOffer(models.Model):
         else:
             self.action_button_confirm()
 
-    @api.multi
+    #@api.multi
     def popup_confirm_vendor_offer(self):
 
         if self.offer_type_popup is False:
@@ -696,7 +707,7 @@ class VendorOffer(models.Model):
         else:
             self.action_button_confirm_api_credit(1)
 
-    @api.multi
+    #@api.multi
     def action_cancel_vendor_offer(self):
 
         if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
@@ -714,7 +725,7 @@ class VendorOffer(models.Model):
         self.write({'status_ven': 'Declined'})
         self.write({'declined_date': fields.date.today()})
 
-    @api.multi
+    #@api.multi
     def action_cancel_vendor_offer_api(self, product_id):
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
 
@@ -734,7 +745,7 @@ class VendorOffer(models.Model):
         purchase.write({'status_ven': 'Declined'})
         purchase.write({'declined_date': fields.date.today()})
 
-    @api.multi
+    #@api.multi
     def button_cancel(self):
         if (self.vendor_offer_data == True):
 
@@ -777,35 +788,36 @@ class VendorOffer(models.Model):
             #     record.button_confirm()
             return record
 
-    @api.multi
-    def write(self, values):
-        if (self.state == 'ven_draft' or self.state == 'ven_sent'):
-            # Fix for revion change on send button email template
-            if not 'message_follower_ids' in values:
-                temp = int(self.revision) + 1
-                values['revision'] = str(temp)
-                values['revision_date'] = fields.Datetime.now()
-            if 'partner_id' in values:
-                fetch_id = values['partner_id']
-                user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
-                if user_fetch:
-                    values['vendor_cust_id'] = user_fetch.saleforce_ac
-            record = super(VendorOffer, self).write(values)
-            if 'arrival_date_grp' in values:
-                for purchase in self:
-                    stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
-                    for pick in stock_pick:
-                        pick.arrival_date = values['arrival_date_grp']
-
-            return record
-        else:
-            record = super(VendorOffer, self).write(values)
-            if 'arrival_date_grp' in values:
-                for purchase in self:
-                    stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
-                    for pick in stock_pick:
-                        pick.arrival_date = values['arrival_date_grp']
-            return record
+    #@api.multi
+    # def write(self, values):
+    #     self.ensure_one()
+    #     if (self.state == 'ven_draft' or self.state == 'ven_sent'):
+    #         # Fix for revion change on send button email template
+    #         if not 'message_follower_ids' in values:
+    #             temp = int(self.revision) + 1
+    #             values['revision'] = str(temp)
+    #             values['revision_date'] = fields.Datetime.now()
+    #         if 'partner_id' in values:
+    #             fetch_id = values['partner_id']
+    #             user_fetch = self.env['res.partner'].search([('id', '=', fetch_id), ])
+    #             if user_fetch:
+    #                 values['vendor_cust_id'] = user_fetch.saleforce_ac
+    #         record = super(VendorOffer, self).write(values)
+    #         if 'arrival_date_grp' in values:
+    #             for purchase in self:
+    #                 stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
+    #                 for pick in stock_pick:
+    #                     pick.arrival_date = values['arrival_date_grp']
+    #
+    #         return record
+    #     else:
+    #         record = super(VendorOffer, self).write(values)
+    #         if 'arrival_date_grp' in values:
+    #             for purchase in self:
+    #                 stock_pick = self.env['stock.picking'].search([('origin', '=', purchase.name)])
+    #                 for pick in stock_pick:
+    #                     pick.arrival_date = values['arrival_date_grp']
+    #         return record
 
     def compute_access_url_offer(self):
         for order in self:
@@ -825,8 +837,8 @@ class VendorOffer(models.Model):
         else:
             return '%s?%s' % ('/mail/view' if redirect else self.access_url, url_encode(params))
 
-    @api.multi
-    def _get_share_url(self, redirect=False, signup_partner=False, pid=None):
+    #@api.multi
+    def _get_share_url(self, redirect=False, signup_partner=False, pid=None, share_token=None):
 
         self.ensure_one()
         if self.state not in ['purchase', 'done']:
@@ -888,14 +900,14 @@ class VendorOfferProduct(models.Model):
     billed_product_retail_price = fields.Monetary("Total Billed Qty Retail Price", store=False,
                                                      compute="_calculat_bill_price")
 
-    @api.multi
+    #@api.multi
     def _calculat_delv_price(self):
         for order in self:
             for p in order:
                 order.delivered_product_offer_price = round(p.qty_received * p.product_offer_price, 2)
                 order.delivered_product_retail_price = round(p.qty_received * p.product_unit_price, 2)
 
-    @api.multi
+    #@api.multi
     def _calculat_bill_price(self):
         for order in self:
             for p in order:
@@ -1196,14 +1208,14 @@ class ProductTemplateTire(models.Model):
 
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
-    actual_quantity = fields.Float(string='Qty Available For Sale', digits=dp.get_precision('Product Unit of Measure'),
-                                   compute="_compute_qty_available", store=True)
+    actual_quantity = fields.Float('Qty Available For Sale', compute="_compute_qty_available", search='_search_qty_available', compute_sudo=False, digits='Product Unit of Measure', store=True)
 
-    @api.depends('product_variant_ids.stock_quant_ids.reserved_quantity',
-                 'product_variant_ids.stock_move_ids.remaining_qty')
+    @api.depends('product_variant_ids', 'product_variant_ids.stock_quant_ids',
+                 'product_variant_ids.stock_quant_ids.reserved_quantity',
+                 'product_variant_ids.stock_move_ids.product_qty', 'product_variant_ids.stock_move_ids.state')
+    @api.depends_context('product_id', 'company', 'location', 'warehouse')
     def _compute_qty_available(self):
         for template in self:
-
             stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', template.id)])
             reserved_quantity = 0
             if len(stock_quant) > 0:
@@ -1257,18 +1269,18 @@ class ProductNotesActivity(models.Model):
     note_date = fields.Datetime(string="Note Date", default=fields.Datetime.now, )
 
 
-class VendorOfferInvoice(models.Model):
-    _inherit = "account.invoice"
-
-    is_vender_offer_invoice = fields.Boolean(string='Is Vendor Offer')
-
-    @api.onchange('purchase_id')
-    def purchase_order_change(self):
-        if not self.purchase_id:
-            return {}
-        self.is_vender_offer_invoice = self.purchase_id.vendor_offer_data
-        record = super(VendorOfferInvoice, self).purchase_order_change()
-        return record
+# class VendorOfferInvoice(models.Model):
+#     _inherit = "account.invoice"
+#
+#     is_vender_offer_invoice = fields.Boolean(string='Is Vendor Offer')
+#
+#     @api.onchange('purchase_id')
+#     def purchase_order_change(self):
+#         if not self.purchase_id:
+#             return {}
+#         self.is_vender_offer_invoice = self.purchase_id.vendor_offer_data
+#         record = super(VendorOfferInvoice, self).purchase_order_change()
+#         return record
 
 
 class FedexDelivery(models.Model):
@@ -1284,7 +1296,7 @@ class FedexDelivery(models.Model):
         package_type = popup.product_packaging.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
-        srm.shipment_request_email(order)
+        #srm.shipment_request_email(order)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
         srm.set_shipper(order.partner_id, order.partner_id)
         # srm.set_recipient(order.company_id.partner_id)
@@ -1473,7 +1485,7 @@ class FedexDelivery(models.Model):
         return res
 
         # // Below method is override for sales order fedex shipping Label PO
-    @api.multi
+    #@api.multi
     def fedex_send_shipping(self, pickings):
         _logger.info('Override fedex_send_shipping method call')
         res = []
@@ -1737,7 +1749,6 @@ def _add_customer_references_so(srm, order):
 def _convert_curr_iso_fdx(code):
     return FEDEX_CURR_MATCH.get(code, code)
 
-
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
@@ -1752,7 +1763,7 @@ class StockPicking(models.Model):
                 order.arrival_date_grp = pick.arrival_date
         return record
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         record = super(StockPicking, self).write(vals)
         if 'arrival_date' in vals:
@@ -1764,7 +1775,7 @@ class StockPicking(models.Model):
         return record
 
 
-    @api.multi
+    #@api.multi
     def send_to_shipper(self):
         self.ensure_one()
         res = self.carrier_id.send_shipping(self)[0]
@@ -1814,7 +1825,8 @@ class VendorPricingList(models.Model):
 
     def onchange_product_id_vendor_offer_pricing(self):
         for line in self:
-            line.product_tier = line.product_tmpl_id.tier
+            # if line.product_tmpl_id.tier:
+            #     line.product_tier = line.product_tmpl_id.tier
             result1 = {}
             if not line.id:
                 return result1
@@ -1839,18 +1851,18 @@ class VendorPricingList(models.Model):
             ''' state = sale condition added in all sales amount to match the value of sales amount to 
             clients PPvendorpricing file '''
 
-            sale_all_query = "SELECT  sum(sol.price_total) as total_sales " \
-                             "                   from  product_product pp   " \
-                             "                    INNER JOIN sale_order_line sol ON sol.product_id=pp.id " \
-                             "                    INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id " \
-                             "                    INNER JOIN sale_order so ON so.id=sol.order_id   " \
-                             "        where pp.id =%s and so.confirmation_date>= %s   	and so.state in ('sale')"
-
-            self.env.cr.execute(sale_all_query, (line.id, last_yr))
+            # sale_all_query = "SELECT  sum(sol.price_total) as total_sales " \
+            #                  "                   from  product_product pp   " \
+            #                  "                    INNER JOIN sale_order_line sol ON sol.product_id=pp.id " \
+            #                  "                    INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id " \
+            #                  "                    INNER JOIN sale_order so ON so.id=sol.order_id   " \
+            #                  "        where pp.id =%s and so.confirmation_date>= %s   	and so.state in ('sale')"
+            #
+            # self.env.cr.execute(sale_all_query, (line.id, last_yr))
 
             sales_all_value = 0
             sales_all_val = self.env.cr.fetchone()
-            if sales_all_val[0] is not None:
+            if sales_all_val and  sales_all_val[0] is not None:
                 sales_all_value = sales_all_value + float(sales_all_val[0])
             line.amount_total_ven_pri = sales_all_value
 
@@ -1930,8 +1942,8 @@ class VendorPricingList(models.Model):
                 line.average_aging = 0
 
             scrapped_list = self.env['stock.scrap'].search([('product_id', '=', line.id), ('state', '=', 'done')
-                                                               , ('date_expected', '>', last_yr),
-                                                            ('date_expected', '<', today_date)])
+                                                               , ('date_done', '>', last_yr),
+                                                            ('date_done', '<', today_date)])
             total_qty = 0
             for obj in scrapped_list:
                 total_qty = total_qty + obj.scrap_qty
@@ -1948,7 +1960,7 @@ class VendorPricingList(models.Model):
 
         line.expired_inventory = expired_lot_count
 
-    @api.multi
+    #@api.multi
     def return_tree_vendor_pri(self):
         tree_view_id = self.env.ref('vendor_offer.vendor_pricing_list').id
         action = {
@@ -2037,6 +2049,7 @@ class VendorPricingExport(models.TransientModel):
         #                         $$ LANGUAGE plpgsql;
         #                                 """
 
+        # WHERE  so.confirmation_date >= %s         add this fields
         str_query = """
                         SELECT pt.sku_code, 
                            pt.name, 
@@ -2102,7 +2115,7 @@ class VendorPricingExport(models.TransientModel):
                                              left join stock_move_line AS sml 
                                                     ON sml.picking_id = sp.id 
                                       WHERE  sml.state = 'done' 
-                                             AND sml.location_dest_id =%s 
+                                            AND sml.location_dest_id =%s 
                                       GROUP  BY sml.product_id) AS all_sales 
                                   ON pp.id = all_sales.product_id 
                            left join (SELECT CASE 
@@ -2117,8 +2130,8 @@ class VendorPricingExport(models.TransientModel):
                                                      ON pt.id = ppi.product_tmpl_id 
                                              inner join sale_order so 
                                                      ON so.id = sol.order_id 
-                                      WHERE  so.confirmation_date >= %s 
-                                             AND so.state IN ( 'sale' ) 
+                                     WHERE  so.date_order >= %s 
+                                             AND so.state IN ( 'sale' ,'done') 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
                            left join (SELECT SUM(sml.qty_done) AS qty_done, 
@@ -2129,8 +2142,9 @@ class VendorPricingExport(models.TransientModel):
                                              left join stock_move_line AS sml 
                                                     ON sml.picking_id = sp.id 
                                       WHERE  sml.state = 'done' 
-                                             AND sml.location_dest_id =%s 
-                                             AND sp.date_done >= %s 
+                                     AND sml.location_dest_id =%s 
+                                             AND sp.date_done >= %s       
+                                            
                                       GROUP  BY sml.product_id) AS yr_sales 
                                   ON pp.id = yr_sales.product_id 
                                   
@@ -2189,8 +2203,9 @@ class VendorPricingExport(models.TransientModel):
                           LEFT JOIN stock_move_line AS sml 
                           ON        sml.picking_id=sp.id 
                           WHERE     sml.state='done' 
-                          AND       sml.location_dest_id =%s 
+                        AND       sml.location_dest_id =%s 
                           AND       sp.date_done >= %s 
+                         
                           GROUP BY  sml.product_id ) AS ninty_sales ON pp.id=ninty_sales.product_id LEFT JOIN 
                 ( 
                          SELECT   count(spl.NAME) AS NAME, 
@@ -2238,15 +2253,16 @@ class VendorPricingExport(models.TransientModel):
                                   sts.product_id 
                          FROM     stock_scrap sts 
                          WHERE    sts.state ='done' 
-                         AND      sts.date_expected < %s 
-                         AND      sts.date_expected > %s 
-                         GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true"""
+                         AND      sts.date_done < %s 
+                         AND      sts.date_done > %s 
+                         GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
 
         start_time = time.time()
         #self.env.cr.execute(sql_fuction)
         self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,today_date,
                                                          cust_location_id, last_3_months, today_date,
                                                          today_date, last_yr))
+
         new_list = self.env.cr.dictfetchall()
 
         for line in new_list:
@@ -2294,7 +2310,7 @@ class ExportPPVendorPricingCSV(http.Controller):
 
     @property
     def content_type(self):
-        return 'text/csv;charset=utf8'
+        return 'text/csv'
 
     def filename(self):
 
@@ -2357,60 +2373,63 @@ class ExportPPVendorPricingXL(http.Controller):
         #
 
         #   XL will be exported
-        return 'PPVendorPricing' + '.xls'
+        return 'PPVendorPricing' + '.xlsx'
 
     def from_data(self, field, rows):
-        if len(rows) > 65535:
-            raise UserError(_(
-                'There are too many rows (%s rows, limit: 65535) to export as Excel 97-2003 (.xls) format. Consider splitting the export.') % len(
-                rows))
+        try:
+            if len(rows) > 65535:
+                raise UserError(_(
+                    'There are too many rows (%s rows, limit: 65535) to export as Excel 97-2003 (.xls) format. Consider splitting the export.') % len(
+                    rows))
 
-        workbook = xlwt.Workbook()
-        worksheet = workbook.add_sheet('Sheet 1')
+            workbook = xlwt.Workbook()
+            worksheet = workbook.add_sheet('Sheet 1')
 
-        for i, fieldname in enumerate(field):
-            worksheet.write(0, i, fieldname)
-            if i == 1:
-                worksheet.col(i).width = 20000  #
-            else:
-                worksheet.col(i).width = 4000  # around 110 pixels
+            for i, fieldname in enumerate(field):
+                worksheet.write(0, i, fieldname)
+                if i == 1:
+                    worksheet.col(i).width = 20000  #
+                else:
+                    worksheet.col(i).width = 4000  # around 110 pixels
 
-        base_style = xlwt.easyxf('align: wrap yes')
-        date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
-        datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
+            base_style = xlwt.easyxf('align: wrap yes')
+            date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
+            datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
 
-        for row_index, row in enumerate(rows):
-            for cell_index, cell_value in enumerate(row):
-                cell_style = base_style
+            for row_index, row in enumerate(rows):
+                for cell_index, cell_value in enumerate(row):
+                    cell_style = base_style
 
-                if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
-                    # because xls uses raw export, we can get a bytes object
-                    # here. xlwt does not support bytes values in Python 3 ->
-                    # assume this is base64 and decode to a string, if this
-                    # fails note that you can't export
-                    try:
-                        cell_value = pycompat.to_text(cell_value)
-                    except UnicodeDecodeError:
-                        raise UserError(_(
-                            "Binary fields can not be exported to Excel unless their content is base64-encoded. That does not seem to be the case for %s.") %
-                                        fields[cell_index])
+                    if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
+                        # because xls uses raw export, we can get a bytes object
+                        # here. xlwt does not support bytes values in Python 3 ->
+                        # assume this is base64 and decode to a string, if this
+                        # fails note that you can't export
+                        try:
+                            cell_value = pycompat.to_text(cell_value)
+                        except UnicodeDecodeError:
+                            raise UserError(_(
+                                "Binary fields can not be exported to Excel unless their content is base64-encoded. That does not seem to be the case for %s.") %
+                                            fields[cell_index])
 
-                if isinstance(cell_value, pycompat.string_types):
-                    cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
-                    # Excel supports a maximum of 32767 characters in each cell:
-                    cell_value = cell_value[:32767]
-                elif isinstance(cell_value, datetime.datetime):
-                    cell_style = datetime_style
-                elif isinstance(cell_value, datetime.date):
-                    cell_style = date_style
-                worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
+                    if isinstance(cell_value, str):
+                        cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
+                        # Excel supports a maximum of 32767 characters in each cell:
+                        cell_value = cell_value[:32767]
+                    elif isinstance(cell_value, datetime.datetime):
+                        cell_style = datetime_style
+                    elif isinstance(cell_value, datetime.date):
+                        cell_style = date_style
+                    worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
 
-        fp = io.BytesIO()
-        workbook.save(fp)
-        fp.seek(0)
-        data = fp.read()
-        fp.close()
-        return data
+            fp = io.BytesIO()
+            workbook.save(fp)
+            fp.seek(0)
+            data = fp.read()
+            fp.close()
+            return data
+        except Exception as ex:
+            _logger.error("Error", ex)
 
     @http.route('/web/PPVendorPricing/download_document_xl', type='http', auth="public")
     @serialize_exception
@@ -2445,7 +2464,7 @@ class CustomerACQManager(models.Model):
 class MailComposer(models.TransientModel):
     _inherit = 'mail.compose.message'
 
-    @api.multi
+    #@api.multi
     def onchange_template_id(self, template_id, composition_mode, model, res_id):
         """ - mass_mailing: we cannot render, so return the template values
             - normal mode: return rendered values
@@ -2459,11 +2478,16 @@ class MailComposer(models.TransientModel):
                 values['attachment_ids'] = [att.id for att in template.attachment_ids]
             if template.mail_server_id:
                 values['mail_server_id'] = template.mail_server_id.id
-            if template.user_signature and 'body_html' in values:
-                signature = self.env.user.signature
-                values['body_html'] = tools.append_content_to_html(values['body_html'], signature, plaintext=False)
+            # if template.user_signature and 'body_html' in values:
+            #     signature = self.env.user.signature
+            #     values['body_html'] = tools.append_content_to_html(values['body_html'], signature, plaintext=False)
         elif template_id:
-            values = self.generate_email_for_composer(template_id, [res_id])[res_id]
+            #values = self.generate_email_for_composer(template_id, [res_id])[res_id]
+            values = self.generate_email_for_composer(
+                template_id, [res_id],
+                ['subject', 'body_html', 'email_from', 'email_to', 'partner_to', 'email_cc', 'reply_to',
+                 'attachment_ids', 'mail_server_id']
+            )[res_id]
             # transform attachments into attachment_ids; not attached to the document because this will
             # be done further in the posting process, allowing to clean database if email not send
             attachment_ids = []
@@ -2472,16 +2496,20 @@ class MailComposer(models.TransientModel):
                 data_attach = {
                     'name': attach_fname,
                     'datas': attach_datas,
-                    'datas_fname': attach_fname,
+
                     'res_model': 'mail.compose.message',
                     'res_id': 0,
                     'type': 'binary',  # override default_type from context, possibly meant for another model!
                 }
                 attachment_ids.append(Attachment.create(data_attach).id)
             ship_label = self.env['ir.attachment'].search(
-                [('res_id', '=', res_id), ('res_model_name', '=', 'Vendor Offer Automation')], order="id desc")
+                [('res_id', '=', res_id), ('res_model', '=', 'purchase.order'),('name','like','%FedEx%')], order="id desc")
             if values.get('attachment_ids', []) or attachment_ids:
-                values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
+                #values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else [])
+                #values['attachment_ids'] = [(5,)] + values.get('attachment_ids', []) + attachment_ids
+                values['attachment_ids'] = [(6, 0, values.get('attachment_ids', []) + attachment_ids + ([ship_label[0].id] if ship_label else []))]
+
+
         else:
             default_values = self.with_context(default_composition_mode=composition_mode, default_model=model,
                                                default_res_id=res_id).default_get(

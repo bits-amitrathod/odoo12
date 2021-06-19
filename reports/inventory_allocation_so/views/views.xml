@@ -14,9 +14,9 @@
 
                         </group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)],'required':[('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)],'required':[('compute_at_date', '=', 1)]}"/>
+                            <field name="compute_at_date" widget="radio" default="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')],'required':[('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')],'required':[('compute_at_date', '=', 1)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -32,12 +32,12 @@
           <field name="priority">20</field>
           <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false" >
-                <field name="currency_id" invisible="1"/>
-                <field name="sale_order_name" invisible="1"/>
-                <field name="product_code" string="Product SKU"/>
-                <field name="product_id" string="Product Name"/>
-                <field name="product_quantity"/>
-                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="currency_id" invisible="1" optional="show"/>
+                <field name="sale_order_name" invisible="1" optional="show"/>
+                <field name="product_code" string="Product SKU" optional="show"/>
+                <field name="product_id" string="Product Name" optional="show"/>
+                <field name="product_quantity" optional="show"/>
+                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
 
             </tree>
           </field>
@@ -65,11 +65,11 @@
     <record id="Inv_allow_so_report_list_id" model="ir.actions.act_window">
         <field name="name">Inventory Allocation For SO</field>
         <field name="res_model">inventory.so_popup</field>
-        <field name="view_type">form</field>
+<!--        <field name="view_type">form</field>-->
         <field name="view_mode">form</field>
         <field name="view_id" ref="inventory_for_so_list_view"/>
         <field name="target">new</field>
-        <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+        <field name="context">{'default_compute_at_date': '0', 'valuation': True}</field>
     </record>
 
     <menuitem id="menu_inv_allow_so_report_list_report"

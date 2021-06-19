@@ -39,7 +39,6 @@ except ImportError:
 class ReportCustomProductCatalog(models.TransientModel):
     _name = 'report.report_custom_product_catalog.catalog_temp'
 
-    @api.model
     def _get_report_values(self, docids, data=None):
         popup = self.env['popup.custom.product.catalog'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
         context = {}
@@ -150,7 +149,7 @@ class ProductCatalogXL(http.Controller):
             for cell_index, cell_value in enumerate(row):
                 cell_style = base_style
 
-                if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
+                if isinstance(cell_value, bytes) and not isinstance(cell_value, str):
                     # because xls uses raw export, we can get a bytes object
                     # here. xlwt does not support bytes values in Python 3 ->
                     # assume this is base64 and decode to a string, if this
@@ -162,7 +161,7 @@ class ProductCatalogXL(http.Controller):
                             "Binary fields can not be exported to Excel unless their content is base64-encoded. That does not seem to be the case for %s.") %
                                         fields[cell_index])
 
-                if isinstance(cell_value, pycompat.string_types):
+                if isinstance(cell_value, str):
                     cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
                     # Excel supports a maximum of 32767 characters in each cell:
                     cell_value = cell_value[:32767]
@@ -220,6 +219,5 @@ class ProductCatalogXL(http.Controller):
 class ReportProductWise(models.AbstractModel):
     _name = 'report.report_custom_product_catalog.product_catalog_temp'
 
-    @api.model
     def _get_report_values(self, docids, data=None):
         return {'data': self.env['product.product'].browse(docids)}

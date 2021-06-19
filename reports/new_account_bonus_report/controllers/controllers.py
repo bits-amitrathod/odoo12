@@ -48,7 +48,7 @@ class ExportNewAccountBonusReport(http.Controller):
                 for cell_index, cell_value in enumerate(row):
                     cell_style = base_style
 
-                    if isinstance(cell_value, bytes) and not isinstance(cell_value, pycompat.string_types):
+                    if isinstance(cell_value, bytes) and not isinstance(cell_value, str):
 
                         try:
                             cell_value = pycompat.to_text(cell_value)
@@ -58,7 +58,7 @@ class ExportNewAccountBonusReport(http.Controller):
                                 "does not seem to be the case for %s.") %
                                             fields[cell_index])
 
-                    if isinstance(cell_value, pycompat.string_types):
+                    if isinstance(cell_value, str):
                         cell_value = re.sub("\r", " ", pycompat.to_text(cell_value))
                         # Excel supports a maximum of 32767 characters in each cell:
                         cell_value = cell_value[:32767]
@@ -89,10 +89,9 @@ class ExportNewAccountBonusReport(http.Controller):
                         rppp.name                           AS key_account,
                         rps.name                            AS customer_business_development,
                         rpss.name                           AS customer_key_account,
-                        ai.date_invoice                     AS date_invoice, 
+                        ai.invoice_date                     AS invoice_date, 
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status,
-                        CASE WHEN ai.state = 'open' then 'Open' 
-                             WHEN ai.state = 'paid' then 'Paid' END AS invoice_state,
+                        CASE WHEN ai.state = 'posted' then 'Posted' END AS invoice_state,
                         ai.amount_total                     AS amount_total, 
                         X.months                            AS months,
                         ai.currency_id                      AS currency_id,
@@ -100,16 +99,16 @@ class ExportNewAccountBonusReport(http.Controller):
                 FROM public.sale_order so
                 INNER JOIN
                     (
-                        SELECT sos.partner_id, MIN(aii.date_invoice) As first_occurence,
-                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.date_invoice))) AS months    
+                        SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
+                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                         FROM public.sale_order sos
                         INNER JOIN 
-                            public.account_invoice aii ON sos.name = aii.origin
+                            public.account_move aii ON sos.name = aii.invoice_origin
                         GROUP BY sos.partner_id
-                        Having MIN(aii.date_invoice) > '""" + str(end_date) + """ ') X
+                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ') X
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
-                        public.account_invoice ai ON so.name = ai.origin AND ai.state in ('open', 'paid')
+                        public.account_move ai ON so.name = ai.invoice_origin AND ai.state in ('posted')
                     INNER JOIN 
                         public.res_partner rp ON so.partner_id = rp.id
                     INNER JOIN 
@@ -154,7 +153,7 @@ class ExportNewAccountBonusReport(http.Controller):
                             line['key_account'],
                             line['customer_key_account'],
                             line['sale_order_id'],
-                            line['date_invoice'],
+                            line['invoice_date'],
                             line['amount_total'],
                             line['months'],
                             line['invoice_status'],

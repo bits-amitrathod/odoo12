@@ -2,10 +2,12 @@ odoo.define('customer-requests.importtemplate', function (require) {
 "use strict";
 
 var AbstractAction = require('web.AbstractAction');
-var ControlPanelMixin = require('web.ControlPanelMixin');
+var config = require('web.config');
 var core = require('web.core');
 var session = require('web.session');
 var time = require('web.time');
+var AbstractWebClient = require('web.AbstractWebClient');
+var Loading = require('web.Loading');
 
 var QWeb = core.qweb;
 var _t = core._t;
@@ -43,12 +45,18 @@ function jsonp(form, attributes, callback) {
     });
     $(form).ajaxSubmit(attributes);
 }
-
 function _make_option(term) { return {id: term, text: term }; }
 function _from_data(data, term) {
     return _.findWhere(data, {id: term}) || _make_option(term);
 }
 
+/**
+ * query returns a list of suggestion select2 objects, this function:
+ *
+ * * returns data exactly matching query by either id or text if those exist
+ * * otherwise it returns a select2 option matching the term and any data
+ *   option whose id or text matches (by substring)
+ */
 function dataFilteredQuery(q) {
     var suggestions = _.clone(this.data);
     if (q.term) {
@@ -66,14 +74,17 @@ function dataFilteredQuery(q) {
     q.callback({results: suggestions});
 }
 
-var DataImport = AbstractAction.extend(ControlPanelMixin, {
-    template: 'ImportTemplateView',
+var DataImport = AbstractAction.extend({
+    hasControlPanel: true,
+    contentTemplate: 'ImportTemplateViewStockhawk',
     opts: [
         {name: 'encoding', label: _lt("Encoding:"), value: ''},
         {name: 'separator', label: _lt("Separator:"), value: ''},
         {name: 'quoting', label: _lt("Text Delimiter:"), value: '"'}
     ],
-
+    spreadsheet_opts: [
+        {name: 'sheet', label: _lt("Selected Sheet:"), value: ''},
+    ],
     parse_opts_formats: [
         {name: 'date_format', label: _lt("Date Format:"), value: ''},
         {name: 'datetime_format', label: _lt("Datetime Format:"), value: ''},
@@ -103,7 +114,6 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
              this.template_type = this.$('#template_type_list').val();
         },
         'change .oe_import_file': 'loaded_file',
-        //'click .oe_import_file_reload': 'loaded_file',
         'change input.oe_import_has_header, .js_import_options input': 'settings_changed',
         'change input.oe_import_advanced_mode': function (e) {
             this.do_not_change_match = true;
@@ -115,10 +125,16 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
         },
         'click .oe_import_report a.oe_import_report_count': function (e) {
             e.preventDefault();
+            $(e.target).parent().parent().toggleClass('oe_import_report_showmore');
+        },
+        'click .oe_import_report_see_possible_value': function (e) {
+            e.preventDefault();
             $(e.target).parent().toggleClass('oe_import_report_showmore');
         },
         'click .oe_import_moreinfo_action a': function (e) {
             e.preventDefault();
+            // #data will parse the attribute on its own, we don't like
+            // that sort of things
             var action = JSON.parse($(e.target).attr('data-action'));
             // FIXME: when JS-side clean_action
             action.views = _(action.views).map(function (view) {
@@ -142,7 +158,7 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
         },
     },
     init: function (parent, action) {
-        console.log("Inside Init");
+
         this._super.apply(this, arguments);
         this.action_manager = parent;
         this.res_model =  action.params[0].request_model;//action.params.model;
@@ -150,9 +166,9 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
         // import object id
         this.id = null;
         this.session = session;
-        action.display_name = _t('Import Template'); // Displayed in the breadcrumbs
+        this._title = _t('Import Template'); // Displayed in the breadcrumbs
         this.do_not_change_match = false;
-        console.log(action.params[0].customer_id);
+	    this.sheets = [];
         this.customer = action.params[0].customer_id;
         this.user_type = action.params[0].user_type;
         this.parent_model = action.params[0].model;
@@ -160,31 +176,37 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
         this.upload_document = action.params[0].upload_document;
         // Displayed in the breadcrumbs
         if(this.upload_document == 'True'){
-            action.display_name = _t('Upload Document');
+            this._title = _t('Upload Document');
         }else{
-            action.display_name = _t('Import Template');
+            this._title = _t('Import Template');
         }
     },
+    /**
+     * @override
+     */
     willStart: function () {
         var self = this;
-        return this._rpc({
+        var def = this._rpc({
             model: 'sps.template.transient',
             method: 'get_import_templates',
             context: this.parent_context,
         }).then(function (result) {
             self.importTemplates = result;
         });
+        return Promise.all([this._super.apply(this, arguments), def]);
     },
     start: function () {
         var self = this;
+        this.$form = this.$('form');
         this.setup_encoding_picker();
         this.setup_separator_picker();
         this.setup_float_format_picker();
         this.setup_date_format_picker();
+        this.setup_sheets_picker();
 
-        return $.when(
+        return Promise.all([
             this._super(),
-            self.create_model().done(function (id) {
+            self.create_model().then(function (id) {
                 self.id = id;
                 self.$('input[name=import_id]').val(id);
                 if(self.user_type== 'supplier'){
@@ -223,9 +245,9 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
                 var status = {
                     cp_content: {$buttons: self.$buttons},
                 };
-                self.update_control_panel(status);
-            })
-        );
+                self.updateControlPanel(status);
+            }),
+        ]);
     },
     create_model: function() {
         return this._rpc({
@@ -237,12 +259,12 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
     },
     renderButtons: function() {
         var self = this;
-        this.$buttons = $(QWeb.render("ImportTemplateViewInner.buttons", this));
-       this.$buttons.filter('.o_import_validate').on('click', this.validate.bind(this));
+        this.$buttons = $(QWeb.render("ImportTemplateViewInnerStockhawk.buttons", this));
+        this.$buttons.filter('.o_import_validate').on('click', this.validate.bind(this));
         this.$buttons.filter('.o_import_import').on('click', this.import.bind(this));
         this.$buttons.filter('.o_import_file_reload').on('click', this.loaded_file.bind(this));
         this.$buttons.filter('.oe_import_file').on('click', function () {
-            self.$('.oe_import_file').click();
+            self.$('.o_content .oe_import_file').click();
         });
         this.$buttons.filter('.o_import_cancel').on('click', function(e) {
             e.preventDefault();
@@ -251,7 +273,7 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
     },
     setup_encoding_picker: function () {
         this.$('input.oe_import_encoding').select2({
-            width: '160px',
+            width: '50%',
             data: _.map(('utf-8 utf-16 windows-1252 latin1 latin2 big5 gb18030 shift_jis windows-1251 koir8_r').split(/\s+/), _make_option),
             query: dataFilteredQuery,
             initSelection: function ($e, c) {
@@ -267,7 +289,7 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
             {id: ' ', text: _t("Space")}
         ];
         this.$('input.oe_import_separator').select2({
-            width: '160px',
+            width: '50%',
             data: data,
             query: dataFilteredQuery,
             // this is not provided to initSelection so can't use this.data
@@ -283,7 +305,7 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
         ];
         var data_digits = data_decimal.concat([{id: '', text: _t("No Separator")}]);
         this.$('input.oe_import_float_thousand_separator').select2({
-            width: '160px',
+            width: '50%',
             data: data_digits,
             query: dataFilteredQuery,
             initSelection: function ($e, c) {
@@ -291,7 +313,7 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
             }
         });
         this.$('input.oe_import_float_decimal_separator').select2({
-            width: '160px',
+            width: '50%',
             data: data_decimal,
             query: dataFilteredQuery,
             initSelection: function ($e, c) {
@@ -321,13 +343,25 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
             'MMDDYYYY',
         ]).map(_make_option);
         this.$('input.oe_import_date_format').select2({
-            width: '160px',
+            width: '50%',
             data: data,
             query: dataFilteredQuery,
             initSelection: function ($e, c) {
                 c(_from_data(data, $e.val()) || _make_option($e.val()));
             }
         })
+    },
+    setup_sheets_picker: function () {
+        var data = this.sheets.map(_make_option);
+        this.$('input.oe_import_sheet').select2({
+            width: '50%',
+            data: data,
+            query: dataFilteredQuery,
+            initSelection: function ($e, c) {
+                c(_from_data(data, $e.val()) || _make_option($e.val()))
+            },
+            minimumResultsForSearch: 10,
+        });
     },
 
     import_options: function () {
@@ -337,12 +371,15 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
             advanced: this.$('input.oe_import_advanced_mode').prop('checked'),
             keep_matches: this.do_not_change_match,
             name_create_enabled_fields: {},
+            // start at row 1 = skip 0 lines
+            skip: Number(this.$('#oe_import_row_start').val()) - 1 || 0,
+            limit: Number(this.$('#oe_import_batch_limit').val()) || null,
         };
-        _(this.opts).each(function (opt) {
+        _.each(_.union(this.opts, this.spreadsheet_opts), function (opt) {
             options[opt.name] =
                 self.$('input.oe_import_' + opt.name).val();
         });
-         _(this.parse_opts_formats).each(function (opt) {
+        _(this.parse_opts_formats).each(function (opt) {
             options[opt.name] = time.moment_to_strftime_format(self.$('input.oe_import_' + opt.name).val());
         });
         _(this.parse_opts_separators).each(function (opt) {
@@ -365,52 +402,62 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
     },
 
     //- File & settings change section
-    onfile_loaded: function () {
+    onfile_loaded: function (event, from, to, arg) {
+        // arg is null if reload -> don't reset partial import
+        if (arg != null ) {
+            this.toggle_partial(null);
+        }
+
         this.$buttons.filter('.o_import_import, .o_import_validate, .o_import_file_reload').addClass('d-none');
         if (!this.$('input.oe_import_file').val()) { return this['settings_changed'](); }
         this.$('.oe_import_date_format').select2('val', '');
         this.$('.oe_import_datetime_format').val('');
+        this.$('.oe_import_sheet').val('');
 
-        this.$el.removeClass('oe_import_preview oe_import_error');
+        this.$form.removeClass('oe_import_preview oe_import_error');
         var import_toggle = false;
         var file = this.$('input.oe_import_file')[0].files[0];
         // some platforms send text/csv, application/csv, or other things if Excel is prevent
         if ((file.type && _.last(file.type.split('/')) === "csv") || ( _.last(file.name.split('.')) === "csv")) {
             import_toggle = true;
         }
-//        this.$el.find('.oe_import_box').toggle(import_toggle);
-        jsonp(this.$el, {
+        this.$form.find('.oe_import_box').toggle(import_toggle);
+        jsonp(this.$form, {
             url: '/template_import/set_file'
         }, this.proxy('settings_changed'));
     },
     onpreviewing: function () {
-         var self = this;
+        var self = this;
         this.$buttons.filter('.o_import_import, .o_import_validate, .o_import_file_reload').addClass('d-none');
-        this.$el.addClass('oe_import_with_file');
+        this.$form.addClass('oe_import_with_file');
         // TODO: test that write // succeeded?
-        this.$el.removeClass('oe_import_preview_error oe_import_error');
-        this.$el.toggleClass(
+        this.$form.removeClass('oe_import_preview_error oe_import_error');
+        this.$form.toggleClass(
             'oe_import_noheaders text-muted',
             !this.$('input.oe_import_has_header').prop('checked'));
+
+        // Clear the input value to allow onchange to be triggered
+        // if the file is the same (for all browsers)
+        self.$('input.oe_import_file').val('');
+
         this._rpc({
                 model: 'sps.template.transient',
                 method: 'parse_preview',
                 args: [this.id, this.import_options()],
                 kwargs: {context: session.user_context},
-            }).done(function (result) {
+            }).then(function (result) {
                 var signal = result.error ? 'preview_failed' : 'preview_succeeded';
                 self[signal](result);
             });
     },
-
     onpreview_error: function (event, from, to, result) {
         this.$('.oe_import_options').show();
-        this.$buttons.filter('.o_import_file_reload').removeClass('d-none');
-        this.$el.addClass('oe_import_preview_error oe_import_error');
-        this.$el.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
-        this.$el.find('.o_view_nocontent').addClass('d-none');
+	this.$buttons.filter('.o_import_file_reload').removeClass('d-none');
+        this.$form.addClass('oe_import_preview_error oe_import_error');
+        this.$form.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
+        this.$form.find('.o_view_nocontent').addClass('d-none');
         this.$('.oe_import_error_report').html(
-                QWeb.render('ImportTemplateViewInner.preview.error', result));
+                QWeb.render('ImportTemplateViewInnerStockhawk.preview.error', result));
     },
     onpreview_success: function (event, from, to, result) {
         var self = this;
@@ -419,30 +466,40 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
             .removeClass('btn-primary').addClass('btn-secondary')
             .blur();
         this.$buttons.filter('.o_import_import, .o_import_validate, .o_import_file_reload').removeClass('d-none');
-        this.$el.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
-        this.$el.find('.o_view_nocontent').addClass('d-none');
-        this.$el.addClass('oe_import_preview');
+        this.$form.find('.oe_import_box, .oe_import_with_file').removeClass('d-none');
+        this.$form.find('.o_view_nocontent').addClass('d-none');
+        this.$form.addClass('oe_import_preview');
         this.$('input.oe_import_advanced_mode').prop('checked', result.advanced_mode);
-        this.$('.oe_import_grid').html(QWeb.render('ImportTemplateViewInner.preview', result));
+        this.$('.oe_import_grid').html(QWeb.render('ImportTemplateViewInnerStockhawk.preview', result));
 
+        this.$('.o_import_batch_alert').toggleClass('d-none', !result.batch);
+
+        var messages = [];
         if (result.headers.length === 1) {
-            this.$('.oe_import_options').show();
-            this.onresults(null, null, null, {'messages': [{
-                type: 'warning',
-                message: _t("A single column was found in the file, this often means the file separator is incorrect")
-            }]});
+            messages.push({type: 'warning', message: _t("A single column was found in the file, this often means the file separator is incorrect")});
         }
 
+        if (!_.isEmpty(messages)) {
+            this.$('.oe_import_options').show();
+            this.onresults(null, null, null, {'messages': messages});
+        }
+
+        if (!_.isEqual(this.sheets, result.options.sheets)) {
+            this.sheets = result.options.sheets || [];
+            this.setup_sheets_picker();
+        }
+        this.$('div.oe_import_has_multiple_sheets').toggle(
+            this.sheets.length > 1
+        );
+
         // merge option values back in case they were updated/guessed
-        _.each(['encoding', 'separator', 'float_thousand_separator', 'float_decimal_separator'], function (id) {
+        _.each(['encoding', 'separator', 'float_thousand_separator', 'float_decimal_separator', 'sheet'], function (id) {
             self.$('.oe_import_' + id).select2('val', result.options[id])
         });
         this.$('.oe_import_date_format').select2('val', time.strftime_to_moment_format(result.options.date_format));
         this.$('.oe_import_datetime_format').val(time.strftime_to_moment_format(result.options.datetime_format));
-        if (result.debug === false){
-            this.$('.oe_import_tracking').hide();
-            this.$('.oe_import_deferparentstore').hide();
-        }
+        // hide all "true debug" options when not in debug mode
+        this.$('.oe_import_debug_option').toggleClass('d-none', !result.debug);
 
         var $fields = this.$('.oe_import_fields input');
         this.render_fields_matches(result, $fields);
@@ -466,8 +523,8 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
 
             var $thing = $();
             var bind = function (d) {};
-            if (session.debug) {
-                $thing = $(QWeb.render('ImportTemplateViewInner.create_record_option')).insertAfter(v).hide();
+            if (config.isDebug()) {
+                $thing = $(QWeb.render('ImportTemplateViewInnerStockhawk.create_record_option')).insertAfter(v).hide();
                 bind = function (data) {
                     switch (data.type) {
                     case 'many2one': case 'many2many':
@@ -505,13 +562,13 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
         });
     },
     generate_fields_completion: function (root, index) {
+        var self = this;
         var basic = [];
         var regulars = [];
         var o2m = [];
         var headers_type = root.headers_type;
         function traverse(field, ancestors, collection, type) {
             var subfields = field.fields;
-            //var advanced_mode = false;
             var advanced_mode = self.$('input.oe_import_advanced_mode').prop('checked');
             var field_path = ancestors.concat(field);
             var label = _(field_path).pluck('string').join(' / ');
@@ -586,6 +643,8 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
             var current_field = result;
             input.value = _(match).chain()
                 .map(function (name) {
+                    // WARNING: does both mapping and folding (over the
+                    //          ``field`` iterator variable)
                     return current_field = _(current_field.fields).find(function (subfield) {
                         return subfield.name === name;
                     });
@@ -597,7 +656,7 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
     },
 
     //- import itself
-    call_import: function (kwargs) {
+    /*call_import: function (kwargs) {
         var fields = this.$('.oe_import_fields input.oe_import_match_field').map(function (index, el) {
             return $(el).select2('val') || false;
         }).get();
@@ -646,14 +705,147 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
                     message: msg,
                 }]});
             }) ;
+    },*/
+    call_import: function (kwargs) {
+        var fields = this.$('.oe_import_fields input.oe_import_match_field').map(function (index, el) {
+            return $(el).select2('val') || false;
+        }).get();
+        var columns = this.$('.oe_import_grid-header .oe_import_grid-cell .o_import_header_name').map(function () {
+            return $(this).text().trim().toLowerCase() || false;
+        }).get();
+
+        var tracking_disable = 'tracking_disable' in kwargs ? kwargs.tracking_disable : !this.$('#oe_import_tracking').prop('checked')
+        delete kwargs.tracking_disable;
+        kwargs.context = _.extend(
+            {}, this.parent_context,
+            {tracking_disable: tracking_disable}
+        );
+        var self = this;
+        this.trigger_up('with_client', {callback: function () {
+            this.loading.ignore_events = true;
+        }});
+        $.blockUI({message: QWeb.render('Throbber')});
+        $(document.body).addClass('o_ui_blocked');
+        var opts = this.import_options();
+
+        var $el = $('.oe_throbber_message');
+        var msg = kwargs.dryrun ? _t("%d records tested...")
+                                : _t("%d records successfully imported...");
+        opts.callback = function (count) {
+            $el.text(_.str.sprintf(msg, count));
+        };
+
+        return this._batchedImport(opts, [this.id, fields, columns], kwargs, {done: 0, prev: 0})
+            .then(null, function (reason) {
+                var error = reason.message;
+                var event = reason.event;
+                // In case of unexpected exception, convert
+                // "JSON-RPC error" to an import failure, and
+                // prevent default handling (warning dialog)
+                if (event) { event.preventDefault(); }
+
+                var msg;
+                var errordata = error.data || {};
+                if (errordata.type === 'xhrerror') {
+                    var xhr = errordata.objects[0];
+                    switch (xhr.status) {
+                    case 504: // gateway timeout
+                        msg = _t("Import timed out. Please retry. If you still encounter this issue, the file may be too big for the system's configuration, try to split it (import less records per file).");
+                        break;
+                    default:
+                        msg = _t("An unknown issue occurred during import (possibly lost connection, data limit exceeded or memory limits exceeded). Please retry in case the issue is transient. If the issue still occurs, try to split the file rather than import it at once.");
+                    }
+                } else {
+                    msg = errordata.arguments && (errordata.arguments[1] || errordata.arguments[0])
+                        || error.message;
+                }
+
+                return Promise.resolve({'messages': [{
+                    type: 'error',
+                    record: false,
+                    message: msg,
+                }]});
+            }).finally(function () {
+                $(document.body).removeClass('o_ui_blocked');
+                $.unblockUI();
+                self.trigger_up('with_client', {callback: function () {
+                    delete this.loading.ignore_events;
+                }});
+            });
+    }, /**
+     *
+     * @param opts import options
+     * @param args positional arguments to pass along (augmented with the options)
+     * @param kwargs keyword arguments to pass along (directly)
+     * @param {Object} rec recursion information record
+     * @param {Number} rec.done how many records have been loaded so far
+     * @param {Number} rec.prev nextrow of the previous call so we can know
+     *                          how many rows the call we're here performing
+     *                          will have consumed, and thus by how much we
+     *                          need to offset the messages of the *next* call
+     * @returns {Promise<{name, ids, messages}>}
+     * @private
+     */
+    _batchedImport: function (opts, args, kwargs, rec) {
+        opts.callback && opts.callback(rec.done || 0);
+        var self = this;
+
+        return this._rpc({
+            model: 'sps.template.transient',
+            method: 'do_custom',
+            args: [self.id, args[1],args[2], self.import_options(), self.parent_model, self.customer, self.template_type, self.upload_document],
+            kwargs: kwargs
+        }).then(function (results) {
+            _.each(results.messages, offset_by(opts.skip));
+            if (!kwargs.dryrun && !results.ids) {
+                // update skip to failed batch
+                self.$('#oe_import_row_start').val(opts.skip + 1);
+                if (opts.skip) {
+                    // there's been an error during a "proper" import, stop & warn
+                    // about partial import maybe
+                    results.messages.push({
+                        type: 'info',
+                        priority: true,
+                        message: _.str.sprintf(_t("This file has been successfully imported up to line %d."), opts.skip)
+                    });
+                }
+                return results;
+            }
+            if (!results.nextrow) {
+                // we're done
+                return results;
+            }
+
+            // do the next batch
+            return self._batchedImport(
+                // avoid modifying opts in-place
+                _.defaults({skip: results.nextrow}, opts),
+                args, kwargs, {
+                    done: rec.done + (results.ids || []).length,
+                    prev: results.nextrow
+                }
+            ).then(function (r2) {
+                return {
+                    name: _.zip(results.name, r2.name).map(function (names) {
+                        return names[0] || names[1];
+                    }),
+                    ids: (results.ids || []).concat(r2.ids || []),
+                    messages: results.messages.concat(r2.messages),
+                    skip: r2.skip || results.nextrow,
+                    nextrow: r2.nextrow
+                }
+            });
+        });
     },
     onvalidate: function () {
-        return this.call_import({ dryrun: true, tracking_disable: true })
-            .done(this.proxy('validated'));
+        var prom = this.call_import({ dryrun: true, tracking_disable: true });
+        prom.then(this.proxy('validated'));
+        return prom;
     },
     onimport: function () {
         var self = this;
-        return this.call_import({ dryrun: false }).done(function (results) {
+        var prom = this.call_import({ dryrun: false });
+        prom.then(function (results) {
             var message = results.messages;
             if (!_.any(message, function (message) {
                     return message.type === 'error'; })) {
@@ -662,9 +854,13 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
             }
             self['import_failed'](results);
         });
+        return prom;
     },
     onimported: function (event, from, to, results) {
-        this.do_notify(_t("Import completed"), _.str.sprintf(_t("%d records were successfully imported"), results.ids.length));
+        this.do_notify(false, _.str.sprintf(
+            _t("%d records successfully imported"),
+            results.ids.length
+        ));
         this.exit();
     },
     exit: function () {
@@ -679,10 +875,11 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
         };
         this.do_action(action);
     },
-//    exit: function () {
-//            this.trigger_up('history_back');
-//        },
     onresults: function (event, from, to, results) {
+        var fields = this.$('.oe_import_fields input.oe_import_match_field').map(function (index, el) {
+            return $(el).select2('val') || false;
+        }).get();
+
         var message = results.messages;
         var no_messages = _.isEmpty(message);
         if (no_messages) {
@@ -690,25 +887,66 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
                 type: 'info',
                 message: _t("Everything seems valid.")
             });
+        } else if (event === 'import_failed' && results.ids) {
+            // both ids in a failed import -> partial import
+            this.toggle_partial(results);
         }
+
         // row indexes come back 0-indexed, spreadsheets
         // display 1-indexed.
         var offset = 1;
         // offset more if header
         if (this.import_options().headers) { offset += 1; }
 
-        this.$el.addClass('oe_import_error');
+        var messagesSorted = _.sortBy(_(message).groupBy('message'), function (group) {
+            if (group[0].priority){
+                return -2;
+            }
+
+            // sort by gravity, then, order of field in list
+            var order = 0;
+            switch (group[0].type) {
+            case 'error': order = 0; break;
+            case 'warning': order = fields.length + 1; break;
+            case 'info': order = 2 * (fields.length + 1); break;
+            default: order = 3 * (fields.length + 1); break;
+            }
+            return order + _.indexOf(fields, group[0].field);
+        });
+
+        this.$form.addClass('oe_import_error');
         this.$('.oe_import_error_report').html(
-            QWeb.render('ImportOfferTemplateViewInner.error', {
-                errors: _(message).groupBy('message'),
+            QWeb.render('ImportTemplateViewInnerStockhawk.error', {
+                errors: messagesSorted,
                 at: function (rows) {
                     var from = rows.from + offset;
                     var to = rows.to + offset;
+                    var rowName = '';
+                    if (results.name.length > rows.from && results.name[rows.from] !== '') {
+                        rowName = _.str.sprintf(' (%s)', results.name[rows.from]);
+                    }
                     if (from === to) {
-                        return _.str.sprintf(_t("at row %d"), from);
+                        return _.str.sprintf(_t("at row %d%s"), from, rowName);
                     }
                     return _.str.sprintf(_t("between rows %d and %d"),
                                          from, to);
+                },
+                at_multi: function (rows) {
+                    var from = rows.from + offset;
+                    var to = rows.to + offset;
+                    var rowName = '';
+                    if (results.name.length > rows.from && results.name[rows.from] !== '') {
+                        rowName = _.str.sprintf(' (%s)', results.name[rows.from]);
+                    }
+                    if (from === to) {
+                        return _.str.sprintf(_t("Row %d%s"), from, rowName);
+                    }
+                    return _.str.sprintf(_t("Between rows %d and %d"),
+                                         from, to);
+                },
+                at_multi_header: function (numberLines) {
+                    return _.str.sprintf(_t("at %d different rows:"),
+                                         numberLines);
                 },
                 more: function (n) {
                     return _.str.sprintf(_t("(%d more)"), n);
@@ -721,8 +959,8 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
                     }
                     if (msg instanceof Array) {
                         return _.str.sprintf(
-                            '<div class="oe_import_moreinfo oe_import_moreinfo_choices">%s <ul>%s</ul></div>',
-                            _.str.escapeHTML(_t("Here are the possible values:")),
+                            '<div class="oe_import_moreinfo oe_import_moreinfo_choices"><a href="#" class="oe_import_report_see_possible_value oe_import_see_all"><i class="fa fa-arrow-right"/> %s </a><ul class="oe_import_report_more">%s</ul></div>',
+                            _.str.escapeHTML(_t("See possible values")),
                             _(msg).map(function (msg) {
                                 return '<li>'
                                     + _.str.escapeHTML(msg)
@@ -732,24 +970,34 @@ var DataImport = AbstractAction.extend(ControlPanelMixin, {
                     // Final should be object, action descriptor
                     return [
                         '<div class="oe_import_moreinfo oe_import_moreinfo_action">',
-                            _.str.sprintf('<a href="#" data-action="%s">',
+                            _.str.sprintf('<a href="#" data-action="%s" class="oe_import_see_all"><i class="fa fa-arrow-right"/> ',
                                     _.str.escapeHTML(JSON.stringify(msg))),
                                 _.str.escapeHTML(
-                                    _t("Get all possible values")),
+                                    _t("See possible values")),
                             '</a>',
                         '</div>'
                     ].join('');
                 },
             }));
     },
-//    toTitleCase : function (str) {
-//	    str = str.toLowerCase().split(' ');
-//	    for (var i = 0; i < str.length; i++) {
-//		    str[i] = str[i].charAt(0).toUpperCase() + str[i].slice(1);
-//	    }
-//	    console.log(str);
-//	    return str.join(' ');
-//    },
+    toggle_partial: function (result) {
+        var $form = this.$('.oe_import');
+        var $partial_warning = this.$('.o_import_partial_alert');
+        var $partial_count = this.$('.o_import_partial_count');
+        if (result == null) {
+            $partial_warning.addClass('d-none');
+            $form.add(this.$buttons).removeClass('o_import_partial_mode');
+            var $skip = this.$('#oe_import_row_start');
+            $skip.val($skip.attr('value'));
+            $partial_count.text('');
+            return;
+        }
+
+        this.$('.o_import_batch_alert').addClass('d-none');
+        $partial_warning.removeClass('d-none');
+        $form.add(this.$buttons).addClass('o_import_partial_mode');
+        $partial_count.text((result.skip || 0) + 1);
+    }
 });
 core.action_registry.add('importtemplate', DataImport);
 
@@ -773,6 +1021,27 @@ StateMachine.create({
         { name: 'import_failed', from: 'importing', to: 'results' }
     ],
 });
+
+Loading.include({
+    on_rpc_event: function () {
+        if (this.ignore_events) {
+            return
+        }
+        this._super.apply(this, arguments);
+    }
+});
+AbstractWebClient.prototype.custom_events['with_client'] = function (ev) {
+    ev.data.callback.call(this);
+};
+
+function offset_by(by) {
+    return function offset_message(msg) {
+        if (msg.rows) {
+            msg.rows.from += by;
+            msg.rows.to += by;
+        }
+    }
+}
 
 return {
     DataImport: DataImport,

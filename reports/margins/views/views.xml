@@ -8,7 +8,7 @@
                     <group>
                         <group>
                             <field name="group_by"/>
-                            <field name="customer_id" domain="[('customer','=', True)]"/>
+<!--                            <field name="customer_id" domain="[('customer','=', True)]"/>-->
                             <field name="product_id"/>
                             <field name="sale_order_id"/>
                         </group>
@@ -33,10 +33,10 @@
         <record id="action_margins" model="ir.actions.act_window">
             <field name="name">Margins</field>
             <field name="res_model">margins.popup</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_margins_popup"/>
-            <field name="target">new</field>
+<!--            <field name="target">new</field>-->
         </record>
 
         <record model="ir.ui.view" id="margins_list_view">
@@ -44,18 +44,18 @@
             <field name="model">margins</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                    <field name="product_id" invisible="1"/>
-                    <field name="sku_code" invisible="1"/>
+                    <field name="product_id" invisible="1" optional="show"/>
+                    <field name="sku_code" invisible="1" optional="show"/>
                     <!--<field name="partner_id"/>-->
-                    <field name="order_id"/>
-                    <field name="unit_cost" widget="monetary"/>
-                    <field name="qty"/>
-                    <field name="unit_price" widget="monetary"/>
-                    <field name="total_unit_price" sum="total_unit_price" widget="monetary"/>
-                    <field name="total_unit_cost" sum="total_unit_cost" widget="monetary"/>
-                    <field name="margin" sum="margin" widget="monetary"/>
-                    <field name="margin_percentage" avg="margin_percentage"/>
-                    <field name="currency_id" invisible="1"/>
+                    <field name="order_id" optional="show"/>
+                    <field name="unit_cost" widget="monetary" optional="show"/>
+                    <field name="qty" optional="show"/>
+                    <field name="unit_price" widget="monetary" optional="show"/>
+                    <field name="total_unit_price" sum="total_unit_price" widget="monetary" optional="show"/>
+                    <field name="total_unit_cost" sum="total_unit_cost" widget="monetary" optional="show" />
+                    <field name="margin" sum="margin" widget="monetary" optional="show"/>
+                    <field name="margin_percentage" avg="margin_percentage" optional="show"  />
+                    <field name="currency_id" invisible="1" optional="show"/>
                 </tree>
             </field>
         </record>
@@ -84,7 +84,7 @@
                     </group>
                 </form>
             </field>
-            <field name="target">new</field>
+            <!--<field name="target">new</field>-->
         </record>
 
         <record model="ir.ui.view" id="margins_grp_by_cust_list_view">
@@ -95,14 +95,14 @@
                     <field name="product_id" invisible="1"/>
                     <field name="sku_code" invisible="1"/>
                     <!--<field name="partner_id"/>-->
-                    <field name="order_id"/>
-                    <field name="unit_cost"/>
-                    <field name="qty"/>
-                    <field name="unit_price"/>
-                    <field name="total_unit_price" sum="total_unit_price"/>
-                    <field name="total_unit_cost" sum="total_unit_cost"/>
-                    <field name="margin" sum="margin"/>
-                    <field name="margin_percentage" avg="margin_percentage"/>
+                    <field name="order_id" optional="show"/>
+                    <field name="unit_cost" optional="show"/>
+                    <field name="qty" optional="show"/>
+                    <field name="unit_price" optional="show"/>
+                    <field name="total_unit_price" sum="total_unit_price" optional="show"/>
+                    <field name="total_unit_cost" sum="total_unit_cost" optional="show"/>
+                    <field name="margin" sum="margin" optional="show"/>
+                    <field name="margin_percentage" avg="margin_percentage" optional="show"/>
                 </tree>
             </field>
         </record>

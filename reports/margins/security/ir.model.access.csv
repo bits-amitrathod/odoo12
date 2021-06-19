@@ -1,7 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_margins_group_by_cust_user_sale,margins_group_by_cust user,model_margins_group_by_cust,sales_team.group_sale_salesman,0,0,0,0
-access_margins_group_by_cust_user,margins_group_by_cust user,model_margins_group_by_cust,sales_team.group_sale_salesman_all_leads,1,1,0,0
-access_margins_group_by_cust_manager,margins_group_by_cust manager,model_margins_group_by_cust,sales_team.group_sale_manager,1,1,1,1
-access_margins_user_sale,margins user,model_margins,sales_team.group_sale_salesman,0,0,0,0
-access_margins_user,margins user,model_margins,sales_team.group_sale_salesman_all_leads,1,1,0,0
-access_margins_manager,margins manager,model_margins,sales_team.group_sale_manager,1,1,1,1
+margins_group_by_cust,margins.group_by_cust,model_margins_group_by_cust,,1,1,1,1
+margins_popup,margins.popup,model_margins_popup,,1,1,1,1
+margins,margins,model_margins,,1,1,1,1

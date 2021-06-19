@@ -11,9 +11,7 @@ _logger = logging.getLogger(__name__)
 class SpsCustomerRequest(models.Model):
     _name = 'sps.customer.requests'
 
-
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
-    # cust_id=fields.Integer(related='customer_id.id')
     document_id = fields.Many2one('sps.cust.uploaded.documents', string='Document', required=True)
     product_id = fields.Many2one('product.product', string='Product', required=False, default=0)
     sale_order_line_id = fields.One2many('sale.order.line', 'customer_request_id', string="Request")
@@ -131,14 +129,9 @@ class SpsCustomerRequest(models.Model):
                     _logger.info('Customer prioritization setting is False or customer is On Hold. Customer id is :%r',
                                  str(global_level_setting.id))
                     return False
+            else:
+                return False
 
-    # def update_customer_status(self,sps_customer_request_id, status, log):
-    #     if status.lower().strip() != 'unprocessed':
-    #         # update status Unprocessed
-    #         self.env['sps.customer.requests'].search(
-    #             [('id', '=', sps_customer_request_id)]).write({'status':'Unprocessed','customer_request_logs':log})
-
-    @api.multi
     @api.depends('document_id')
     def _get_qty_to_show(self):
         for record in self:
@@ -147,7 +140,6 @@ class SpsCustomerRequest(models.Model):
             else:
                 record.qty_to_show = str(record.quantity)
 
-    @api.multi
     @api.depends('sale_order_line_id')
     def _get_sale_order_name(self):
         sale_order_name_set = set()
@@ -159,14 +151,14 @@ class SpsCustomerRequest(models.Model):
                     sale_order_name_set.add(str(sale_order_line_id.order_id.name))
             if sale_order_name_set:
                 record.sale_order_name = sale_order_name_set
+            else:
+                record.sale_order_name = None
 
-    @api.multi
     @api.depends('document_id')
     def _get_document_name(self):
         for record in self:
             record.document_name = str(record.document_id.document_name)
 
-    @api.multi
     def _get_product_oem(self):
         for record in self:
             if record.un_mapped_data:
@@ -186,7 +178,6 @@ class SpsCustomerRequest(models.Model):
                 else:
                     record.manufacturer_oem = None
 
-    @api.multi
     def _get_manufacturer_oem_price(self):
         for record in self:
             if record.un_mapped_data:
@@ -202,7 +193,6 @@ class SpsCustomerRequest(models.Model):
                 else:
                     record.manufacturer_oem_price = None
 
-    @api.multi
     def _get_customer_product_description(self):
         for record in self:
             if record.product_description and record.product_description is not None:

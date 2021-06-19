@@ -67,7 +67,7 @@
                         </div>
                         <div class="row mt-5">
                            <div class="col-md-12 text-center btn-wrapper">
-                              <button class="btn btn-info btn-sm scrolltoform">Sell Your Surgical Equipment</button>
+                              <button class="btn btn-info btn-sm scrolltoform3"  onClick="scrolldiv()">Sell Your Surgical Equipment</button>
                            </div>
                         </div>
                      </div>
@@ -88,7 +88,7 @@
                         </div>
                      </div>
                      <div class="col-12 text-center btn-wrapper mt-5">
-                           <button class="btn btn-info btn-sm scrolltoform">Sell Used Medical Equipment</button>
+                           <button class="btn btn-info btn-sm scrolltoform3" onClick="scrolldiv()">Sell Used Medical Equipment</button>
                         </div>
                   </div>
                </section>
@@ -118,7 +118,7 @@
                            </div>
                         </div>
                         <div class="col-12 text-center btn-wrapper mt-5">
-                           <button class="btn btn-info btn-sm scrolltoform">Sell Used Medical Equipment</button>
+                           <button class="btn btn-info btn-sm scrolltoform3"  onClick="scrolldiv()">Sell Used Medical Equipment</button>
                         </div>
                      </div>
                   </div>
@@ -190,7 +190,7 @@
                            </div>
                         </div>
                         <div class="col-12 text-center btn-wrapper mt-5">
-                           <button class="btn btn-info btn-sm scrolltoform">Sell Your Surgical Equipment</button>
+                           <button class="btn btn-info btn-sm scrolltoform3"  onClick="scrolldiv()">Sell Your Surgical Equipment</button>
                            <a class="btn btn-info btn-sm" href="/faqs">FAQ</a>
                         </div>
                      </div>
@@ -286,9 +286,9 @@
                   </div>
                </section>
 
-                <section class="padding-80-y bg-grey">
+                <section class="padding-80-y bg-grey"  id="requestform">
                     <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
-                        <div class="container p-0" id="requestform">
+                        <div class="container p-0">
                              <p class="hawk-title ft-32 regular-font text-center">Sell Your Surgical Equipment</p>
                              <div class="section-description text-center">
                                  <p>Please fill out the form below to submit an item for valuation.</p>

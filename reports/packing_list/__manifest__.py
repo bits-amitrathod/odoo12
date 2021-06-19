@@ -18,6 +18,7 @@
 
 
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/sale_packing_list_template.xml',
         'report/packing_list_report.xml',

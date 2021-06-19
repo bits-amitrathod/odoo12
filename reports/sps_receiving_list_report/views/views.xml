@@ -39,15 +39,15 @@
                 <form create="false" edit="false" delete="false">
                     <sheet>
                         <group>
-                            <field name="product_id"/>
+<!--                            <field name="product_id"/>-->
                             <field name="purchase_order_id"/>
                             <field name="purchase_partner_id"/>
                             <field name="sku_code"/>
-                            <field name="lot_id"/>
+<!--                            <field name="lot_id"/>-->
                             <field name="exp_date"/>
                             <field name="qty_rece" string="Qty Received"/>
                             <field name="date_done" string="Date Validated"/>
-                            <field name="product_uom_id" string="UOM"/>
+<!--                            <field name="product_uom_id" string="UOM"/>-->
                         </group>
                     </sheet>
                 </form>
@@ -63,12 +63,12 @@
                     <group>
                         <group>
                             <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '!=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '!=', 1)]}"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '!=', '1')]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '!=', '1')]}"/>
                         </group>
                         <group>
                             <field name="purchase_order" widget="many2many_tags"
-                                   attrs="{'invisible': [('compute_at_date', '!=', 2)]}"/>
+                                   attrs="{'invisible': [('compute_at_date', '!=', '2')]}"/>
                         </group>
                     </group>
                     <footer>
@@ -82,11 +82,11 @@
         <record id="action_sps_receive_list" model="ir.actions.act_window">
             <field name="name">SPS Receiving List</field>
             <field name="res_model">sps_receive_popup.view.model</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_sps_receive_list"/>
             <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0}</field>
+            <field name="context">{'default_compute_at_date': '0'}</field>
         </record>
 
         <menuitem id="receive_list_report"

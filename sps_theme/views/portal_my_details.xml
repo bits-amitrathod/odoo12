@@ -1,6 +1,6 @@
 <odoo>
     <template id="your_details_page_template" inherit_id="portal.portal_my_details" name="Your Details">
-        <xpath expr="//h3" position="replace">
+        <xpath expr="//t[@t-set='additional_title']" position="replace">
             <div class="text-center pt32">
                 <h1  class="about-header"> Your Details </h1>
             </div>
@@ -58,7 +58,7 @@
                             </div>
                             <div t-attf-class="form-group #{error.get('country_id') and 'o_has_error' or ''} col-xl-6">
                                 <label class="col-form-label label-optional" for="country_id">Country</label>
-                                <select name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}">
+                                <select name="country_id" t-attf-class="form-control #{error.get('country_id') and 'is-invalid' or ''}" t-att-mode="mode[1]">
                                     <option value="">Country...</option>
                                     <t t-foreach="countries or []" t-as="country">
                                         <option t-att-value="country.id" t-att-selected="country.id == int(country_id) if country_id else country.id == partner.country_id.id">

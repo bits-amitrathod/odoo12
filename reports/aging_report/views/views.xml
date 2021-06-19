@@ -7,14 +7,14 @@
             <field name="priority">20</field>
             <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                      <field name="sku_code"/>
-                      <field name="product_name"/>
-                      <field name="lot_name"/>
-                      <field name="qty"/>
-                      <field name="product_uom_id"/>
-                      <field name="create_date" string="Last Updated Date"/>
-                      <field name="use_date" string="Expriry Date"/>
-                      <field name="days"/>
+                      <field name="sku_code" optional="show"/>
+                      <field name="product_name" optional="show"/>
+                      <field name="lot_name" optional="show"/>
+                      <field name="qty" optional="show"/>
+                      <field name="product_uom_id" optional="show"/>
+                      <field name="create_date" string="Last Updated Date" optional="show"/>
+                      <field name="use_date" string="Expriry Date" optional="show"/>
+                      <field name="days" optional="show"/>
                 </tree>
             </field>
         </record>
@@ -71,7 +71,7 @@
         <record id="action_stock_quantity" model="ir.actions.act_window">
         <field name="name">Aging Report</field>
         <field name="res_model">aging_popup.view.model</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_stock_quantity"/>
         <field name="target">new</field>

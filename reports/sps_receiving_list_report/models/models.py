@@ -20,7 +20,7 @@ class SpsReceivingList(models.Model):
     exp_date = fields.Datetime('Expired Date', store=False, compute="_get_sku")
 
 
-    @api.multi
+    #@api.multi
     def _get_sku(self):
         for move_line in self:
             if move_line.product_id:

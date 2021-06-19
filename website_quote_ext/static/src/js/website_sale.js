@@ -2,12 +2,11 @@ odoo.define('website_quote_ext._ex', function (require) {
     "use strict";
 
     require('web.dom_ready');
-    var base = require("web_editor.base");
     var ajax = require('web.ajax');
     var utils = require('web.utils');
     var core = require('web.core');
     var config = require('web.config');
-    require("website.content.zoomodoo");
+    require("web.zoomodoo");
     var _t = core._t;
     var inputClientOrderRef = $('input[name="client_order_ref"]');
     var orderId = $('input[name="order_id"]');
@@ -64,6 +63,7 @@ odoo.define('website_quote_ext._ex', function (require) {
             var product_id = $input[0]['attributes']['data-product-id']['value'];
             var quote_id = $input[0]['attributes']['data-quote-id']['value'];
             var line_id = $input[0]['attributes']['data-line-id']['value'];
+
             ajax.jsonRpc("/shop/engine/count", 'call', {
                 'quote_id':quote_id,
                 'product_id': product_id
@@ -74,6 +74,7 @@ odoo.define('website_quote_ext._ex', function (require) {
                 var max = parseFloat($input.data("max") || total_max_count);
                 var quantity = ($link.has(".fa-minus").length ? -1 : 1) + parseFloat($input.val() || 0, 10);
                 var new_qty = quantity > min ? (quantity < max ? quantity : max) : min;
+
                 $('input[name="'+$input.attr("name")+'"]').add($input).filter(function () {
                     var $prod = $(this).closest('*:has(input[name="product_id"])');
                     return !$prod.length || +$prod.find('input[name="product_id"]').val() === product_id;

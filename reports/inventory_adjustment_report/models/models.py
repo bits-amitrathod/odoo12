@@ -21,16 +21,17 @@ class inventory_adjustment_report(models.Model):
     product_name = fields.Char("Product Name", store=False)
     adj_status = fields.Char("Adjustment Status", store=False)
 
-    @api.multi
+    #@api.multi
     def _calculateSKU(self):
         ACTIONS = {
             "product": "Storable Product",
             "consu": "Consumable",
             "service": "Service",
         }
-
+        company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
         for order in self:
-            order.currency_id = order.product_id.product_tmpl_id.company_id.currency_id
+            #order.currency_id = order.product_id.product_tmpl_id.company_id.currency_id
+            order.currency_id = company_fetch.currency_id
             order.p_sku = order.product_id.product_tmpl_id.sku_code
             keys=order.product_id.product_tmpl_id.type
             if keys==False:

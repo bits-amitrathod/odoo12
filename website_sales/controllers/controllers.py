@@ -132,7 +132,9 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         payload['sub_title'] = sub_title
         return request.render("website_sale.products", payload)
 
-    @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
+    # Compatibility pre-v14
+    # @http.route(['/shop/product/<model("product.template"):product>'], type='http', auth="public", website=True)
+    @http.route(['/shop/<model("product.template"):product>'], type='http', auth="public", website=True, sitemap=True)
     def product(self, product, category='', search='', **kwargs):
         responce = super(WebsiteSales, self).product(product, category='', search='', **kwargs)
         payload = responce.qcontext
@@ -177,7 +179,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             (product_id,))
         return request.env.cr.dictfetchone()
 
-    @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
+    # @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
+    @http.route(['/shop/confirmation'], type='http', auth="public", website=True, sitemap=False)
     def payment_confirmation(self, **post):
         responce = super(WebsiteSales, self).payment_confirmation(**post)
         order = responce.qcontext['order']
@@ -188,7 +191,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         if request.env.user.user_id.id and not request.env.user.user_id.id == order.user_id.id:
             order.user_id = request.env.user.user_id
 
-        template.send_mail(order.id, force_send=True)
+        template.send_mail(order.id, force_send=False)
         msg = "Quotation Email Sent to: " + order.user_id.login
         order.message_post(body=msg)
         return responce
@@ -243,7 +246,6 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
                 return request.redirect(portal_url+'&redirect=/shop/quote_my_report/%s' % partner.id)
             else:
                 return request.redirect('/')
-
 
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):

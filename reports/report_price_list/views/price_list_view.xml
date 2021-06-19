@@ -46,7 +46,7 @@
          <record id="action_product_price_list" model="ir.actions.act_window">
               <field name="name">Product Price List</field>
               <field name="res_model">inventory.product_price_list_popup</field>
-              <field name="view_type">form</field>
+              <!-- <field name="view_type">form</field> -->
               <field name="view_mode">form</field>
               <field name="view_id" ref="inventory_for_product_list_id"/>
               <field name="target">new</field>
@@ -54,7 +54,7 @@
     <record id="action_customer_price_list" model="ir.actions.act_window">
           <field name="name">Customer Price List</field>
           <field name="res_model">inventory.customer_price_list_popup</field>
-          <field name="view_type">form</field>
+          <!-- <field name="view_type">form</field> -->
           <field name="view_mode">form</field>
           <field name="view_id" ref="inventory_for_customer_list_id"/>
           <field name="target">new</field>
@@ -67,10 +67,10 @@
           <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false" >
                 <field name="currency_id" invisible="1"/>
-                <field name="customer_name" invisible="1"/>
-                <field name="product_code"/>
-                <field name="product_name"/>
-                <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="customer_name" invisible="1" />
+                <field name="product_code" optional="show"/>
+                <field name="product_name" optional="show"/>
+                <field name="cost" widget="monetary" optional="show"/>
 
             </tree>
           </field>
@@ -86,7 +86,7 @@
                         <field name="customer_name" invisible="1"/>
                         <field name="product_code"/>
                         <field name="product_id"/>
-                        <field name="cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="cost" widget="monetary" />
                     </group>
                 </sheet>
             </form>
@@ -101,9 +101,9 @@
             <tree create="false" edit="false" delete="false" >
                 <field name="currency_id" invisible="1"/>
                 <field name="product_tmpl_id" invisible="1"/>
-                <field name="sku_code" string="Product SKU"/>
-                <field name="name" string="Product Name"/>
-                <field name="lst_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="sku_code" string="Product SKU" optional="show"/>
+                <field name="name" string="Product Name" optional="show"/>
+                <field name="lst_price" widget="monetary" optional="show" />
 
             </tree>
           </field>

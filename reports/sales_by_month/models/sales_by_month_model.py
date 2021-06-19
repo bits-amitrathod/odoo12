@@ -34,7 +34,7 @@ class TrendingReportListView(models.Model):
     # trend_val = fields.Char('Trend', store=False,compute='_get_trend_value')
     # average_sale = fields.Monetary('Average',compute='_get_average_value', currency_field='currency_id', store=False)
     # total_sale = fields.Monetary('Total',compute='_get_total_value', currency_field='currency_id', store=False)
-    currency_id = fields.Many2one("res.currency",compute='_compute_sales_vals', string="Currency", store=False)
+    # currency_id = fields.Many2one("res.currency",compute='_compute_sales_vals', string="Currency", store=False)
 
 
     def _compute_sales_vals(self):
@@ -47,7 +47,10 @@ class TrendingReportListView(models.Model):
             cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
             for product in self:
                 stock_move_list = self.env['stock.move'].search(
-                    [('location_dest_id', '=', cust_location_id), ('state', '=', 'done'),('sale_line_id','!=',None),('product_id','=',product.id),('picking_id.date_done','>=',str(sixth_month)),('picking_id.date_done','<=',str(end_of_month))])
+                    [('location_dest_id', '=', cust_location_id), ('state', '=', 'done'),('sale_line_id','!=',None),
+                     ('product_id','=',product.id),('picking_id.date_done','>=',str(sixth_month)),('picking_id.date_done','<=',str(end_of_month))])
+                # stock_move_list = self.env['stock.move'].search([])
+
                 for stock_move in stock_move_list:
                     product.currency_id=stock_move.sale_line_id.currency_id
                     scheduled_date=datetime.date(datetime.strptime(str(stock_move.picking_id.date_done).split(".")[0],"%Y-%m-%d %H:%M:%S"))
@@ -59,79 +62,86 @@ class TrendingReportListView(models.Model):
                             product.month1 = product.month1 + (
                                         stock_move.sale_line_id.price_total )
                             product.month1_quantity =product.month1_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month1 = product.month1
+                            product.month1_quantity = product.month1_quantity
                         if ((scheduled_date.month == (today - relativedelta(months=1)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=1)).year)):
                             product.month2 = product.month2 + (
                                         stock_move.sale_line_id.price_total)
                             product.month2_quantity = product.month2_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month2 = product.month2
+                            product.month2_quantity = product.month2_quantity
                         if ((scheduled_date.month == (today - relativedelta(months=2)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=2)).year)):
                             product.month3 = product.month3 + (
                                         stock_move.sale_line_id.price_total)
                             product.month3_quantity = product.month3_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month3 = product.month3
+                            product.month3_quantity = product.month3_quantity
                         if ((scheduled_date.month == (today - relativedelta(months=3)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=3)).year)):
                             product.month4 = product.month4 + (
                                         stock_move.sale_line_id.price_total)
                             product.month4_quantity = product.month4_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month4 = product.month4
+                            product.month4_quantity = product.month4_quantity
                         if ((scheduled_date.month == (today - relativedelta(months=4)).month) and (
                                 scheduled_date.year == (today - relativedelta(months=4)).year)):
                             product.month5 = product.month5 + (
                                         stock_move.sale_line_id.price_total )
                             product.month5_quantity = product.month5_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month5 = product.month5
+                            product.month5_quantity = product.month5_quantity
                         if((scheduled_date.month == (today - relativedelta(months=5)).month) and (scheduled_date.year ==  (today - relativedelta(months=5)).year)):
                             product.month6 = product.month6 + (stock_move.sale_line_id.price_total)
                             product.month6_quantity = product.month6_quantity + int(stock_move_line.qty_done)
+                        else:
+                            product.month6 = product.month6
+                            product.month6_quantity = product.month6_quantity
 
-
-
-
-
-
-
-
-    @api.model
+    # @api.model
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
         popup = self.env['salesbymonth.popup'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
-        View = self.env['ir.ui.view']
+        self.check_access_rights('read')
+        view = self.env['ir.ui.view'].sudo().browse(view_id)
 
         # Get the view arch and all other attributes describing the composition of the view
         result = self._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
 
         # Override context for postprocessing
         if view_id and result.get('base_model', self._name) != self._name:
-            View = View.with_context(base_model_name=result['base_model'])
+            view = view.with_context(base_model_name=result['base_model'])
 
         # Apply post processing, groups and modifiers etc...
-        xarch, xfields = View.postprocess_and_fields(self._name, etree.fromstring(result['arch']), view_id)
+        xarch, xfields = view.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
         result['arch'] = xarch
         result['fields'] = xfields
 
         # Add related action information if aksed
         if toolbar:
+            vt = 'list' if view_type == 'tree' else view_type
             bindings = self.env['ir.actions.actions'].get_bindings(self._name)
             resreport = [action
                          for action in bindings['report']
-                         if view_type == 'tree' or not action.get('multi')]
+                         if vt in (action.get('binding_view_types') or vt).split(',')]
             resaction = [action
                          for action in bindings['action']
-                         if view_type == 'tree' or not action.get('multi')]
-            resrelate = []
-            if view_type == 'form':
-                resrelate = bindings['action_form_only']
-
-            for res in itertools.chain(resreport, resaction):
-                res['string'] = res['name']
+                         if vt in (action.get('binding_view_types') or vt).split(',')]
 
             result['toolbar'] = {
                 'print': resreport,
                 'action': resaction,
-                'relate': resrelate,
             }
-            if popup and popup.end_date and not popup.end_date is None:
+
+            if popup and popup.end_date and popup.end_date is not None:
                 today = datetime.date(datetime.strptime(str(popup.end_date), "%Y-%m-%d"))
-                if(result['name']=="product.sale.by.count.view.list" ):
+                if result['name'] == "product.sale.by.count.view.list":
                     doc = etree.XML(result['arch'])
                     for node in doc.xpath("//field[@name='month6']"):
                         node.set('string', (today - relativedelta(months=5)).strftime('%b-%Y')+" (Sale)")
@@ -148,7 +158,7 @@ class TrendingReportListView(models.Model):
 
                     result['arch'] = etree.tostring(doc, encoding='unicode')
 
-                if(result['name']=="sales.by.month.form"):
+                if result['name'] == "sales.by.month.form":
                     doc = etree.XML(result['arch'])
                     for node in doc.xpath("//field[@name='month6']"):
                         node.set('string', (today - relativedelta(months=5)).strftime('%b-%Y') + " (Sale)")

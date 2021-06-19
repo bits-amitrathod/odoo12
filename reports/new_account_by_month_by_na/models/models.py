@@ -17,7 +17,7 @@ class NewAccountByMonthByNa(models.Model):
     customer = fields.Many2one('res.partner', 'Customer Name')
     national_account = fields.Many2one('res.users', 'National Account')
 
-    @api.model_cr
+    #  @api.model_cr
     def init(self):
         self.init_table()
 
@@ -120,8 +120,17 @@ class NewAccountByMonthByNa(models.Model):
             select_query = select_query + group_by
 
             self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )")
+        else:
+            # This Code For only console error resolve purposr
+            self.env.cr.execute('''
+                         CREATE OR REPLACE VIEW %s AS (
+                         SELECT  so.id AS id,
+                                 so.name AS name
+                         FROM sale_order so
+                         )''' % (self._table)
+                                )
 
-    @api.model_cr
+    #  @api.model_cr
     def delete_and_create(self):
         self.init_table()
 

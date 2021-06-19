@@ -5,24 +5,9 @@ import werkzeug.wrappers
 from odoo.addons.website.controllers.main import QueryURL
 import json
 import werkzeug
-import itertools
-import pytz
-import babel.dates
-from collections import OrderedDict
-
-from odoo import http, fields
-from odoo.addons.http_routing.models.ir_http import slug, unslug
-from odoo.http import request
-from odoo.osv import expression
-from odoo.tools import html2plaintext
-import os
-from addons.auth_signup.controllers.main import AuthSignupHome
-
 from odoo import fields, http, modules, SUPERUSER_ID
 from odoo.http import request
-from odoo.addons.web.controllers.main import binary_content
-from odoo.addons.portal.controllers.web import Home
-from odoo.addons.http_routing.models.ir_http import slug, _guess_mimetype
+from odoo.addons.http_routing.models.ir_http import slug
 
 class Website_Resource(http.Controller):
     @http.route([
@@ -70,10 +55,12 @@ class Website_Resource(http.Controller):
             'pager':pager
 
         })
+
 class blog_resource(odoo.addons.website_blog.controllers.main.WebsiteBlog):
+
     @http.route([
-        '''/resource/blog/<model("blog.blog", "[('website_id', 'in', (False, current_website_id))]"):blog>/post/<model("blog.post", "[('blog_id','=',blog[0])]"):blog_post>''',
-    ], type='http', auth="public", website=True)
+        '''/blog/<model("blog.blog"):blog>/<model("blog.post", "[('blog_id','=',blog.id)]"):blog_post>''',
+    ], type='http', auth="public", website=True, sitemap=True)
     def blog_posts(self, blog, blog_post, tag_id=None, page=1, enable_editor=None, **post):
         """ Prepare all values to display the blog.
 

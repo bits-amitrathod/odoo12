@@ -1,2 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_fedex_api_cstm_fedex_api_cstm,fedex_api_cstm.fedex_api_cstm,model_fedex_api_cstm_fedex_api_cstm,,1,0,0,0
+
+access_tracking_popup_user,tracking.popup_user,model_tracking_popup,purchase.group_purchase_user,1,1,0,0
+access_tracking_popup_manager,tracking.popup_manager,model_tracking_popup,purchase.group_purchase_manager,1,1,1,1
+access_cstm_popup_message_user,cstm.popup.message_user,model_cstm_popup_message,purchase.group_purchase_user,1,1,0,0
+access_cstm_popup_message_manager,cstm.popup.message_manager,model_cstm_popup_message,purchase.group_purchase_manager,1,1,1,1

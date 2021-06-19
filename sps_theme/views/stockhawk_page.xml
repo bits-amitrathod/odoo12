@@ -52,7 +52,7 @@
 									</div>
 								</div>
 								<div class="col-md-12 text-center btn-wrapper pt-5">
-									<button class="btn btn-info btn-sm scrolltoform">Contact an Inventory Savings Specialist</button>
+									<button class="btn btn-info btn-sm scrolltoform3" onClick="scrolldiv()">Contact an Inventory Savings Specialist</button>
 								</div>
 							</div>
 						</div>
@@ -104,7 +104,7 @@
 									</div>
 								</div>
 								<div class="col-12 text-center btn-wrapper mt-5">
-									<button class="btn btn-info btn-sm scrolltoform">Contact an Inventory Savings Specialist</button>
+									<button class="btn btn-info btn-sm scrolltoform2" onClick="scrolldiv()">Contact an Inventory Savings Specialist</button>
 								</div>
 							</div>
 						</div>
@@ -181,11 +181,11 @@
 						</div>
 					</section>
 					<section class="position-relative padding-80-y bg-grey">
-						<form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
+						<form action="/website_form/" method="post" class="s_website_form container-fluid mt32 position-unset" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
 						<div class="top-plus">
 							<i class="fa fa-plus"></i>
 						</div>
-						<div class="container">
+						<div class="container" id="requestform">
 							<div class="row">
 								<div class="col-md-6 align-self-center">
 									<p class="hawk-title ft-32 medium-font">Request Your Complimentary Savings Impact Quote.</p>
@@ -202,8 +202,8 @@
 									</div>
 								</div>
 							</div>
-							<div class="row mt-5" id="requestform">
-								<div class="col-md-6">
+							<div class="row mt-5" >
+								<div class="col-md-6" id="requestform2">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="First Name *" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
 <!--										<label class="control-label" for="first_name">First Name</label>-->

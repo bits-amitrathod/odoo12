@@ -49,7 +49,7 @@ class ResConfigSettings(models.TransientModel):
                    group_stock_production_lot=group_stock_production_lot, module_product_expiry=module_product_expiry)
         return res
 
-    @api.multi
+    #@api.multi
     def set_values(self):
         super(ResConfigSettings, self).set_values()
         self.env['ir.config_parameter'].sudo().set_param("inventory_extension.production_lot_alert_days",
@@ -74,6 +74,13 @@ class StockPickingMarkAllButton(models.Model):
                 purchase_order = self.env['purchase.order'].search([('name', '=', sp.origin)])
                 if purchase_order and purchase_order.acq_user_id is not None and purchase_order.acq_user_id:
                     sp.acq_user_id = purchase_order.acq_user_id.id
+                else:
+                    sp.acq_user_id = None
+            else:
+                sp.acq_user_id = None
+
+
+
 
     def _compute_visibility(self):
         for pick in self:

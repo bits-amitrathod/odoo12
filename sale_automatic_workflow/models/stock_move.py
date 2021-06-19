@@ -9,7 +9,7 @@ from odoo import api, models
 class StockMove(models.Model):
     _inherit = 'stock.move'
 
-    @api.multi
+    #@api.multi
     def _get_new_picking_values(self):
         values = super(StockMove, self)._get_new_picking_values()
         sale = self.group_id.sale_id

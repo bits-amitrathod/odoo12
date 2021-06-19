@@ -9,9 +9,9 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false">
-                <field name="customer"/>
-                <field name="onboard_date" widget="date"/>
-                <field name="national_account"/>
+                <field name="customer" optional="show"/>
+                <field name="onboard_date" widget="date" optional="show"/>
+                <field name="national_account" optional="show"/>
                 </tree>
               </field>
         </record>
@@ -74,7 +74,7 @@
         <record id="action_new_account_by_month_by_na" model="ir.actions.act_window">
             <field name="name">New Account By Month By NA</field>
             <field name="res_model">popup.na.new.account</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="na_new_account_popup_view"/>
             <field name="target">new</field>
@@ -133,13 +133,20 @@
         <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
-        <act_window name="Export New Account By Month By National Account Report"
+        <!--<act_window name="Export New Account By Month By National Account Report"
                     res_model="report.na.new.account.export"
                     src_model="report.na.new.account"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="new_account_by_month_by_na_export_act_window"/>
+                    id="new_account_by_month_by_na_export_act_window"/>-->
+        <record id="new_account_by_month_by_na_export_act_window" model="ir.actions.act_window">
+            <field name="name">Export New Account By Month By National Account Report</field>
+            <field name="res_model">report.na.new.account.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_report_na_new_account" />
+        </record>
 
         <!-- Export Action code ends here -->
 

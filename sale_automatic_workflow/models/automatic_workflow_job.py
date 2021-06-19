@@ -62,15 +62,15 @@ class AutomaticWorkflowJob(models.Model):
                     {'advance_payment_method': 'all'})
                 payment.with_context(active_ids=sale.ids).create_invoices()
 
-    @api.model
-    def _validate_invoices(self, validate_invoice_filter):
-        invoice_obj = self.env['account.invoice']
-        invoices = invoice_obj.search(validate_invoice_filter)
-        _logger.debug('Invoices to validate: %s', invoices.ids)
-        for invoice in invoices:
-            with savepoint(self.env.cr), force_company(self.env,
-                                                       invoice.company_id):
-                invoice.action_invoice_open()
+    # @api.model
+    # def _validate_invoices(self, validate_invoice_filter):
+    #     invoice_obj = self.env['account.invoice']
+    #     invoices = invoice_obj.search(validate_invoice_filter)
+    #     _logger.debug('Invoices to validate: %s', invoices.ids)
+    #     for invoice in invoices:
+    #         with savepoint(self.env.cr), force_company(self.env,
+    #                                                    invoice.company_id):
+    #             invoice.action_invoice_open()
 
     @api.model
     def _validate_pickings(self, picking_filter):

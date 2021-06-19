@@ -8,7 +8,7 @@ _logger = logging.getLogger(__name__)
 class CustomerListPopUp(models.TransientModel):
     _name = 'inventory.customer_price_list_popup'
     _description = 'Inventory Customer Price List PopUp'
-    customer_list = fields.Many2one('res.partner',string='Customer',domain="[('active','=',True),('customer','=',True),('is_parent','=',True)]", required=True)
+    customer_list = fields.Many2one('res.partner',string='Customer',domain="[('active','=',True),('customer_rank','>',0),('is_parent','=',True)]", required=True)
     products = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
     def open_table(self):

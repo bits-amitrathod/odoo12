@@ -7,7 +7,7 @@ _logger = logging.getLogger(__name__)
 class ParnerOnHoldStatus(models.Model):
     _inherit = "res.partner"
 
-    @api.multi
+    #@api.multi
     def write(self, vals):
         _logger.info("res.partner vals :%r",vals)
         for ml in self:

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_tree_voided_products" model="ir.ui.view">
-        <field name="sequence" eval="1"/>
+<!--        <field name="sequence" eval="1"/>-->
         <field name="name">Voided Product List</field>
         <field name="model">sps.customer.requests</field>
         <field name="mode">primary</field>
@@ -80,9 +80,9 @@
                             <field name="compute_at_product_selection" widget="radio"/>
                         </group>
                         <group>
-                            <field name="compute_at_date" widget="radio"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', 0)], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="compute_at_date" widget="radio" default="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
                         </group>
                     </group>
                     <footer>
@@ -97,7 +97,7 @@
     <record id="action_voided_product_popup" model="ir.actions.act_window">
         <field name="name">Voided Product Filter</field>
         <field name="res_model">voided.product.popup</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="view_id" ref="view_voided_product_popup"/>
         <field name="target">new</field>

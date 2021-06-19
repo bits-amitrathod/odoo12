@@ -8,6 +8,7 @@
     'website': "http://www.benchmarkitsolutions.com",
     'depends': ['base', 'sale'],
     'data': [
+        'security/ir.model.access.csv',
         'views/discount_summary_view.xml',
         'report/discount_summary_report.xml',
         'report/discount_summary_temp.xml'

@@ -1,20 +1,22 @@
 <odoo>
 
+<!--
     <record id="view_stock_inventory_valuation_summary" model="ir.ui.view">
         <field name="name">report.inventory.valuation.summary.default</field>
         <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <search string="Product">
-                <filter string="Warehouse" name="valuation_summary" domain="[]"
+                <filter string="Warehouse" name="valuation_summary"
                         context="{'group_by' : 'warehouse'}"/>
-                <filter string="Location" name="valuation_summary" domain="[]"
+                <filter string="Location" name="valuation_summary"
                         context="{'group_by' : 'location'}"/>
-                <filter string="Type" name="valuation_summary" domain="[]"
+                <filter string="Type" name="valuation_summary"
                         context="{'group_by' : 'type'}"/>
                 <separator/>
             </search>
         </field>
     </record>
+-->
 
     <!-- LIST VIEW -->
     <record model="ir.ui.view" id="inventory_valuation_summary_list">
@@ -22,13 +24,13 @@
         <field name="model">report.inventory.valuation.summary</field>
         <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false">
-                <field name="sku_code"/>
-                <field name="name" string="Product Name"/>
-                <field name="quantity_cal"/>
-                <field name="currency_id" invisible="1"/>
-                <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                <field name="cost_method" invisible="1"/>
+                <field name="sku_code" optional="show"/>
+                <field name="name" string="Product Name" optional="show"/>
+                <field name="quantity_cal" optional="show"/>
+                <field name="currency_id" invisible="1" optional="show"/>
+                <field name="unit_cost" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                <field name="asset_value" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                <field name="cost_method" invisible="1" optional="show"/>
                 <button name="action_valuation_at_date_details" type="object" icon="fa-info-circle"
                         attrs="{'invisible': [('cost_method', '!=', 'fifo')]}"/>
             </tree>
@@ -89,7 +91,7 @@
     <record id="action_stock_inventory_valuation_summary" model="ir.actions.act_window">
         <field name="name">Inventory Valuation Summary</field>
         <field name="res_model">popup.inventory.valuation.summary</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>

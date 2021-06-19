@@ -3,9 +3,6 @@ from odoo import api, fields, models
 import datetime
 import odoo.addons.decimal_precision as dp
 
-
-
-
 class CompareSaleByMonth(models.Model):
     _inherit = "product.product"
 
@@ -21,7 +18,6 @@ class CompareSaleByMonth(models.Model):
         dat=self.env.context.get('dat')
         if dat and not dat is None:
             self.fetch_data(dat)
-
 
     def fetch_data(self,dat):
         for order in self:

@@ -46,12 +46,16 @@
             <field name="production_lot_alert_days" eval="0"/>
         </record>
 
-        <function model="res.config.settings" name="execute">
-            <!-- ids = -->
+
+
+
+       <!-- <function model="res.config.settings" name="execute">
+            &lt;!&ndash; ids = &ndash;&gt;
             <value eval="[ref('inventory_extension.product_lot_settings_in')]"/>
-            <!-- context = -->
+            &lt;!&ndash; context = &ndash;&gt;
             <value eval="{}"/>
-        </function>
+        </function>-->
+
         <!--<function model ="res.config.settings" name="group_stock_production_lot_fun">-->
         <!--<value>True</value>-->
 

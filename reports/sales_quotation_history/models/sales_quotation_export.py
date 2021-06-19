@@ -19,7 +19,7 @@ class SalesQuotationExport(models.Model):
                                          compute='_compare_data_exp',
                                          readonly=True, store=False)
 
-    @api.multi
+    #@api.multi
     def _compare_data_exp(self):
         for sale_order_line in self:
             sale_order_line.qe_customer_name = sale_order_line.order_id.partner_id.name

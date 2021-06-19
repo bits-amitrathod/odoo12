@@ -4,7 +4,7 @@
 
     <t t-call="web.external_layout">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
-         <h2 style="font-size:20px;" align="center" ><strong>PURCHASE OFFER</strong></h2>
+         <h2 style="font-size:18px;" align="center" ><strong>PURCHASE OFFER</strong></h2>
         <div class="page" style="margin-top:8px">
             <div class="oe_structure"/>
              <h2 style="font-size:12px;color:red" align="center" ><strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</strong></h2>
@@ -36,7 +36,7 @@
                         <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>
                 </div>
             </div>
-            <h2 style="color:red;font-size:14px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
+            <h2 style="color:red;font-size:13px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
             <!--<div style="display:flex">-->
                 <p style="margin: 3px 0; display:flex">
 
@@ -68,11 +68,11 @@
             <!--</div>-->
            <div><p style="margin: 3px 0;"><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>
             <div t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit' or not o.offer_type) and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>
-            <div><p style="margin: 3px 0;font-size:14px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;">Speedy Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div>
+            <div><p style="margin: 3px 0;font-size:13px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
+              <div><p style="margin: 3px 0;font-size:13px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
+              <div><p style="margin: 3px 0;font-size:13px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
+              <div><p style="margin: 3px 0;font-size:13px;">Speedy Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div>
+              <div><p style="margin: 3px 0;font-size:13px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div>
 
             <!--<div><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
                 <!--<span t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit')"> <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</span>-->
@@ -85,9 +85,9 @@
 
 
               <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
-                    <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
+                    <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                     <strong>Credit issued immediately </strong> following completion of SPS Quality Control inspection.
-                    <strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>
+                    <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
                     <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
                     from completion of SPS Quality Control inspection.</p>
               </div>
@@ -96,13 +96,13 @@
                  <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                  <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
                  <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
-                   <strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>
+                   <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
                  <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
                  from completion of SPS Quality Control inspection.</p>
             </div>
 
               <div t-if="o.offer_type =='credit'">
-                  <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
+                  <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                   <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</p>
               </div>
 
@@ -155,7 +155,8 @@
                 </tr>
                    <tr>
                        <td style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">BUYER SIGNATURE:</span></td>
-                    <td style="border-bottom: 1px solid #000;" align="center"><img src='/vendor_offer/static/img/signature.png' style="height: 45px;width:100px;margin-top:0px;position: relative;top: 3px; "/></td>
+
+                    <td style="border-bottom: 1px solid #000;" align="center"><img src='/vendor_offer/static/img/signature.png' style="height: 40px;width:100px;margin-top:0px;position: relative;top: 3px; "/></td>
                        <td style="border-bottom: 1px solid #fff;padding-left:30px; vertical-align: bottom;" ><span style="position: relative;top: 5px;">DATE:</span><span style="font-weight:600;font-size:16px !important; margin-left:10px; position: relative;top: 5px;" t-esc="context_timestamp(datetime.datetime.now())" t-options='{"widget": "date"}'/>  </td>
                 </tr>
             </tbody>
@@ -336,7 +337,7 @@
             <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
                     <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                     <strong>Credit issued immediately </strong> following completion of SPS Quality Control inspection.
-                    <strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>
+                    <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
                     <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
                     from completion of SPS Quality Control inspection.</p>
               </div>
@@ -345,7 +346,7 @@
                  <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                  <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
                  <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
-                   <strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>
+                   <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
                  <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
                  from completion of SPS Quality Control inspection.</p>
             </div>

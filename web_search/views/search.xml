@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <template id="website_search_box_inherit" inherit_id="website.website_search_box">
-        <xpath expr="//div[@class='input-group']" position="replace">
-            <div class="input-group">
+        <xpath expr="//div" position="replace">
+            <div t-attf-class="input-group #{_classes}" role="search">
+
             <input type="text" name="search" class="search-query form-control oe_search_box search_autocomplete" placeholder="search" t-att-value="search"/>
         <div class="input-group-append">
             <button type="submit" class="btn btn-secondary oe_search_button" aria-label="Search" title="Search"><i class="fa fa-search"/></button>

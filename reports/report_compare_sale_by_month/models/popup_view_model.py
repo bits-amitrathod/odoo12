@@ -43,12 +43,12 @@ class DiscountSummaryPopUp(models.TransientModel):
     _description = 'Compare Sale By Month'
 
     compute_at_date = fields.Selection([
-        (0, 'Show All '),
-        (1, 'Date Range ')
+        ('0', 'Show All '),
+        ('1', 'Date Range ')
     ], string="Compute", help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     date_gen = DateGen()
-    dat=fields.defaultdict
+    dat = fields.defaultdict
     current_start_date = fields.Date('Current month Start Date', default=date_gen.getFirstOfMonth())
     current_end_date = fields.Date('Current month End Date', default=date_gen.getLastOfMonth())
 
@@ -60,7 +60,7 @@ class DiscountSummaryPopUp(models.TransientModel):
         form_view_id = self.env.ref('product.product_normal_form_view').id
 
         sale_orders = self.env['sale.order'].search([('state','in',('sale','done'))])
-        if self.compute_at_date:
+        if self.compute_at_date =='1':
             s_date = (fields.Datetime.from_string(self.current_start_date).date())
             l_date = (fields.Datetime.from_string(self.current_end_date).date())
             ps_date =(fields.Datetime.from_string( self.last_start_date).date())
@@ -84,7 +84,8 @@ class DiscountSummaryPopUp(models.TransientModel):
         filtered_by_last_month = list(filter(
             lambda x: fields.Datetime.from_string(x.date).date() >= ps_date and fields.Datetime.from_string(
                 x.date).date() <= pl_date, stock_move_line))
-        self.dat= self.addObject(filtered_by_current_month, filtered_by_last_month)
+
+        dat = self.addObject(filtered_by_current_month, filtered_by_last_month)
 
 
         action = {
@@ -93,14 +94,11 @@ class DiscountSummaryPopUp(models.TransientModel):
             'view_mode': 'tree,form',
             'name': _('Compare Sales By Month'),
             'res_model': 'product.product',
-            'context': {'dat': self.dat},
-            'domain': [('id','in',list(self.dat.keys()))],
+            'context': {'dat': dat},
+            'domain': [('id','in',list(dat.keys()))],
         }
         return action
 
-
-
-    @api.multi
     def addObject(self, filtered_by_current_month, filtered_by_last_month):
         product_dict = {}
         product_ids=[]

@@ -13,7 +13,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/sales_by_month_report.xml',
         'report/sales_by_month_report_template.xml'

@@ -3,6 +3,16 @@ $(document).ready(function () {
         inline: true
     });*/
 
+document.addEventListener('scroll', function(e) {
+   if(window.pageYOffset === 0){
+    var div = document.getElementById("oe_main_menu_navbar");
+    if(div !== null){
+     div.classList.remove('fixed-top')
+    }
+
+}
+});
+
     $('.close').click(function(){
           $('.myVideoClass').each(function(){
             $(this)[0].contentWindow.postMessage('{"event":"command","func":"' + 'stopVideo' + '","args":""}', '*');
@@ -15,6 +25,12 @@ $(document).ready(function () {
             scrollTop: $("#requestform").offset().top - 250
         }, 1500);
     });
+    /* $(".scrolltoform2").click(function() {
+        $('html, body').animate({
+            scrollTop: $("#requestform").offset().top + 250
+        }, 1500);
+    });*/
+
 });
 
    function getFileNameWithExt(event) {
@@ -32,3 +48,12 @@ $(document).ready(function () {
       outputfile.value = fileName;
 
     }
+
+     function scrolldiv() {
+                var elem = document.getElementById("requestform");
+                var div = document.getElementById("oe_main_menu_navbar");
+                if(div !== null){
+                 div.classList.add('fixed-top')
+                }
+                elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }

@@ -7,6 +7,6 @@ class payments_scheduler_report(models.AbstractModel):
 
     @api.model
     def _get_report_values(self, docids, data=None):
-        data = self.env['account.invoice'].browse(docids)
+        data = self.env['account.move'].browse(docids)
         action = {'data': data}
         return action

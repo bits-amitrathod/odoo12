@@ -44,7 +44,7 @@ class BankCheque(models.Model):
         [("cm", "CM"), ("in", "Inches"), ("mm", "MM")], "Measurement Unit", default="mm", required=True)
 
 
-    @api.multi
+    #@api.multi
     def redirect_to_bank_cheque_page(self):
         self.ensure_one()
         if not self.cheque_attribute_line_ids:
@@ -76,7 +76,7 @@ class BankChequeAttributeLine(models.Model):
     height = fields.Integer(string='Height')
     width = fields.Integer(string='Width')
 
-    @api.multi
+    #@api.multi
     def reset_values(self):
         for obj in self:
             obj.write({
@@ -125,13 +125,13 @@ class BankChequeBook(models.Model):
         "issued.bank.cheque.history", "bank_cheque_book_id", "Issue Cheque History")
     # currency_id = fields.Many2one("res.currency", "Currency")
 
-    @api.multi
+    #@api.multi
     def set_cheque_book_number(self):
         for rec in self:
             if rec.cheque_book_leaves and rec.initial_cheque_number:
                 rec.last_cheque_number = rec.initial_cheque_number + rec.cheque_book_leaves - 1
 
-    @api.multi
+    #@api.multi
     def create_cheque_leaves(self):
         for rec in self:
             if rec.cheque_book_leaves and rec.initial_cheque_number and rec.last_cheque_number:
@@ -154,7 +154,7 @@ class BankChequeBook(models.Model):
     def on_change_initial_cheque_number(self):
         self.set_cheque_book_number()
 
-    @api.multi
+    #@api.multi
     def btn_create_cheque_leaves(self):
         self.ensure_one()
         if not self.cheque_book_leaves:
@@ -197,7 +197,7 @@ class IssuesBankChequeHistory(models.Model):
                 raise ValidationError(
                     _("Cheque number %s is not valid. It has been already used. Please use diffrent cheque number.") % record.cheque_number)
 
-    # @api.multi
+    # #@api.multi
     # def name_get(self):
     #     result = []
     #     for record in self:
@@ -222,7 +222,7 @@ class IssuesBankChequeHistory(models.Model):
         res = super(IssuesBankChequeHistory, self).write(vals)
         return res
 
-    @api.multi
+    #@api.multi
     def print_cheque(self):
         self.ensure_one()
         if self.issued:
@@ -251,7 +251,7 @@ class IssuesBankChequeHistory(models.Model):
             'target': 'new',
         }
 
-    @api.multi
+    #@api.multi
     def do_cancel_cheque(self):
         for obj in self:
             obj.state = "cancelled"
@@ -261,7 +261,7 @@ class IssuesBankChequeHistory(models.Model):
 class IrActionsReport(models.Model):
     _inherit = 'ir.actions.report'
 
-    @api.multi
+    #@api.multi
     def _prepare_html(self, html):
         bodies, res_ids, header, footer, specific_paperformat_args = super(
             IrActionsReport, self)._prepare_html(html)

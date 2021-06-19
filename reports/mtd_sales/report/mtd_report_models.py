@@ -13,7 +13,6 @@ except ImportError:
 class MtdReportModel(models.AbstractModel):
     _name = 'report.mtd_sales.mtd_temp'
 
-    @api.model
     def get_report_values(self, docids, data=None):
 
         action = self.env.ref('mtd_sales.action_report_mtd_sales').report_action([], data={})
@@ -45,6 +44,8 @@ class MtdReportModel(models.AbstractModel):
         file_data = BytesIO()
         workbook = xlsxwriter.Workbook(file_data, self.get_workbook_options())
         self.generate_xlsx_report(workbook, data, objs)
+
+
         workbook.close()
         file_data.seek(0)
         return file_data.read(), 'xlsx'

@@ -1,3 +1,6 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_sps.vendor_offer_automation.template_user,sps.vendor_offer_automation.template user,model_sps_vendor_offer_automation_template,purchase.group_purchase_user,1,1,1,1
 access_sps.vendor_offer_automation.template_manager,sps.vendor_offer_automation.template manager,model_sps_vendor_offer_automation_template,purchase.group_purchase_manager,1,1,1,1
+
+access_sps_vendor_offer_template_transient_user,sps.vendor.offer.template.transient user,model_sps_vendor_offer_template_transient,purchase.group_purchase_user,1,1,1,1
+access_sps_vendor_offer_template_transient_manager,sps.vendor.offer.template.transient manager,model_sps_vendor_offer_template_transient,purchase.group_purchase_manager,1,1,1,1

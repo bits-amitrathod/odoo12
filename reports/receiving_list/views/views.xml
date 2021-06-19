@@ -9,8 +9,8 @@
                         <group>
                             <field name="order_type" />
 
-                            <field name="sale_order_id" attrs="{'invisible': [('order_type', '!=', 0)], 'required' : [('order_type', '=', 0)]}" />
-                            <field name="purchase_order_id" attrs="{'invisible': [('order_type', '!=', 1)], 'required' : [('order_type', '=', 1)]}" />
+                            <field name="sale_order_id" attrs="{'invisible': [('order_type', '!=', '0')], 'required' : [('order_type', '=', '0')]}" />
+                            <field name="purchase_order_id" attrs="{'invisible': [('order_type', '!=', '1')], 'required' : [('order_type', '=', '1')]}" />
 
                         </group>
                     </group>
@@ -25,7 +25,7 @@
         <record id="action_receiving_list" model="ir.actions.act_window">
             <field name="name">Receiving List</field>
             <field name="res_model">popup.receiving.list</field>
-            <field name="view_type">form</field>
+<!--            <field name="view_type">form</field>-->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_receiving_list_popup"/>
             <field name="target">new</field>

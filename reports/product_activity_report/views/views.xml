@@ -3,7 +3,7 @@
     <record id="action_popup_product_activity_report" model="ir.actions.act_window">
         <field name="name">Product Activity Report</field>
         <field name="res_model">product.activity.report.popup</field>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
@@ -53,15 +53,15 @@
         <field name="model">product.activity.report</field>
         <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false">
-                <field name="warehouse"/>
-                <field name="date"/>
-                <field name="location"/>
-                <field name="event"/>
-                <field name="change_qty"/>
-                <field name="agent"/>
-                <field name="sku"/>
-                <field name="lot"/>
-                <field name="expiration_date"/>
+                <field name="warehouse" optional="show"/>
+                <field name="date" optional="show"/>
+                <field name="location" optional="show"/>
+                <field name="event" optional="show"/>
+                <field name="change_qty" optional="show"/>
+                <field name="agent" optional="show"/>
+                <field name="sku" optional="show"/>
+                <field name="lot" optional="show"/>
+                <field name="expiration_date" optional="show"/>
                 <!--<field name="type"/>-->
             </tree>
         </field>

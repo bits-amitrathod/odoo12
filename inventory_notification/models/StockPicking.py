@@ -6,7 +6,7 @@ _logger = logging.getLogger(__name__)
 class StockPicking(models.Model):
     _inherit = "stock.picking"
 
-    @api.multi
+    #@api.multi
     def button_validate(self):
 
         action=super(StockPicking,self).button_validate()

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from docutils.nodes import header
 
 from .VendorOfferAutomationTemplate import *
 from datetime import datetime
@@ -99,8 +100,8 @@ class VendorOfferImportTransientModel(models.TransientModel):
         rows_to_import = self._read_file(options)
         if options.get('headers'):
             rows_to_import = itertools.islice(rows_to_import, 0, None)
-        data = [list(row) for row in pycompat.imap(mapper, rows_to_import) if any(row)]
-
+        #data = [list(row) for row in pycompat.imap(mapper, rows_to_import) if any(row)]
+        data = [list(row) for row in map(mapper, rows_to_import) if any(row)]
         # if import_type_ven == 'allfieldimport':
         #     cols = data[1:2]
         #     cell_values = data[2:]
@@ -109,8 +110,8 @@ class VendorOfferImportTransientModel(models.TransientModel):
         cell_values = data[1:]
         return cell_values, import_fields, cols
 
-    @api.multi
-    def do(self, fields, columns,options, parent_model, customer_id, offer_id, import_type_ven,dryrun=False):
+    #@api.multi
+    def do_custom(self, fields, columns,options, parent_model, customer_id, template_type, upload_document,offer_id, import_type_ven,dryrun=False):
         self.ensure_one()
         import_result = {'messages': []}
         try:
@@ -151,7 +152,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
             return {
                 'messages': [{
                     'type': 'error',
-                    'message': pycompat.text_type(error),
+                    'message': str(error),
                     'record': False,
                 }]
             }
@@ -173,61 +174,80 @@ class VendorOfferImportTransientModel(models.TransientModel):
 
         return import_result
 
-    @api.multi
+
+    def _match_headers_ven(self, rows, fields, options):
+        """ Attempts to match the imported model's fields to the
+            titles of the parsed CSV file, if the file is supposed to have
+            headers.
+
+            Will consume the first line of the ``rows`` iterator.
+
+            Returns the list of headers and a dict mapping cell indices
+            to key paths in the ``fields`` tree. If headers were not
+            requested, both collections are empty.
+
+            :param Iterator rows:
+            :param dict fields:
+            :param dict options:
+            :rtype: (list(str), dict(int: list(str)))
+        """
+        if not options.get('headers'):
+            return [], {}
+
+        headers = next(rows, None)
+        if not headers:
+            return [], {}
+
+        matches = {}
+        mapping_records = self.env['base_import.mapping'].search_read([('res_model', '=', self.res_model)], ['column_name', 'field_name'])
+        mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
+        for index, header in enumerate(headers):
+            match_field = []
+            mapping_field_name = mapping_fields.get(header.lower())
+            if mapping_field_name:
+                match_field = mapping_field_name.split('/')
+            if not match_field:
+                match_field = [field['name'] for field in self._match_header(header.strip(), fields, options)]
+            matches[index] = match_field or None
+        return headers, matches
+    #@api.multi
     def parse_preview(self, options, import_type_ven, count=10):
         self.ensure_one()
         fields = self.get_fields(self.res_model,import_type_ven)
         try:
             rows = self._read_file(options)
-            headers, matches = self._match_headers(rows, fields, options)
-            # _logger.info('headers %r', headers)
-            # Match should have consumed the first row (iif headers), get
-            # the ``count`` next rows for preview
-            self.columns_from_template = ",".join(sorted(headers))
+            headers, matches = self._match_headers_ven(rows, fields, options)
+
+
+            self.columns_from_template = ".".join(headers)
             preview = list(itertools.islice(rows, count))
-            assert preview, "file seems to have no content"
-            header_types = self._find_type_from_preview(options, preview)
-            if options.get('keep_matches') and len(options.get('fields', [])):
+            assert preview, "File seems to have no content"
+            # header_types = self._find_type_from_preview(options, preview)
+            if options.get('keep_matches', False) and len(options.get('fields', [])):
                 matches = {}
                 for index, match in enumerate(options.get('fields')):
                     if match:
                         matches[index] = match.split('/')
 
-            if options.get('keep_matches'):
-                advanced_mode = options.get('advanced')
-            else:
-                # Check is label contain relational field
-                has_relational_header = any(len(models.fix_import_export_id_paths(col)) > 1 for col in headers)
-                # Check is matches fields have relational field
-                has_relational_match = any(len(match) > 1 for field, match in matches.items() if match)
-                advanced_mode = has_relational_header or has_relational_match
-
             return {
                 'fields': fields,
                 'matches': matches or False,
                 'headers': headers or False,
-                'headers_type': header_types or False,
+                'headers_type': False,
                 'preview': preview,
                 'options': options,
-                'advanced_mode': advanced_mode,
                 'debug': self.user_has_groups('base.group_no_one'),
             }
         except Exception as error:
-            # Due to lazy generators, UnicodeDecodeError (for
-            # instance) may only be raised when serializing the
-            # preview to a list in the return.
             _logger.debug("Error during parsing preview", exc_info=True)
             preview = None
-            if self.file_type == 'text/csv' and self.file:
+            if self.file_type == 'text/csv':
                 preview = self.file[:ERROR_PREVIEW_BYTES].decode('iso-8859-1')
             return {
                 'error': str(error),
-                # iso-8859-1 ensures decoding will always succeed,
-                # even if it yields non-printable characters. This is
-                # in case of UnicodeDecodeError (or csv.Error
-                # compounded with UnicodeDecodeError)
                 'preview': preview,
             }
+
 
     @api.model
     def _find_type_from_preview(self, options, preview):
@@ -248,114 +268,247 @@ class VendorOfferImportTransientModel(models.TransientModel):
 
         return ['id', 'text', 'boolean', 'char', 'datetime', 'selection', 'many2one', 'one2many', 'many2many', 'html']
 
-    def _match_headers(self, rows, fields, options):
-        if not options.get('headers'):
-            return [], {}
+    # def _match_headers(self, rows, fields, options):
+    #     """ Attempts to match the imported model's fields to the
+    #         titles of the parsed CSV file, if the file is supposed to have
+    #         headers.
+    #
+    #         Will consume the first line of the ``rows`` iterator.
+    #
+    #         Returns the list of headers and a dict mapping cell indices
+    #         to key paths in the ``fields`` tree. If headers were not
+    #         requested, both collections are empty.
+    #
+    #         :param Iterator rows:
+    #         :param dict fields:
+    #         :param dict options:
+    #         :rtype: (list(str), dict(int: list(str)))
+    #     """
+    #     if not options.get('headers'):
+    #         return [], {}
+    #
+    #     headers = next(rows, None)
+    #     if not headers:
+    #         return [], {}
+    #
+    #     matches = {}
+    #     mapping_records = self.env['base_import.mapping'].search_read([('res_model', '=', self.res_model)], ['column_name', 'field_name'])
+    #     mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
+    #     for index, header in enumerate(headers):
+    #         match_field = []
+    #         mapping_field_name = mapping_fields.get(header.lower())
+    #         if mapping_field_name:
+    #             match_field = mapping_field_name.split('/')
+    #         if not match_field:
+    #             match_field = [field['name'] for field in self._match_header(header, fields, options)]
+    #         matches[index] = match_field or None
+    #     return headers, matches
 
-        headers = next(rows, None)
-        if not headers:
-            return [], {}
+    # def _match_headers(self, rows, fields, options):
+    #     if not options.get('headers'):
+    #         return [], {}
+    #
+    #     headers = next(rows, None)
+    #     if not headers:
+    #         return [], {}
+    #
+    #     matches = {}
+    #     mapping_records = []
+    #     mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
+    #     for index, header in enumerate(headers):
+    #         match_field = []
+    #         mapping_field_name = mapping_fields.get(header.lower())
+    #         if mapping_field_name:
+    #             match_field = mapping_field_name.split('/')
+    #         if not match_field:
+    #             match_field = [field['name'] for field in self._match_header(header.strip(), fields, options)]
+    #         matches[index] = match_field or None
+    #     return headers, matches
 
-        matches = {}
-        mapping_records = []
-        mapping_fields = {rec['column_name']: rec['field_name'] for rec in mapping_records}
-        for index, header in enumerate(headers):
-            match_field = []
-            mapping_field_name = mapping_fields.get(header.lower())
-            if mapping_field_name:
-                match_field = mapping_field_name.split('/')
-            if not match_field:
-                match_field = [field['name'] for field in self._match_header(header.strip(), fields, options)]
-            matches[index] = match_field or None
-        return headers, matches
+    #@api.multi
+    # def _read_xls(self, options):
+    #     """ Read file content, using xlrd lib """
+    #     book = xlrd.open_workbook(file_contents=self.file or b'')
+    #     sheets = book.sheet_names()
+    #     sheet = sheets[0]
+    #     return self._read_xls_book(book,sheet)
 
-    @api.multi
-    def _read_xls(self, options):
-        """ Read file content, using xlrd lib """
-        book = xlrd.open_workbook(file_contents=self.file or b'')
-        return self._read_xls_book(book)
+    # def _read_xls_book(self, book):
+    #     sheet = book.sheet_by_index(0)
+    #     # emulate Sheet.get_rows for pre-0.9.4
+    #     for row in pycompat.imap(sheet.row, range(sheet.nrows)):
+    #         values = []
+    #         for cell in row:
+    #             if cell.ctype is xlrd.XL_CELL_NUMBER:
+    #                 is_float = cell.value % 1 != 0.0
+    #                 values.append(
+    #                     pycompat.text_type(cell.value)
+    #                     if is_float
+    #                     else pycompat.text_type(int(cell.value))
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_DATE:
+    #                 is_datetime = cell.value % 1 != 0.0
+    #                 # emulate xldate_as_datetime for pre-0.9.3
+    #                 dt = datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
+    #                 values.append(
+    #                     dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+    #                     if is_datetime
+    #                     else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_BOOLEAN:
+    #                 values.append(u'True' if cell.value else u'False')
+    #             elif cell.ctype is xlrd.XL_CELL_ERROR:
+    #                 raise ValueError(
+    #                     _("Error cell found while reading XLS/XLSX file: %s") %
+    #                     xlrd.error_text_from_code.get(
+    #                         cell.value, "unknown error code %s" % cell.value)
+    #                 )
+    #             else:
+    #                 values.append(cell.value)
+    #         if any(x for x in values if x.strip()):
+    #             yield values
 
-    def _read_xls_book(self, book):
-        sheet = book.sheet_by_index(0)
-        # emulate Sheet.get_rows for pre-0.9.4
-        for row in pycompat.imap(sheet.row, range(sheet.nrows)):
-            values = []
-            for cell in row:
-                if cell.ctype is xlrd.XL_CELL_NUMBER:
-                    is_float = cell.value % 1 != 0.0
-                    values.append(
-                        pycompat.text_type(cell.value)
-                        if is_float
-                        else pycompat.text_type(int(cell.value))
-                    )
-                elif cell.ctype is xlrd.XL_CELL_DATE:
-                    is_datetime = cell.value % 1 != 0.0
-                    # emulate xldate_as_datetime for pre-0.9.3
-                    dt = datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
-                    values.append(
-                        dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                        if is_datetime
-                        else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                    )
-                elif cell.ctype is xlrd.XL_CELL_BOOLEAN:
-                    values.append(u'True' if cell.value else u'False')
-                elif cell.ctype is xlrd.XL_CELL_ERROR:
-                    raise ValueError(
-                        _("Error cell found while reading XLS/XLSX file: %s") %
-                        xlrd.error_text_from_code.get(
-                            cell.value, "unknown error code %s" % cell.value)
-                    )
-                else:
-                    values.append(cell.value)
-            if any(x for x in values if x.strip()):
-                yield values
+    # def _read_xls_book(self, book, sheet_name):
+    #     sheet = book.sheet_by_name(sheet_name)
+    #     # emulate Sheet.get_rows for pre-0.9.4
+    #     for rowx, row in enumerate(map(sheet.row, range(sheet.nrows))):
+    #         values = []
+    #         for colx, cell in enumerate(row, 1):
+    #             if cell.ctype is xlrd.XL_CELL_NUMBER:
+    #                 is_float = cell.value % 1 != 0.0
+    #                 values.append(
+    #                     str(cell.value)
+    #                     if is_float
+    #                     else str(int(cell.value))
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_DATE:
+    #                 is_datetime = cell.value % 1 != 0.0
+    #                 # emulate xldate_as_datetime for pre-0.9.3
+    #                 dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
+    #                 values.append(
+    #                     dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+    #                     if is_datetime
+    #                     else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
+    #                 )
+    #             elif cell.ctype is xlrd.XL_CELL_BOOLEAN:
+    #                 values.append(u'True' if cell.value else u'False')
+    #             elif cell.ctype is xlrd.XL_CELL_ERROR:
+    #                 raise ValueError(
+    #                     _("Invalid cell value at row %(row)s, column %(col)s: %(cell_value)s") % {
+    #                         'row': rowx,
+    #                         'col': colx,
+    #                         'cell_value': xlrd.error_text_from_code.get(cell.value, _("unknown error code %s", cell.value))
+    #                     }
+    #                 )
+    #             else:
+    #                 values.append(cell.value)
+    #         break
+    #     # if any(x for x in values if x.strip()):
+    #     #     yield values
+    #     return values
+    #
+    # # use the same method for xlsx and xls files
+    # _read_xlsx = _read_xls
 
-    # use the same method for xlsx and xls files
-    _read_xlsx = _read_xls
+    # @api.model
+    # def get_fields(self, model, import_type_ven='', depth=FIELDS_RECURSION_LIMIT):
+    #     Model = self.env['sps.vendor_offer_automation.template']
+    #     importable_fields = []
+    #     # importable_fields = [{
+    #     #     'id': 'id',
+    #     #     'name': 'id',
+    #     #     'string': _("External ID"),
+    #     #     'required': False,
+    #     #     'fields': [],
+    #     #     'type': 'id',
+    #     # }]
+    #     # if not depth:
+    #     #     return importable_fields
+    #     model_fields = Model.fields_get()
+    #     blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
+    #     hide_column_list = []
+    #     if import_type_ven == few_field_import:
+    #         hide_column_list = hide_column_list_method
+    #     for name, field in model_fields.items():
+    #         if name in blacklist:
+    #             continue
+    #         if name in hide_column_list:
+    #             continue
+    #         # an empty string means the field is deprecated, @deprecated must
+    #         # be absent or False to mean not-deprecated
+    #         if field.get('deprecated', False) is not False:
+    #             continue
+    #         # if field.get('readonly'):
+    #         #     states = field.get('states')
+    #         #     if not states:
+    #         #         continue
+    #         #     # states = {state: [(attr, value), (attr2, value2)], state2:...}
+    #         #     if not any(attr == 'readonly' and value is False
+    #         #                for attr, value in itertools.chain.from_iterable(states.values())):
+    #         #         continue
+    #         if not name.startswith('mf_'):
+    #             continue
+    #         field_value = {
+    #             'id': name,
+    #             'name': name,
+    #             'string': field['string'],
+    #             # Y U NO ALWAYS HAS REQUIRED
+    #             'required': bool(field.get('required')),
+    #             'fields': [],
+    #             'type': field['type'],
+    #         }
+    #
+    #         if field['type'] in ('many2many', 'many2one'):
+    #             field_value['fields'] = [
+    #                 dict(field_value, name='id', string=_("External ID"), type='id'),
+    #                 dict(field_value, name='.id', string=_("Database ID"), type='id'),
+    #             ]
+    #         elif field['type'] == 'one2many' and depth:
+    #             field_value['fields'] = self.get_fields(field['relation'], depth=depth - 1)
+    #             if self.user_has_groups('base.group_no_one'):
+    #                 field_value['fields'].append(
+    #                     {'id': '.id', 'name': '.id', 'string': _("Database ID"), 'required': False, 'fields': [],
+    #                      'type': 'id'})
+    #
+    #         importable_fields.append(field_value)
+    #
+    #     # TODO: cache on model?
+    #     return importable_fields
 
     @api.model
-    def get_fields(self, model, import_type_ven='', depth=FIELDS_RECURSION_LIMIT):
+    def get_fields(self, model, depth=FIELDS_RECURSION_LIMIT):
         Model = self.env['sps.vendor_offer_automation.template']
         importable_fields = []
-        # importable_fields = [{
-        #     'id': 'id',
-        #     'name': 'id',
-        #     'string': _("External ID"),
-        #     'required': False,
-        #     'fields': [],
-        #     'type': 'id',
-        # }]
-        # if not depth:
-        #     return importable_fields
+        importable_fields = [{
+            'id': 'id',
+            'name': 'id',
+            'string': _("External ID"),
+            'required': False,
+            'fields': [],
+            'type': 'id',
+        }]
         model_fields = Model.fields_get()
         blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
-        hide_column_list = []
-        if import_type_ven == few_field_import:
-            hide_column_list = hide_column_list_method
         for name, field in model_fields.items():
             if name in blacklist:
                 continue
-            if name in hide_column_list:
-                continue
-            # an empty string means the field is deprecated, @deprecated must
-            # be absent or False to mean not-deprecated
             if field.get('deprecated', False) is not False:
                 continue
-            # if field.get('readonly'):
-            #     states = field.get('states')
-            #     if not states:
-            #         continue
-            #     # states = {state: [(attr, value), (attr2, value2)], state2:...}
-            #     if not any(attr == 'readonly' and value is False
-            #                for attr, value in itertools.chain.from_iterable(states.values())):
-            #         continue
+            if field.get('readonly'):
+                states = field.get('states')
+                if not states:
+                    continue
+                if not any(attr == 'readonly' and value is False
+                           for attr, value in itertools.chain.from_iterable(states.values())):
+                    continue
             if not name.startswith('mf_'):
                 continue
             field_value = {
+                # 'id': name[3:],
+                # 'name': name[3:],
                 'id': name,
                 'name': name,
                 'string': field['string'],
-                # Y U NO ALWAYS HAS REQUIRED
                 'required': bool(field.get('required')),
                 'fields': [],
                 'type': field['type'],
@@ -378,50 +531,50 @@ class VendorOfferImportTransientModel(models.TransientModel):
         # TODO: cache on model?
         return importable_fields
 
-    @api.multi
-    def _parse_import_data(self,parent_model, data, import_fields, options):
-        """ Lauch first call to _parse_import_data_recursive with an
-        empty prefix. _parse_import_data_recursive will be run
-        recursively for each relational field.
-        """
-        return self._parse_import_data_recursive(parent_model, '', data, import_fields, options)
+    #@api.multi
+    # def _parse_import_data(self,parent_model, data, import_fields, options):
+    #     """ Lauch first call to _parse_import_data_recursive with an
+    #     empty prefix. _parse_import_data_recursive will be run
+    #     recursively for each relational field.
+    #     """
+    #     return self._parse_import_data_recursive(parent_model, '', data, import_fields, options)
 
-    @api.multi
-    def _parse_import_data_recursive(self, model, prefix, data, import_fields, options):
-        # Get fields of type date/datetime
-        all_fields = self.env[model].fields_get()
-        for name, field in all_fields.items():
-            name = prefix + name
-            if field['type'] in ('date', 'datetime') and name in import_fields:
-                index = import_fields.index(name)
-                self._parse_date_from_data(data, index, name, field['type'], options)
-            # Check if the field is in import_field and is a relational (followed by /)
-            # Also verify that the field name exactly match the import_field at the correct level.
-            elif any(name + '/' in import_field and name == import_field.split('/')[prefix.count('/')] for import_field
-                     in import_fields):
-                # Recursive call with the relational as new model and add the field name to the prefix
-                self._parse_import_data_recursive(field['relation'], name + '/', data, import_fields, options)
-            elif field['type'] in ('float', 'monetary') and name in import_fields:
-                # Parse float, sometimes float values from file have currency symbol or () to denote a negative value
-                # We should be able to manage both case
-                index = import_fields.index(name)
-                self._parse_float_from_data(data, index, name, options)
-            elif field['type'] == 'binary' and field.get('attachment') and any(
-                    f in name for f in IMAGE_FIELDS) and name in import_fields:
-                index = import_fields.index(name)
-
-                with requests.Session() as session:
-                    session.stream = True
-
-                    for num, line in enumerate(data):
-                        if re.match(config.get("import_image_regex", DEFAULT_IMAGE_REGEX), line[index]):
-                            if not self.env.user._can_import_remote_urls():
-                                raise AccessError(_(
-                                    "You can not import images via URL, check with your administrator or support for the reason."))
-
-                            line[index] = self._import_image_by_url(line[index], session, name, num)
-
-        return data
+    #@api.multi
+    # def _parse_import_data_recursive(self, model, prefix, data, import_fields, options):
+    #     # Get fields of type date/datetime
+    #     all_fields = self.env[model].fields_get()
+    #     for name, field in all_fields.items():
+    #         name = prefix + name
+    #         if field['type'] in ('date', 'datetime') and name in import_fields:
+    #             index = import_fields.index(name)
+    #             self._parse_date_from_data(data, index, name, field['type'], options)
+    #         # Check if the field is in import_field and is a relational (followed by /)
+    #         # Also verify that the field name exactly match the import_field at the correct level.
+    #         elif any(name + '/' in import_field and name == import_field.split('/')[prefix.count('/')] for import_field
+    #                  in import_fields):
+    #             # Recursive call with the relational as new model and add the field name to the prefix
+    #             self._parse_import_data_recursive(field['relation'], name + '/', data, import_fields, options)
+    #         elif field['type'] in ('float', 'monetary') and name in import_fields:
+    #             # Parse float, sometimes float values from file have currency symbol or () to denote a negative value
+    #             # We should be able to manage both case
+    #             index = import_fields.index(name)
+    #             self._parse_float_from_data(data, index, name, options)
+    #         elif field['type'] == 'binary' and field.get('attachment') and any(
+    #                 f in name for f in IMAGE_FIELDS) and name in import_fields:
+    #             index = import_fields.index(name)
+    #
+    #             with requests.Session() as session:
+    #                 session.stream = True
+    #
+    #                 for num, line in enumerate(data):
+    #                     if re.match(config.get("import_image_regex", DEFAULT_IMAGE_REGEX), line[index]):
+    #                         if not self.env.user._can_import_remote_urls():
+    #                             raise AccessError(_(
+    #                                 "You can not import images via URL, check with your administrator or support for the reason."))
+    #
+    #                         line[index] = self._import_image_by_url(line[index], session, name, num)
+    #
+    #     return data
     # @staticmethod
     # def read_imported_file(self, vendor_offer_automation_template, partner_id, offer_id):
     #     book = xlrd.open_workbook(file_contents=self.file)
@@ -547,7 +700,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
     #         row_index = row_index + 1
     #     return data
 
-    # @api.multi
+    # #@api.multi
     # def get_product_sales_count(self, product_id):
     #     product_sales_count = product_sales_count_month = product_sales_count_90 = product_sales_count_yrs = None
     #     try:

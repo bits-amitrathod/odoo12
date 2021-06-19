@@ -5,14 +5,14 @@
         <field name="model">product.product</field>
         <field name="arch" type="xml">
             <tree create="false" edit="false" delete="false" string="Inventory Availability">
-                <field name="product_tmpl_id" invisible="1"/>
-                <field name="sku_code" string="Product SKU" />
-                <field name="uom_id" string="UOM"/>
-                <field name="qty_available" string="On Hand Qty"/>
-                <field name="outgoing_qty"  string="Allocated Qty"/>
-                <field name="actual_quantity"/>
-                <field name="virtual_available" string="Forecasted Qty"/>
-                <field name="incoming_qty" string="On Order Qty"/>
+                <field name="product_tmpl_id" invisible="1" optional="show"/>
+                <field name="sku_code" string="Product SKU" optional="show" />
+                <field name="uom_id" string="UOM" optional="show"/>
+                <field name="qty_available" string="On Hand Qty" optional="show"/>
+                <field name="outgoing_qty"  string="Allocated Qty" optional="show"/>
+                <field name="actual_quantity" optional="show"/>
+                <field name="virtual_available" string="Forecasted Qty" optional="show"/>
+                <field name="incoming_qty" string="On Order Qty" optional="show"/>
             </tree>
         </field>
     </record>
@@ -22,7 +22,7 @@
         <field name="res_model">product.product</field>
         <field name="domain">[('product_tmpl_id.type', '=', 'product')]</field>
         <field name="search_view_id" eval="False"/>
-        <field name="view_type">form</field>
+        <!-- <field name="view_type">form</field> -->
         <field name="view_mode">tree</field>
         <field name="search_view_id" eval="False"/>
         <field name="view_id" ref="view_inventory_availability_line_tree"/>
@@ -50,7 +50,7 @@
     <record id="product_normal_action_pop_up_inventory_availability" model="ir.actions.act_window">
           <field name="name">Inventory Availability</field>
           <field name="res_model">inventory_availability_popup</field>
-          <field name="view_type">form</field>
+          <!-- <field name="view_type">form</field> -->
           <field name="view_mode">form</field>
           <field name="view_id" ref="product_action_pop_up_inventory_availability"/>
           <field name="target">new</field>

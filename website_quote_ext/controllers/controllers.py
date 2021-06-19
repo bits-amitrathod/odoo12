@@ -97,7 +97,7 @@ class WebsiteSale(http.Controller):
             request.session['view_quote_%s' % order_sudo.id] = now
             body = _('Quotation viewed by customer')
             _message_post_helper(res_model='sale.order', res_id=order_sudo.id, message=body,
-                                 token=order_sudo.access_token, message_type='notification', subtype="mail.mt_note",
+                                 token=order_sudo.access_token, message_type='notification', subtype_xmlid="mail.mt_note",
                                  partner_ids=order_sudo.user_id.sudo().partner_id.ids)
 
         values = {
@@ -114,8 +114,8 @@ class WebsiteSale(http.Controller):
 
         if order_sudo.has_to_be_paid():
             domain = expression.AND([
-                ['&', ('website_published', '=', True), ('company_id', '=', order_sudo.company_id.id)],
-                ['|', ('specific_countries', '=', False), ('country_ids', 'in', [order_sudo.partner_id.country_id.id])]
+                [('company_id', '=', order_sudo.company_id.id)], # '&', ('website_published', '=', True),
+                [('country_ids', 'in', [order_sudo.partner_id.country_id.id])] #'|', ('specific_countries', '=', False),
             ])
             acquirers = request.env['payment.acquirer'].sudo().search(domain)
 
@@ -179,7 +179,7 @@ class WebsiteSale(http.Controller):
             # stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
             # stock_move.write({'state': 'assigned'})
         else:
-            Order.write({'state': 'sale', 'confirmation_date': datetime.now()})
+            Order.write({'state': 'sale'})  # , 'confirmation_date': datetime.now()
 
         client_order_ref = post.get('client_order_ref')
         if client_order_ref:
@@ -188,7 +188,7 @@ class WebsiteSale(http.Controller):
             Order.write({'sale_note': message})
             body = _(message)
             _message_post_helper(res_model='sale.order', res_id=order_id, message=body, token=access_token,
-                                 message_type='notification', subtype="mail.mt_note",
+                                 message_type='notification', subtype_xmlid="mail.mt_note",
                                  partner_ids=Order.user_id.sudo().partner_id.ids)
             # stock picking notification
             stock_picking = request.env['stock.picking'].sudo().search([('sale_id', '=', order_id)])
@@ -249,7 +249,7 @@ class WebsiteSale(http.Controller):
             order_sudo.write({'sale_note': message})
             body = _(message)
             _message_post_helper(res_model='sale.order', res_id=order_id, message=body, token=access_token,
-                                 message_type='notification', subtype="mail.mt_note",
+                                 message_type='notification', subtype_xmlid="mail.mt_note",
                                  partner_ids=order_sudo.user_id.sudo().partner_id.ids)
 
             # stock picking notification

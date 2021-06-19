@@ -22,7 +22,6 @@ class ProductsOnOrder(models.Model):
     partner_id = fields.Many2one('res.partner', string='Customer Name', )
     product_id = fields.Many2one('product.product', string='Product Name', )
 
-    @api.model_cr
     def init(self):
         self.init_table()
 
@@ -34,7 +33,7 @@ class ProductsOnOrder(models.Model):
                             so.id as order_id,
                             so.name              AS name,
                             so.date_order        AS date_ordered,
-                            so.confirmation_date AS date_due,
+                            so.date_order AS date_due,
                             r.id                 AS partner_id,
                             ol.product_id        AS product_id,
                             ol.product_uom_qty   AS qty_ordered,
@@ -64,7 +63,7 @@ class ProductsOnOrder(models.Model):
                             (
                                 public.product_product.product_tmpl_id = public.product_template.id)
                         WHERE
-                            so.state NOT IN ('cancel', 'draft') AND so.confirmation_date IS NOT NULL
+                            so.state NOT IN ('cancel', 'draft') AND so.date_order IS NOT NULL
                 """
         partner_id = self.env.context.get('partner_id')
         product_id = self.env.context.get('product_id')
@@ -80,6 +79,5 @@ class ProductsOnOrder(models.Model):
 
         self._cr.execute(" CREATE VIEW report_products_on_order AS ( " + sql_query + " )")
 
-    @api.model_cr
     def delete_and_create(self):
         self.init_table()

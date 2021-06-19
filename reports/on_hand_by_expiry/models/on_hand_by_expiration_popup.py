@@ -15,16 +15,16 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
     _description = 'On Hand By Expiration Popup'
 
     date_range = fields.Selection([
-        (0, 'This Month '),
-        (1, 'Date Range'),
-    ], string="Date Range", default=0, help="Choose to analyze the Show Summary or from a specific date in the past.")
+        ('0', 'This Month '),
+        ('1', 'Date Range'),
+    ], string="Date Range", default='0', help="Choose to analyze the Show Summary or from a specific date in the past.")
 
     state = fields.Selection([
-        (0, 'All'),
-        (1, 'Expired'),
-        (2, 'Expiring'),
-        (3, 'Valid'),
-    ], string="Status", default=0,)
+        ('0', 'All'),
+        ('1', 'Expired'),
+        ('2', 'Expiring'),
+        ('3', 'Valid'),
+    ], string="Status", default='0',)
 
     warehouse_id = fields.Many2one('stock.warehouse', 'Group Location', required=True, default=1)
     location_id = fields.Selection(selection=[('lot_stock_id', 'Pick'), ('wh_pack_stock_loc_id', 'Pack'), ('wh_output_stock_loc_id', 'Ship')],String='Location')
@@ -41,7 +41,7 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
         on_hand_by_expiry_context = {}
         domain = []
 
-        if self.date_range:
+        if self.date_range == '1':
             s_date = ProductsOnHandByExpiryPopUp.string_to_date(str(self.start_date))
             e_date = ProductsOnHandByExpiryPopUp.string_to_date(str(self.end_date))
             if s_date > e_date:

@@ -10,7 +10,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT as DF
 class SaleOrder(models.Model):
     _inherit = "sale.order"
 
-    @api.multi
+    #@api.multi
     def check_limit(self):
         self.ensure_one()
         partner = self.partner_id
@@ -36,7 +36,7 @@ class SaleOrder(models.Model):
             partner.write({'credit_limit': credit - debit + self.amount_total})
         return True
 
-    @api.multi
+    #@api.multi
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
         for order in self:

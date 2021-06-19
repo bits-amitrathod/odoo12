@@ -53,15 +53,15 @@
               <field name="priority">20</field>
               <field name="arch" type="xml">
                   <tree create="false" edit="false" delete="false">
-                        <field name="currency_id" invisible="1"/>
-                        <field name="customer"/>
-                        <field name="key_account"/>
-                        <field name="no_of_orders"/>
-                        <field name="order_quota"/>
-                        <field name="progress_order_quota"/>
-                        <field name="total_revenue" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                        <field name="revenue_quota" widget="monetary" options="{'currency_field': 'currency_id'}"/>
-                        <field name="progress_revenue_quota"/>
+                        <field name="currency_id" invisible="1" optional="show"/>
+                        <field name="customer" optional="show"/>
+                        <field name="key_account" optional="show"/>
+                        <field name="no_of_orders" optional="show"/>
+                        <field name="order_quota" optional="show"/>
+                        <field name="progress_order_quota" optional="show"/>
+                        <field name="total_revenue" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                        <field name="revenue_quota" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                        <field name="progress_revenue_quota" optional="show"/>
                     </tree>
               </field>
         </record>
@@ -139,11 +139,11 @@
         <record id="action_revenue_by_ka" model="ir.actions.act_window">
             <field name="name">Revenue By Key Account</field>
             <field name="res_model">popup.ka.revenue</field>
-            <field name="view_type">form</field>
+            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="ka_revenue_popup_view"/>
             <field name="target">new</field>
-            <field name="context">{'default_compute_at_date': 0, 'valuation': True}</field>
+            <field name="context">{'default_compute_at_date': '0', 'valuation': True}</field>
         </record>
 
         <!-- Action code ends here -->
@@ -199,13 +199,22 @@
         <!-- Filter's code ends here -->
 
         <!-- Export Action code -->
-        <act_window name="Export Revenue By Key Account Report"
+        <!--<act_window name="Export Revenue By Key Account Report"
                     res_model="report.ka.revenue.export"
                     src_model="report.ka.revenue"
                     view_mode="form"
                     target="new"
                     key2="client_action_multi"
-                    id="revenue_by_ka_export_act_window"/>
+                    id="revenue_by_ka_export_act_window"/>-->
+
+        <record id="revenue_by_ka_export_act_window" model="ir.actions.act_window">
+            <field name="name">Export Revenue By Key Account Report</field>
+            <field name="res_model">report.ka.revenue.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_report_ka_revenue" />
+        </record>
+
 
         <!-- Export Action code ends here -->
 

@@ -2,7 +2,7 @@ from odoo import api, fields, models
 
 
 class accoun_invoicr_changes(models.Model):
-    _inherit = "account.invoice"
+    _inherit = "account.move"
 
     pay_to = fields.Char("Payable To ", compute="_compute_data")
     address = fields.Char("Full Address ", compute="_compute_data")
@@ -41,6 +41,8 @@ class accoun_invoicr_changes(models.Model):
                 if cmp_cntact.country_id   and cmp_cntact.country_id.name : company_address = (company_address + ', ' + cmp_cntact.country_id.name if company_address is not None else                                                     cmp_cntact.country_id.name )
             if company_address is not None: sp.company_address = company_address
 
-            purchase_order = self.env["purchase.order"].search([('name', '=', sp.origin)])
+            purchase_order = self.env["purchase.order"].search([('name', '=', sp.invoice_origin)])
             if purchase_order and purchase_order.acq_user_id and purchase_order.acq_user_id.partner_id and purchase_order.acq_user_id.partner_id.name :
                 sp.acquisition_rep = purchase_order.acq_user_id.partner_id.name
+            else:
+                sp.acquisition_rep= None

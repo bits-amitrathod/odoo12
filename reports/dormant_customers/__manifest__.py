@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 {
-
     'name': "Dormant Customers",
     'summary':'Report',
     'author': "Benchmark IT Solutions",
     'website': "http://www.benchmarkitsolutions.com",
-
     'category': 'report',
     'version': '0.1',
 
@@ -14,7 +12,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/views.xml',
         'report/dormant_customers_report.xml',
         'report/dormant_customers_report_template.xml'

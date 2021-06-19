@@ -3,6 +3,7 @@
 from odoo import models, fields, api
 import logging
 import datetime
+from odoo.tools.translate import _
 
 import csv
 
@@ -49,24 +50,22 @@ class CustomerTemplate(models.Model):
 
     COL_SELECTION = []
 
-
-    @staticmethod
-    def _read_xls_book(book):
-        sheet = book.sheet_by_index(0)
-        values = []
-        _logger.info('sheet.nrows %r', str(sheet.nrows))
-        for row in pycompat.imap(sheet.row, range(sheet.nrows)):
-            _logger.info("Row........... %r", row)
-            for cell in row:
+    def _read_xls_book(self, book, sheet_name):
+        sheet = book.sheet_by_name(sheet_name)
+        # emulate Sheet.get_rows for pre-0.9.4
+        for rowx, row in enumerate(map(sheet.row, range(sheet.nrows)), 1):
+            values = []
+            for colx, cell in enumerate(row, 1):
                 if cell.ctype is xlrd.XL_CELL_NUMBER:
                     is_float = cell.value % 1 != 0.0
                     values.append(
-                        pycompat.text_type(cell.value)
+                        str(cell.value)
                         if is_float
-                        else pycompat.text_type(int(cell.value))
+                        else str(int(cell.value))
                     )
                 elif cell.ctype is xlrd.XL_CELL_DATE:
                     is_datetime = cell.value % 1 != 0.0
+                    # emulate xldate_as_datetime for pre-0.9.3
                     dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
                     values.append(
                         dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
@@ -77,9 +76,11 @@ class CustomerTemplate(models.Model):
                     values.append(u'True' if cell.value else u'False')
                 elif cell.ctype is xlrd.XL_CELL_ERROR:
                     raise ValueError(
-                        ("Error cell found while reading XLS/XLSX file: %s") %
-                        xlrd.error_text_from_code.get(
-                            cell.value, "unknown error code %s" % cell.value)
+                        _("Invalid cell value at row %(row)s, column %(col)s: %(cell_value)s") % {
+                            'row': rowx,
+                            'col': colx,
+                            'cell_value': xlrd.error_text_from_code.get(cell.value, _("unknown error code %s", cell.value))
+                        }
                     )
                 else:
                     values.append(cell.value)
@@ -113,7 +114,6 @@ class CustomerTemplate(models.Model):
                     directory_path = ATTACHMENT_DIR + str(vals['customer_id']) + "/" + template_type + "/"
                     #directory_path = dir_path+"/Documents/Template/" + str(vals['customer_id']) + "/" + template_type + "/"
                     #print(dir_path)
-                    print(directory_path)
                     if not os.path.exists(os.path.dirname(directory_path)):
                         try:
                             os.makedirs(os.path.dirname(directory_path))
@@ -127,14 +127,17 @@ class CustomerTemplate(models.Model):
 
                     if file_extension == 'xls' or file_extension == 'xlsx':
                         book = xlrd.open_workbook(myfile_path)
-                        self.COL_SELECTION = CustomerTemplate._read_xls_book(book)
+                        sheets = book.sheet_names()
+                        sheet = sheets[0]
+                        self.COL_SELECTION.extend(self._read_xls_book(book, sheet))
                     elif file_extension == 'csv':
-                        self.COL_SELECTION = CustomerTemplate._parse_csv(myfile_path)
+                        self.COL_SELECTION.extend(self._parse_csv(myfile_path))
                     vals['file_name'] = myfile_path
+                    vals.pop('template_file', None)
 
                     template_model = super(CustomerTemplate, self).create(vals)
                     selected_elements, un_selected_columns = self._get_selected_un_selected_columns(template_model)
-                    non_selected_columns = str(','.join(un_selected_columns))
+                    non_selected_columns = str(','.join(str(v) for v in un_selected_columns))
                     template_model.write(dict(non_selected_columns=non_selected_columns))
                     return template_model
                 except ValueError:
@@ -153,8 +156,6 @@ class CustomerTemplate(models.Model):
                         'record': False,
                     }]
                 }
-
-
 
     def _get_selected_un_selected_columns(self, template_model):
         selected_elements = []

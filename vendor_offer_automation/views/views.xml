@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="vendor_offer_automation.vendor_template_client_action" model="ir.actions.client">
+        <record id="vendor_template_client_action" model="ir.actions.client">
             <field name="name">Customer Import Template</field>
             <field name="type">ir.actions.client</field>
             <field name="tag">import_offer_template</field>
@@ -14,6 +15,7 @@
                 <script type="text/javascript" src="/vendor_offer_automation/static/src/js/offer_template_widget.js"></script>
             </xpath>
         </template>
+
 
         <!--<record model="ir.ui.view" id="purchase_order_line_file_field">-->
             <!--<field name="name">Vendor Offer File Field</field>-->
@@ -29,14 +31,15 @@
                 <!--</xpath>-->
             <!--</field>-->
         <!--</record>-->
-        <record model="ir.ui.view" id="purchase_order_line_file_field">
+
+          <record model="ir.ui.view" id="purchase_order_line_file_field_vendor_import">
             <field name="name">Vendor Offer File Field</field>
             <field name="model">purchase.order</field>
             <field eval="40" name="priority"/>
             <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>
             <field name="arch" type="xml">
-                <xpath expr="/form/header/button[1]" position="before">
-                    <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
+                <xpath expr="/form/header/button[@name='action_send_offer_email']" position="after">
+                    <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary"  />
                     <button name="action_import_order_lines_all_column" string="Manual Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
                 </xpath>
             </field>
