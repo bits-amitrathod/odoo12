@@ -2373,7 +2373,7 @@ class ExportPPVendorPricingXL(http.Controller):
         #
 
         #   XL will be exported
-        return 'PPVendorPricing' + '.xlsx'
+        return 'PPVendorPricing' + '.xls'
 
     def from_data(self, field, rows):
         try:
