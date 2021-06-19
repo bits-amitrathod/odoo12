@@ -1478,10 +1478,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                             data=data)[
                             0]
                     values1 = {}
-                    values1['attachment_ids'] = [(0, 0, {'name': picking.origin,
+                    values1['attachment_ids'] = [(0, 0, {'name': 'Receiving_List_' + (picking.origin) + '.pdf',
                                                          'type': 'binary',
                                                          'mimetype': 'application/pdf',
-                                                         'datas_fname': 'Receiving_List_' + (picking.origin) + '.pdf',
+                                                         'store_fname': 'Receiving_List_' + (picking.origin) + '.pdf',
                                                          'datas': base64.b64encode(pdf)})]
 
                     values1['model'] = None
@@ -1517,10 +1517,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                                                    data=data)[
                 0]
             values1 = {}
-            values1['attachment_ids'] = [(0, 0, {'name': purchase_order.name,
+            values1['attachment_ids'] = [(0, 0, {'name': 'Vendor_Offer_' + (purchase_order.name) + '.pdf',
                                                  'type': 'binary',
                                                  'mimetype': 'application/pdf',
-                                                 'datas_fname': 'Vendor_Offer_' + purchase_order.name + '.pdf',
+                                                 'store_fname': 'Vendor_Offer_' + purchase_order.name + '.pdf',
                                                  'datas': base64.b64encode(pdf)})
                                          ]
 
@@ -1531,7 +1531,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     (0, 0, {'name': ship_label.name,
                             'type': 'binary',
                             'mimetype': 'application/pdf',
-                            'datas_fname': ship_label.name,
+                            'store_fname': ship_label.name,
                             'datas': ship_label.datas})
                 )
                 local_context['descrption'] = local_context[

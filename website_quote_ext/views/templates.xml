@@ -1498,9 +1498,9 @@
                               </div>
                               <t t-foreach="order.order_line" t-as="ol">
                                 <div class="row purchases_vertical_align">
-                                  <div class="col-lg-1 text-center">
+                                  <!--<div class="col-lg-1 text-center">
                                       <img t-att-src="image_data_uri(resize_to_48(ol.product_id.image))" alt="Product"/>
-                                  </div>
+                                  </div>-->
                                   <div id='product_name' class="col-lg-5">
                                     <span t-esc="ol.name"/>
                                   </div>
