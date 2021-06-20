@@ -1473,7 +1473,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     docids = self.env['stock.move.line'].search([('picking_id', '=', picking.id), ]).ids
                     data = None
                     pdf = \
-                        self.env.ref('sps_receiving_list_report.action_sps_receiving_list_report').render_qweb_pdf(
+                        self.env.ref('sps_receiving_list_report.action_sps_receiving_list_report')._render_qweb_pdf(
                             docids,
                             data=data)[
                             0]
@@ -1513,7 +1513,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     0]
 
             data = None
-            pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted').render_qweb_pdf(purchase_order_id,
+            pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted')._render_qweb_pdf(purchase_order_id,
                                                                                                    data=data)[
                 0]
             values1 = {}
