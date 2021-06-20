@@ -627,8 +627,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                        ('stock_move_ids.move_line_ids.state', '=', 'done'),
                                                        ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
                                                        ('stock_move_ids.move_line_ids.write_date', '<', final_date),
-                                                       ('stock_move_ids.move_line_ids.qty_done', '>', 0),
-                                                       ('stock_move_ids.move_line_ids.lot_id', '!=', None)
+                                                       ('stock_move_ids.move_line_ids.qty_done', '>', 0)
                                                        ])
         self.process_notification_for_product_red_status(products)
 
