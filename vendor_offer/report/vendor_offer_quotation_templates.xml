@@ -11,27 +11,27 @@
             <div class="row ">
                 <div class="col-6 col-lg-6 col-xs-6">
                      <strong>BUYER NAME / ADDRESS:</strong>
-                    <div t-if="o.dest_address_id" style="font-size:14px!important;" >
-                        <div t-field="o.dest_address_id" style="font-size:14px!important;"
+                    <div t-if="o.dest_address_id" style="font-size:13px!important;" >
+                        <div t-field="o.dest_address_id" style="font-size:13px!important;"
                             t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True, "phone_icons": True}'/>
-                         <span t-field="o.acq_manager_email" style="font-size:14px!important;"/>
+                         <span t-field="o.acq_manager_email" style="font-size:13px!important;"/>
                          <br></br>
-                         <span t-field="o.acq_manager_phone" style="font-size:14px!important;"/>
+                         <span t-field="o.acq_manager_phone" style="font-size:13px!important;"/>
                     </div>
-                    <div t-if="not o.dest_address_id and o.picking_type_id.warehouse_id" style="font-size:14px!important;">
-                        <span t-field="o.picking_type_id.warehouse_id.name" style="font-size:14px!important;"/>
-                        <div t-field="o.picking_type_id.warehouse_id.partner_id"  style="font-size:14px!important;"
+                    <div t-if="not o.dest_address_id and o.picking_type_id.warehouse_id" style="font-size:13px!important;">
+                        <span t-field="o.picking_type_id.warehouse_id.name" style="font-size:13px!important;"/>
+                        <div t-field="o.picking_type_id.warehouse_id.partner_id"  style="font-size:13px!important;"
                             t-options='{"widget": "contact", "fields": ["address"], "no_marker": True, "phone_icons": True}'/>
-                         <span t-field="o.acq_manager_email" style="font-size:14px!important;"/>
+                         <span t-field="o.acq_manager_email" style="font-size:13px!important;"/>
                          <br></br>
-                         <span t-field="o.acq_manager_phone" style="font-size:14px!important;"/>
-                        <!--<div t-field="o.acq_manager_phone"  style="font-size:14px!important;"-->
+                         <span t-field="o.acq_manager_phone" style="font-size:13px!important;"/>
+                        <!--<div t-field="o.acq_manager_phone"  style="font-size:13px!important;"-->
                             <!--t-options='{"widget": "contact", "fields": ["acq_manager_phone"], "no_marker": True, "phone_icons": True}'/>-->
                     </div>
                 </div>
                 <div class="col-6 col-lg-6 col-xs-6 col-xs-offset-1">
                       <strong>SELLER NAME / ADDRESS:</strong>
-                    <div t-field="o.partner_id" style="font-size:14px!important;"
+                    <div t-field="o.partner_id" style="font-size:13px!important;"
                         t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
                         <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>
                 </div>
@@ -41,22 +41,22 @@
                 <p style="margin: 3px 0; display:flex">
 
                <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
-                   <span style="font-weight:600;font-size:14px !important;">OFFER PRICE  : </span>
-                     <span style="font-weight:600;font-size:14px !important;" t-field="o.cash_amount_total"/>
-                     <span  style="font-weight:600;font-size:14px!important;">Cash Back</span>
+                   <span style="font-weight:600;font-size:13px !important;">OFFER PRICE  : </span>
+                     <span style="font-weight:600;font-size:13px !important;" t-field="o.cash_amount_total"/>
+                     <span  style="font-weight:600;font-size:13px!important;">Cash Back</span>
                      <span>or</span>
-                     <span style="font-weight:600;font-size:14px !important;" t-field="o.credit_amount_total"/>
-                     <span  style="font-weight:600;font-size:14px!important;">Credit to Purchase</span>
+                     <span style="font-weight:600;font-size:13px !important;" t-field="o.credit_amount_total"/>
+                     <span  style="font-weight:600;font-size:13px!important;">Credit to Purchase</span>
                </div>
                 <div t-if="o.offer_type =='credit'" >
-                    <span style="font-weight:600;font-size:14px !important;">OFFER PRICE  : </span>
-                     <span style="font-weight:600;font-size:14px !important;" t-field="o.credit_amount_total"/>
-                     <span  style="font-weight:600;font-size:14px!important;">Credit to Purchase</span>
+                    <span style="font-weight:600;font-size:13px !important;">OFFER PRICE  : </span>
+                     <span style="font-weight:600;font-size:13px !important;" t-field="o.credit_amount_total"/>
+                     <span  style="font-weight:600;font-size:13px!important;">Credit to Purchase</span>
                </div>
                   <div t-if="o.offer_type =='cash'" >
-                      <span style="font-weight:600;font-size:14px !important;">OFFER PRICE  : </span>
-                     <span style="font-weight:600;font-size:14px !important;" t-field="o.cash_amount_total"/>
-                     <span  style="font-weight:600;font-size:14px!important;">Cash Back</span>
+                      <span style="font-weight:600;font-size:13px !important;">OFFER PRICE  : </span>
+                     <span style="font-weight:600;font-size:13px !important;" t-field="o.cash_amount_total"/>
+                     <span  style="font-weight:600;font-size:13px!important;">Cash Back</span>
                </div>
 <!--                  <div t-if="not o.offer_type or  o.offer_type=='False'" >-->
 <!--                      <span style="font-weight:600;font-size:14px !important;">OFFER PRICE  : </span>-->
@@ -88,16 +88,16 @@
                     <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                     <strong>Credit issued immediately </strong> following completion of SPS Quality Control inspection.
                     <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
-                    <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
+                    <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:13px !important;" >0 Days</span>
                     from completion of SPS Quality Control inspection.</p>
               </div>
 
             <div t-if="o.offer_type =='cash'">
-                 <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
+                 <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                  <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
                  <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
                    <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
-                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
+                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:13px !important;" >0 Days</span>
                  from completion of SPS Quality Control inspection.</p>
             </div>
 
