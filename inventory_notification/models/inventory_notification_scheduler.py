@@ -1508,9 +1508,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             ship_label = None;
             if purchase_order.shipping_number:
                 ship_label = self.env['ir.attachment'].search(
-                    [('res_model', '=', 'purchase.order'), ('res_name', '=', purchase_order.name),
-                     ('mimetype', '=', 'application/pdf'), ('datas_fname', 'like', '%FedEx_Label%')], order="id desc")[
-                    0]
+                    [('res_model', '=', 'purchase.order'),
+                     ('mimetype', '=', 'application/pdf'), ('name', 'ilike', '%'+purchase_order.name+'%'),
+                     ('name', 'like', '%FedEx_Label%')], order="id desc")[0]
 
             data = None
             pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted')._render_qweb_pdf(purchase_order_id,
