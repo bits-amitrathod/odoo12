@@ -627,8 +627,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                        ('stock_move_ids.move_line_ids.state', '=', 'done'),
                                                        ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
                                                        ('stock_move_ids.move_line_ids.write_date', '<', final_date),
-                                                       ('stock_move_ids.move_line_ids.qty_done', '>', 0),
-                                                       ('stock_move_ids.move_line_ids.lot_id', '!=', None)
+                                                       ('stock_move_ids.move_line_ids.qty_done', '>', 0)
                                                        ])
         self.process_notification_for_product_red_status(products)
 
@@ -1474,7 +1473,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     docids = self.env['stock.move.line'].search([('picking_id', '=', picking.id), ]).ids
                     data = None
                     pdf = \
-                        self.env.ref('sps_receiving_list_report.action_sps_receiving_list_report').render_qweb_pdf(
+                        self.env.ref('sps_receiving_list_report.action_sps_receiving_list_report')._render_qweb_pdf(
                             docids,
                             data=data)[
                             0]
@@ -1509,12 +1508,12 @@ class InventoryNotificationScheduler(models.TransientModel):
             ship_label = None;
             if purchase_order.shipping_number:
                 ship_label = self.env['ir.attachment'].search(
-                    [('res_model', '=', 'purchase.order'), ('res_name', '=', purchase_order.name),
-                     ('mimetype', '=', 'application/pdf'), ('datas_fname', 'like', '%FedEx_Label%')], order="id desc")[
-                    0]
+                    [('res_model', '=', 'purchase.order'),
+                     ('mimetype', '=', 'application/pdf'), ('name', 'ilike', '%'+purchase_order.name+'%'),
+                     ('name', 'like', '%FedEx_Label%')], order="id desc")[0]
 
             data = None
-            pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted').render_qweb_pdf(purchase_order_id,
+            pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted')._render_qweb_pdf(purchase_order_id,
                                                                                                    data=data)[
                 0]
             values1 = {}
