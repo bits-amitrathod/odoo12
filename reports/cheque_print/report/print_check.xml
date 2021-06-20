@@ -15,5 +15,9 @@
 	 <xpath expr="//div[@class='sequence_number']" position="replace">
     </xpath>
 </template>
+	s
+	<template id="ckus_check_num" inherit_id="l10n_us_check_printing.ckus_stub">
+		<xpath expr="//div[1]/div[1]/div[3]" position="replace"></xpath>
+	</template>
 </data>
 </odoo>
