@@ -46,7 +46,7 @@
             <field name="model">purchase.order</field>
             <!--<field name="priority">20</field>-->
             <field name="arch" type="xml">
-                <tree>
+                <tree default_order="id desc">
                     <field name="name" attrs="{'invisible':[('state', 'not in', ('ven_draft','ven_sent'))]}"/>
                     <field name="state" invisible="1"/>
                     <field name="acq_user_id" string='Acq Manager'
@@ -894,6 +894,37 @@
             </field>
         </record>
 
+        <record id="purchase_order_tree_sort_force" model="ir.ui.view">
+            <field name="name">purchase.order.tree</field>
+            <field name="model">purchase.order</field>
+            <field name="priority" eval="2"/>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="replace">
+                <tree string="Purchase Order" multi_edit="1" decoration-bf="message_unread==True" default_order="id desc"
+                      decoration-muted="state=='cancel'" decoration-info="state in ('wait','confirmed')" sample="1">
+                    <field name="priority" optional="show" widget="priority" nolabel="1"/>
+                    <field name="message_unread" invisible="1"/>
+                    <field name="partner_ref" optional="hide"/>
+                    <field name="name" string="Reference" readonly="1"/>
+                    <field name="date_order" invisible="not context.get('quotation_only', False)" optional="show"/>
+                    <field name="date_approve" invisible="context.get('quotation_only', False)" optional="show"/>
+                    <field name="partner_id" readonly="1"/>
+                    <field name="company_id" readonly="1" options="{'no_create': True}"
+                        groups="base.group_multi_company" optional="show"/>
+                    <field name="date_planned" invisible="context.get('quotation_only', False)" optional="show"/>
+                    <field name="user_id" optional="show"/>
+                    <field name="origin" optional="show"/>
+                    <field name="amount_untaxed" sum="Total Untaxed amount" string="Untaxed" widget="monetary" optional="hide"/>
+                    <field name="amount_total" sum="Total amount" widget="monetary" optional="show"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="state" optional="show"/>
+                    <field name="invoice_status" optional="hide"/>
+                    <field name="activity_exception_decoration" widget="activity_exception"/>
+                </tree>
+                 </xpath>
+            </field>
+        </record>
 
 
 
