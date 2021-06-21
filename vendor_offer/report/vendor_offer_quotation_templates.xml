@@ -87,7 +87,7 @@
               <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
                     <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                     <strong>Credit issued immediately </strong> following completion of SPS Quality Control inspection.
-                    <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
+                    <strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>
                     <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:13px !important;" >0 Days</span>
                     from completion of SPS Quality Control inspection.</p>
               </div>
@@ -96,7 +96,7 @@
                  <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                  <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
                  <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
-                   <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
+                   <strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>
                  <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:13px !important;" >0 Days</span>
                  from completion of SPS Quality Control inspection.</p>
             </div>
@@ -337,7 +337,7 @@
             <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
                     <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                     <strong>Credit issued immediately </strong> following completion of SPS Quality Control inspection.
-                    <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
+                    <strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>
                     <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
                     from completion of SPS Quality Control inspection.</p>
               </div>
@@ -346,7 +346,7 @@
                  <p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                  <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
                  <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
-                   <!--<strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>-->
+                   <strong>Cash issued </strong><span t-field="o.cash_text_pdf"></span>
                  <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>
                  from completion of SPS Quality Control inspection.</p>
             </div>
