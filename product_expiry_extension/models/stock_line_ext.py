@@ -31,6 +31,13 @@ class InventoryExe(models.Model):
             values = self._get_updated_date(self.lot_use_date, values)
             self.env['stock.production.lot'].search([('id', '=', self.lot_id.id)]).write(values)
 
+    @api.onchange('expiration_date')
+    def _onchange_lot_use_date2(self):
+        if self.lot_id_po.id and self.expiration_date:
+            values = {}
+            values = self._get_updated_date(self.expiration_date, values)
+            self.env['stock.production.lot'].search([('id', '=', self.lot_id_po.id)]).write(values)
+
     def _get_updated_date(self,lot_use_date,vals):
         params = self.env['ir.config_parameter'].sudo()
         production_lot_alert_days = int(params.get_param('inventory_extension.production_lot_alert_days'))
@@ -95,7 +102,12 @@ class InventoryExe(models.Model):
     def _compute_show_lot_user_date(self):
             _logger.info("_compute_show_lot_user_date")
             for ml in self:
-                ml.lot_use_date= ml.lot_id.use_date
+                ml.lot_use_date = ml.lot_id.use_date
+                if ml.lot_id:
+                    ml.lot_id_po = ml.lot_id
+                else:
+                    ml.lot_id_po = None
+
 
     def _action_done(self):
         """ This method is called during a move's `action_done`. It'll actually move a quant from
