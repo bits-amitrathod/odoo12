@@ -16,6 +16,7 @@ odoo.define('WebsiteCstm.WebsiteCstm', function(require) {
 
     $(document).ready(function() {
         $('.search_autocomplete').devbridgeAutocomplete({
+            appendTo: $('.o_website_sale_search'),
             serviceUrl: '/shop/get_suggest',
             onSelect: function(suggestion) {
                 window.location.replace(window.location.origin +
