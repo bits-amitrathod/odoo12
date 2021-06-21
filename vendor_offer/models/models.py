@@ -200,6 +200,8 @@ class VendorOffer(models.Model):
                         order.cash_text_pdf = ' ' + str(days) + ' ' + 'days'
                 else:
                     order.cash_text_pdf = order.payment_term_id.name
+            else:
+                order.cash_text_pdf = None
 
 
     acq_manager_email = fields.Char(readonly=False, compute='acq_manager_detail')
