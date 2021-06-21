@@ -4,6 +4,7 @@
     overflow: auto;
     border-radius: 4px;
     box-shadow: 2px 2px 1px #cccccc;
+    z-index: 10 !important;
 }
 .autocomplete-suggestion { border-bottom: 1px solid #e6e6e6; padding: 2px 5px; white-space: nowrap; overflow: hidden; display: flex; flex-flow: row}
 .autocomplete-selected { background: #e2e2e2; display: flex; flex-flow: row}
