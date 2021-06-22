@@ -39,4 +39,6 @@ class StockMoveOfferPrice(models.Model):
 
             else:
                 line.re_expiration_date_str = None
+                line.re_total_product_retail = None
+                line.re_product_offer_price = None
 
