@@ -32,7 +32,7 @@ class VendorBillPartnerName(models.Model):
         res = []
         for partner in self:
             name = partner.name or ''
-            if (self.env.context.get('vendor_bill_partner_name_display_name') and True != ('show_address' in self._context)) or\
+            if (self.env.context.get('vendor_bill_partner_name_display_name') and 1 == ('show_address' in self._context)) or\
                     (self.env.context.get('vendor_payment_partner_name_display_name') and True != ('show_address' in self._context)) :
 
             # or\
