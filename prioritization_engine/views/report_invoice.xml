@@ -35,6 +35,16 @@
                      <p t-field="o.invoice_origin"/>
                  </div>
             </xpath>
+            <xpath expr="//div[@name='reference']" position="replace">
+                <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">
+                    <strong>Purchase Order#:</strong>
+                    <p class="m-0" t-field="o.ref"/>
+                </div>
+                <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">
+                    <strong>Reference:</strong>
+                    <p class="m-0" t-field="o.payment_reference"/>
+                </div>
+            </xpath>
 <!--            <xpath expr="//div[@name='reference'']" position="replace">-->
 <!--                 <div class="col-xs-2" t-if="o.tracking_reference">-->
 <!--                    <strong>Tracking Reference#:</strong>-->
