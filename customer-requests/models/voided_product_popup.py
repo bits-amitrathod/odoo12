@@ -34,12 +34,12 @@ class VoidedProductPopup(models.TransientModel):
         tree_view_id = self.env.ref('customer-requests.view_tree_voided_products').id
         form_view_id = self.env.ref('customer-requests.view_form_voided_product').id
 
-        if self.compute_at_product_selection:
+        if int(self.compute_at_product_selection) == 1:
             domain = [('status', '=', 'Unprocessed')]
         else:
             domain = [('status', '=', 'Voided')]
 
-        if self.compute_at_date == 1:
+        if int(self.compute_at_date) == 1:
             s_date = self.string_to_date(str(self.start_date))
             e_date = self.string_to_date(str(self.end_date)) # + datetime.timedelta(days=1)
             domain.append(('create_date', '>=', s_date))
