@@ -32,9 +32,7 @@ class VendorBillPartnerName(models.Model):
         res = []
         for partner in self:
             name = partner.name or ''
-            if (self.env.context.get('vendor_bill_partner_name_display_name') and 1 == ('show_address' in self._context)) or\
-                    (self.env.context.get('vendor_payment_partner_name_display_name') and True != ('show_address' in self._context)) :
-
+            if (self.env.context.get('vendor_bill_partner_name_display_name') and "supplier" == self.env.context.get('res_partner_search_mode')):
             # or\
             #     (self.env.context.get('sale_invoice_sipping_partner_name_display_name') and True != ('show_address_only' in self._context ))   or\
             #         (self.env.context.get('sale_invoice_partner_name_display_name') and True != ('show_address_only' in self._context ) ) \
