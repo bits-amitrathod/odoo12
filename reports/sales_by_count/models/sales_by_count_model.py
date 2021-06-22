@@ -61,7 +61,7 @@ class ProductSaleByCountReport(models.Model):
         user_id = self.env.context.get('user_id')
 
         isWhereClauseAdded = False
-        if int(compute_at) == 1:
+        if compute_at == '1':
             if start_date and not start_date is None and end_date and not end_date is None:
                 select_query = select_query + " where sale_order.date_order  BETWEEN '" + str(
                     start_date) + "'" + " and '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
