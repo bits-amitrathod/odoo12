@@ -54,7 +54,7 @@ class ProductSaleByCountPopUp(models.TransientModel):
         if self.sku_code:
             action["domain"].append(('product_id.name', '=', self.sku_code.name))
 
-        if self.compute_at_date:
+        if int(self.compute_at_date) == 1:
             if self.start_date:
                 action["domain"].append(('moved_date', '>=', self.start_date))
 
