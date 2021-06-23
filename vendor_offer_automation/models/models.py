@@ -766,11 +766,14 @@ class vendor_offer_automation(models.Model):
                     #else:
                     if cell.ctype is xlrd.XL_CELL_NUMBER:
                         is_float = cell.value % 1 != 0.0
-                        values.append(
-                            str(cell.value)
-                            if is_float
-                            else str(cell.value)
-                        )
+                        format = "%d" if (cell.value).is_integer() else "%s"
+                        converted_val = format % cell.value
+                        values.append(converted_val)
+                        # values.append(
+                        #     str(cell.value)
+                        #     if is_float
+                        #     else str(cell.value)
+                        # )
                     else:
                         values.append(cell.value)
                     cell_index = cell_index + 1
