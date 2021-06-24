@@ -32,7 +32,7 @@
                 <field name="name">eCommerce: Product Availability Email</field>
                 <field name="model_id" ref="website_sale.model_product_template"/>
                 <field name="email_from">
-                    <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+                    <![CDATA["${object.company_id.name|user.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
                 <field name="email_to">${ctx['email']}</field>
                 <field name="subject">Your product is available</field>
                 <field name="body_html">
