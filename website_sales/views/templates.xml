@@ -15,7 +15,7 @@
                 <p class="expiration-title">Expiration :</p>
                 <p>
                     <span>Min -</span>
-                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">
+                    <t t-if="product is not None and product.product_variant_id is not None and product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">
                         <span t-esc="productExpiration[product.product_variant_id.id]['min']"
                               t-options="{'widget': 'date'}"/>
                     </t>
@@ -26,7 +26,7 @@
                  </p>
                 <p>
                     <span>Max -</span>
-                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">
+                    <t t-if="product is not None and product.product_variant_id is not None and product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">
                         <span t-esc="productExpiration[product.product_variant_id.id]['max']"
                               t-options="{'widget': 'date'}"/>
                     </t>
