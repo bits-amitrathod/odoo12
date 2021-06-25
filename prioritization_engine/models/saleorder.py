@@ -489,10 +489,10 @@ class AccountInvoice(models.Model):
     def _setInvoicePurchaseOrder(self):
         for order in self:
             order.purchase_order = None
-            # if order.origin == order.name:
-            #     order.purchase_order = ""
-            # else:
-            #     order.purchase_order = order.name
+            if order.invoice_origin == order.name:
+                order.purchase_order = ""
+            else:
+                order.purchase_order = order.ref
 
     def _getSalesOerderPickingOutTrackingReference(self):
         for order in self:

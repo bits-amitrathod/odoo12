@@ -55,6 +55,34 @@
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"></field>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_reference']" position="after">
+                    <field name="preferred_method"/>
+                    <field name="shipping_terms"/>
+                </xpath>
+                <xpath expr="//group[@id='header_right_group']/field[@name='invoice_date']" position="after">
+                    <field name="invoice_date_due"/>
+                    <field name="sale_margine"/>
+                </xpath>
+                <xpath expr="//group[@id='header_right_group']/div[@name='journal_div']" position="after">
+                    <field name="expiration_date"/>
+                    <field name="currency_id" string="Currency"/>
+                    <field name="purchase_order"/>
+                    <field name="invoice_origin" string="Sale Order#"/>
+                </xpath>
+                <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='sale_info_group']/field[@name='invoice_user_id']" position="replace">
+                    <field name="invoice_user_id" string="Business Development" domain="[('share', '=', False)]" widget="many2one_avatar_user"/>
+                </xpath>
+                <xpath expr="//notebook/page[@id='other_tab']/group[@id='other_tab_group']/group[@name='sale_info_group']/field[@name='qr_code_method']" position="after">
+                    <field name="memo"/>
+                </xpath>
+                <xpath expr="//label[@for='invoice_payment_term_id']" position="replace">
+                    <label for="invoice_payment_term_id"
+                                       attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"/>
+                </xpath>
+                <xpath expr="//label[@for='invoice_payment_term_id']" position="replace">
+                    <label for="invoice_payment_term_id"
+                                       attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"/>
+                </xpath>
                 <xpath expr="//form/sheet/div[hasclass('oe_title')]/h1[1]/span" position="replace">
                     <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('move_type','!=','out_refund')]}">Customer Credit Note</span>
                     <span class="o_form_label" attrs="{'invisible': ['|',('state','=','draft'), ('move_type','!=','out_invoice')]}">Customer Invoice</span>
