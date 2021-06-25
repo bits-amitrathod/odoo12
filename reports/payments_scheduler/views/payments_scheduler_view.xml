@@ -31,8 +31,8 @@
 <!--                    <field name="reference"  />-->
                     <field name="secure_sequence_number" optional="show"/>
                     <field name="invoice_origin"  string="Purchase Order #" optional="show"/>
-                    <field name="invoice_date" string="Check-in Date" optional="show"/>
-                    <field name="invoice_date_due" optional="show"/>
+                    <field name="invoice_date" string="Check-in Date"/>
+                    <field name="invoice_date_due"/>
                     <field name="pay_to" string="AP Contact Name" optional="show"/>
                     <field name="amount_residual" string ="To Pay" optional="show"/>
                     <field name="address" string="AP Contact Address" optional="show"/>
@@ -56,7 +56,7 @@
                                <field name="company_address" groups="base.group_user" string="Vendor Bill Address"/>
 <!--                               <field name="reference"  />-->
                                <field name="invoice_origin"  string="Purchase Order #"/>
-                               <field name="invoice_date" string="Check-in Date"/>
+                                <field name="invoice_date" string="Check-in Date"/>
                                <field name="invoice_date_due"/>
                           </group>
                         <group>
@@ -67,7 +67,7 @@
 <!--                                <field name="invoice_payment_term_id" options="{'no_create': True}"/>-->
                                 <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
                           </group>
-<!--                         <field name="state" invisible="1" />-->
+                         <field name="state" invisible="1" />
 <!--                        <field name="currency_id" invisible="1"/>-->
                     </sheet>
 
