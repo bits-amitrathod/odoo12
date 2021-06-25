@@ -235,6 +235,7 @@ class ProductProduct(models.Model):
             qty_to_take_on_candidates = qty_to_invoice
             tmp_value = 0  # to accumulate the value taken on the candidates
             for candidate in candidates:
+                
                 logging.error("=========== ============= candidate")
                 logging.error(candidate.id)
                 candidate_quantity = abs(candidate.quantity)
