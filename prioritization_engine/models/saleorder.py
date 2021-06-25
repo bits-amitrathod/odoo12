@@ -360,6 +360,7 @@ class StockPicking(models.Model):
     def button_validate(self):
         # Clean-up the context key at validation to avoid forcing the creation of immediate
         # transfers.
+
         ctx = dict(self.env.context)
         ctx.pop('default_immediate_transfer', None)
         self = self.with_context(ctx)
@@ -440,6 +441,7 @@ class StockPicking(models.Model):
                 self.env['sale.order'].search([('name', '=', self.origin)]).write({'carrier_track_ref': self.carrier_tracking_ref})
 
         return True
+
 
     def send_to_shipper(self):
         print("inside send to shipper")
