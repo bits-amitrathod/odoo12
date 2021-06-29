@@ -70,3 +70,5 @@ class Detail_oauth2(models.Model):
     def _comute_callback(self):
         if self.domain_uri and self.sequence_no:
             self.callback_uri = self.domain_uri+"/google/"+str(self.sequence_no)+"/OAuth2"
+        else:
+            self.callback_uri = ''
