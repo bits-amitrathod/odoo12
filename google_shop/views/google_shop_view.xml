@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record model="ir.ui.view" id="google_shop_form">
+        <field name="name">Google Shop Form</field>
+        <field name="model">google.shop</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Google Shop Form">
+                <header>
+                <button name="button_authorize_merchant" class="btn-info" type="object" string="Validate Merchant" attrs="{'invisible': [('shop_status', 'in', ['validate','done'])]}"/>
+                <button name="button_export_product" class="btn-info" type="object" string="Export All New Product" attrs="{'invisible': [('shop_status', 'in', ['new'])]}"/>
+                <button name="button_update_product" class="btn-info" type="object" string="Update Existing Product" attrs="{'invisible': [('shop_status', '=', 'new')]}"/>
+                <button name="button_delete_product_link" class="btn-danger" type="object" string="Delete All products" attrs="{'invisible': [('shop_status', '!=', 'done')]}"/>
+                <field name="shop_status" widget="statusbar" statusbar_visible="new,validate,done"/>
+                </header>
+                <sheet>
+                  <div class="oe_button_box" name="button_box">
+                  <button class="oe_stat_button" name="test_function"
+                    type="object" icon="fa-th-list" >
+                    <field string="Mapping" name="mapping_count" widget="statinfo" />
+                </button>
+                </div>
+                    <group col="4">
+
+
+
+                <field name="name"/>
+                        <field name="oauth_id" attrs="{'readonly': [('shop_status', 'in', ['validate','done'])]}"/>
+                        <field name="merchant_id"/>
+                        <field name="content_language" attrs="{'readonly': [('shop_status', 'in', ['validate','done'])]}"/>
+                        <field name="target_country" attrs="{'readonly': [('shop_status', 'in', ['validate','done'])]}"/>
+                        <field name="field_mapping_id" attrs="{'readonly': [('shop_status', 'in', ['validate','done'])]}"/>
+                        <field name="channel" attrs="{'readonly': [('shop_status', 'in', ['validate','done'])]}"/>
+                        <field name="website_id" attrs="{'readonly': [('shop_status', 'in', ['validate','done'])]}" required="1"/>
+                        <field name="product_pricelist_id" attrs="{'readonly': [('shop_status', 'in', ['validate','done'])]}" domain="[('website_id','=',website_id)]"/>
+                        <field name="currency_id" readonly="1"/>
+                    </group>
+                    <group col="4">
+                    <field name="product_selection_type" widget="radio"/>
+                    <field name="shop_url" placeholder="https://www.example.com" invisible="1"/>
+                  </group>
+                    <group>
+                      <group>
+                        <field name="domain_input" attrs="{'invisible': [('product_selection_type', '!=', 'domain')]}"/>
+                        <field name="limit" attrs="{'invisible': [('product_selection_type', '!=', 'domain')]}"/>
+                      </group>
+                        <field name="product_ids_rel" attrs="{'invisible': [('product_selection_type', '!=', 'manual')]}">
+                        <tree limit="10">
+                <field name="default_code"/>
+                <field name="name" />
+                <field name="lst_price" />
+            </tree>
+        </field>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="google_shop_tree">
+        <field name="name">Google Shop Tree</field>
+        <field name="model">google.shop</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="oauth_id" />
+                <field name="content_language" />
+                <field name="target_country" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="google_shop_action">
+        <field name="name">Google Shop</field>
+        <field name="res_model">google.shop</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="google_shop_tree" />
+    </record>
+<menuitem name="Google Shop" id="google_market_menu" />
+<menuitem name="Google Shops" id="google_shops_menu" parent="google_market_menu"/>
+    <menuitem name="Shops" id= "google_shop_menu" parent="google_shops_menu" action="google_shop_action" />
+</odoo>

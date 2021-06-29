@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record model="ir.ui.view" id="oauth2_detail_form">
+        <field name="name">Account Form</field>
+        <field name="model">oauth2.detail</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="OAuth2 Form">
+                <header>
+                    <button name="button_authorize_url" class="btn-success" type="object" string="Authorize Account" attrs="{'invisible': [('authentication_state', '=', 'authorize_token')]}" />
+                    <button name="button_authorize_url" class="btn-success" type="object" string="Refresh token" attrs="{'invisible': [('authentication_state', '!=', 'authorize_token')]}"/>
+                    <field name="authentication_state" widget="statusbar" statusbar_visible="new,authorize_code,authorize_token"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="sequence_no" />
+                        <field name="authorize_url" />
+                        <field name="token_url" />
+                        <field name="domain_uri" />
+                        <label class="o_form_label" for="callback_uri" data-original-title="" title="">Callback URL</label>
+                        <span class="mt16">
+                            <field name="callback_uri" class="oe_inline "/>
+                            <div class="text-danger">Note:enter this Callback URL into Google Oauth2 Configurations</div>
+                        </span>
+
+                        <field name="client_id" />
+                        <field name="client_secret" />
+                        <field name="authorization_code" invisible="1"/>
+                        <field name="auth_token" />
+                    </group>
+                    <label class="o_form_label" for="config_merchant_detail" data-original-title="" title="">Configure Merchant Details</label>
+                    <span>
+                        <field name="config_merchant_detail"/>
+                        <div>
+                            <a href="https://www.google.com/retail/solutions/merchant-center/#?modal_active=none" target='_blank'>Click here to Create Merchant Account</a>
+                        </div>
+                    </span>
+
+                    <notebook >
+
+                        <page string="Merchant Details">
+                            <group>
+                                <field name="verify_account_url" placeholder="example:- google1123sdf12cd4b5b9.html" attrs="{'invisible': [('config_merchant_detail', '=', False)],'required': [('config_merchant_detail', '=', True)]}"/>
+                                <field name="verify_url_data" placeholder="example:- google-site-verification: google1123sdf12cd4b5b9.html" attrs="{'invisible': [('config_merchant_detail', '=', False)],'required': [('config_merchant_detail', '=', True)]}"/>
+                                <field name="merchant_id"/>
+                            </group>
+                        </page>
+
+                        </notebook>
+
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="oauth2_detail_tree">
+        <field name="name">Account Tree</field>
+        <field name="model">oauth2.detail</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" />
+                <field name="auth_token" />
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="oauth2_detail_action">
+        <field name="name">Account</field>
+        <field name="res_model">oauth2.detail</field>
+        <field name="view_mode">form,tree</field>
+        <field name="view_id" ref="oauth2_detail_tree" />
+    </record>
+
+
+    <menuitem name = "Settings" id= "settings" parent="google_market_menu" sequence="99" />
+    <menuitem name = "Mapping" id= "mappings_fields" parent="google_market_menu" sequence="50" />
+    <menuitem name= "Account" id= "oauth2_detail_menu" parent="settings" action='oauth2_detail_action' sequence="1"/>
+</odoo>
