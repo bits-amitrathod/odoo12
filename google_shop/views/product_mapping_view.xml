@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <record model="ir.ui.view" id="product_mapping_form">
+        <field name="name">Product Mapping Form</field>
+        <field name="model">product.mapping</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Product Mapping Form" create="false">
+                <header>
+                    <field name="product_status" widget="statusbar" />
+                </header>
+                <sheet>
+                    <group>
+
+
+
+
+                        <field name="google_shop_id" />
+                        <field name="product_id" />
+                        <field name="update_status" />
+                        <field name="google_product_id" />
+                        <field name="message" />
+                        <field name="id" invisible="1"/>
+
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="product_mapping_search" model="ir.ui.view">
+        <field name="name">Product Mapping Search</field>
+        <field name="model">product.mapping</field>
+        <field name="arch" type="xml">
+            <search string="Search Product By Shop">
+              <filter string="Google Product" name="google_shop" domain="[]" context="{'group_by': 'google_shop_id'}" />
+                <filter string="Google Shop" name="google_shop" domain="[]" context="{'group_by': 'product_status'}" />
+            </search>
+        </field>
+    </record>
+
+
+
+
+    <record model="ir.ui.view" id="product_mapping_tree">
+        <field name="name">Product Mappping Tree</field>
+        <field name="model">product.mapping</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree decoration-danger="product_status=='error'" decoration-info="product_status=='updated'" create="false" edit="false">
+                <field name="product_status" invisible="1"/>
+                <field name="google_shop_id" />
+                <field name="product_id" />
+                <field name="update_status" />
+                <field name="google_product_id" />
+                <field name="message" />
+                <field name="id" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="product_mapping_action">
+        <field name="name">Product Mapping</field>
+        <field name="res_model">product.mapping</field>
+        <field name="context">{'search_default_google_shop': 1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="product_mapping_tree" />
+    </record>
+
+    <record model="ir.actions.act_window" id="product_mapping_action_button_click">
+        <field name="name">Product Mapping</field>
+        <field name="res_model">product.mapping</field>
+        <field name="context">{'search_default_google_shop': 1}</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="product_mapping_tree" />
+    </record>
+
+    <menuitem name="Product Mapping" id= "product_mapping_menu" parent="mappings_fields" action="product_mapping_action" sequence="1"/>
+</odoo>
