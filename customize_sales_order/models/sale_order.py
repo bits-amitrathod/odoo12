@@ -309,14 +309,13 @@ class StockPicking(models.Model):
             if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
                 sale_order = self.env['sale.order'].search([('name', '=', self.origin)])
                 sale_order.carrier_track_ref = self.carrier_tracking_ref
-                if sale_order.carrier_id.id is False:
+                if sale_order.carrier_id:
                     sale_order.carrier_id = self.carrier_id.id
-                    sale_order.delivery_price = self.carrier_price
+                    sale_order.amount_delivery = self.carrier_price
                 if sale_order.carrier_id.id != self.carrier_id.id:
                     sale_order.carrier_id = self.carrier_id.id
-                    sale_order.delivery_price = self.carrier_price
                     sale_order.amount_delivery = self.carrier_price
-                    self.update_sale_order_line(sale_order, self.carrier_id, self.carrier_price)
+                    sale_order.set_delivery_line(self.carrier_id, self.carrier_price)
         return action
 
     def cancel_shipment(self):
