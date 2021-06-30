@@ -476,13 +476,14 @@
         </record>
 
 
-        <record id="purchase_order_form_inherit_2" model="ir.ui.view">
+        <record id="purchase_order_form_inherit_3" model="ir.ui.view">
 
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
-                <button name="button_unlock" position="after">
+<!--                <xpath expr="//div[@name='button_box']" position="inside">-->
+                <xpath expr="//header/button[@name='button_unlock']" position="after">
                     <field name="status_ven" invisible="1"/>
                     <!--<button name="action_validate"  attrs="{'invisible': ['|', ('show_validate', '=', False),('state', 'not in', 'purchase')]}"  string="Validate" groups="stock.group_stock_user" type="object" class="oe_highlight"/>-->
                     <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action"
@@ -503,7 +504,7 @@
 <!--                                                    groups="stock.group_stock_user"/>-->
 
 
-                </button>
+                </xpath>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                     <field name="origin" string="Sale Order#"/>
                 </xpath>

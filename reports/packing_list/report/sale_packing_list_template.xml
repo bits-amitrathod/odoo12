@@ -9,7 +9,9 @@
                         .page-break {
                         page-break-after: always !important;
                         }
-
+                        table{
+                        font-size: 14px !important;
+                        }
                         <!--.table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {-->
                         <!--border: 1px solid #000;-->
                         <!--}-->
@@ -124,7 +126,7 @@
                                                 <tr>
                                                     <td>
 
-                                                        <p style="font-weight: lighter">
+                                                        <p style="font-weight: 400">
                                                             <span t-esc="len(packing_list.package_ids)"></span>
                                                         </p>
 
@@ -138,7 +140,7 @@
 
                                                     </td>
                                                     <td>
-                                                        <p style="font-weight: lighter">
+                                                        <p style="font-weight: 400">
 
                                                                 <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
 
@@ -146,21 +148,21 @@
                                                     </td>
                                                     <td>
 
-                                                        <p style="font-weight: lighter">
+                                                        <p style="font-weight: 400">
                                                             <span t-esc="packing_list.shipping_terms"></span>
                                                         </p>
 
                                                     </td>
                                                     <td>
 
-                                                        <p style="font-weight: lighter">
+                                                        <p style="font-weight: 400">
                                                             <span t-esc="packing_list.delivery_method_name"></span>
                                                         </p>
 
                                                     </td>
                                                     <td>
 
-                                                        <p style="font-weight: lighter">
+                                                        <p style="font-weight: 400">
                                                             <span t-esc="packing_list.origin"></span>
                                                         </p>
 
@@ -235,7 +237,7 @@
                                             <span t-esc="move_line_index + 1"/>
                                         </td>
                                         <td>
-                                            <span style="font-weight: lighter">
+                                            <span style="font-weight: 400">
                                                 Code#
                                                 <span t-esc="move_line.product_tmpl_id.sku_code"/>
                                                 -
@@ -243,25 +245,25 @@
                                             </span>
                                         </td>
                                         <td t-att-rowspan="rowSpan">
-                                            <span style="font-weight: lighter">
+                                            <span style="font-weight: 400">
                                                 <span t-esc="round(move_line.product_uom_qty)"/>
                                                 <span t-esc="move_line.product_uom.name"/>
                                             </span>
                                         </td>
                                         <td t-att-rowspan="rowSpan">
-                                            <span style="font-weight: lighter">
+                                            <span style="font-weight: 400">
                                                 <span t-esc="round(move_line.quantity_done)"/>
                                                 <span t-esc="move_line.product_uom.name"/>
                                             </span>
                                         </td>
                                         <td t-att-rowspan="rowSpan">
-                                            <span style="font-weight: lighter">
+                                            <span style="font-weight: 400">
                                                 <span t-esc="round(move_line.product_uom_qty-move_line.quantity_done)"/>
                                                 <span t-esc="move_line.product_uom.name"/>
                                             </span>
                                         </td>
                                     </tr>
-                                    <tr style="font-weight: lighter" t-foreach="move_line.move_line_ids"
+                                    <tr style="font-weight: 400" t-foreach="move_line.move_line_ids"
                                         t-as="move_line_id">
                                         <td>
                                             <span t-esc="move_line_id.qty_done"/>
