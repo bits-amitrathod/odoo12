@@ -47,19 +47,20 @@ class vendor_offer_automation(models.Model):
             if 'import_type_ven' in vals:
                 str_val = vals['import_type_ven']
                 if str_val == all_field_import:
-                    record.map_customer_sku_with_catelog_number_all_column()
+                    record.map_customer_sku_with_catelog_number_all_column(vals)
                 else:
-                    record.map_customer_sku_with_catelog_number()
+                    record.map_customer_sku_with_catelog_number(vals)
             else:
-                record.map_customer_sku_with_catelog_number()
+                record.map_customer_sku_with_catelog_number(vals)
 
         return record
 
     @api.model
-    def map_customer_sku_with_catelog_number(self):
+    def map_customer_sku_with_catelog_number(self,vals):
         if not self.document is False:
             try:
-                book = xlrd.open_workbook(file_contents=self.document)
+                #book = xlrd.open_workbook(file_contents=self.document)
+                book = xlrd.open_workbook(file_contents=vals['document'])
                 try:
                     pricing_index = book.sheet_names().index('PPVendorPricing')
                 except:
@@ -228,10 +229,11 @@ class vendor_offer_automation(models.Model):
                 _logger.info(ue)
 
     @api.model
-    def map_customer_sku_with_catelog_number_all_column(self):
+    def map_customer_sku_with_catelog_number_all_column(self,vals):
         if not self.document is False:
             try:
-                book = xlrd.open_workbook(file_contents=self.document)
+                #book = xlrd.open_workbook(file_contents=self.document)
+                book = xlrd.open_workbook(file_contents=vals['document'])
                 try:
                     pricing_index = book.sheet_names().index('PPVendorPricing')
                 except:
@@ -793,10 +795,10 @@ class vendor_offer_automation(models.Model):
             str_val = vals['import_type_ven']
             if str_val == all_field_import:
                 self.unlink_lines()
-                self.map_customer_sku_with_catelog_number_all_column()
+                self.map_customer_sku_with_catelog_number_all_column(vals)
             else:
                 self.unlink_lines()
-                self.map_customer_sku_with_catelog_number()
+                self.map_customer_sku_with_catelog_number(vals)
                 return res
 
     @api.model
