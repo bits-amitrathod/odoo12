@@ -311,6 +311,8 @@ class StockPicking(models.Model):
                     sale_order.carrier_id = self.carrier_id.id
                     sale_order.amount_delivery = self.carrier_price
                     self.update_sale_order_line(sale_order, self.carrier_id, self.carrier_price)
+                else:
+                    self.update_sale_order_line(sale_order, self.carrier_id, self.carrier_price)
         return action
 
     def cancel_shipment(self):
