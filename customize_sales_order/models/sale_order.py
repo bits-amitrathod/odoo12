@@ -173,7 +173,9 @@ class sale_order(models.Model):
                 pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
 
         if self.carrier_id and self.state and self.state in 'sale':
-            self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)]).write({'carrier_id':self.carrier_id.id})
+            stock_picking = self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)])
+            if stock_picking and stock_picking.state != 'done':
+                stock_picking.write({'carrier_id': self.carrier_id.id})
 
         # if 'sale_note' in val or self.sale_note:
         if self.sale_note and self.team_id.team_type != 'engine':
@@ -224,24 +226,16 @@ class sale_order(models.Model):
             self.delivery_rating_success = False
             self.delivery_message = False
 
-    # def set_delivery_line(self):
-    #     # Remove delivery products from the sales order
-    #     self._remove_delivery_line()
+    def set_delivery_line(self, carrier, amount):
+        # Remove delivery products from the sales order
+        self._remove_delivery_line()
 
-        # for order in self:
-        #     if order.state not in ('draft', 'sent', 'sale'):
-        #         raise UserError(_('You can add delivery price only on unconfirmed quotations.'))
-        #     elif not order.carrier_id:
-        #         raise UserError(_('No carrier set for this order.'))
-        #     elif not order.delivery_rating_success:
-        #         raise UserError(_('Please use "Check price" in order to compute a shipping price for this quotation.'))
-        #     else:
-        #         price_unit = order.carrier_id.rate_shipment(order)['price']
-        #         # TODO check whether it is safe to use delivery_price here
-        #         order._create_delivery_line(order.carrier_id, price_unit)
-        #     if order.carrier_id and order.state in 'sale':
-        #         self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
-        # return True
+        for order in self:
+            order.carrier_id = carrier.id
+            order._create_delivery_line(carrier, amount)
+            if order.carrier_id and order.state in 'sale':
+                self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
+        return True
 
     def get_delivery_price(self):
         for order in self.filtered(lambda o: o.state in ('draft', 'sent', 'sale') and len(o.order_line) > 0):
@@ -309,13 +303,14 @@ class StockPicking(models.Model):
             if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
                 sale_order = self.env['sale.order'].search([('name', '=', self.origin)])
                 sale_order.carrier_track_ref = self.carrier_tracking_ref
-                if sale_order.carrier_id:
-                    sale_order.carrier_id = self.carrier_id.id
-                    sale_order.amount_delivery = self.carrier_price
-                if sale_order.carrier_id.id != self.carrier_id.id:
+                if sale_order.carrier_id.id is False:
                     sale_order.carrier_id = self.carrier_id.id
                     sale_order.amount_delivery = self.carrier_price
                     sale_order.set_delivery_line(self.carrier_id, self.carrier_price)
+                if sale_order.carrier_id.id != self.carrier_id.id:
+                    sale_order.carrier_id = self.carrier_id.id
+                    sale_order.amount_delivery = self.carrier_price
+                    self.update_sale_order_line(sale_order, self.carrier_id, self.carrier_price)
         return action
 
     def cancel_shipment(self):
