@@ -555,9 +555,10 @@ class vendor_offer_automation(models.Model):
                                          " multiplier," \
                                          "expiration_date,expiration_date_str," \
                                          " import_type_ven_line,currency_id,product_sales_count_month" \
-                                         " ,create_uid,company_id,create_date,price_tax,qty_invoiced)" \
+                                         " ,create_uid,company_id,create_date,price_tax,qty_invoiced" \
+                                         ",qty_to_invoice,propagate_cancel,qty_received_method,product_uom_qty,qty_received,state)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s," \
-                                         " %s, %s , %s ,%s ,%s,%s ,%s ,%s,%s ,%s) " \
+                                         " %s, %s , %s ,%s ,%s,%s ,%s ,%s,%s ,%s,%s,%s,%s,%s,%s,%s) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -576,7 +577,8 @@ class vendor_offer_automation(models.Model):
                                         order_line_object['multiplier'],
                                         exp_date,exp_date_str,
                                         order_line_object['import_type_ven_line'],
-                                        currency_id_insert, 0,create_uid,company_id,create_date,0,0)
+                                        currency_id_insert, 0,create_uid,company_id,create_date,0,0,0,'true','stock_moves',
+                                        order_line_object['product_qty'],0,'ven_draft')
 
                                 self._cr.execute(sql_query,val)
                                 line_obj = self._cr.fetchone()
