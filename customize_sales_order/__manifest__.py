@@ -19,6 +19,7 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'data/mail_template_data_cstm.xml',
     ],
 
     'application': True,
