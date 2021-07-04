@@ -149,4 +149,4 @@ class SaleOrderLineInherit(models.Model):
         else:
             uom_factor = 1.0
 
-        return product[field_name] * uom_factor * cur_factor, currency_id
+        return product[field_name] * uom_factor * cur_factor, currency_id 
