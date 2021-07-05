@@ -44,7 +44,7 @@ class SalePurchaseHistory(models.Model):
             sale_order_line.is_shared_opt = sale_order_line.order_id.is_share
             sale_order_line.sales_team_id = sale_order_line.order_id.team_id.name
             sale_order_line.sale_sales_margine = sale_order_line.order_id.partner_id.sale_margine
-
+            sale_order_line.qty_delivered_converted = None
             sale_order_line.product_sku_ref = sale_order_line.product_id.product_tmpl_id.sku_code
             sale_order_line_list = self.env['sale.order.line'].search([('product_id', '=', sale_order_line.product_id.id), ('state', 'in', ('draft', 'sent'))])
             sale_order_line.quotations_per_code = len(sale_order_line_list)
