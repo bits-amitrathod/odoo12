@@ -42,11 +42,13 @@ class SaleOrderLineInherit(models.Model):
                                             stock_production_lot.id in (select lot_id from public.stock_move_line sml where move_id = %s )
                                             """, (move_line.product_id.id, move_line.id))
                                     query_result = self.env.cr.dictfetchone()
-                                    if query_result['min'] == query_result['max']:
+                                    if query_result['min'] is not None and query_result['max'] is not None and \
+                                            query_result['min'] == query_result['max']:
                                         record.product_min_max_exp_date = str(
                                             datetime.datetime.strptime(str(query_result['min']),
                                                                        '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
-                                    elif query_result['min'] and query_result['max']:
+                                    elif query_result['min'] is not None and query_result['max'] is not None and \
+                                            query_result['min'] and query_result['max']:
                                         record.product_min_max_exp_date = str(datetime.datetime.strptime(str(query_result['min']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y')) \
                                             + str("-") + str(datetime.datetime.strptime(str(query_result['max']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
                                     else:
@@ -147,4 +149,4 @@ class SaleOrderLineInherit(models.Model):
         else:
             uom_factor = 1.0
 
-        return product[field_name] * uom_factor * cur_factor, currency_id
+        return product[field_name] * uom_factor * cur_factor, currency_id 
