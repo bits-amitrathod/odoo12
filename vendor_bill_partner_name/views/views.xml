@@ -73,7 +73,7 @@
             <!--</field>-->
         <!--</record>-->
 
-        <record id="vendor_bill_cart_image_22" model="ir.ui.view">
+        <record id="vendor_bill_cart_image_23" model="ir.ui.view">
             <field name="name">Cart_image_update</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
