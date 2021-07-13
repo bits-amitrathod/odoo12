@@ -161,7 +161,7 @@ class SpsCustomerRequest(models.Model):
 
     def _get_product_oem(self):
         for record in self:
-            if record.un_mapped_data:
+            if record.un_mapped_data and record.un_mapped_data is not None:
                 un_mapped_dict = record.un_mapped_data
 
                 # removing spaces from keys, storing them in sam dictionary
@@ -177,10 +177,12 @@ class SpsCustomerRequest(models.Model):
                     record.manufacturer_oem = un_mapped_dict.get('productoem')
                 else:
                     record.manufacturer_oem = None
+            else:
+                record.manufacturer_oem = None
 
     def _get_manufacturer_oem_price(self):
         for record in self:
-            if record.un_mapped_data:
+            if record.un_mapped_data and record.un_mapped_data is not None:
                 un_mapped_dict = record.un_mapped_data
 
                 # removing spaces from keys, storing them in sam dictionary
@@ -192,12 +194,14 @@ class SpsCustomerRequest(models.Model):
                     record.manufacturer_oem_price = un_mapped_dict.get('price')
                 else:
                     record.manufacturer_oem_price = None
+            else:
+                record.manufacturer_oem_price = None
 
     def _get_customer_product_description(self):
         for record in self:
             if record.product_description and record.product_description is not None:
                 record.customer_product_description = record.product_description
-            elif record.un_mapped_data:
+            elif record.un_mapped_data and record.un_mapped_data is not None:
                 un_mapped_dict = record.un_mapped_data
 
                 # removing spaces from keys, storing them in sam dictionary
@@ -217,3 +221,6 @@ class SpsCustomerRequest(models.Model):
                     record.customer_product_description = un_mapped_dict.get('productname')
                 else:
                     record.customer_product_description = None
+            else:
+                record.customer_product_description = None
+
