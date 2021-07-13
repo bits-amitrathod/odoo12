@@ -1762,7 +1762,8 @@ class StockPicking(models.Model):
         for pick in self:
             purchase_order = self.env['purchase.order'].search([('name', '=', pick.origin)])
             for order in purchase_order:
-                order.arrival_date_grp = pick.arrival_date
+                if pick.arrival_date and pick.arrival_date is not None:
+                    order.arrival_date_grp = pick.arrival_date
         return record
 
     #@api.multi
