@@ -223,3 +223,4 @@ class SpsCustomerRequest(models.Model):
                     record.customer_product_description = None
             else:
                 record.customer_product_description = None
+
