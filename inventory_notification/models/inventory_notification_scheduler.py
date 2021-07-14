@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 
 from odoo import models, fields, api
 import logging
@@ -36,13 +36,11 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @api.model
     # @api.multi
-    def process_notification_scheduler(self, custom_date=None):
+    def process_notification_scheduler(self, limit=None):
         _logger.info("process_notification_scheduler called")
-        if custom_date is not None:
-            custom_date = datetime.strptime(custom_date, '%Y-%m-%d').date()
-        else:
-            custom_date = date.today()
-        self.process_in_stock_scheduler(custom_date)
+        if limit is None:
+            limit = 40
+        self.process_in_stock_scheduler(limit)
 
     def pick_notification_for_customer(self, picking):
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -348,17 +346,14 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
                                                         vals['columnProps'], vals['closing_content'], None)
 
-    def process_in_stock_scheduler(self, custom_date):
-        _logger.info("process_in_stock_scheduler called")
+    def process_in_stock_scheduler(self, limit):
+        _logger.info("process_in_stock_scheduler called - limit %s", str(limit))
         # email_queue = []
-        today_date = custom_date
+        today_date = date.today()
         today_start = today_date
-        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-        dayName = today_date.weekday()
-        weekday = days[dayName]
         customers = self.env['res.partner'].search(
             [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-             (weekday, '=', True), ('todays_notification', '=', True)], order='id asc', limit=40)
+             ('todays_notification', '=', True)], order='id asc', limit=int(limit))
 
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         start = time.time()
