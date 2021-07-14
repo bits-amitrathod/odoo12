@@ -190,7 +190,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         if request.env.user.user_id.id and not request.env.user.user_id.id == order.user_id.id:
             order.user_id = request.env.user.user_id
-
+        template.email_from ='info@surgicalproductsolutions.com'
         template.send_mail(order.id, force_send=False)
         msg = "Quotation Email Sent to: " + order.user_id.login
         order.message_post(body=msg)
