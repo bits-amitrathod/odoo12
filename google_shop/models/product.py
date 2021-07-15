@@ -9,7 +9,7 @@ import logging
 _logger = logging.getLogger(__name__)
 
 class ProductUpdates(models.Model):
-    _inherit = 'product.product'
+    _inherit = 'product.template'
 
     def write(self, vals):
         res = super(ProductUpdates, self).write(vals)
