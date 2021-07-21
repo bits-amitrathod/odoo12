@@ -98,6 +98,15 @@ class NewAccountBonusReport(models.Model):
             select_query = select_query + order_by
 
             self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )")
+        else:
+            # This Code For only console error resolve purposr
+            self.env.cr.execute('''
+                             CREATE OR REPLACE VIEW %s AS (
+                             SELECT  so.id AS id,
+                                     so.name AS name
+                             FROM sale_order so
+                             )''' % (self._table)
+                                )
 
     # @api.model_cr
     def delete_and_create(self):
