@@ -163,9 +163,15 @@ class TempProductList(models.Model):
                     partner_product_list.get(product_id)['select'] = select
 
     def get_product_list(self, partner_id):
-        if self.product_list[self.get_parent(partner_id)].items() :
-            product_list_sorted = sorted(self.product_list[self.get_parent(partner_id)].items(),
-                                    key=lambda x: (x[1]['product_brand_name'] if 'product_brand_name' in x[1] else "Test",
-                                                    x[1]['product_sku'] if 'product_sku' in x[1] else "Test"))
+        parent_id = self.get_parent(partner_id)
+        if parent_id is not None:
+            if self.product_list[parent_id].items() :
+                product_list_sorted = sorted(self.product_list[parent_id].items(),
+                                        key=lambda x: (x[1]['product_brand_name'] if 'product_brand_name' in x[1] else "Test",
+                                                        x[1]['product_sku'] if 'product_sku' in x[1] else "Test"))
+                return self.product_list[parent_id], product_list_sorted
+            else:
+                return [], []
+        else:
+            return [], []
 
-        return self.product_list[self.get_parent(partner_id)], product_list_sorted
