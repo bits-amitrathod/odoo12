@@ -14,7 +14,7 @@
 # If not, see <https://store.webkul.com/license.html/>
 #################################################################################
 {
-  "name"                 :  "Google Shopping Feed",
+  "name"                 :  " Google Shopping Feed",
   "summary"              :  """This module allows you to send the products of odoo into google shop.""",
   "category"             :  "eCommerce",
   "version"              :  "1.0.4",
