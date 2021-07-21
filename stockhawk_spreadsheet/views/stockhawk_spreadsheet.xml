@@ -1,0 +1,30 @@
+<odoo>
+    <template id="stockhawk_spreadsheet_view" name="Stockhawk Spreadsheet">
+        <t t-name="website.terms_of_sales">
+            <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty"/>
+                <section class="about-us-section">
+                  <t t-name="Spreadsheet">
+                      <html>
+                          <head>
+                              <link href="/stockhawk_spreadsheet/static/src/css/xspreadsheet.css" rel="stylesheet"/>
+                              <script type="text/javascript" src="/stockhawk_spreadsheet/static/src/js/xspreadsheet.js"></script>
+                              <script type="text/javascript" src="/stockhawk_spreadsheet/static/src/js/custom_spreadsheet.js"></script>
+                          </head>
+                          <body onload='load()'>
+                              <div style="position: fixed; right: 0; top: .7em;">
+                              </div>
+                              <div id="x-spreadsheet-demo"></div>
+                          </body>
+                      </html>
+                  </t>
+                </section>
+            </t>
+        </t>
+    </template>
+    <template id="stockhawk_spreadsheet_link" name="Link to frontend portal" inherit_id="portal.user_dropdown">
+        <xpath expr="//a[@id='o_logout']" position="before">
+            <a href="/spreadsheet/stockhawk_spreadsheet" role="menuitem" class="dropdown-item">Stockhawk Spreadsheet</a>
+        </xpath>
+    </template>
+</odoo>
