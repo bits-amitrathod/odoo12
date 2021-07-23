@@ -166,7 +166,7 @@ class TempProductList(models.Model):
                     partner_product_list.get(product_id)['select'] = select
 
     def get_product_list(self, partner_id):
-        _logger.info('In get_product_list - partner_id : %s', str(partner_id))
+        _logger.info('In get_product_list -partner_id : %s', str(partner_id))
         try:
             if partner_id and partner_id is not None and len(self.product_list) > 0:
                 parent_id = self.get_parent(partner_id)
