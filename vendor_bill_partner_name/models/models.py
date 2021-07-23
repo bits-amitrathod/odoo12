@@ -43,14 +43,26 @@ class VendorBillPartnerName(models.Model):
                     if not partner.is_company:
                         if partner.type :
                             if partner.type == 'other':
-                                typ = 'AP'
-                                name = "%s :- %s ,%s" % (typ,
-                                                         partner.commercial_company_name or partner.parent_id.name,
-                                                         name)
+                                    typ = 'AP'
+                                    name = "%s :- %s ,%s" % (typ,
+                                                             partner.commercial_company_name or partner.parent_id.name,
+                                                             name)
                             else:
-                                name = "%s :- %s ,%s" % ((partner.type).upper(),
-                                                         partner.commercial_company_name or partner.parent_id.name,
-                                                         name)
+                                    name = "%s :- %s ,%s" % ((partner.type).upper(),
+                                                             partner.commercial_company_name or partner.parent_id.name,
+                                                             name)
+                    else:
+                        if partner.type :
+                            if partner.type == 'other':
+                                    typ = 'APC'
+                                    name = "%s :- %s ,%s" % (typ,
+                                                             partner.commercial_company_name or partner.parent_id.name,
+                                                             name)
+                            else:
+                                    name = "%s :- %s ,%s" % ((partner.type).upper(),
+                                                             partner.commercial_company_name or partner.parent_id.name,
+                                                             name)
+
                 else:
                     if partner.type:
                         name = "%s :- %s" % (('main').upper(),
