@@ -62,7 +62,7 @@ class FixStockValuationLayerScheduler(models.Model):
 
                 if (quantity != product.actual_quantity) or (value != value_at_prod):
                     count_of_prod = count_of_prod +1
-                    #adjustment_value = self.env['stock.valuation.layer'].sudo().create(vals)
+                    adjustment_value = self.env['stock.valuation.layer'].sudo().create(vals)
 
                 svls_to_fix = self.env['stock.valuation.layer'].sudo().search([
                     ('product_id', '=',prod_id),
@@ -77,7 +77,7 @@ class FixStockValuationLayerScheduler(models.Model):
                         'remaining_value': 0,
                     }
                     rows_corrected = rows_corrected+1
-                    #svl.write(new_vals)
+                    svl.write(new_vals)
 
         print("--- %s seconds ---" % (time.time() - start_time))
         print(count_of_prod)
