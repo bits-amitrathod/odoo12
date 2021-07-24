@@ -50,7 +50,7 @@ class FixStockValuationLayerScheduler(models.Model):
                     'value': 0,
                     'remaining_qty': 0,
                     'company_id': company.id,
-                    'description': 'SPS fix stock valuation layer',
+                    'description': 'SPS : fix stock valuation layer',
                 }
                 if quantity != product.actual_quantity:
                     new_quantity = product.actual_quantity - quantity
@@ -79,6 +79,7 @@ class FixStockValuationLayerScheduler(models.Model):
                     rows_corrected = rows_corrected+1
                     svl.write(new_vals)
 
-        print("--- %s seconds ---" % (time.time() - start_time))
-        print(count_of_prod)
-        print(rows_corrected)
+        #print("--- %s seconds ---" % (time.time() - start_time))
+        _logger.info("--- %s seconds ---", (time.time() - start_time))
+        _logger.info('count_of_prod %s ', count_of_prod)
+        _logger.info('rows_corrected %s ', rows_corrected)
