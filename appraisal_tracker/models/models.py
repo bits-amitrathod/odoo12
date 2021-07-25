@@ -271,5 +271,4 @@ class ProductProduct(models.Model):
             logging.error("prod issue po \n Exception12: %s" % str(e))
 
 
-
-
+    
