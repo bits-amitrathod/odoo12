@@ -223,7 +223,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         if request.session.uid:
             _logger.info('Login successfully')
             user = request.env['res.users'].search([('id', '=', request.session.uid)])
-            if user and user.partner_id and user.partner_id.id == partner_id:
+            if user and user.partner_id and user.partner_id.active and user.partner_id.id == partner_id:
                 context = {'quote_my_report_partner_id': partner_id}
                 try:
                     # user.share is False means internal user
@@ -249,13 +249,23 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
+        _logger.info('In add_product_in_cart')
         user = request.env['res.users'].search([('id', '=', request.session.uid)])
-        product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list(user.partner_id.id)
-        for product_id in product_list:
-            if product_list.get(product_id)['quantity'] > 0 and product_list.get(product_id)['select']:
-                self.cart_update_custom(product_list.get(product_id)['product'].id,
-                                    product_list.get(product_id)['quantity'])
-        return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)
+        try:
+            product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list(user.partner_id.id)
+            _logger.info('Length of product list : %s', str(len(product_list)))
+
+            if len(product_list) > 0:
+                for product_id in product_list:
+                    if product_list.get(product_id)['quantity'] > 0 and product_list.get(product_id)['select']:
+                        self.cart_update_custom(product_list.get(product_id)['product'].id,
+                                            product_list.get(product_id)['quantity'])
+                return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)
+            else:
+                return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)
+        except Exception as e:
+            _logger.info('While adding product in cart exception occurred')
+            _logger.error(e)
 
     def cart_update_custom(self, product_id, add_qty, set_qty=0, **kw):
         """This route is called when adding a product to cart (no options)."""

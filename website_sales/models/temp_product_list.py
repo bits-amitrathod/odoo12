@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from odoo import api, fields, models, tools
+import logging
 import operator
+
+_logger = logging.getLogger(__name__)
 
 
 class TempProductList(models.Model):
@@ -163,15 +166,19 @@ class TempProductList(models.Model):
                     partner_product_list.get(product_id)['select'] = select
 
     def get_product_list(self, partner_id):
-        parent_id = self.get_parent(partner_id)
-        if parent_id is not None:
-            if self.product_list[parent_id].items() :
-                product_list_sorted = sorted(self.product_list[parent_id].items(),
-                                        key=lambda x: (x[1]['product_brand_name'] if 'product_brand_name' in x[1] else "Test",
-                                                        x[1]['product_sku'] if 'product_sku' in x[1] else "Test"))
-                return self.product_list[parent_id], product_list_sorted
+        _logger.info('In get_product_list -  partner_id : %s', str(partner_id))
+        try:
+            if partner_id and partner_id is not None and len(self.product_list) > 0:
+                parent_id = self.get_parent(partner_id)
+                _logger.info('In get_product_list - parent_id : %s', str(parent_id))
+                if parent_id is not None and len(self.product_list[parent_id]) > 0 and self.product_list[parent_id].items():
+                    product_list_sorted = sorted(self.product_list[parent_id].items(),
+                                            key=lambda x: (x[1]['product_brand_name'] if 'product_brand_name' in x[1] else "Test",
+                                                            x[1]['product_sku'] if 'product_sku' in x[1] else "Test"))
+                    return self.product_list[parent_id], product_list_sorted
+                else:
+                    return [], []
             else:
                 return [], []
-        else:
-            return [], []
-
+        except Exception as e:
+            _logger.error(e)
