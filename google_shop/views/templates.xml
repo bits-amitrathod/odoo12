@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>;) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : https://store.webkul.com/license.html/ -->
+<odoo>
+    <data>
+        <template id="success_view">
+          <t t-call="website.layout">
+            <t t-set='title'>
+                Google OAuth 2
+            </t>
+            <div class="oe_structure">
+                <div class="conatiner">
+                            <br />
+                           <h3 style="text-align: center">Hurray!! You had authorize the URL &#128578;
+                            </h3>
+                </div>
+            </div>
+                </t>
+        </template>
+
+        <template id="error_view_1">
+          <t t-call="website.layout">
+            <t t-set='title'>
+                Google OAuth 2
+            </t>
+            <div class="oe_structure">
+                <div class="conatiner">
+                            <br />
+                           <h3 style="text-align: center">&#128557; <t t-esc="message" /> !! &#128557;
+                            </h3>
+                </div>
+            </div>
+                </t>
+        </template>
+
+    </data>
+</odoo>
