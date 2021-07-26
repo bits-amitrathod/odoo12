@@ -54,8 +54,14 @@ class ResConfigSettingsForVoidedProducts(models.TransientModel):
 
         days = remove_voided_product_count_in_days
         old_create_date = date.today() - timedelta(days=days)
-        record_set = self.env['sps.customer.requests'].search([('status', '=', 'Voided'),('create_date','<=',old_create_date)])
-        record_set.sudo().unlink()
+        while True:
+            record_set = self.env['sps.customer.requests'].search(
+                [('status', '=', 'Voided'), ('create_date', '<=', old_create_date)]
+                , limit=900)
+            if not record_set:
+                break
+            record_set.sudo().unlink()
+            self.env.cr.commit()
         # query = "Delete from sps_customer_requests WHERE date(create_date) <= " "'" + str(
         #     old_create_date) + "'" "and status = 'Voided'"
         # self.env.cr.execute(query)
