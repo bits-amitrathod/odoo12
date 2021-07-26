@@ -202,7 +202,8 @@ class GoogleMerchantShop(models.Model):
 
         field_mapping_model=self.env['field.mappning.line'].search_read([('id','in',field_mapping_lines_ids),('fixed','=',False)],['model_field_id'])
 
-        field_mapping_model_ids=[x.get('model_field_id')[0] for x in field_mapping_model]
+        #field_mapping_model_ids=[x.get('model_field_id')[0] for x in field_mapping_model]
+        field_mapping_model_ids = [x.get('model_field_id')[0] for x in field_mapping_model if x.get('model_field_id')]
         field_mapping_model_name_ids=self.env['ir.model.fields'].search_read([('id','in',field_mapping_model_ids)],['name'])
 
         field_mapping_model_name=[x.get('name') for x in field_mapping_model_name_ids]
