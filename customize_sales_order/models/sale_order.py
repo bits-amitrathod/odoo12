@@ -19,6 +19,15 @@ class CustomerContract(models.Model):
         if res_users:
             return res_users.id
 
+    company_type = fields.Selection(string='Company Type',
+                                    selection=[('person', 'Individual'), ('company', 'Company')],
+                                    compute='_compute_company_type', inverse='_write_company_type',tracking=True)
+
+    @api.depends('is_company')
+    def _compute_company_type(self):
+        for partner in self:
+            partner.company_type = 'company' if partner.is_company else 'person'
+
     account_manager_cust = fields.Many2one('res.users', string="Key Account(KA)", domain="[('active', '=', True)"
                                                                                          ",('share','=',False)]", tracking=True)
     user_id = fields.Many2one('res.users', string='Business Development(BD)', help='The internal user in charge of this contact.',
