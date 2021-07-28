@@ -42,7 +42,7 @@ class FixStockValuationLayerScheduler(models.Model):
 
             if groups!=[]:
                 unit_cost = product.standard_price
-                value_at_prod = round(product.actual_quantity * product.standard_price,2)
+                value_at_prod = round(product.qty_available * product.standard_price,2)
                 vals = {
                     'product_id': prod_id,
                     'unit_cost': unit_cost,
@@ -52,17 +52,17 @@ class FixStockValuationLayerScheduler(models.Model):
                     'company_id': company.id,
                     'description': 'SPS : fix stock valuation layer',
                 }
-                if quantity != product.actual_quantity:
-                    new_quantity = product.actual_quantity - quantity
+                if quantity != product.qty_available:
+                    new_quantity = product.qty_available - quantity
                     vals["quantity"] = new_quantity
 
                 if value != value_at_prod:
                     new_value = value_at_prod - value
                     vals["value"] = new_value
 
-                if (quantity != product.actual_quantity) or (value != value_at_prod):
+                if (quantity != product.qty_available) or (value != value_at_prod):
                     count_of_prod = count_of_prod +1
-                    adjustment_value = self.env['stock.valuation.layer'].sudo().create(vals)
+                    #adjustment_value = self.env['stock.valuation.layer'].sudo().create(vals)
 
                 svls_to_fix = self.env['stock.valuation.layer'].sudo().search([
                     ('product_id', '=',prod_id),
@@ -77,7 +77,7 @@ class FixStockValuationLayerScheduler(models.Model):
                         'remaining_value': 0,
                     }
                     rows_corrected = rows_corrected+1
-                    svl.write(new_vals)
+                    #svl.write(new_vals)
 
         #print("--- %s seconds ---" % (time.time() - start_time))
         _logger.info("--- %s seconds ---", (time.time() - start_time))
