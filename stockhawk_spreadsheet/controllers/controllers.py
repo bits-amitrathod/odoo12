@@ -26,6 +26,10 @@ class StockhawkSpreadsheet(http.Controller):
             if user and user.partner_id and user.partner_id.id:
                 return http.request.render('stockhawk_spreadsheet.stockhawk_spreadsheet_view')
 
+    @http.route(['/spreadsheet/stockhawk_submission'], type='http', auth="public", website=True)
+    def stockhawk_submission(self):
+        return http.request.render('stockhawk_spreadsheet.stockhawk_spreadsheet_submitted')
+
     @http.route(['/spreadsheet/process_data'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def process_data(self, **post):
         print('In process_data')

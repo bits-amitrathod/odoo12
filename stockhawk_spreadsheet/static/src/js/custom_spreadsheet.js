@@ -16,11 +16,12 @@ function load(){
         len: 80,
         0: {
           cells: {
-            0: { text: 'Product SKU' },
-            1: { text: 'Product Name' },
-            2: { text: 'Required Quantity' },
-            3: { text: 'UOM' },
+            0: { text: 'Product SKU'},
+            1: { text: 'Product Name'},
+            2: { text: 'Required Quantity'},
+            3: { text: 'UOM'},
           },
+
         }
       };
       // x_spreadsheet.locale('zh-cn');
@@ -37,21 +38,29 @@ function load(){
               tip: 'Save',
               icon: saveIcon,
               onClick: (data, sheet) => {
-                console.log('click save button：', data, sheet)
-                $.ajax({
-                    url: "/spreadsheet/process_data",
-                    type: "POST",
-                    data: JSON.stringify({'data': data, 'sheet':sheet}),
-                    dataType: "json",
-                    traditional: true,
-                    contentType: "application/json; charset=utf-8",
-                    success: function (data) {
-                            alert(data['result']['message']);
-                            console.log(data);
-                    }
-                });
-
-              }
+              console.log('click save button：', data, sheet)
+              var proceed = confirm("Are you sure you want to proceed?");
+                if (proceed) {
+                    $.ajax({
+                        url: "/spreadsheet/process_data",
+                        type: "POST",
+                        data: JSON.stringify({'data': data, 'sheet':sheet}),
+                        dataType: "json",
+                        traditional: true,
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                                console.log(data);
+                                if(confirm(data['result']['message'])){
+                                    window.location.assign("/spreadsheet/stockhawk_submission");
+                                }else{
+                                    console.log('cancel');
+                                }
+                        }
+                    });
+                } else {
+                   console.log('No');
+                }
+            }
             }
           ],
           right: [
@@ -72,12 +81,6 @@ function load(){
               bgcolor: '#f4f5f8',
               textwrap: true,
               color: '#900b09',
-              border: {
-                top: ['thin', '#0366d6'],
-                bottom: ['thin', '#0366d6'],
-                right: ['thin', '#0366d6'],
-                left: ['thin', '#0366d6'],
-              },
             },
           ],
           merges: [

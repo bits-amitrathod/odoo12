@@ -8,6 +8,8 @@
                       <html>
                           <head>
                               <link href="/stockhawk_spreadsheet/static/src/css/xspreadsheet.css" rel="stylesheet"/>
+                              <link href="/stockhawk_spreadsheet/static/src/css/xspreadsheet.css.map" rel="stylesheet"/>
+                              <link href="/stockhawk_spreadsheet/static/src/css/xspreadsheet.js.map" rel="stylesheet"/>
                               <script type="text/javascript" src="/stockhawk_spreadsheet/static/src/js/xspreadsheet.js"></script>
                               <script type="text/javascript" src="/stockhawk_spreadsheet/static/src/js/custom_spreadsheet.js"></script>
 
