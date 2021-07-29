@@ -38,6 +38,19 @@ function load(){
               icon: saveIcon,
               onClick: (data, sheet) => {
                 console.log('click save button：', data, sheet)
+                $.ajax({
+                    url: "/spreadsheet/process_data",
+                    type: "POST",
+                    data: JSON.stringify({'data': data, 'sheet':sheet}),
+                    dataType: "json",
+                    traditional: true,
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                            alert(data['result']['message']);
+                            console.log(data);
+                    }
+                });
+
               }
             }
           ],
@@ -93,3 +106,4 @@ function load(){
         console.log('cellStyle(8, 8):', xs.cellStyle(8, 8));
       }, 5000);
     }
+

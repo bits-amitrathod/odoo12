@@ -9,7 +9,7 @@
     'description': 'Stockhawk Spreadsheet',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'website'],
+    'depends': ['website_sale'],
 
     # always loaded
     'data': [

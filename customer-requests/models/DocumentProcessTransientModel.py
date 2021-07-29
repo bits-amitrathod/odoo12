@@ -7,6 +7,7 @@ import csv
 import collections
 import json
 import re
+import os
 try:
     import xlrd
     try:
@@ -22,6 +23,87 @@ _logger = logging.getLogger(__name__)
 
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
+
+    def process_portal_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Portal'):
+        print('In process_portal_document')
+        if not user_model.prioritization:
+            return dict(errorCode=1, message='Prioritization is Not Enabled')
+        if user_model.customer_rank == 0:
+            return dict(errorCode=2, message='Not a Customer')
+        _logger.info('user_model.parent_id %r', user_model.parent_id.id)
+
+        if user_model.parent_id.id:
+            user_id = user_model.parent_id.id
+        else:
+            user_id = user_model.id
+        mapping_field_list = list(self.env['sps.customer.template'].fields_get().keys())
+        mapping_field_list = [mapping_field for mapping_field in mapping_field_list if
+                              mapping_field.startswith('mf_')]
+        templates_list = self.env['sps.customer.template'].search(
+            [['customer_id', '=', user_id], ['template_status', '=', 'Active']])
+        if document_source != 'Portal' and len(templates_list) <= 0:
+            return dict(errorCode=5, message='Template Not Found')
+
+        template_type = template_type_from_user
+
+        file_extension = uploaded_file_path[uploaded_file_path.rindex('.') + 1:]
+
+        if file_extension == 'xls' or file_extension == 'xlsx':
+            requests, file_acceptable = DocumentProcessTransientModel._parse_excel(uploaded_file_path, '',
+                                                                                   '', document_source)
+
+        if file_acceptable is None and len(requests) > 0:
+            today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+            file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
+                                      # gl_account_id=gl_account_id,
+                                      customer_id=user_id, template_type=template_type,
+                                      document_name=file_name,
+                                      file_location=uploaded_file_path, source=document_source, email_from='',
+                                      status='draft',
+                                      create_uid=1, create_date=today_date, write_uid=1,
+                                      write_date=today_date)
+            file_uploaded_record = self.env['sps.cust.uploaded.documents'].create(file_upload_record)
+            document_id = file_uploaded_record.id
+            if document_id is not None or document_id:
+                ref = str(document_id) + "_" + file_uploaded_record.token
+                response = dict(message='File Uploaded Successfully', ref=ref)
+
+                for req in requests:
+                    if 'required_quantity' in req.keys() and not req['required_quantity'].strip().isnumeric():
+                        req['required_quantity'] = '0'
+                    elif 'quantity' in req.keys() and not req['quantity'].strip().isnumeric():
+                        req['quantity'] = '0'
+
+                    if 'customer_sku' in req.keys():
+                        customer_sku = req['customer_sku']
+                        product_sku = self.get_product_sku(user_model, customer_sku)
+                        products = self.get_product(product_sku, req)
+                        if len(products) == 0:
+                            # Check product with -E
+                            _logger.info('Find product sku with -E : ' + str(product_sku))
+                            products = self.get_product(product_sku + '-E', req)
+                        self._create_customer_request(req, user_id, document_id, user_model, products, template_type,
+                                                      today_date)
+                    elif 'mfr_catalog_no' in req.keys():
+                        mfr_catalog_no = req['mfr_catalog_no']
+                        product_sku = self.get_product_sku(user_model, mfr_catalog_no)
+                        products = self.get_product(product_sku, req)
+                        if len(products) == 0:
+                            # Check product with -E
+                            _logger.info('Find product sku with -E : ' + str(product_sku))
+                            products = self.get_product(product_sku + '-E', req)
+                        self._create_customer_request(req, user_id, document_id, user_model, products, template_type,
+                                                      today_date)
+                # if document has all voided products then Send Email Notification to customer.
+                self._all_voided_products(document_id, user_model, file_uploaded_record)
+            else:
+                _logger.info('file is not acceptable')
+                response = dict(errorCode=12, message='Error saving document record')
+        else:
+            _logger.info('file is not acceptable')
+            response = dict(errorCode=2, message='Invalid File extension')
+        return response
+
 
     def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api', ):
         if not user_model.prioritization:
@@ -55,7 +137,8 @@ class DocumentProcessTransientModel(models.TransientModel):
             return dict(errorCode=4, message='Mappings Not Found')
         requests, file_acceptable = DocumentProcessTransientModel._parse_csv(uploaded_file_path, mappings, non_mapped_columns)
         if file_acceptable is not None:
-            requests, file_acceptable = DocumentProcessTransientModel._parse_excel(uploaded_file_path, mappings, non_mapped_columns)
+            requests, file_acceptable = DocumentProcessTransientModel._parse_excel(uploaded_file_path, mappings, non_mapped_columns, document_source)
+
         if file_acceptable is None and len(requests) > 0:
             today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
@@ -70,6 +153,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             if document_id is not None or document_id:
                 ref = str(document_id) + "_" + file_uploaded_record.token
                 response = dict(message='File Uploaded Successfully', ref=ref)
+
                 for req in requests:
                     if 'required_quantity' in req.keys() and not req['required_quantity'].strip().isnumeric():
                         req['required_quantity'] = '0'
@@ -262,6 +346,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             print('matched_template = 1')
         return column_mappings, non_selected_columns, template_type
 
+
     @staticmethod
     def _read_xls_book(book, read_data=False):
         sheet = book.sheet_by_index(0)
@@ -343,7 +428,7 @@ class DocumentProcessTransientModel(models.TransientModel):
         return requests, file_acceptable
 
     @staticmethod
-    def _parse_excel(uploaded_file_path, mappings, non_mapped_columns):
+    def _parse_excel(uploaded_file_path, mappings, non_mapped_columns, document_source):
         file_acceptable = None
         requests = []
         try:
@@ -353,22 +438,40 @@ class DocumentProcessTransientModel(models.TransientModel):
                 excel_data_rows = [excel_data_rows_with_columns[idx] for idx in
                                    range(1, len(excel_data_rows_with_columns))]
                 excel_columns = excel_data_rows_with_columns[0]
-                for excel_data_row in excel_data_rows:
-                    un_mapped_data = {}
-                    for non_mapped_column in non_mapped_columns:
-                        if excel_columns.index(non_mapped_column) >= 0:
-                            un_mapped_data.update(
-                                {non_mapped_column: excel_data_row[excel_columns.index(non_mapped_column)]})
-                    x = {'un_mapped_data': json.dumps(un_mapped_data)}
-                    for mapping in mappings:
-                        mapping_field = str(mapping['mapping_field'])
-                        if mapping_field.startswith('mf_'):
-                            x.update(
-                                {mapping_field[3:]: excel_data_row[excel_columns.index(mapping['template_field'])]})
-                        else:
-                            x.update(
-                                {mapping_field: excel_data_row[excel_columns.index(mapping['template_field'])]})
-                    requests.append(x)
+                if document_source != 'Portal':
+                    for excel_data_row in excel_data_rows:
+                        un_mapped_data = {}
+                        for non_mapped_column in non_mapped_columns:
+                            if excel_columns.index(non_mapped_column) >= 0:
+                                un_mapped_data.update(
+                                    {non_mapped_column: excel_data_row[excel_columns.index(non_mapped_column)]})
+                        x = {'un_mapped_data': json.dumps(un_mapped_data)}
+                        for mapping in mappings:
+                            mapping_field = str(mapping['mapping_field'])
+                            if mapping_field.startswith('mf_'):
+                                x.update(
+                                    {mapping_field[3:]: excel_data_row[excel_columns.index(mapping['template_field'])]})
+                            else:
+                                x.update(
+                                    {mapping_field: excel_data_row[excel_columns.index(mapping['template_field'])]})
+                        requests.append(x)
+                else:
+                    x = {}
+                    mappings = [{'template_field': 'Product SKU', 'mapping_field': 'mf_customer_sku'},
+                     {'template_field': 'Required Quantity', 'mapping_field': 'mf_required_quantity'},
+                     {'template_field': 'UOM', 'mapping_field': 'mf_uom'},
+                     {'template_field': 'Product Name', 'mapping_field': 'mf_product_description'}]
+                    for excel_data_row in excel_data_rows:
+                        for mapping in mappings:
+                            mapping_field = str(mapping['mapping_field'])
+                            if mapping_field.startswith('mf_'):
+                                x.update(
+                                    {mapping_field[3:]: excel_data_row[excel_columns.index(mapping['template_field'])]})
+                            else:
+                                x.update(
+                                    {mapping_field: excel_data_row[excel_columns.index(mapping['template_field'])]})
+                        requests.append(x)
+
         except UnicodeDecodeError as ue:
             file_acceptable = False
             _logger.info(str(ue))
