@@ -45,7 +45,7 @@ class VendorBillPartnerName(models.Model):
                             if partner.type == 'other':
                                 typ = 'AP'
                                 name = "%s :- %s ,%s" % (typ,
-                                                         partner.commercial_company_name or partner.parent_id.name,
+                                                         partner.parent_id.name or partner.name,
                                                          name)
                             else:
                                 name = "%s :- %s ,%s" % ((partner.type).upper(),
@@ -56,7 +56,7 @@ class VendorBillPartnerName(models.Model):
                             if partner.type == 'other' and partner.company_type == 'company':
                                 typ = 'AP'
                                 name = "%s :- %s ,%s" % (typ,
-                                                         partner.name or partner.parent_id.name,
+                                                         partner.parent_id.name or partner.name,
                                                          name)
                             else:
                                 name = "%s :- %s ,%s" % ((partner.type).upper(),
@@ -74,7 +74,7 @@ class VendorBillPartnerName(models.Model):
                     if partner.is_company and partner.company_type == 'company':
                         typ = 'AP'
                         name = "%s :- %s ,%s" % (typ,
-                                                 partner.name or partner.parent_id.name,
+                                                 partner.parent_id.name or partner.name,
                                                  name)
                     else:
                         name = "%s ,%s" % (partner.commercial_company_name or partner.parent_id.name,name)
