@@ -32,48 +32,52 @@ class VendorBillPartnerName(models.Model):
         res = []
         for partner in self:
             name = partner.name or ''
-            # if (self.env.context.get('vendor_bill_partner_name_display_name') and "supplier" == self.env.context.get('res_partner_search_mode')):
+            if (self.env.context.get('vendor_bill_partner_name_display_name') and "supplier" == self.env.context.get('res_partner_search_mode')):
             # or\
             #     (self.env.context.get('sale_invoice_sipping_partner_name_display_name') and True != ('show_address_only' in self._context ))   or\
             #         (self.env.context.get('sale_invoice_partner_name_display_name') and True != ('show_address_only' in self._context ) ) \
 
-            if partner.company_name or partner.parent_id:
+                if partner.company_name or partner.parent_id:
                     if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
                     if not partner.is_company:
-                        pass
-                        # if partner.type and partner.cpmpany_type:
-                        #     if partner.type == 'other':
-                        #             typ = 'AP'
-                        #             name = "%s :- %s ,%s" % (typ,
-                        #                                      partner.commercial_company_name or partner.parent_id.name,
-                        #                                      name)
-                        #     # else:
-                        #     #         name = "%s :- %s ,%s" % ((partner.type).upper(),
-                        #     #                                  partner.commercial_company_name or partner.parent_id.name,
-                        #     #                                  name)
+                        if partner.type :
+                            if partner.type == 'other':
+                                typ = 'AP'
+                                name = "%s :- %s ,%s" % (typ,
+                                                         partner.commercial_company_name or partner.parent_id.name,
+                                                         name)
+                            else:
+                                name = "%s :- %s ,%s" % ((partner.type).upper(),
+                                                         partner.commercial_company_name or partner.parent_id.name,
+                                                         name)
                     else:
-                        if partner.type and partner.company_type :
+                        if partner.type:
                             if partner.type == 'other' and partner.company_type == 'company':
-                                    typ = 'APC'
-                                    name = "%s :- %s ,%s" % (typ,
-                                                             partner.commercial_company_name or partner.parent_id.name,
-                                                             name)
-                            # else:
-                            #         name = "%s :- %s ,%s" % ((partner.type).upper(),
-                            #                                  partner.commercial_company_name or partner.parent_id.name,
-                            #                                  name)
+                                typ = 'AP'
+                                name = "%s :- %s ,%s" % (typ,
+                                                         partner.commercial_company_name or partner.parent_id.name,
+                                                         name)
+                            else:
+                                name = "%s :- %s ,%s" % ((partner.type).upper(),
+                                                         partner.commercial_company_name or partner.parent_id.name,
+                                                         name)
 
-            # else:
-            #         if partner.type:
-            #             name = "%s :- %s" % (('main').upper(),
-            #                                   partner.commercial_company_name or partner.name)
-            # else:
-            #     if partner.company_name or partner.parent_id:
-            #         if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
-            #             name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
-            #         if not partner.is_company:
-            #             name = "%s ,%s" % (partner.commercial_company_name or partner.parent_id.name,name)
+                else:
+                    if partner.type:
+                        name = "%s :- %s" % (('main').upper(),
+                                              partner.commercial_company_name or partner.name)
+            else:
+                if partner.company_name or partner.parent_id:
+                    if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
+                        name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
+                    if partner.is_company and partner.company_type == 'company':
+                        typ = 'AP'
+                        name = "%s :- %s ,%s" % (typ,
+                                                 partner.commercial_company_name or partner.parent_id.name,
+                                                 name)
+                    else:
+                        name = "%s ,%s" % (partner.commercial_company_name or partner.parent_id.name,name)
 
             if self._context.get('show_address_only'):
                 name = partner._display_address(without_company=True)
