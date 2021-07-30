@@ -1,17 +1,4 @@
 function load(){
-      const rows10 = { len: 1000 };
-      for (let i = 0; i < 1000; i += 1) {
-        rows10[i] = {
-          cells: {
-            0: { text: 'A-' + i },
-            1: { text: 'B-' + i },
-            2: { text: 'C-' + i },
-            3: { text: 'D-' + i },
-            4: { text: 'E-' + i },
-            5: { text: 'F-' + i },
-          }
-        };
-      }
       const rows = {
         len: 80,
         0: {
@@ -91,10 +78,7 @@ function load(){
             2: { width: 200 },
           },
           rows,
-        }, { name: 'sheet-test', rows: rows10 }]).change((cdata) => {
-          // console.log(cdata);
-          console.log('>>>', xs.getData());
-        });
+        }]);
 
       xs.on('cell-selected', (cell, ri, ci) => {
           console.log('cell:', cell, ', ri:', ri, ', ci:', ci);
