@@ -43,7 +43,7 @@ class VendorBillPartnerName(models.Model):
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
                     if not partner.is_company:
                         if partner.type :
-                            if partner.type == 'other':
+                            if partner.type == 'other' and partner.company_type == 'company':
                                 typ = 'AP'
                                 name = "%s :- %s ,%s" % (typ,
                                                          partner.parent_id.name or partner.name,
