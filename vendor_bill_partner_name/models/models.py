@@ -32,6 +32,7 @@ class VendorBillPartnerName(models.Model):
         res = []
         for partner in self:
             name = partner.name or ''
+            name1 = ""
             if (self.env.context.get('vendor_bill_partner_name_display_name') and "supplier" == self.env.context.get('res_partner_search_mode')):
             # or\
             #     (self.env.context.get('sale_invoice_sipping_partner_name_display_name') and True != ('show_address_only' in self._context ))   or\
@@ -71,13 +72,14 @@ class VendorBillPartnerName(models.Model):
                 if partner.company_name or partner.parent_id:
                     if not name and partner.type in ['invoice', 'delivery', 'other','ap']:
                         name = dict(self.fields_get(['type'])['type']['selection'])[partner.type]
-                    if partner.is_company and partner.company_type == 'company':
-                        typ = 'AP'
-                        name = "%s :- %s ,%s" % (typ,
-                                                 partner.parent_id.name or partner.name,
-                                                 name)
+                    if not partner.is_company:
+                        name = "%s ,%s" % (partner.commercial_company_name or partner.parent_id.name, name)
                     else:
-                        name = "%s ,%s" % (partner.commercial_company_name or partner.parent_id.name,name)
+                        if partner.is_company and partner.company_type == 'company':
+                                typ = 'AP'
+                                name = "%s :- %s ,%s" % (typ,partner.parent_id.name or partner.name,name)
+                        else:
+                            name = "%s ,%s" % (partner.commercial_company_name or partner.parent_id.name, name)
 
             if self._context.get('show_address_only'):
                 name = partner._display_address(without_company=True)
@@ -92,6 +94,16 @@ class VendorBillPartnerName(models.Model):
             res.append((partner.id, name))
         return res
 
+    @api.depends('is_company', 'name', 'parent_id.display_name', 'type', 'company_name')
+    def _compute_display_name(self):
+        diff = dict(show_address=None, show_address_only=None, show_email=None, html_format=None, show_vat=None)
+        names = dict(self.with_context(**diff).name_get())
+        for partner in self:
+            p_name = names.get(partner.id)
+            if p_name.startswith("AP :-"):
+                partner.display_name = p_name[5:]
+            else:
+                partner.display_name = names.get(partner.id)
     # #@api.multi
     # def write(self, vals):
     #     super_return = super(VendorBillPartnerName, self).write(vals)
