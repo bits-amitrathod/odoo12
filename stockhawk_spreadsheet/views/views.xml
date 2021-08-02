@@ -1,0 +1,13 @@
+<odoo>
+    <!--<template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
+        <xpath expr="//link[last()]" position="after">
+            <link rel="stylesheet" href="/stockhawk_spreadsheet/static/src/css/xspreadsheet.css"/>
+            <link rel="stylesheet" href="/stockhawk_spreadsheet/static/src/css/xspreadsheet.css.map"/>
+            <link rel="stylesheet" href="/stockhawk_spreadsheet/static/src/css/xspreadsheet.js.map"/>
+        </xpath>
+        <xpath expr="//script[last()]" position="after">
+            <script type="text/javascript" src="/stockhawk_spreadsheet/static/src/js/xspreadsheet.js"/>
+            <script type="text/javascript" src="/stockhawk_spreadsheet/static/src/js/custom_spreadsheet.js"/>
+        </xpath>
+    </template>-->
+</odoo>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="stockhawk_spreadsheet_submitted" name="Stockhawk Spreadsheet Submitted">
+            <t t-call="website.layout">
+                <section id="quote" class="report">
+                        <div class="text-center pt32 pb32 in-stock-title">
+                            <img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>
+                            <h1  class="about-header mb0"> Stockhawk Spreadsheet has been submitted </h1>
+                        </div>
+                </section>
+            </t>
+        </template>
+    </data>
+</odoo>
