@@ -135,7 +135,7 @@ class VendorBillPartnerName(models.Model):
     def name_get(self):
 
         res = []
-        for partner in self: a
+        for partner in self:
         name = partner.name or ''
         if (self.env.context.get('vendor_bill_partner_name_display_name') and "supplier" == self.env.context.get(
                 'res_partner_search_mode')):
