@@ -66,13 +66,11 @@ class DocumentProcessTransientModel(models.TransientModel):
             document_id = file_uploaded_record.id
             if document_id is not None or document_id:
                 ref = str(document_id) + "_" + file_uploaded_record.token
-                response = dict(message='File Uploaded Successfully', ref=ref)
+                response = dict(errorCode=200, message='File Uploaded Successfully')
 
                 for req in requests:
                     if 'required_quantity' in req.keys() and not req['required_quantity'].strip().isnumeric():
                         req['required_quantity'] = '0'
-                    elif 'quantity' in req.keys() and not req['quantity'].strip().isnumeric():
-                        req['quantity'] = '0'
 
                     if 'customer_sku' in req.keys():
                         customer_sku = req['customer_sku']
@@ -84,16 +82,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                             products = self.get_product(product_sku + '-E', req)
                         self._create_customer_request(req, user_id, document_id, user_model, products, template_type,
                                                       today_date)
-                    elif 'mfr_catalog_no' in req.keys():
-                        mfr_catalog_no = req['mfr_catalog_no']
-                        product_sku = self.get_product_sku(user_model, mfr_catalog_no)
-                        products = self.get_product(product_sku, req)
-                        if len(products) == 0:
-                            # Check product with -E
-                            _logger.info('Find product sku with -E : ' + str(product_sku))
-                            products = self.get_product(product_sku + '-E', req)
-                        self._create_customer_request(req, user_id, document_id, user_model, products, template_type,
-                                                      today_date)
+
                 # if document has all voided products then Send Email Notification to customer.
                 self._all_voided_products(document_id, user_model, file_uploaded_record)
             else:
@@ -101,9 +90,8 @@ class DocumentProcessTransientModel(models.TransientModel):
                 response = dict(errorCode=12, message='Error saving document record')
         else:
             _logger.info('file is not acceptable')
-            return dict(errorCode=2, message='File is not acceptable, column name modified.')
+            return dict(errorCode=2, message='File is not acceptable. Column name modified or data is wrong.')
         return response
-
 
     def process_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, email_from, document_source='Api', ):
         if not user_model.prioritization:

@@ -13,11 +13,64 @@
                               <script type="text/javascript" src="/stockhawk_spreadsheet/static/src/js/xspreadsheet.js"></script>
                               <script type="text/javascript" src="/stockhawk_spreadsheet/static/src/js/custom_spreadsheet.js"></script>
 
+                              <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"></link>
+                              <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+                              <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>-->
                           </head>
                           <body onload='load()'>
                               <div style="position: fixed; right: 0; top: .7em;">
                               </div>
-                              <div id="x-spreadsheet-demo"></div>
+                              <br></br>
+                              <center><img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/></center>
+                              <div class="container">
+                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                            SPS is a leader in providing cost-saving solutions for healthcare
+                            facilities across the United States who choose to save money without
+                            sacrificing quality of care. We accomplish this by providing hospitals.
+                        </span>
+                    </div>
+                              <!--<button type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#myModal">
+                                    Submit to Stockhawk
+                              </button>-->
+                              <!-- The Modal -->
+                                <div class="modal" id="myModal">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                              <h4 class="modal-title">Stockhawk Spreadsheet</h4>
+                                            </div>
+                                            <!-- Modal body -->
+                                            <div class="modal-body">
+                                              Are you sure you want to submit request to Stockhawk?
+                                            </div>
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <button type="button" id="myModalOK" class="btn btn-primary abc ml" data-dismiss="modal">OK</button>
+                                                <button type="button" id="myModalClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                <div class="modal" id="errorModal">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                              <h4 class="modal-title">Stockhawk Spreadsheet</h4>
+                                            </div>
+                                            <!-- Modal body -->
+                                            <div class="modal-body" id="errorMessageDisplay">
+
+                                            </div>
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <button type="button" id="errorModalClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </div>
+                                <div id="x-spreadsheet-demo"></div>
                           </body>
                       </html>
                   </t>

@@ -837,8 +837,8 @@ form fieldset select {
   }
 }
 .x-spreadsheet-icon {
-  width: 18px;
-  height: 18px;
+  width: 23px;
+  height: 23px;
   margin: 1px 1px 2px 1px;
   text-align: center;
   vertical-align: middle;
@@ -1035,6 +1035,16 @@ form fieldset select {
   left: -54px;
   top: -54px;
 }
-
+.abc{
+    font-size: 15px;
+    line-height: 18px;
+    font-family: 'robotomedium';
+    background: #a32624 !important;
+    border-color: #a32624 !important;
+	border-radius: 8px;
+	color: #FFFFFF;
+}
+.ml{
+margin-left:10px;}
 
 /*# sourceMappingURL=xspreadsheet.css.map*/
