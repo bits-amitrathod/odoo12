@@ -101,7 +101,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                 response = dict(errorCode=12, message='Error saving document record')
         else:
             _logger.info('file is not acceptable')
-            response = dict(errorCode=2, message='Invalid File extension')
+            return dict(errorCode=2, message='File is not acceptable, column name modified.')
         return response
 
 
@@ -456,21 +456,26 @@ class DocumentProcessTransientModel(models.TransientModel):
                                     {mapping_field: excel_data_row[excel_columns.index(mapping['template_field'])]})
                         requests.append(x)
                 else:
-                    x = {}
-                    mappings = [{'template_field': 'Product SKU', 'mapping_field': 'mf_customer_sku'},
-                     {'template_field': 'Required Quantity', 'mapping_field': 'mf_required_quantity'},
-                     {'template_field': 'UOM', 'mapping_field': 'mf_uom'},
-                     {'template_field': 'Product Name', 'mapping_field': 'mf_product_description'}]
-                    for excel_data_row in excel_data_rows:
-                        for mapping in mappings:
-                            mapping_field = str(mapping['mapping_field'])
-                            if mapping_field.startswith('mf_'):
-                                x.update(
-                                    {mapping_field[3:]: excel_data_row[excel_columns.index(mapping['template_field'])]})
-                            else:
-                                x.update(
-                                    {mapping_field: excel_data_row[excel_columns.index(mapping['template_field'])]})
-                        requests.append(x)
+                    try:
+                        mappings = [{'template_field': 'Product SKU', 'mapping_field': 'mf_customer_sku'},
+                         {'template_field': 'Required Quantity', 'mapping_field': 'mf_required_quantity'},
+                         {'template_field': 'UOM', 'mapping_field': 'mf_uom'},
+                         {'template_field': 'Product Name', 'mapping_field': 'mf_product_description'}]
+                        print('excel_data_rows')
+                        print(excel_data_rows)
+                        for excel_data_row in excel_data_rows:
+                            x = {}
+                            for mapping in mappings:
+                                mapping_field = str(mapping['mapping_field'])
+                                if mapping_field.startswith('mf_'):
+                                    x.update(
+                                        {mapping_field[3:]: excel_data_row[excel_columns.index(mapping['template_field'])]})
+                                else:
+                                    x.update(
+                                        {mapping_field: excel_data_row[excel_columns.index(mapping['template_field'])]})
+                            requests.append(x)
+                    except Exception as ex:
+                        return dict(errorCode=15, message='Column name modified.')
 
         except UnicodeDecodeError as ue:
             file_acceptable = False
