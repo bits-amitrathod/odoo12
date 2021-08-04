@@ -23,16 +23,63 @@
                               <br></br>
                               <center><img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/></center>
                               <div class="container">
-                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
-                            SPS is a leader in providing cost-saving solutions for healthcare
-                            facilities across the United States who choose to save money without
-                            sacrificing quality of care. We accomplish this by providing hospitals.
-                        </span>
-                    </div>
-                              <!--<button type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#myModal">
-                                    Submit to Stockhawk
-                              </button>-->
+                                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                    SPS is a leader in providing cost-saving solutions for healthcare
+                                    facilities across the United States who choose to save money without
+                                    sacrificing quality of care. We accomplish this by providing hospitals.
+                                    <button type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help">
+                                        Help
+                                    </button>
+                                </span>
+                              </div>
+                              <!--loader-->
+                              <span id="loader" class="loader" style="display: none;"></span>
                               <!-- The Modal -->
+                                <div class="modal" id="help">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                              <h4 class="modal-title">Stockhawk Spreadsheet Help</h4>
+                                            </div>
+                                            <!-- Modal body -->
+                                            <div class="modal-body">
+                                              <div class="container">
+                                                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                    <p>
+                                                        SPS is a leader in providing cost-saving solutions for healthcare
+                                                    facilities across the United States who choose to save money without
+                                                    sacrificing quality of care. We accomplish this by providing hospitals
+                                                    and surgery centers two ways to save on their high-volume surgical
+                                                    disposables. We help our customers recover significant budget costs by
+                                                    purchasing their un-used, in-date surgical surplus while at the same
+                                                    time, providing them additional cost savings and flexibility when
+                                                    purchasing the same high volume products they are currently utilizing.
+                                                    </p>
+                                                  <p>
+                                                    SPS is a leader in providing cost-saving solutions for healthcare
+                                                    facilities across the United States who choose to save money without
+                                                    sacrificing quality of care. We accomplish this by providing hospitals
+                                                    and surgery centers two ways to save on their high-volume surgical
+                                                    disposables. We help our customers recover significant budget costs by
+                                                    purchasing their un-used, in-date surgical surplus while at the same
+                                                    time.
+                                                  </p><p>
+                                                    SPS is a leader in providing cost-saving solutions for healthcare
+                                                    facilities across the United States who choose to save money without
+                                                    sacrificing quality of care. We accomplish this by providing hospitals
+                                                    and surgery centers two ways to save on their high-volume surgical
+                                                    disposables. </p>
+                                                </span>
+                                            </div>
+                                            </div>
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <button type="button" id="helpClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                  </div>
                                 <div class="modal" id="myModal">
                                     <div class="modal-dialog">
                                         <div class="modal-content">

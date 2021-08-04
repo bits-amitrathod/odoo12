@@ -1047,4 +1047,31 @@ form fieldset select {
 .ml{
 margin-left:10px;}
 
+.loader {
+  margin:0px auto;
+  display:block;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid #a32624;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  position: absolute;
+  z-index: 1;
+  top: 25%;
+  left: 50%;
+  margin-right: -50%;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /*# sourceMappingURL=xspreadsheet.css.map*/

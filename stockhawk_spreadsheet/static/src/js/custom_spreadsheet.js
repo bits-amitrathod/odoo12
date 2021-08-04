@@ -42,6 +42,7 @@ function load(){
               });
               $("#myModalOK").click(function () {
                     $('#myModal').hide();
+                    $('#loader').show();
                     $.ajax({
                         url: "/spreadsheet/process_data",
                         type: "POST",
@@ -52,8 +53,10 @@ function load(){
                         success: function (data) {
                                 console.log(data);
                                 if(data['result']['errorCode'] == 200){
+                                    $('#loader').hide();
                                     window.location.assign("/spreadsheet/stockhawk_submission");
                                 }else{
+                                    $('#loader').hide();
                                     $('#errorModal').show();
                                     $('#errorMessageDisplay').html(data['result']['message']);
                                 }
