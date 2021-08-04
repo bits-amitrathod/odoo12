@@ -219,6 +219,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         _logger.info('In quote my report')
         partner = request.env['res.partner'].sudo().search([('id', '=', partner_id)])
         _logger.info(partner)
+        if partner is not None:
+            _logger.info(partner.name)
         request.session['my_in_stock_report_sales_channel'] = True
         if request.session.uid:
             _logger.info('Login successfully')
@@ -258,8 +260,11 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             if len(product_list) > 0:
                 for product_id in product_list:
                     if product_list.get(product_id)['quantity'] > 0 and product_list.get(product_id)['select']:
+                        _logger.info('Product added to cart : %s', str(product_list.get(product_id)['product'].id))
+                        _logger.info('Product quantity to cart : %s', str(product_list.get(product_id)['quantity']))
                         self.cart_update_custom(product_list.get(product_id)['product'].id,
                                             product_list.get(product_id)['quantity'])
+                        _logger.info('Above Product Added to cart')
                 return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)
             else:
                 return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)

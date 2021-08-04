@@ -172,7 +172,7 @@ class TempProductList(models.Model):
                 parent_id = self.get_parent(partner_id)
                 _logger.info('In get_product_list - parent_id : %s', str(parent_id))
                 if parent_id is not None and len(self.product_list[parent_id]) > 0 and self.product_list[parent_id].items():
-                    _logger.info('In get_product_list - product_list : %s', self.product_list)
+                    _logger.info('In get_product_list - product_list : %s', self.product_list[parent_id])
                     product_list_sorted = sorted(self.product_list[parent_id].items(),
                                             key=lambda x: (x[1]['product_brand_name'] if 'product_brand_name' in x[1] else "Test",
                                                             x[1]['product_sku'] if 'product_sku' in x[1] else "Test"))
