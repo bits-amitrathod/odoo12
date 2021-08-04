@@ -540,15 +540,26 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     # @api.multi
     def process_notification_scheduler_everyday(self, custom_date=None):
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_new_product_scheduler --> Start')
         self.process_new_product_scheduler()
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_new_product_scheduler --> End')
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_notify_available --> Start')
         self.process_notify_available()
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_notify_available --> End')
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_packing_list --> Start')
         self.process_packing_list()
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_packing_list --> End')
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_packing_list --> Start')
         self.process_on_hold_customer()
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_packing_list --> End')
+        _logger.info('everyday_cron :- process_notification_scheduler_everyday --> process_todays_notification_flag_scheduler --> Start')
         if custom_date is not None:
             custom_date = datetime.strptime(custom_date, '%Y-%m-%d').date()
         else:
             custom_date = date.today()
         self.process_todays_notification_flag_scheduler(custom_date)
+        _logger.info(
+            'everyday_cron :- process_notification_scheduler_everyday --> process_todays_notification_flag_scheduler --> End')
 
     def process_todays_notification_flag_scheduler(self, custom_date):
         _logger.info('process_todays_notification_flag_scheduler called')
