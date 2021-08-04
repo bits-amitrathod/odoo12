@@ -627,16 +627,17 @@ class InventoryNotificationScheduler(models.TransientModel):
             self.process_packing_email_notification(vals)
 
             # final_date = fields.Datetime.from_string(today_start)
-        products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
-                                                       ('stock_move_ids.state', '=', 'done'),
-                                                       ('stock_move_ids.picking_id', '!=', False),
-                                                       ('stock_move_ids.move_line_ids.state', '=', 'done'),
-                                                       ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
-                                                       ('stock_move_ids.move_line_ids.write_date', '<', final_date),
-                                                       ('stock_move_ids.move_line_ids.qty_done', '>', 0),
-                                                       ('stock_move_ids.move_line_ids.lot_id', '!=', None)
-                                                       ])
-        self.process_notification_for_product_red_status(products)
+
+        # products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
+        #                                                ('stock_move_ids.state', '=', 'done'),
+        #                                                ('stock_move_ids.picking_id', '!=', False),
+        #                                                ('stock_move_ids.move_line_ids.state', '=', 'done'),
+        #                                                ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
+        #                                                ('stock_move_ids.move_line_ids.write_date', '<', final_date),
+        #                                                ('stock_move_ids.move_line_ids.qty_done', '>', 0),
+        #                                                ('stock_move_ids.move_line_ids.lot_id', '!=', None)
+        #                                                ])
+        # self.process_notification_for_product_red_status(products)
 
     def process_on_hold_customer(self):
         customers = self.env['res.partner'].search([('on_hold', '=', True), ('is_parent', '=', True)])
@@ -981,7 +982,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         quant = self.env['stock.quant'].search(
             [('write_date', '>=', last_day), ('quantity', '>', 0), ])
         products = quant.mapped('product_id')
-        self.process_notification_for_product_green_status(products)
+        # self.process_notification_for_product_green_status(products)
 
     def process_packing_email_notification(self, vals):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
