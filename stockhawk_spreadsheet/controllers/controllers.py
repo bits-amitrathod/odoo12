@@ -74,7 +74,7 @@ class StockhawkSpreadsheet(http.Controller):
                                                                                        template_type, file_name, 'Portal')
                     print('Response')
                     print(response)
-        return {'message': response['message']}
+        return {'errorCode': response['errorCode'], 'message': response['message']}
 
     @staticmethod
     def cleaning_data(customer_name):
