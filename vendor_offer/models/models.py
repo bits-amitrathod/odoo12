@@ -1298,7 +1298,7 @@ class FedexDelivery(models.Model):
         package_type = popup.product_packaging.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
-        #srm.shipment_request_email(order)
+        srm.shipment_request_email(order)
         srm.set_currency(_convert_curr_iso_fdx(order.currency_id.name))
         srm.set_shipper(order.partner_id, order.partner_id)
         # srm.set_recipient(order.company_id.partner_id)

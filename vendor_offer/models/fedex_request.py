@@ -175,47 +175,48 @@ class FedexRequest():
                 self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes.append('SATURDAY_DELIVERY')
 
     def shipment_request_email(self, order):
-        #SpecialServiceTypes = self.client.factory.create('ShipmentSpecialServiceType')
-        SpecialServiceTypes = self.factory.ShipmentSpecialServiceType(False)
-        self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes.append(
-            SpecialServiceTypes.EMAIL_NOTIFICATION)
-
+        shipmentSpecialServicesRequested = self.factory.ShipmentSpecialServicesRequested()
+        self.RequestedShipment.SpecialServicesRequested = shipmentSpecialServicesRequested
+        self.RequestedShipment.SpecialServicesRequested.SpecialServiceTypes.append('EMAIL_NOTIFICATION')
+        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail = self.factory.EMailNotificationDetail()
         if order and order.acq_user_id and order.acq_user_id.email:
-            #eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
             eMailNotificationRecipient = self.factory.EMailNotificationRecipient()
-            eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create(
-                'EMailNotificationRecipientType').RECIPIENT
+            eMailNotificationRecipient.EMailNotificationRecipientType = self.factory.EMailNotificationRecipientType(
+                'RECIPIENT')
             eMailNotificationRecipient.EMailAddress = order.acq_user_id.email
-            eMailNotificationRecipient.NotificationEventsRequested.append(
-                self.client.factory.create('EMailNotificationEventType').ON_TENDER)
-            eMailNotificationRecipient.Format.value = self.client.factory.create('EMailNotificationFormatType').HTML
+            # eMailNotificationRecipient.EMailAddress = "tushargodase@benchmarkit.solutions"
+
+            eMailNotificationEventType = self.factory.EMailNotificationRecipientType('ON_TENDER')
+
+            eMailNotificationRecipient.NotificationEventsRequested.append(eMailNotificationEventType)
+            eMailNotificationRecipient.Format = self.factory.EMailNotificationFormatType('HTML')
+            eMailNotificationRecipient.Localization = self.factory.Localization(False)
             eMailNotificationRecipient.Localization.LanguageCode = "EN"
             self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(
                 eMailNotificationRecipient)
 
-        eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
-        eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create(
-            'EMailNotificationRecipientType').RECIPIENT
+        eMailNotificationRecipient = self.factory.EMailNotificationRecipient()
+
+        eMailNotificationRecipient.EMailNotificationRecipientType = self.factory.EMailNotificationRecipientType(
+            'RECIPIENT')
         eMailNotificationRecipient.EMailAddress = "acquisitions@surgicalproductsolutions.com"
-        eMailNotificationRecipient.NotificationEventsRequested.append(
-            self.client.factory.create('EMailNotificationEventType').ON_TENDER)
-        eMailNotificationRecipient.Format.value = self.client.factory.create('EMailNotificationFormatType').HTML
+        # eMailNotificationRecipient.EMailAddress = "anvaywalujkar@benchmarkit.solutions"
+
+        eMailNotificationEventType = self.factory.EMailNotificationRecipientType('ON_TENDER')
+
+        eMailNotificationRecipient.NotificationEventsRequested.append(eMailNotificationEventType)
+        eMailNotificationRecipient.Format = self.factory.EMailNotificationFormatType('HTML')
+        eMailNotificationRecipient.Localization = self.factory.Localization(False)
         eMailNotificationRecipient.Localization.LanguageCode = "EN"
+
+        eMailNotificationRecipient.EMailNotificationAggregationType = self.factory.EMailNotificationAggregationType(
+            False)
+        eMailNotificationRecipient.EMailNotificationAggregationType = "PER_PACKAGE"
+
         self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(
             eMailNotificationRecipient)
 
-        # eMailNotificationRecipient = self.client.factory.create('EMailNotificationRecipient')
-        # eMailNotificationRecipient.EMailNotificationRecipientType.value = self.client.factory.create(
-        #     'EMailNotificationRecipientType').RECIPIENT
-        # eMailNotificationRecipient.EMailAddress = "ajinkyanimbalkar@benchmarkit.solutions"
-        # eMailNotificationRecipient.NotificationEventsRequested.append(
-        #     self.client.factory.create('EMailNotificationEventType').ON_TENDER)
-        # eMailNotificationRecipient.Format.value = self.client.factory.create('EMailNotificationFormatType').HTML
-        # eMailNotificationRecipient.Localization.LanguageCode = "EN"
-        # self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(
-        #     eMailNotificationRecipient)
-
-        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.AggregationType.value = "PER_PACKAGE"
+        # print(self.RequestedShipment.SpecialServicesRequested)
 
     def set_currency(self, currency):
         self.RequestedShipment.PreferredCurrency = currency
