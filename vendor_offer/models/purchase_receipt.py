@@ -23,8 +23,10 @@ class StockMoveOfferPrice(models.Model):
                 line.re_vendor_offer_data = po_order.vendor_offer_data
                 po_prods =[]
                 if po_order.id:
+                    po_line_id = line.purchase_line_id.id
                     po_prods = self.env['purchase.order.line'].search(
-                        [('product_id', '=', line.product_id.id),('order_id', '=', po_order.id)])
+                        [('product_id', '=', line.product_id.id),('order_id', '=', po_order.id),
+                         ('id', '=', po_line_id)])
                 if po_prods != []:
                     for obj in po_prods:
                         line.update({
