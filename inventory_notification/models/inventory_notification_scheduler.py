@@ -405,7 +405,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                             cust_ids.extend(contact.ids)
                             _logger.info("cc Customer =")
                             _logger.info(contact.email)
-                            email_list_cc.append(contact.email)
+                            if contact.type not in ['other','invoice']:
+                                email_list_cc.append(contact.email)
                         # email_queue.append(contact.email)
                 if (customr.historic_months > 0):
                     historic_day = customr.historic_months * 30
