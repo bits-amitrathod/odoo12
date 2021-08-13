@@ -13,6 +13,7 @@ class StockMoveOfferPrice(models.Model):
     re_vendor_offer_data = fields.Boolean(compute='_set_offer_price_re')
     re_expiration_date_str = fields.Char(string="Expected Expiration Date",compute='_set_offer_price_re')
 
+
     def _set_offer_price_re(self):
         for line in self:
             line.currency_id = line.product_id.currency_id.id
