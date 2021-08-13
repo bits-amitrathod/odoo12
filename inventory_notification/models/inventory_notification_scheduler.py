@@ -457,51 +457,27 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <p style="text-align: left;">412-434-0214</p>
                                     </td>
                                     <td style="width: 154px; height: 78px;">
-                                    <p><strong>Gabriella Thomas</strong></p>
-                                    <p>412-745-0324&nbsp;</p>
+                                    <p><strong>Chelsea Owen</strong></p>
+                                    <p>412-564-1281&nbsp;</p>
                                     </td>
                                     <td style="width: 157px; height: 78px;">
-                                    <p style="text-align: left;"><strong>Kendall Mitchell</strong></p>
-                                    <p style="text-align: left;">412-745-0340</p>
+                                    <p style="text-align: left;"><strong>Phil Kemp</strong></p>
+                                    <p style="text-align: left;">412-745-1327</p>
                                     </td>
                                     <td style="width: 123px; height: 78px;">&nbsp;</td>
                                     </tr>
                                     <tr style="height: 76px;">
                                     <td style="width: 156px; height: 76px;">
-                                    <p><strong>Jenna Lucas</strong></p>
-                                    <p>412-564-1048</p>
+                                    <p><strong>Christopher Odell</strong></p>
+                                    <p>412-745-0338</p>
                                     </td>
                                     <td style="width: 157px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Nicole Folino&nbsp;</strong></p>
-                                    <p style="text-align: left;">412-564-1279&nbsp;&nbsp;</p>
+                                    <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
+                                    <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
                                     </td>
                                     <td style="width: 123px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
-                                    <p style="text-align: left;">412-745-2343</p>
-                                    </td>
-                                    </tr>
-                                    <tr style="height: 92px;">
-                                    <td style="width: 157px; height: 92px;">
-                                    <p style="text-align: left;"><strong>Laura Herald</strong></p>
-                                    <p style="text-align: left;">412-745-2344</p>
-                                    </td>
-                                    <td style="width: 123px; height: 92px;">
-                                    <p style="text-align: left;"><strong>Brianna Galonis</strong></p>
-                                    <p style="text-align: left;">412-745-2345&nbsp;</p>
-                                    </td>
-                                    <td style="width: 154px; height: 76px;">
-                                    <p><strong>Chelsea Cernigliaro</strong></p>
-                                    <p>412-564-1281</p>
-                                    </td>
-                                    </tr>
-                                    <tr style="height: 76px;">
-                                    <td style="width: 156px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Kristin Brown</strong></p>
-                                    <p style="text-align: left;">412-564-9011</p>
-                                    </td>
-                                    <td style="width: 123px; height: 92px;">
-                                    <p style="text-align: left;"><strong>Phil Kemp</strong></p>
-                                    <p style="text-align: left;">412-745-1327&nbsp;</p>
+                                    <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
+                                    <p style="text-align: left;">412-248-1284</p>
                                     </td>
                                     </tr>
                                     </tbody>
