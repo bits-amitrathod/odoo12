@@ -13,6 +13,7 @@ class StockMoveOfferPrice(models.Model):
     re_vendor_offer_data = fields.Boolean(compute='_set_offer_price_re')
     re_expiration_date_str = fields.Char(string="Expected Expiration Date",compute='_set_offer_price_re')
 
+
     def _set_offer_price_re(self):
         for line in self:
             line.currency_id = line.product_id.currency_id.id
@@ -23,8 +24,10 @@ class StockMoveOfferPrice(models.Model):
                 line.re_vendor_offer_data = po_order.vendor_offer_data
                 po_prods =[]
                 if po_order.id:
+                    po_line_id = line.purchase_line_id.id
                     po_prods = self.env['purchase.order.line'].search(
-                        [('product_id', '=', line.product_id.id),('order_id', '=', po_order.id)])
+                        [('product_id', '=', line.product_id.id),('order_id', '=', po_order.id),
+                         ('id', '=', po_line_id)])
                 if po_prods != []:
                     for obj in po_prods:
                         line.update({
