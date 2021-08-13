@@ -115,7 +115,7 @@ class vendor_offer_automation(models.Model):
                                                           regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g')
                                                            as sku_code_cleaned 
                                                           FROM product_template as pt join product_product as pp on 
-                                                           pt.id=pp.product_tmpl_id ) 
+                                                           pt.id=pp.product_tmpl_id where pt.active=true) 
                                                     as temp_data where sku_code_cleaned ='""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', product_sku) + """' or manufacturer_pref = '""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', sku_code) + """' """)
@@ -406,7 +406,7 @@ class vendor_offer_automation(models.Model):
                                                           regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g')
                                                            as sku_code_cleaned 
                                                           FROM product_template as pt join product_product as pp on 
-                                                           pt.id=pp.product_tmpl_id ) 
+                                                           pt.id=pp.product_tmpl_id where pt.active=true) 
                                                     as temp_data where sku_code_cleaned ='""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', product_sku) + """' or manufacturer_pref = '""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', sku_code) + """' """)
