@@ -96,9 +96,9 @@ class SpsCustomerRequest(models.Model):
 
             self.process_customer_requests(sps_customer_requests, tuple(self.documents))
 
-    def process_customer_requests(self, sps_customer_requests, document_ids):
+    def process_customer_requests(self, sps_customer_requests, document_ids, source=None):
         _logger.info('In process_customer_requests')
-        self.env['prioritization.engine.model'].allocate_product_by_priority(sps_customer_requests, document_ids)
+        self.env['prioritization.engine.model'].allocate_product_by_priority(sps_customer_requests, document_ids, source)
 
     # check customer level or global level setting for product.
     def get_settings_object(self, customer_id, product_id):

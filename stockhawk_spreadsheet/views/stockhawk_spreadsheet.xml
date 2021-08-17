@@ -23,14 +23,15 @@
                               <br></br>
                               <center><img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/></center>
                               <div class="container">
-                                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
-                                    SPS is a leader in providing cost-saving solutions for healthcare
-                                    facilities across the United States who choose to save money without
-                                    sacrificing quality of care. We accomplish this by providing hospitals.
-                                    <button type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help">
-                                        Help
-                                    </button>
-                                </span>
+                                  <center style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 25px;">Rapid Quote</center>
+<!--                                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">-->
+<!--                                    SPS is a leader in providing cost-saving solutions for healthcare-->
+<!--                                    facilities across the United States who choose to save money without-->
+<!--                                    sacrificing quality of care. We accomplish this by providing hospitals.                                    -->
+<!--                                </span>-->
+                              </div>
+                              <div>
+                                <button type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help">Help</button>
                               </div>
                               <!--loader-->
                               <span id="loader" class="loader" style="display: none;"></span>
@@ -40,7 +41,7 @@
                                         <div class="modal-content">
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                              <h4 class="modal-title">Stockhawk Spreadsheet Help</h4>
+                                              <h4 class="modal-title">Rapid Quote Help</h4>
                                             </div>
                                             <!-- Modal body -->
                                             <div class="modal-body">
@@ -85,15 +86,16 @@
                                         <div class="modal-content">
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                              <h4 class="modal-title">Stockhawk Spreadsheet</h4>
+                                              <h4 class="modal-title">Rapid Quote</h4>
                                             </div>
                                             <!-- Modal body -->
                                             <div class="modal-body">
-                                              Are you sure you want to submit request to Stockhawk?
+                                              You are about to submit your Rapid Quote. Please verify all information is correct. By clicking “Yes” you will be redirected to a loading page while your
+                                                submission is processed.
                                             </div>
                                             <!-- Modal footer -->
                                             <div class="modal-footer">
-                                                <button type="button" id="myModalOK" class="btn btn-primary abc ml" data-dismiss="modal">OK</button>
+                                                <button type="button" id="myModalOK" class="btn btn-primary abc ml" data-dismiss="modal">Yes</button>
                                                 <button type="button" id="myModalClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>
@@ -104,7 +106,7 @@
                                         <div class="modal-content">
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                              <h4 class="modal-title">Stockhawk Spreadsheet</h4>
+                                              <h4 class="modal-title">Rapid Quote</h4>
                                             </div>
                                             <!-- Modal body -->
                                             <div class="modal-body" id="errorMessageDisplay">
@@ -129,7 +131,7 @@
         <xpath expr="//a[@id='o_logout']" position="before">
             <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
                 <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
-                    <a href="/spreadsheet/stockhawk_spreadsheet" role="menuitem" class="dropdown-item">Stockhawk Spreadsheet</a>
+                    <a href="/spreadsheet/stockhawk_spreadsheet" role="menuitem" class="dropdown-item">Rapid Quote</a>
                 </t>
         </xpath>
     </template>

@@ -12,12 +12,13 @@ class ProcessHighPriorityRequests(models.Model):
     documents = set()
 
     @api.model
-    #@api.multi
-    def process_high_priority_requests(self):
+    def process_high_priority_requests(self, source=None):
         _logger.info('process high priority requests.')
         self.documents.clear()
-
-        document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
+        if source is None:
+            document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
+        elif source == 'Portal':
+            document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'Portal In Process')], limit=1, order="id asc")
         if len(document) == 1:
             high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0), ('available_qty', '>', 0),
                                                                                '|', ('required_quantity', '>', 0), ('quantity', '>', 0)])
@@ -30,7 +31,7 @@ class ProcessHighPriorityRequests(models.Model):
                     self.env.cr.commit()
                     if high_priority_doc_pro_count <= 2:
                         self.documents.add(document.id)
-                        self.env['sps.customer.requests'].process_customer_requests(high_priority_requests, tuple(self.documents))
+                        self.env['sps.customer.requests'].process_customer_requests(high_priority_requests, tuple(self.documents), source)
                         document.write({'document_processed_count': document.document_processed_count + 1})
                     else:
                         document.write({'status': 'On Hold'})

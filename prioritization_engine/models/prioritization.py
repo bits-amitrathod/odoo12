@@ -390,7 +390,7 @@ class SalesChannelPrioritization(models.Model):
     _inherit = "crm.team"
 
     team_type = fields.Selection(selection=[('engine', 'Prioritization'), ('sales', 'Sales'), ('website', 'Website'),
-                                  ('my_in_stock_report', 'My In-Stock Report')],
+                                  ('my_in_stock_report', 'My In-Stock Report'), ('rapid_quote', 'Rapid Quote')],
                                  string='Channel Type', default='sales',
                                  required=True, tracking=True,
                                  help="The type of this channel, it will define the resources this channel uses.")
@@ -406,7 +406,7 @@ class StockMove(models.Model):
             _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
             if stock_move.partner_id and stock_move.product_id and stock_move.sale_line_id and \
                     stock_move.sale_line_id.order_id and stock_move.sale_line_id.order_id.team_id and \
-                    stock_move.sale_line_id.order_id.team_id.team_type == 'engine':
+                    stock_move.sale_line_id.order_id.team_id.team_type in ('engine', 'rapid_quote'):
                 setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
                                                                                 stock_move.product_id.id)
                 if setting:
@@ -453,7 +453,7 @@ class StockMove(models.Model):
                             quant.lot_id.name) + " <b>Available Quantity :</b> " + str(quant.quantity - quant.reserved_quantity)
 
             product_lot_qty_dict.clear()
-            if (move.picking_id and move.picking_id.sale_id and move.picking_id.sale_id.team_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
+            if (move.picking_id and move.picking_id.sale_id and move.picking_id.sale_id.team_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() in ('engine', 'rapid_quote') and move.picking_id.sale_id.state.lower().strip() in ('sale')):
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot(move.partner_id.id, move.product_id.id)
                 need = move.product_qty - move.reserved_availability
                 if available_production_lot_dict.get(int(move.product_id.id)) is not None:

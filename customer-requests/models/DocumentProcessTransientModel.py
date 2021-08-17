@@ -25,7 +25,7 @@ class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
 
     def process_portal_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Portal'):
-        print('In process_portal_document')
+        _logger.info('In process_portal_document')
         if not user_model.prioritization:
             return dict(errorCode=1, message='Prioritization is Not Enabled')
         if user_model.customer_rank == 0:
@@ -36,13 +36,6 @@ class DocumentProcessTransientModel(models.TransientModel):
             user_id = user_model.parent_id.id
         else:
             user_id = user_model.id
-        mapping_field_list = list(self.env['sps.customer.template'].fields_get().keys())
-        mapping_field_list = [mapping_field for mapping_field in mapping_field_list if
-                              mapping_field.startswith('mf_')]
-        templates_list = self.env['sps.customer.template'].search(
-            [['customer_id', '=', user_id], ['template_status', '=', 'Active']])
-        if document_source != 'Portal' and len(templates_list) <= 0:
-            return dict(errorCode=5, message='Template Not Found')
 
         template_type = template_type_from_user
 
@@ -55,11 +48,10 @@ class DocumentProcessTransientModel(models.TransientModel):
         if file_acceptable is None and len(requests) > 0:
             today_date = datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
             file_upload_record = dict(token=DocumentProcessTransientModel.random_string_generator(30),
-                                      # gl_account_id=gl_account_id,
                                       customer_id=user_id, template_type=template_type,
                                       document_name=file_name,
                                       file_location=uploaded_file_path, source=document_source, email_from='',
-                                      status='draft',
+                                      status='Portal In Process',
                                       create_uid=1, create_date=today_date, write_uid=1,
                                       write_date=today_date)
             file_uploaded_record = self.env['sps.cust.uploaded.documents'].create(file_upload_record)
@@ -70,7 +62,9 @@ class DocumentProcessTransientModel(models.TransientModel):
 
                 for req in requests:
                     if 'required_quantity' in req.keys() and not req['required_quantity'].strip().isnumeric():
-                        req['required_quantity'] = '0'
+                        req['required_quantity'] = '1'
+                    if 'uom' in req.keys() and req['uom'] == '':
+                        req['uom'] = 'EA'
 
                     if 'customer_sku' in req.keys():
                         customer_sku = req['customer_sku']
@@ -80,9 +74,20 @@ class DocumentProcessTransientModel(models.TransientModel):
                             # Check product with -E
                             _logger.info('Find product sku with -E : ' + str(product_sku))
                             products = self.get_product(product_sku + '-E', req)
+
                         self._create_customer_request(req, user_id, document_id, user_model, products, template_type,
                                                       today_date)
-
+                # create sales order of product priority is 0
+                self.env['process.high.priority.requests'].process_high_priority_requests('Portal')
+                if file_uploaded_record.document_logs == 'Sales order created':
+                    if file_uploaded_record.request_ids:
+                        for request_id in file_uploaded_record.request_ids:
+                            if request_id.sale_order_line_id:
+                                for sale_order_line in request_id.sale_order_line_id:
+                                    if sale_order_line.order_id and sale_order_line.order_id.id and sale_order_line.order_id.access_token:
+                                        return dict(errorCode=501, message=file_uploaded_record.document_logs, orderId=sale_order_line.order_id.id, accessToken=sale_order_line.order_id.access_token)
+                else:
+                    response = dict(errorCode=500, message=file_uploaded_record.document_logs)
                 # if document has all voided products then Send Email Notification to customer.
                 self._all_voided_products(document_id, user_model, file_uploaded_record)
             else:
@@ -259,10 +264,13 @@ class DocumentProcessTransientModel(models.TransientModel):
             return False
 
     def _all_voided_products(self, document_id, user_model, file_uploaded_record):
+        sps_cust_uploaded_documents = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_id)])
         sps_customer_requirement_all = self.env['sps.customer.requests'].search([('document_id', '=', document_id)])
         sps_customer_requirements_all_voided = self.env['sps.customer.requests'].search([('document_id', '=', document_id), ('status', 'in', ['Voided'])])
         if len(sps_customer_requirement_all) == len(sps_customer_requirements_all_voided):
             template = self.env.ref('customer-requests.final_email_response_on_uploaded_document').sudo()
+            if sps_cust_uploaded_documents.source == 'Portal':
+                sps_cust_uploaded_documents.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
             if user_model.user_id and user_model.user_id.partner_id and user_model.user_id.partner_id.email and \
                     user_model.account_manager_cust and user_model.account_manager_cust.partner_id and \
                     user_model.account_manager_cust.partner_id.email:
@@ -445,12 +453,9 @@ class DocumentProcessTransientModel(models.TransientModel):
                         requests.append(x)
                 else:
                     try:
-                        mappings = [{'template_field': 'Product SKU', 'mapping_field': 'mf_customer_sku'},
-                         {'template_field': 'Required Quantity', 'mapping_field': 'mf_required_quantity'},
-                         {'template_field': 'UOM', 'mapping_field': 'mf_uom'},
-                         {'template_field': 'Product Name', 'mapping_field': 'mf_product_description'}]
-                        print('excel_data_rows')
-                        print(excel_data_rows)
+                        mappings = [{'template_field': 'SKU', 'mapping_field': 'mf_customer_sku'},
+                         {'template_field': 'QTY', 'mapping_field': 'mf_required_quantity'},
+                         {'template_field': 'UOM', 'mapping_field': 'mf_uom'}]
                         for excel_data_row in excel_data_rows:
                             x = {}
                             for mapping in mappings:

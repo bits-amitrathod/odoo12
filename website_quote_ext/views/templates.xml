@@ -38,7 +38,7 @@
                                  </span>
                              </t>
                              <!-- &#160;&#160;&#160;&#160;&#160; -->
-                             <t t-if="sale_order.team_id.team_type == 'engine'">
+                             <t t-if="sale_order.team_id.team_type in ('engine', 'rapid_quote')">
                                 <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
                              </t>
                          </span>
@@ -68,7 +68,7 @@
                               Accept
                           </a>
 
-                          <a t-if="sale_order.team_id.team_type == 'engine'" class="text-right btn stockhawk_update_qty_btn" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
+                          <a t-if="sale_order.team_id.team_type in ('engine', 'rapid_quote')" class="text-right btn stockhawk_update_qty_btn" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
                                    <b>Update Quantity</b>
                           </a>
                  </div>
@@ -85,7 +85,7 @@
                                     &amp;times;
                                 </button>
                                 <h4 class="modal-title">Accept Order</h4>
-                                <t t-if="sale_order.team_id.team_type == 'engine'">
+                                <t t-if="sale_order.team_id.team_type in ('engine', 'rapid_quote')">
                                     <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
                                 </t>
                             </div>
@@ -133,7 +133,7 @@
                                     &amp;times;
                                 </button>
                                 <h4 class="modal-title">Reject</h4>
-                                <t t-if="sale_order.team_id.team_type == 'engine'">
+                                <t t-if="sale_order.team_id.team_type in ('engine', 'rapid_quote')">
                                     <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
                                 </t>
                             </div>
@@ -327,7 +327,7 @@
                     </style>
                     <div>
                         <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
-                        <h5 class="update-qty" t-if="sale_order.state in ['sent'] and sale_order.team_id.team_type == 'engine'"><b>Click here to update quantity </b><a class="btn stockhawk_update_qty_btn" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
+                        <h5 class="update-qty" t-if="sale_order.state in ['sent'] and sale_order.team_id.team_type in ('engine', 'rapid_quote')"><b>Click here to update quantity </b><a class="btn stockhawk_update_qty_btn" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
                             <b>Update Quantity</b>
                             </a>
                         </h5>
@@ -762,7 +762,7 @@
                             <div class="mb8">
                                 <strong>Date:</strong>
                                 <span t-field="sale_order.create_date" t-options='{"widget": "date"}'/>
-                                <t t-if="sale_order.team_id.team_type == 'engine'">
+                                <t t-if="sale_order.team_id.team_type in ('engine', 'rapid_quote')">
                                    <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
                                 </t>
                             </div>
@@ -978,7 +978,7 @@
                                             &amp;times;
                                         </button>
                                         <h4 class="modal-title">Accept Order</h4>
-                                        <t t-if="sale_order.team_id.team_type == 'engine'">
+                                        <t t-if="sale_order.team_id.team_type in ('engine', 'rapid_quote')">
                                             <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
                                         </t>
                                     </div>
@@ -1016,7 +1016,7 @@
                                             &amp;times;
                                         </button>
                                         <h4 class="modal-title">Reject</h4>
-                                        <t t-if="sale_order.team_id.team_type == 'engine'">
+                                        <t t-if="sale_order.team_id.team_type in ('engine', 'rapid_quote')">
                                             <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" align="right" style="height: auto; width: 150px;" alt="Stockhawk"/>
                                         </t>
                                     </div>

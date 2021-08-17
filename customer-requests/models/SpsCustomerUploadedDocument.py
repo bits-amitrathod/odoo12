@@ -21,5 +21,6 @@ class SpsCustomerUploadedDocument(models.Model):
     high_priority_doc_pro_count = fields.Integer(string="High Priority Document Processed Count", default=0, required=True)
     email_from = fields.Char("Email From")
     template_type = fields.Char()
+    document_logs = fields.Char(string='Document Logs', default='')
 
 
