@@ -43,6 +43,9 @@ function load(){
               $("#myModalClose").click(function () {
                     $('#myModal').hide();
               });
+              $("#errorModalOK").click(function () {
+                    $('#errorModal').hide();
+              });
               $("#errorModalClose").click(function () {
                     $('#errorModal').hide();
                     window.location.assign("/spreadsheet/stockhawk_submission");

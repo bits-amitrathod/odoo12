@@ -114,6 +114,7 @@
                                             </div>
                                             <!-- Modal footer -->
                                             <div class="modal-footer">
+                                                <button type="button" id="errorModalOK" class="btn btn-primary abc ml" data-dismiss="modal">Ok</button>
                                                 <button type="button" id="errorModalClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
                                             </div>
                                         </div>

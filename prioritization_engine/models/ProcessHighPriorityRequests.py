@@ -41,7 +41,7 @@ class ProcessHighPriorityRequests(models.Model):
                     _logger.error("Error processing requests %r", exc)
             else:
                 _logger.info('customer request count is 0.')
-                document.write({'status': 'In Process'})
+                document.write({'status': 'In Process', 'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
 
             try:
                 self.env['prioritization.engine.model'].check_uploaded_document_status(document.id)

@@ -62,15 +62,11 @@ class StockhawkSpreadsheet(http.Controller):
 
                             row = 0
                             while row < len(data['data']['rows']) - 1:
-                                print('1')
                                 col = 0
                                 if data['data']['rows'][str(row)]['cells'] and data['data']['rows'][str(row)]['cells'] is not None:
-                                    print('2')
                                     while col < len(data['data']['rows'][str(row)]['cells']):
-                                        print('3')
                                         if '0' in data['data']['rows'][str(row)]['cells']:
                                             for key in data['data']['rows'][str(row)]['cells'][str(col)]:
-                                                print('5')
                                                 worksheet.write(row, col, data['data']['rows'][str(row)]['cells'][str(col)][str(key)])
                                             col += 1
                                         else:
