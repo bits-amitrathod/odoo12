@@ -426,7 +426,11 @@
                                             </div>
                                         </t>
                                     </t>
-                                    <t t-else="">
+                                  <div id="product_option_block"/>
+                                </div>
+                            </form>
+                            <div class="js_product" t-if="product.product_variant_ids">
+                                    <t t-if="product.actual_quantity &lt;= 0">
                                         <div t-attf-class="availability_message_#{product_template} linkCstm mt16">
                                             <div style="color: #666;padding-bottom: 5px;">Get notification as soon as
                                                 the
@@ -459,9 +463,8 @@
                                             </p>
                                         </div>
                                     </t>
-                                    <div id="product_option_block"/>
-                                </div>
-                            </form>
+                            </div>
+
 <!--                            <hr class="mb8 mt12"/>-->
                             <div class="o_not_editable">
                                 <p t-field="product.description_sale" class="text-muted"/>
