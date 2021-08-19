@@ -449,8 +449,13 @@ class StockMove(models.Model):
                 for quant in quants:
                     if (quant.quantity - quant.reserved_quantity) > 0:
                         msg += "<br>"
-                        msg += "<b>Expiration Date :</b> " + str(quant.lot_id.use_date.date()) + " <b>Lot# :</b> " + str(
-                            quant.lot_id.name) + " <b>Available Quantity :</b> " + str(quant.quantity - quant.reserved_quantity)
+                        if quant.lot_id.use_date:
+                            msg += "<b>Expiration Date :</b> " + str(quant.lot_id.use_date.date()) + " <b>Lot# :</b> " + str(
+                                quant.lot_id.name) + " <b>Available Quantity :</b> " + str(quant.quantity - quant.reserved_quantity)
+                        else:
+                            msg += "<b>Expiration Date :</b>  <b>Lot# :</b> " + str(
+                                quant.lot_id.name) + " <b>Available Quantity :</b> " + str(
+                                quant.quantity - quant.reserved_quantity)
 
             product_lot_qty_dict.clear()
             if (move.picking_id and move.picking_id.sale_id and move.picking_id.sale_id.team_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
@@ -599,9 +604,13 @@ class StockMove(models.Model):
                 msgs += "<b>Product :</b> " + str(assigned_move.product_id.display_name)
                 for move_line in assigned_move.move_line_ids:
                     msgs += "<br>"
-                    msgs += "<b>Expiration Date :</b> " + str(move_line.lot_id.use_date.date()) + \
-                            " <b>Lot# :</b> " + str(move_line.lot_id.name) + \
-                            " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+                    if move_line.lot_id.use_date:
+                        msgs += "<b>Expiration Date :</b> " + str(move_line.lot_id.use_date.date()) + \
+                                " <b>Lot# :</b> " + str(move_line.lot_id.name) + \
+                                " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+                    else:
+                        msgs += "<b>Expiration Date :</b> <b>Lot# :</b> " + str(move_line.lot_id.name) + \
+                                " <b>Quantity :</b> " + str(move_line.product_uom_qty)
             picking_id.message_post(body=msgs)
 
         if picking_id and picking_id is not None:
