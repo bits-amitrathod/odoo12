@@ -1,8 +1,8 @@
-<odoo >
-     <data noupdate="1">
+<odoo>
+     <data>
         <record  model="payment.acquirer" id="payment_acquirer_purchaseorder">
            <field name="name">Purchase Order</field>
-            <field name="provider">0</field>
+            <field name="provider">purchaseorder</field>
             <!--<field name="company_id" ref="base.main_company"/>
             <field name="view_template_id" ref="purchaseorder_form"/>
             <field name="pre_msg"><![CDATA[
