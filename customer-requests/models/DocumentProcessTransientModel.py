@@ -78,7 +78,7 @@ class DocumentProcessTransientModel(models.TransientModel):
                         self._create_customer_request(req, user_id, document_id, user_model, products, template_type,
                                                       today_date)
                 # create sales order of product priority is 0
-                self.env['process.high.priority.requests'].process_high_priority_requests('Portal')
+                self.env['process.high.priority.requests'].process_high_priority_requests(document_id, 'Portal')
                 if file_uploaded_record.document_logs == 'Sales order created':
                     if file_uploaded_record.request_ids:
                         for request_id in file_uploaded_record.request_ids:

@@ -12,13 +12,13 @@ class ProcessHighPriorityRequests(models.Model):
     documents = set()
 
     @api.model
-    def process_high_priority_requests(self, source=None):
+    def process_high_priority_requests(self, document_id=None, source=None):
         _logger.info('process high priority requests.')
         self.documents.clear()
         if source is None:
             document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'draft')], limit=1, order="id asc")
-        elif source == 'Portal':
-            document = self.env['sps.cust.uploaded.documents'].search([('status', '=', 'Portal In Process')], limit=1, order="id asc")
+        elif source == 'Portal' and document_id and document_id is not None:
+            document = self.env['sps.cust.uploaded.documents'].search([('id', '=', int(document_id)), ('status', '=', 'Portal In Process')])
         if len(document) == 1:
             high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0), ('available_qty', '>', 0),
                                                                                '|', ('required_quantity', '>', 0), ('quantity', '>', 0)])
