@@ -89,9 +89,10 @@ function load(){
             },
           ],
           cols: {
-            len: 10,
-            1: { width: 200 },
-            2: { width: 120 },
+            len: 5,
+            0: { width: 200 },
+            1: { width: 50 },
+            2: { width: 50 },
           },
           rows,
         }]).change((cdata));
