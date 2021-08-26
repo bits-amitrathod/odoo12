@@ -124,7 +124,7 @@ class sale_order(models.Model):
     @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
     def onchange_client_order_ref(self):
         if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
-            records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref)])
+            records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref),('partner_id', '=', self.partner_id.id)])
             if records:
                 for record in records:
                     if self.name != record.name and (self.x_studio_allow_duplicate_po is False or

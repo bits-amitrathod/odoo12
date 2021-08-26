@@ -138,9 +138,19 @@ class WebsiteSale(http.Controller):
     def notifymeclientorderref(self, client_order_ref, orderId):
         sale_order = request.env['sale.order'].sudo().search([('id', '=', orderId)])
         if not sale_order.x_studio_allow_duplicate_po:
-            result = request.env['sale.order'].sudo().search([('client_order_ref', '=', client_order_ref)])
+            result = request.env['sale.order'].sudo().search(
+                [('client_order_ref', '=', client_order_ref),
+                 ('partner_id', '=', sale_order.partner_id.id)])
             if result:
-                return {'client_order_ref_error': 'The PO number is already present on another Sales Order'}
+                result2 = request.env['sale.order'].sudo().search(
+                    [('client_order_ref', '=', client_order_ref),
+                     ('partner_id', '=', sale_order.partner_id.id),
+                     ('x_studio_allow_duplicate_po', '=', True)
+                     ])
+                if result2:
+                    return {'client_order_ref_error': ''}
+                else:
+                    return {'client_order_ref_error': 'The PO number is already present on another Sales Order'}
             else:
                 return {'client_order_ref_error': ''}
 
