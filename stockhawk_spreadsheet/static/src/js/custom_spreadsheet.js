@@ -50,7 +50,7 @@ function load(){
                     $('#errorModal').hide();
                     window.location.assign("/spreadsheet/stockhawk_submission");
               });
-              $("#myModalOK").click(function () {
+              $("#myModalOK").off().click(function () {
                     console.log(data);
                     console.log(sheet);
                     $('#myModal').hide();

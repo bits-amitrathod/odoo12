@@ -41,7 +41,7 @@ class StockhawkSpreadsheet(http.Controller):
                 if user and user.partner_id and user.partner_id.active and user.partner_id.id:
                     customer_id = user.partner_id.id
                     _logger.info(customer_id)
-                    users_model = request.env['res.partner'].sudo().search([("id", "=", customer_id)])
+                    users_model = user.partner_id
                     user_attachment_dir = ATTACHMENT_DIR + "/" + str(users_model.id) + "/Requirement/"
                     if not os.path.exists(os.path.dirname(user_attachment_dir)):
                         try:
