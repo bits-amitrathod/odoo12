@@ -140,11 +140,11 @@ class WebsiteSale(http.Controller):
         if not sale_order.x_studio_allow_duplicate_po:
             result = request.env['sale.order'].sudo().search(
                 [('client_order_ref', '=', client_order_ref),
-                 ('partner_id', '=', sale_order.partner_id.id)])
+                 ('partner_id', 'in', sale_order.get_chils_parent())])
             if result:
                 result2 = request.env['sale.order'].sudo().search(
                     [('client_order_ref', '=', client_order_ref),
-                     ('partner_id', '=', sale_order.partner_id.id),
+                     ('partner_id', 'in', sale_order.get_chils_parent()),
                      ('x_studio_allow_duplicate_po', '=', True)
                      ])
                 if result2:

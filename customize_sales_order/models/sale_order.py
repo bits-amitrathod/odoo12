@@ -124,7 +124,7 @@ class sale_order(models.Model):
     @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
     def onchange_client_order_ref(self):
         if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
-            records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref),('partner_id', '=', self.partner_id.id)])
+            records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref),('partner_id', '=', self.get_chils_parent())])
             if records:
                 for record in records:
                     if self.name != record.name and (self.x_studio_allow_duplicate_po is False or
@@ -275,6 +275,13 @@ class sale_order(models.Model):
                 and self.partner_id.commercial_partner_id.national_account_rep.id:
             self.national_account = self.partner_id.commercial_partner_id.national_account_rep.id
         super(sale_order, self).onchange_partner_id()
+
+    def get_chils_parent(self):
+        list = []
+        parent_id = self.partner_id if self.partner_id.is_parent else self.partner_id.parent_id
+        list = parent_id.child_ids.ids
+        list.append(parent_id.id)
+        return list
 
 
 class StockPicking(models.Model):
