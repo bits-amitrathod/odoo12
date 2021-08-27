@@ -133,7 +133,9 @@
             <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
                 <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
                     <div class="menu-rapid-quote-div">
-                    <img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid menu-rapid-quote-img"/>
+                    <a style="padding: 4px 0px 1px 0px;"  class="menu-rapid-quote-an" href="/spreadsheet/stockhawk_spreadsheet">
+                      <img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid menu-rapid-quote-img"/>
+                    </a>
                     <a style="padding: 4px 0px 1px 0px;" href="/spreadsheet/stockhawk_spreadsheet" role="menuitem" class="dropdown-item menu-rapid-quote-an">Rapid Quote</a>
                     </div>
                 </t>
