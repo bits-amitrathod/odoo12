@@ -27,10 +27,21 @@ class PaymentAquirerCstm(http.Controller):
                     if not order.client_order_ref:
                         if not order.x_studio_allow_duplicate_po:
                             result = request.env['sale.order'].sudo().search(
-                                [('client_order_ref', '=', kwargs['purchase_order'])])
+                                [('client_order_ref', '=', kwargs['purchase_order']),
+                                 ('partner_id','in',order.get_chils_parent())])
                             if result:
-                                vals = {'error': "The PO number is already present on another Sales Order."}
-                                return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
+                                result2 = request.env['sale.order'].sudo().search(
+                                    [('client_order_ref', '=', kwargs['purchase_order']),
+                                     ('partner_id', 'in', order.get_chils_parent()),
+                                     ('x_studio_allow_duplicate_po', '=', True)
+                                     ])
+                                if result2:
+                                    order.state = 'sent'
+                                    order.client_order_ref = kwargs['purchase_order']
+                                    order.action_confirm()
+                                else:
+                                    vals = {'error': "The PO number is already present on another Sales Order."}
+                                    return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                             else:
                                 order.state = 'sent'
                                 order.client_order_ref = kwargs['purchase_order']
