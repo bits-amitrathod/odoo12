@@ -1074,4 +1074,17 @@ margin-left:10px;}
   100% { transform: rotate(360deg); }
 }
 
+.menu-rapid-quote-img {
+    width: 90px;
+    margin-top: 3px;
+    margin-left: 8px;
+}
+.menu-rapid-quote-div {
+    display: flex;
+    align-items: center;
+}
+.menu-rapid-quote-an {
+padding: 4px 0px 1px 0px;
+}
+
 /*# sourceMappingURL=xspreadsheet.css.map*/
