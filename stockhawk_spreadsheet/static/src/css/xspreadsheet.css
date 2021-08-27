@@ -17,6 +17,7 @@ body {
 .x-spreadsheet-sheet {
   position: relative;
   overflow: hidden;
+  width: auto !important;
 }
 .x-spreadsheet-table {
   vertical-align: bottom;
@@ -463,6 +464,7 @@ body {
 }
 .x-spreadsheet-toolbar {
   border-bottom: 1px solid #e0e2e4;
+  width: auto !important;
 }
 .x-spreadsheet-toolbar .x-spreadsheet-toolbar-btns {
   display: inline-flex;
