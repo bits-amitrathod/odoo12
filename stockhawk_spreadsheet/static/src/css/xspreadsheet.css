@@ -1088,4 +1088,12 @@ margin-left:10px;}
 padding: 4px 0px 1px 0px;
 }
 
+.x-spreadsheet-toolbar-btns div:not(:first-child){
+     display:none;
+}
+
+.x-spreadsheet-toolbar-btns div:first-child{
+     width:100px;
+}
+
 /*# sourceMappingURL=xspreadsheet.css.map*/
