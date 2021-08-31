@@ -1087,7 +1087,9 @@ margin-left:10px;}
 .menu-rapid-quote-an {
 padding: 4px 0px 1px 0px;
 }
-
+.menu-rapid-quote-an{
+background: url('/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png')
+}
 .x-spreadsheet-toolbar-btns div:not(:first-child){
      display:none;
 }
