@@ -30,9 +30,6 @@
 <!--                                    sacrificing quality of care. We accomplish this by providing hospitals.                                    -->
 <!--                                </span>-->
                               </div>
-                              <div>
-                                <button type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help">Help</button>
-                              </div>
                               <!--loader-->
                               <span id="loader" class="loader" style="display: none;"></span>
                               <!-- The Modal -->
@@ -120,7 +117,13 @@
                                         </div>
                                     </div>
                                   </div>
-                                <div id="x-spreadsheet-demo"></div>
+                              <center>
+                                  <div class="text-left spreadsheet">
+                                    <button style="justify-content: center;" type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help">Help</button>
+                                  </div>
+                                  <div class="spreadsheet mb-5" id="x-spreadsheet-demo"></div>
+                              </center>
+
                           </body>
                       </html>
                   </t>

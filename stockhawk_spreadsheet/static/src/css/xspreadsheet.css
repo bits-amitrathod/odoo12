@@ -1098,4 +1098,16 @@ background: url('/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.p
      width:100px;
 }
 
+.spreadsheet {
+    width   : 400px;
+    overflow: auto;
+    margin-bottom:5px;
+}
+
+@media screen and (max-width: 543px) {
+    .spreadsheet {
+        width: 360px;
+    }
+}
+
 /*# sourceMappingURL=xspreadsheet.css.map*/
