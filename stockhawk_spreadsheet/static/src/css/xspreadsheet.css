@@ -1109,5 +1109,8 @@ background: url('/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.p
         width: 360px;
     }
 }
+.x-spreadsheet-icon img{
+    height:24px!important;
+}
 
 /*# sourceMappingURL=xspreadsheet.css.map*/
