@@ -37,7 +37,7 @@ class StockhawkSpreadsheet(http.Controller):
 
         if data is not None:
             if request.session.uid:
-                user = request.env['res.users'].search([('id', '=', request.session.uid)])
+                user = request.env['res.users'].sudo().search([('id', '=', request.session.uid)])
                 if user and user.partner_id and user.partner_id.active and user.partner_id.id:
                     customer_id = user.partner_id.id
                     _logger.info(customer_id)
