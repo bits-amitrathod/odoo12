@@ -87,10 +87,7 @@ function load(){
             2: { width: 100 },
           },
           rows,
-        }]).change((cdata) => {
-          // console.log(cdata);
-          console.log('>>>', xs.getData());
-        });
+        }]).change((cdata));
 
       setTimeout(() => {
       }, 50000);
