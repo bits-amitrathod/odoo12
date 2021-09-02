@@ -1099,7 +1099,7 @@ background: url('/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.p
 }
 
 .spreadsheet {
-    width   : 400px;
+    width   : 1000px;
     overflow: auto;
     margin-bottom:5px;
 }
