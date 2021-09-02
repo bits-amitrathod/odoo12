@@ -25,8 +25,8 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         product_template = request.env['product.template'].search([('actual_quantity', '=', False)])
         product_brands = []
 
-        title = "Shop Surgical and Medical Surplus"
-        sub_title = "Browse Discount Surgical and Medical Surplus in our Online Store"
+        title = "Shop Surgical Surplus"
+        sub_title = "Browse Discount Surgical Surplus in our Online Store"
         c_all_id = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
         if request.httprequest.path == "/shop":
             result = c_all_id
@@ -51,14 +51,14 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
         if request.httprequest.path == "/shop/featured":
             title = "Discount Surgical Supplies"
-            sub_title = "Shop Sale Medical and Surgical Products"
+            sub_title = "Shop Sale Surgical Products"
             result = request.env['product.public.category'].search([('name', 'ilike', 'featured')], limit=1)
             if result:
                 category = result
 
         if request.httprequest.path == "/shop/capital-equipment":
-            title = "Surplus Medical Equipment"
-            sub_title = "Shop Unused Surplus Medical Equipment"
+            title = "Surplus Surgical Equipment"
+            sub_title = "Shop Surplus Surgical Equipment"
             result = request.env['product.public.category'].search([('name', 'ilike', 'surgical equipment')], limit=1)
             if result:
                 category = result
