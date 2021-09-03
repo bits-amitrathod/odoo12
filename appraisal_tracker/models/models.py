@@ -231,7 +231,8 @@ class apprisal_tracker_vendor(models.Model):
         moves = self.env['account.move']
         AccountMove = self.env['account.move'].with_context(default_move_type='in_invoice')
         for vals in invoice_vals_list:
-            vals['invoice_date']= self.effective_date
+            if self.effective_date:
+                vals['invoice_date']= self.effective_date
             moves |= AccountMove.with_company(vals['company_id']).create(vals)
 
         # 4) Some moves might actually be refunds: convert them if the total amount is negative
