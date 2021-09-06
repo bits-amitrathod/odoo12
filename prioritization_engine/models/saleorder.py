@@ -53,7 +53,7 @@ class SaleOrder(models.Model):
 
     @api.onchange('client_order_ref')
     def update_account_invoice_purchase_order(self):
-        self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
+        self.env['account.move'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
 
     def print_quotation(self):
         self.filtered(lambda s: s.state == 'draft').write({'state': 'sent'})
