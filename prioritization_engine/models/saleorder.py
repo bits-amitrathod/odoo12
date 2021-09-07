@@ -53,7 +53,7 @@ class SaleOrder(models.Model):
 
     # @api.onchange('client_order_ref')
     # def update_account_invoice_purchase_order(self):
-    #     self.env['account.invoice'].search([('origin', '=', self.name)]).write({'name': self.client_order_ref})
+    #     self.env['account.move'].search([('invoice_origin', '=', self.name)]).update({'purchase_order': self.client_order_ref})
 
     def print_quotation(self):
         self.filtered(lambda s: s.state == 'draft').write({'state': 'sent'})
@@ -494,7 +494,14 @@ class AccountInvoice(models.Model):
             if order.invoice_origin == order.name:
                 order.purchase_order = ""
             else:
-                order.purchase_order = order.ref
+                if order.invoice_origin:
+                    so =self.env['sale.order'].search([('name', '=', order.invoice_origin)])
+                    if so.client_order_ref:
+                        order.purchase_order=so.client_order_ref
+                    else:
+                        order.purchase_order = order.ref
+                else:
+                    order.purchase_order = order.ref
 
     def _getSalesOerderPickingOutTrackingReference(self):
         for order in self:
