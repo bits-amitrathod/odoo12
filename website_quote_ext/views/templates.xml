@@ -326,8 +326,8 @@
 
                     </style>
                     <div>
-                        <h1 class="page-header" style="padding-top: 0px">Pricing</h1>
-                        <h5 class="update-qty" t-if="sale_order.state in ['sent'] and sale_order.team_id.team_type in ('engine', 'rapid_quote')"><b>Click here to update quantity </b><a class="btn stockhawk_update_qty_btn" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
+                        <h2 class="page-header" style="padding-top: 0px">Pricing</h2>
+                        <h5 class="update-qty" t-if="sale_order.state in ['sent'] and sale_order.team_id.team_type in ('engine', 'rapid_quote')"><a class="btn stockhawk_update_qty_btn" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
                             <b>Update Quantity</b>
                             </a>
                         </h5>
