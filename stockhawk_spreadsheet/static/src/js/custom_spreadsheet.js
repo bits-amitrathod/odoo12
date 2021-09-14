@@ -46,7 +46,7 @@ function load(){
                     console.log(data);
                     console.log(sheet);
                     $('#myModal').hide();
-                    $('#loader').show();
+                    $('#loader1').show();
                     $.ajax({
                         url: "/spreadsheet/process_data",
                         type: "POST",
@@ -57,10 +57,10 @@ function load(){
                         success: function (data) {
                                 console.log(data);
                                 if(data['result']['errorCode'] == 501){
-                                    $('#loader').hide();
+                                    $('#loader1').hide();
                                     window.location.assign("/my/orders/"+data['result']['orderId']+"?access_token="+data['result']['accessToken']);
                                 }else{
-                                    $('#loader').hide();
+                                    $('#loader1').hide();
                                     $('#errorModal').show();
                                     $('#errorMessageDisplay').html(data['result']['message']);
                                 }

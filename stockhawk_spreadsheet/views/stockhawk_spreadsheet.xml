@@ -31,7 +31,10 @@
 <!--                                </span>-->
                               </div>
                               <!--loader-->
-                              <span id="loader" class="loader" style="display: none;"></span>
+                              <div id="loader1" style="display: none;">
+                                    <span id="loader" class="loader" ></span>
+                                    <h3 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 34%;z-index: 1;display: block;/*! margin: 0px auto; */">Loading...</h3>
+                              </div>
                               <!-- The Modal -->
                                 <div class="modal" id="help">
                                     <div class="modal-dialog">
