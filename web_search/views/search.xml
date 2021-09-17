@@ -5,7 +5,7 @@
         <xpath expr="//div" position="replace">
             <div t-attf-class="input-group #{_classes}" role="search">
 
-            <input type="text" name="search" class="form-control search_box bits-search-query oe_search_box search_autocomplete" placeholder="search" t-att-value="search"/>
+            <input type="text" name="search" class="form-control search-query oe_search_box oe_search_box search_autocomplete" placeholder="search" t-att-value="search"/>
         <div class="input-group-append">
             <button type="submit" class="btn btn-secondary oe_search_button" aria-label="Search" title="Search"><i class="fa fa-search"/></button>
         </div>
