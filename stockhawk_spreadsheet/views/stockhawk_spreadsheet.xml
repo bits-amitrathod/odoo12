@@ -33,7 +33,7 @@
                               <!--loader-->
                               <div id="loader1" style="display: none;">
                                     <span id="loader" class="loader" ></span>
-                                    <h3 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 22%;z-index: 11;display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Quote</h3>
+                                    <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11;filter: drop-shadow(2px 4px 6px black);display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Quote</h4>
                               </div>
                               <!-- The Modal -->
                                 <div class="modal" id="help">
