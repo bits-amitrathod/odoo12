@@ -41,7 +41,8 @@ class Customer(models.Model):
     quickbook_id = fields.Char("Quickbook Id")
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email = fields.Char("Notification Email")
-    saleforce_ac = fields.Char("SF A/C No#", compute="_saleforce_ac_generate",readonly=False, store=True)
+    parent_saleforce_ac = fields.Char("Parent SF A/C No#", compute="parent_saleforce_ac_generate", readonly=True)
+    saleforce_ac = fields.Char("SF A/C  NNo#", compute="_saleforce_ac_generate",readonly=False, store=True)
     is_share = fields.Boolean("Is Shared")
     sale_margine = fields.Selection([
         ('gifted', 'Gifted'),
@@ -76,6 +77,10 @@ class Customer(models.Model):
     def _saleforce_ac_generate(self):
         for partner in self:
             partner.saleforce_ac = self.env['ir.sequence'].next_by_code('sale.force.no') or _('New')
+
+    def parent_saleforce_ac_generate(self):
+        for partner in self:
+            partner.parent_saleforce_ac=partner.parent_id.saleforce_ac if not partner.is_parent else None
 
     def write(self, vals):
         self.copy_parent_date(vals)
