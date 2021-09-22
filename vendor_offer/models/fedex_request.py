@@ -195,19 +195,19 @@ class FedexRequest():
                 eMailNotificationRecipient)
 
         # Added for testing , comment below part when done , start
-        eMailNotificationRecipient = self.factory.EMailNotificationRecipient()
-        eMailNotificationRecipient.EMailNotificationRecipientType = self.factory.EMailNotificationRecipientType(
-            'RECIPIENT')
-        eMailNotificationRecipient.EMailAddress = "anvaywalujkar@benchmarkit.solutions"
-
-        eMailNotificationEventType = self.factory.EMailNotificationRecipientType('ON_TENDER')
-
-        eMailNotificationRecipient.NotificationEventsRequested.append(eMailNotificationEventType)
-        eMailNotificationRecipient.Format = self.factory.EMailNotificationFormatType('HTML')
-        eMailNotificationRecipient.Localization = self.factory.Localization(False)
-        eMailNotificationRecipient.Localization.LanguageCode = "EN"
-        self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(
-            eMailNotificationRecipient)
+        # eMailNotificationRecipient = self.factory.EMailNotificationRecipient()
+        # eMailNotificationRecipient.EMailNotificationRecipientType = self.factory.EMailNotificationRecipientType(
+        #     'RECIPIENT')
+        # eMailNotificationRecipient.EMailAddress = "anvaywalujkar@benchmarkit.solutions"
+        #
+        # eMailNotificationEventType = self.factory.EMailNotificationRecipientType('ON_TENDER')
+        #
+        # eMailNotificationRecipient.NotificationEventsRequested.append(eMailNotificationEventType)
+        # eMailNotificationRecipient.Format = self.factory.EMailNotificationFormatType('HTML')
+        # eMailNotificationRecipient.Localization = self.factory.Localization(False)
+        # eMailNotificationRecipient.Localization.LanguageCode = "EN"
+        # self.RequestedShipment.SpecialServicesRequested.EMailNotificationDetail.Recipients.append(
+        #     eMailNotificationRecipient)
 
         # Added above for testing , comment above part when done , end
 
