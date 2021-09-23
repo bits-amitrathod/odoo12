@@ -42,7 +42,7 @@ class Customer(models.Model):
     having_carrier = fields.Boolean("Having Carrier?")
     notification_email = fields.Char("Notification Email")
     parent_saleforce_ac = fields.Char("Parent SF A/C No#", compute="parent_saleforce_ac_generate", readonly=True)
-    saleforce_ac = fields.Char("SF A/C  NNo#", compute="_saleforce_ac_generate",readonly=False, store=True)
+    saleforce_ac = fields.Char("SF A/C  No#", compute="_saleforce_ac_generate",readonly=False, store=True)
     is_share = fields.Boolean("Is Shared")
     sale_margine = fields.Selection([
         ('gifted', 'Gifted'),
