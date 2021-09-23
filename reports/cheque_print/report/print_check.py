@@ -42,7 +42,7 @@ class report_print_check(models.Model):
             'manual_sequencing': self.journal_id.check_manual_sequencing,
             'payment_date': format_date(self.env, self.date),
             'date': format_date(self.env, self.date),
-            'partner_id': self.reconciled_bill_ids[0].partner_id if self.reconciled_bill_ids else self.partner_id,
+            'partner_id': self.partner_id,
             'partner_name': self.partner_id.name,
             'currency': self.currency_id,
             'state': self.state,
