@@ -80,7 +80,7 @@ class Customer(models.Model):
 
     def parent_saleforce_ac_generate(self):
         for partner in self:
-            partner.parent_saleforce_ac=partner.parent_id.saleforce_ac if not partner.is_parent else None
+            partner.parent_saleforce_ac=partner.parent_id.saleforce_ac if partner.parent_id else None
 
     def write(self, vals):
         self.copy_parent_date(vals)
