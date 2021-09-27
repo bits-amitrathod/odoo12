@@ -24,11 +24,12 @@
                               <center><img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/></center>
                               <div class="container">
                                   <center style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 25px;">Rapid Quote</center>
-<!--                                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">-->
-<!--                                    SPS is a leader in providing cost-saving solutions for healthcare-->
-<!--                                    facilities across the United States who choose to save money without-->
-<!--                                    sacrificing quality of care. We accomplish this by providing hospitals.                                    -->
-<!--                                </span>-->
+                                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                    “StockHawk Rapid Quote is a quick and easy way to order the supplies you need from SPS.
+                                    Copy and paste your product information into the spreadsheet below.
+                                    Update the QTY fields with your desired order amount, and whether you want to purchase single units (EA) or boxes (BX).
+                                    Submit your sheet and allow 30 seconds to see your custom quote! After submission your products will be reserved on the quote for 15 minutes.”
+                                </span>
                               </div>
                               <!--loader-->
                               <div id="loader1" style="display: none;">
@@ -47,30 +48,21 @@
                                             <div class="modal-body">
                                               <div class="container">
                                                 <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
-                                                    <p>
-                                                        SPS is a leader in providing cost-saving solutions for healthcare
-                                                    facilities across the United States who choose to save money without
-                                                    sacrificing quality of care. We accomplish this by providing hospitals
-                                                    and surgery centers two ways to save on their high-volume surgical
-                                                    disposables. We help our customers recover significant budget costs by
-                                                    purchasing their un-used, in-date surgical surplus while at the same
-                                                    time, providing them additional cost savings and flexibility when
-                                                    purchasing the same high volume products they are currently utilizing.
-                                                    </p>
-                                                  <p>
-                                                    SPS is a leader in providing cost-saving solutions for healthcare
-                                                    facilities across the United States who choose to save money without
-                                                    sacrificing quality of care. We accomplish this by providing hospitals
-                                                    and surgery centers two ways to save on their high-volume surgical
-                                                    disposables. We help our customers recover significant budget costs by
-                                                    purchasing their un-used, in-date surgical surplus while at the same
-                                                    time.
-                                                  </p><p>
-                                                    SPS is a leader in providing cost-saving solutions for healthcare
-                                                    facilities across the United States who choose to save money without
-                                                    sacrificing quality of care. We accomplish this by providing hospitals
-                                                    and surgery centers two ways to save on their high-volume surgical
-                                                    disposables. </p>
+                                                    <h4>Tips for using Stockhawk Rapid Quote:</h4>
+                                                    <ul style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                        <li style="font-weight: bold; margin:5px">Do not edit column titles (SKU, QTY, and UOM).</li>
+                                                        <li style="margin:5px">Enter the product code or manufacturer product number in the SKU column.</li>
+                                                        <li style="margin:5px">Specify the exact number of products you are looking for in the QTY column. You will be able to decrease the quantity (not increase) after your quote has been generated.</li>
+                                                        <li style="margin:5px">Indicate whether you are looking for single units (EA) or boxes (BX) in the UOM column.</li>
+                                                        <li style="margin:5px">Once you submit your sheet, please allow 30 seconds for our system to generate a quote.</li>
+                                                        <li style="margin:5px">After receiving your quote, you will then be able to decrease quantities, see total QTY available, pay, and add notes prior to placing your order.</li>
+                                                        <li style="margin:5px">Your quote will only return with products/QTYs we can fill that are within your expiration date tolerance. If you want 5 of a product, but we only have 3 in stock your quote will only partially fill your order.</li>
+                                                        <li style="margin:5px">If we cannot fill any of your order you will receive a popup notifying you that we are out of stock. </li>
+                                                        <li style="margin:5px">Products on your quote will be reserved for 15 minutes. After 15 minutes your quote will automatically cancel if you do not accept it. </li>
+                                                        <li style="margin:5px">If you do not wish to purchase products on your quote,please remove the line items before accepting.</li>
+                                                        <li style="margin:5px">If you do not want to proceed with the quote, please reject it as soon as possible.</li>
+                                                    </ul>
+                                                    <b>Note:</b> <i>Unless you update the Rapid Quote sheet, Stockhawk will automatically generate quotes for one (1) item, sold as an individual unit/each (EA).</i>
                                                 </span>
                                             </div>
                                             </div>
