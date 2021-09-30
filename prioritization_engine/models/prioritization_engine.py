@@ -145,8 +145,11 @@ class PrioritizationEngine(models.TransientModel):
             create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S')
             # calculate datetime difference.
             duration = current_datetime - create_date  # For build-in functions
-            duration_in_hours = self.return_duration_in_hours(duration)
-            if int(customer_request.length_of_hold) <= int(duration_in_hours):
+            # duration_in_hours = self.return_duration_in_hours(duration)
+            duration_in_minutes = self.return_duration_in_minutes(duration)
+
+            # if int(customer_request.length_of_hold) <= int(duration_in_hours):
+            if int(customer_request.length_of_hold) <= int(duration_in_minutes):
                 flag = True
             else:
                 # update status In cooling period
@@ -439,6 +442,13 @@ class PrioritizationEngine(models.TransientModel):
         duration_in_hours = duration_in_seconds / 3600
         return int(duration_in_hours)
 
+    # return duration in minutes
+    @staticmethod
+    def return_duration_in_minutes(duration):
+        duration_in_seconds = int(duration.total_seconds())
+        duration_in_mintues = duration_in_seconds / 60
+        return int(duration_in_mintues)
+
     # Generate sale order
     def generate_sale_order(self, allocated_products_dict):
         _logger.debug('In generate sale order %r', allocated_products_dict)
@@ -682,8 +692,9 @@ class PrioritizationEngine(models.TransientModel):
                                                                 '%Y,%m,%d,%H,%M,%S')
                                 # calculate datetime difference.
                                 duration = current_datetime - create_date  # For build-in functions
-                                duration_in_hours = self.return_duration_in_hours(duration)
-                                if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                                #duration_in_hours = self.return_duration_in_hours(duration)
+                                duration_in_minutes = self.return_duration_in_minutes(duration)
+                                if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_minutes):
                                     _logger.info('call stock_move._do_unreserve()')
                                     stock_move._do_unreserve()
                                 else:

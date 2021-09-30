@@ -27,7 +27,7 @@ class Customer(models.Model):
                               help="If Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
-    length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
+    length_of_hold = fields.Integer("Length Of Hold in minutes", readonly=False, default=15)
     doc_process_count = fields.Integer("Document Processing Count", readonly=False, default='1')
     expiration_tolerance = fields.Integer("Expiration Tolerance in Months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
@@ -177,6 +177,9 @@ class Customer(models.Model):
             elif length_of_hold == 0:
                 self.length_of_hold = 1
                 raise ValidationError(_('Global Priority Configuration->Length of Holding field should not be 0'))
+            elif length_of_hold < 15:
+                self.length_of_hold = 15
+                raise ValidationError(_('Global Priority Configuration->Length of Holding cannot be less than 15 min'))
 
     @api.constrains('priority')
     def _check_priority(self):
@@ -291,7 +294,7 @@ class Prioritization(models.Model):
     priority = fields.Integer("Product Priority", readonly=False)
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
-    length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
+    length_of_hold = fields.Integer("Length Of Hold in minutes", readonly=False, default=15)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
@@ -327,6 +330,9 @@ class Prioritization(models.Model):
                     _('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
             elif length_of_hold == 0:
                 raise ValidationError(_('Customer Priority Configuration->Length of Holding field should not be 0'))
+            elif length_of_hold < 15:
+                self.length_of_hold = 15
+                raise ValidationError(_('Global Priority Configuration->Length of Holding cannot be less than 15 min'))
 
     @api.constrains('priority')
     def _check_priority(self):
@@ -367,7 +373,7 @@ class PrioritizationTransient(models.TransientModel):
     priority = fields.Integer("Priority")
     cooling_period = fields.Integer("Cooling Period in days")
     auto_allocate = fields.Boolean("Allow Auto Allocation?")
-    length_of_hold = fields.Integer("Length Of Hold in hours", default=1)
+    length_of_hold = fields.Integer("Length Of Hold in minutes", default=15)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months")
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
     partial_UOM = fields.Boolean("Allow Partial UOM?")
