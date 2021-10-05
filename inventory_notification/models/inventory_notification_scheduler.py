@@ -126,8 +126,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                     'lot_name': stock_move_line_single.lot_id.name,
                     'lot_expired_date': stock_move_line_single.lot_id.use_date,
                     'qty_done': int(stock_move_line_single.qty_done),
+                    'product_brand_name': stock_move_line_single.product_id.product_brand_id.name
                 }
                 sales_order.append(sale_order)
+        sales_order = sorted(sales_order, key=lambda i: i['product_brand_name'])
+
         sale_order_ref = picking.sale_id
         address_ref = sale_order_ref.partner_shipping_id
         shipping_adrs = ""

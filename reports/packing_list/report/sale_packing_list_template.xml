@@ -230,7 +230,7 @@
                             </thead>
                             <tbody class="invoice_tbody">
 
-                                <t t-foreach="packing_list.move_lines" t-as="move_line">
+                                <t t-foreach="packing_list.move_lines.sorted(key=lambda i: i.product_id.product_brand_id.name)" t-as="move_line">
                                     <t t-set="rowSpan" t-value="len(move_line.move_line_ids)+1"/>
                                     <tr>
                                         <td t-att-rowspan="rowSpan">
