@@ -40,7 +40,7 @@ function load(){
               });
               $("#errorModalClose").click(function () {
                     $('#errorModal').hide();
-                    window.location.assign("/spreadsheet/stockhawk_submission");
+                    /* window.location.assign("/spreadsheet/stockhawk_submission"); */
               });
               $("#myModalOK").off().click(function () {
                     console.log(data);
