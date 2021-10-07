@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="stockhawk_spreadsheet_submitted" name="Stockhawk Spreadsheet Submitted">
+            <t t-call="website.layout">
+                <section id="quote" class="report">
+                        <div class="text-center pt32 pb32 in-stock-title">
+                            <img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>
+                            <br></br><br></br>
+                            <h1  class="about-header mb0"> Rapid Quote </h1>
+                        </div>
+                    <br></br>
+                    <div class="container">
+                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                            SPS is a leader in providing cost-saving solutions for healthcare
+                            facilities across the United States who choose to save money without
+                            sacrificing quality of care. We accomplish this by providing hospitals
+                            and surgery centers two ways to save on their high-volume surgical
+                            disposables. We help our customers recover significant budget costs by
+                            purchasing their un-used, in-date surgical surplus while at the same
+                            time, providing them additional cost savings and flexibility when
+                            purchasing the same high volume products they are currently utilizing.
+                        </span>
+                    </div>
+                    <br></br><br></br>
+                    <div class="container">
+                        <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                            SPS is a leader in providing cost-saving solutions for healthcare
+                            facilities across the United States who choose to save money without
+                            sacrificing quality of care. We accomplish this by providing hospitals
+                            and surgery centers two ways to save on their high-volume surgical
+                            disposables. We help our customers recover significant budget costs by
+                            purchasing their un-used, in-date surgical surplus while at the same
+                            time, providing them additional cost savings and flexibility when
+                            purchasing the same high volume products they are currently utilizing.
+                        </span>
+                    </div>
+                    <br></br><br></br>
+                </section>
+            </t>
+        </template>
+    </data>
+</odoo>

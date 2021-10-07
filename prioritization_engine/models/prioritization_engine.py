@@ -20,7 +20,9 @@ class PrioritizationEngine(models.TransientModel):
     allocated_product_dict = {}
     allocated_product_for_gl_account_dict = {}
 
-    def allocate_product_by_priority(self, customer_request_list, document_ids):
+    def allocate_product_by_priority(self, customer_request_list, document_ids, source=None):
+        if source == 'Portal':
+            document = self.env['sps.cust.uploaded.documents'].search([('id', '=', document_ids[0])])
         self.allocated_product_dict.clear()
         self.allocated_product_for_gl_account_dict.clear()
         _logger.debug('In product_allocation_by_priority')
@@ -68,6 +70,8 @@ class PrioritizationEngine(models.TransientModel):
                     _logger.debug('Auto allocate is false.')
             if len(self.allocated_product_dict) > 0:
                 self.generate_sale_order(self.allocated_product_dict)
+                if source == 'Portal' and document:
+                    document.write({'document_logs': 'Sales order created'})
             if len(self.allocated_product_for_gl_account_dict) > 0:
                 self.generate_sale_order(self.allocated_product_for_gl_account_dict)
             # self.env['available.product.dict'].update_production_lot_dict()
@@ -141,8 +145,11 @@ class PrioritizationEngine(models.TransientModel):
             create_date = datetime.strptime(self.change_date_format(create_date), '%Y,%m,%d,%H,%M,%S')
             # calculate datetime difference.
             duration = current_datetime - create_date  # For build-in functions
-            duration_in_hours = self.return_duration_in_hours(duration)
-            if int(customer_request.length_of_hold) <= int(duration_in_hours):
+            # duration_in_hours = self.return_duration_in_hours(duration)
+            duration_in_minutes = self.return_duration_in_minutes(duration)
+
+            # if int(customer_request.length_of_hold) <= int(duration_in_hours):
+            if int(customer_request.length_of_hold) <= int(duration_in_minutes):
                 flag = True
             else:
                 # update status In cooling period
@@ -262,6 +269,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug("Allocated all required product quantity.")
 
             self.allocated_product_to_customer(customer_request.customer_id.id,
+                                               customer_request.document_id.source,
                                                customer_request.req_no,
                                                customer_request.req_date,
                                                customer_request.vendor,
@@ -282,6 +290,7 @@ class PrioritizationEngine(models.TransientModel):
             _logger.debug(str(" Allocated Partial order product."))
 
             self.allocated_product_to_customer(customer_request.customer_id.id,
+                                               customer_request.document_id.source,
                                                customer_request.req_no,
                                                customer_request.req_date,
                                                customer_request.vendor,
@@ -349,7 +358,7 @@ class PrioritizationEngine(models.TransientModel):
             str(customer_request.customer_id.id) + " or id = " + str(customer_request.customer_id.id) + " ) " +
             " and saleorderline.product_id = " + str(customer_request.product_id.id) +
             " and ((saleorder.state in ('engine','sent','cancel')) or (saleorder.state in ('sent','sale') and saleorderline.product_uom_qty = 0))" +
-            " and crmteam.team_type = 'engine'")
+            " and crmteam.team_type in ('engine','rapid_quote')")
 
         query_result = self.env.cr.dictfetchone()
 
@@ -369,7 +378,7 @@ class PrioritizationEngine(models.TransientModel):
             str(customer_request.customer_id.id) + " or id = " + str(customer_request.customer_id.id) + " ) " +
             " and saleorderline.product_id = " + str(customer_request.product_id.id) +
             " and ((saleorder.state in ('engine','sent')) or (saleorder.state in ('sent','sale') and saleorderline.product_uom_qty = 0))" +
-            " and crmteam.team_type = 'engine'")
+            " and crmteam.team_type in ('engine','rapid_quote')")
 
         query_result = self.env.cr.dictfetchone()
 
@@ -380,10 +389,10 @@ class PrioritizationEngine(models.TransientModel):
             return None
 
     # allocated product to customer
-    def allocated_product_to_customer(self, customer_id, req_no, req_date, vendor, item_no, deliver_to_location,
+    def allocated_product_to_customer(self, customer_id, document_source, req_no, req_date, vendor, item_no, deliver_to_location,
                                       gl_account, customer_request_id, required_quantity,
                                       product_id, allocated_product_from_lot, cust_req_status):
-        allocated_product = {'customer_request_id': customer_request_id, 'req_no': req_no,
+        allocated_product = {'customer_request_id': customer_request_id, 'document_source': document_source, 'req_no': req_no,
                              'req_date': req_date, 'vendor': vendor, 'item_no': item_no,
                              'deliver_to_location': deliver_to_location,
                              'customer_required_quantity': required_quantity,
@@ -433,13 +442,23 @@ class PrioritizationEngine(models.TransientModel):
         duration_in_hours = duration_in_seconds / 3600
         return int(duration_in_hours)
 
+    # return duration in minutes
+    @staticmethod
+    def return_duration_in_minutes(duration):
+        duration_in_seconds = int(duration.total_seconds())
+        duration_in_mintues = duration_in_seconds / 60
+        return int(duration_in_mintues)
+
     # Generate sale order
     def generate_sale_order(self, allocated_products_dict):
         _logger.debug('In generate sale order %r', allocated_products_dict)
-        # get team id
-        crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
-
         for partner_id_key in allocated_products_dict.keys():
+            # get team id
+            if allocated_products_dict.get(partner_id_key, {})[0]['document_source'] == 'Portal':
+                crm_team = self.env['crm.team'].search([('team_type', '=', 'rapid_quote')])
+            else:
+                crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
+
             sale_order_dict = {'partner_id': partner_id_key, 'state': 'draft', 'team_id': crm_team['id']}
             try:
                 self.env.cr.savepoint()
@@ -570,16 +589,22 @@ class PrioritizationEngine(models.TransientModel):
                         if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                             template = self.env.ref(
                                 'customer-requests.final_email_response_on_uploaded_document').sudo()
+                            if sps_cust_uploaded_documents.source == 'Portal':
+                                sps_cust_uploaded_documents.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
                     else:
                         if len(sps_customer_requirement) > 0:
                             if sps_cust_uploaded_document.status == 'In Process' and len(
                                     sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                                 template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
+                                if sps_cust_uploaded_documents.source == 'Portal':
+                                    sps_cust_uploaded_documents.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
                             if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                 sps_cust_uploaded_document.write({'status': 'In Process'})
                                 if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                                     template = self.env.ref(
                                         'customer-requests.email_response_on_uploaded_document').sudo()
+                                    if sps_cust_uploaded_documents.source == 'Portal':
+                                        sps_cust_uploaded_documents.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
                         else:
                             sps_cust_uploaded_document.write({'status': 'Completed'})
 
@@ -646,7 +671,7 @@ class PrioritizationEngine(models.TransientModel):
         _logger.info('release reserved product quantity....')
 
         sale_orders = self.env['sale.order'].search(
-            [('state', 'in', ('engine', 'sent', 'void')), ('team_id.team_type', '=', 'engine')], order="id asc")
+            [('state', 'in', ('engine', 'sent', 'void')), ('team_id.team_type', 'in', ('engine', 'rapid_quote'))], order="id asc")
 
         for sale_order in sale_orders:
             _logger.info('sale order name : %r, partner_id : %r, create_date: %r', sale_order['name'],
@@ -667,8 +692,9 @@ class PrioritizationEngine(models.TransientModel):
                                                                 '%Y,%m,%d,%H,%M,%S')
                                 # calculate datetime difference.
                                 duration = current_datetime - create_date  # For build-in functions
-                                duration_in_hours = self.return_duration_in_hours(duration)
-                                if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_hours):
+                                #duration_in_hours = self.return_duration_in_hours(duration)
+                                duration_in_minutes = self.return_duration_in_minutes(duration)
+                                if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_minutes):
                                     _logger.info('call stock_move._do_unreserve()')
                                     stock_move._do_unreserve()
                                 else:

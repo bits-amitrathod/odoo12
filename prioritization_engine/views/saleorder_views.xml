@@ -13,7 +13,7 @@
                             class="btn-primary o_sale_print"/>
                     <button name="action_confirm" id="action_confirm"
                             string="Confirm Sale" class="btn-primary" type="object"
-                            attrs="{'invisible': [('state', 'not in', ['engine'])]}"/>
+                            attrs="{'invisible': [('state', 'not in', ['engine', 'rapid_quote'])]}"/>
                     <button name="action_cancel" states="engine" type="object" string="Cancel"/>
 <!--                    <button string="Shipping Update"-->
 <!--                                type="object" class="btn-primary" name="action_fedex_track_request"/>-->

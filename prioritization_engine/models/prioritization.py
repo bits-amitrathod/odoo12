@@ -27,7 +27,7 @@ class Customer(models.Model):
                               help="If Product Priority is -1 then Prioritization Engine will process only those products which are added in 'Customer Priority Configuration'.")
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
-    length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
+    length_of_hold = fields.Integer("Length Of Hold in minutes", readonly=False, default=15)
     doc_process_count = fields.Integer("Document Processing Count", readonly=False, default='1')
     expiration_tolerance = fields.Integer("Expiration Tolerance in Months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
@@ -182,6 +182,9 @@ class Customer(models.Model):
             elif length_of_hold == 0:
                 self.length_of_hold = 1
                 raise ValidationError(_('Global Priority Configuration->Length of Holding field should not be 0'))
+            elif length_of_hold < 15:
+                self.length_of_hold = 15
+                raise ValidationError(_('Global Priority Configuration->Length of Holding cannot be less than 15 min'))
 
     @api.constrains('priority')
     def _check_priority(self):
@@ -296,7 +299,7 @@ class Prioritization(models.Model):
     priority = fields.Integer("Product Priority", readonly=False)
     cooling_period = fields.Integer("Cooling Period in days", readonly=False)
     auto_allocate = fields.Boolean("Allow Auto Allocation?", readonly=False)
-    length_of_hold = fields.Integer("Length Of Hold in hours", readonly=False, default=1)
+    length_of_hold = fields.Integer("Length Of Hold in minutes", readonly=False, default=15)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months", readonly=False)
     partial_ordering = fields.Boolean("Allow Partial Ordering?", readonly=False)
     partial_UOM = fields.Boolean("Allow Partial UOM?", readonly=False)
@@ -332,6 +335,9 @@ class Prioritization(models.Model):
                     _('Customer Priority Configuration->Length of Holding field must be less than 5 digit'))
             elif length_of_hold == 0:
                 raise ValidationError(_('Customer Priority Configuration->Length of Holding field should not be 0'))
+            elif length_of_hold < 15:
+                self.length_of_hold = 15
+                raise ValidationError(_('Global Priority Configuration->Length of Holding cannot be less than 15 min'))
 
     @api.constrains('priority')
     def _check_priority(self):
@@ -372,7 +378,7 @@ class PrioritizationTransient(models.TransientModel):
     priority = fields.Integer("Priority")
     cooling_period = fields.Integer("Cooling Period in days")
     auto_allocate = fields.Boolean("Allow Auto Allocation?")
-    length_of_hold = fields.Integer("Length Of Hold in hours", default=1)
+    length_of_hold = fields.Integer("Length Of Hold in minutes", default=15)
     expiration_tolerance = fields.Integer("Expiration Tolerance in months")
     partial_ordering = fields.Boolean("Allow Partial Ordering?")
     partial_UOM = fields.Boolean("Allow Partial UOM?")
@@ -395,7 +401,7 @@ class SalesChannelPrioritization(models.Model):
     _inherit = "crm.team"
 
     team_type = fields.Selection(selection=[('engine', 'Prioritization'), ('sales', 'Sales'), ('website', 'Website'),
-                                  ('my_in_stock_report', 'My In-Stock Report')],
+                                  ('my_in_stock_report', 'My In-Stock Report'), ('rapid_quote', 'Rapid Quote')],
                                  string='Channel Type', default='sales',
                                  required=True, tracking=True,
                                  help="The type of this channel, it will define the resources this channel uses.")
@@ -411,7 +417,7 @@ class StockMove(models.Model):
             _logger.info('partner id : %r, product id : %r', stock_move.partner_id.id, stock_move.product_id.id)
             if stock_move.partner_id and stock_move.product_id and stock_move.sale_line_id and \
                     stock_move.sale_line_id.order_id and stock_move.sale_line_id.order_id.team_id and \
-                    stock_move.sale_line_id.order_id.team_id.team_type == 'engine':
+                    stock_move.sale_line_id.order_id.team_id.team_type in ('engine', 'rapid_quote'):
                 setting = self.env['sps.customer.requests'].get_settings_object(stock_move.partner_id.id,
                                                                                 stock_move.product_id.id)
                 if setting:
@@ -463,7 +469,7 @@ class StockMove(models.Model):
                                 quant.quantity - quant.reserved_quantity)
 
             product_lot_qty_dict.clear()
-            if (move.picking_id and move.picking_id.sale_id and move.picking_id.sale_id.team_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() == 'engine' and move.picking_id.sale_id.state.lower().strip() in ('sale')):
+            if (move.picking_id and move.picking_id.sale_id and move.picking_id.sale_id.team_id) and (move.picking_id.sale_id.team_id.team_type.lower().strip() in ('engine', 'rapid_quote') and move.picking_id.sale_id.state.lower().strip() in ('sale')):
                 available_production_lot_dict = self.env['available.product.dict'].get_available_production_lot(move.partner_id.id, move.product_id.id)
                 need = move.product_qty - move.reserved_availability
                 if available_production_lot_dict.get(int(move.product_id.id)) is not None:

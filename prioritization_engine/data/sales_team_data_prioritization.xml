@@ -23,6 +23,13 @@
             <field name="active" eval="True"/>
         </record>-->
 
+        <record id="rapid_quote_website_sales" model="crm.team">
+            <field name="name">Rapid Quote</field>
+            <field name="team_type" eval="'rapid_quote'"/>
+            <field name="company_id" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
         <!--Email template -->
         <record id="email_template_sale_custom" model="mail.template">
             <field name="name">Sales Order - Send by Email</field>
@@ -49,7 +56,7 @@
 % endif
 ,</p>
 
-% if object.team_id.team_type == 'engine':
+% if object.team_id.team_type in ('engine', 'rapid_quote'):
 <p>
 A Quotation has been created
 % if ctx.get('proforma')
@@ -91,7 +98,7 @@ from ${object.company_id.name}.
 
 <p>You can reply to this email if you have any questions.</p>
 <p>Thank you,<br/>
-   % if object.team_id.team_type == 'engine':
+   % if object.team_id.team_type in ('engine', 'rapid_quote'):
         <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
     % endif
 </p>

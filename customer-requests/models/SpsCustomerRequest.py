@@ -96,15 +96,17 @@ class SpsCustomerRequest(models.Model):
 
             self.process_customer_requests(sps_customer_requests, tuple(self.documents))
 
-    def process_customer_requests(self, sps_customer_requests, document_ids):
+    def process_customer_requests(self, sps_customer_requests, document_ids, source=None):
         _logger.info('In process_customer_requests')
-        self.env['prioritization.engine.model'].allocate_product_by_priority(sps_customer_requests, document_ids)
+        self.env['prioritization.engine.model'].allocate_product_by_priority(sps_customer_requests, document_ids, source)
 
     # check customer level or global level setting for product.
     def get_settings_object(self, customer_id, product_id):
+        # get parent id
+        parent_id = self.get_parent(customer_id)
         customer_level_setting = self.env['prioritization_engine.prioritization'].sudo().search(
-            [('customer_id', '=', int(customer_id)), ('product_id', '=', int(product_id)), ('priority', '>=', 0)])
-        _logger.info("Inside get_settings_object"+str(customer_id)+" -"+str(product_id))
+            [('customer_id', '=', int(parent_id)), ('product_id', '=', int(product_id)), ('priority', '>=', 0)])
+        _logger.info("Inside get_settings_object"+str(parent_id)+" -"+str(product_id))
         _logger.info(len(customer_level_setting))
         if len(customer_level_setting) == 1:
             _logger.info("Inside get_settings_object if block")
@@ -119,7 +121,7 @@ class SpsCustomerRequest(models.Model):
                 return False
         else:
             _logger.info("Inside get_settings_object else block")
-            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', int(customer_id)), ('priority', '>=', 0)])
+            global_level_setting = self.env['res.partner'].sudo().search([('id', '=', int(parent_id)), ('priority', '>=', 0)])
             _logger.info(global_level_setting)
             if len(global_level_setting) == 1:
                 if global_level_setting.prioritization and global_level_setting.on_hold is False:
@@ -131,6 +133,20 @@ class SpsCustomerRequest(models.Model):
                     return False
             else:
                 return False
+
+    def get_parent(self, partner_id):
+        partner = self.env['res.partner'].search([('id', '=', partner_id), ])
+        parent_partner_id = None
+        if partner:
+            if partner.is_parent:
+                parent_partner_id = partner.id
+            elif partner.parent_id and partner.parent_id.id:
+                parent_partner_id = partner.parent_id.id
+            else:
+                parent_partner_id = partner.id
+        else:
+            print('partner is inactive')
+        return parent_partner_id
 
     @api.depends('document_id')
     def _get_qty_to_show(self):

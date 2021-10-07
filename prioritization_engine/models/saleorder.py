@@ -142,7 +142,7 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
         self.add_note_in_delivery()
-        if self.team_id.team_type == 'engine':
+        if self.team_id.team_type in ('engine', 'rapid_quote'):
             user = None
             current_user = self.env['res.users'].browse(self._context.get('uid'))
             sale_order_customer = self.partner_id
