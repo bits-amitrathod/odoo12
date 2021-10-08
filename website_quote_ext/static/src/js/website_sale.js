@@ -33,7 +33,7 @@ odoo.define('website_quote_ext._ex', function (require) {
          $(engine).on('click', 'a.js_delete_product', function (ev) {
             ev.preventDefault();
             var $link = $(ev.currentTarget);
-            var $input = $link.parent().find("input");
+            var $input = $(ev.currentTarget).closest('tr').find('.js_quantity');
             var product_id = $input[0]['attributes']['data-product-id']['value'];
             var quote_id = $input[0]['attributes']['data-quote-id']['value'];
             var line_id = $input[0]['attributes']['data-line-id']['value']
