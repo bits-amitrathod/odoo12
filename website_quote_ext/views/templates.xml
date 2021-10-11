@@ -69,7 +69,7 @@
                           </a>
 
                           <a t-if="sale_order.team_id.team_type in ('engine', 'rapid_quote')" class="text-right btn stockhawk_update_qty_btn" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
-                                   <b>Update Quantity</b>
+                                   <b>Edit Order</b>
                           </a>
                  </div>
             </xpath>
@@ -328,7 +328,7 @@
                     <div>
                         <h2 class="page-header" style="padding-top: 0px">Pricing</h2>
                         <h5 class="update-qty" t-if="sale_order.state in ['sent'] and sale_order.team_id.team_type in ('engine', 'rapid_quote')"><a class="btn stockhawk_update_qty_btn" t-att-href="'/my/orders/edit/%s' % (sale_order.id)">
-                            <b>Update Quantity</b>
+                            <b>Edit Order</b>
                             </a>
                         </h5>
                     </div>
@@ -353,7 +353,7 @@
                             <th><span t-if="any([line.vendor for line in sale_order.order_line])">Vendor</span></th>
                             <th><span t-if="any([line.item_no for line in sale_order.order_line])">Item No.</span></th>
                             <th><span t-if="any([line.deliver_to_location for line in sale_order.order_line])">Deliver-to Location</span></th>
-                            <th class="text-right">Quantity</th>
+                            <th class="text-right">Reserved Quantity</th>
                             <th t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">Unit Price</th>
                             <th t-if="display_discount" t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">
                                 <span>Discount</span>
@@ -842,7 +842,7 @@
                                                 <th><span t-if="any([line.item_no for line in sale_order.order_line])">Item No.</span></th>
                                                 <th><span t-if="any([line.deliver_to_location for line in sale_order.order_line])">Deliver-to Location</span></th>
                                                 <th><span>Unit Price</span> </th>
-                                                <th><span>Quantity</span></th>
+                                                <th><span>Reserved Quantity</span></th>
                                                 <th><span>Subtotal</span></th>
                                                 <th></th>
                                     </tr>
