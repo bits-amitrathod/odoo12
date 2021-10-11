@@ -28,13 +28,15 @@
                                     “StockHawk Rapid Quote is a quick and easy way to order the supplies you need from SPS.
                                     Copy and paste your product information into the spreadsheet below.
                                     Update the QTY fields with your desired order amount, and whether you want to purchase single units (EA) or boxes (BX).
+                                    Do not edit the column titles SKU, QTY &amp; UOM .
                                     Submit your sheet and allow 30 seconds to see your custom quote! After submission your products will be reserved on the quote for 15 minutes.”
                                 </span>
                               </div>
                               <!--loader-->
                               <div id="loader1" style="display: none;">
                                     <span id="loader" class="loader" ></span>
-                                    <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11;filter: drop-shadow(2px 4px 6px black);display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Quote</h4>
+<!--                                    <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11;filter: drop-shadow(2px 4px 6px black);display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Quote</h4>-->
+                                    <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11; display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Quote</h4>
                               </div>
                               <!-- The Modal -->
                                 <div class="modal" id="help">
