@@ -1,0 +1,167 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record id="report_product_sold_by_bd_list_view" model="ir.ui.view">
+        <field name="name">report.product.sold.by.bd.list</field>
+        <field name="model">report.product.sold.by.bd</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <tree create="false" edit="false" delete="false">
+                <field name="currency_id" invisible="1"/>
+                <field name="sku_code"/>
+                <field name="product_tmpl_id"/>
+                <field name="customer_id"/>
+                <field name="sale_order_id"/>
+                <field name="business_development"/>
+                <!--<field name="date_order" widget="date"/>-->
+                <field name="delivery_date" widget="date"/>
+                <field name="status"/>
+                <field name="qty_done"/>
+                <field name="product_uom_id"/>
+                <field name="unit_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                <field name="total_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+            </tree>
+        </field>
+    </record>
+
+      <record id="report_product_sold_by_bd_form_view" model="ir.ui.view">
+          <field name="name">report.product.sold.by.bd.form</field>
+          <field name="model">report.product.sold.by.bd</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+              <form create="false" edit="false" delete="false">
+                  <sheet>
+                      <group>
+                          <field name="product_tmpl_id"/>
+                      </group>
+                      <group>
+                            <group>
+                                <field name="customer_id"/>
+                                <field name="sale_order_id"/>
+                                <field name="business_development"/>
+                                <!--<field name="date_order" widget="date"/>-->
+                                <field name="delivery_date" widget="date"/>
+                                <field name="status"/>
+                            </group>
+                            <group>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="sku_code"/>
+                                <field name="qty_done"/>
+                                <field name="product_uom_id"/>
+                                <field name="unit_price" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="total_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                            </group>
+                      </group>
+                  </sheet>
+              </form>
+          </field>
+      </record>
+
+      <record id="view_popup_for_product_sold_by_bd" model="ir.ui.view">
+            <field name="name">Short date and over stocked product sold by BD</field>
+            <field name="model">popup.product.sold.by.bd</field>
+            <field name="arch" type="xml">
+                <form string="Choose your date">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio" default="0"/>
+                            <field name="start_date"
+                                   attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date"
+                                   attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                        </group>
+                        <group>
+                            <field name="business_development"/>
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+      <!--Export-->
+      <record id="export_product_sold_by_bd_popup" model="ir.ui.view">
+            <field name="name">report.product.sold.by.bd.export.popup</field>
+            <field name="model">report.product.sold.by.bd.export</field>
+            <field name="arch" type="xml">
+                <form string="Export Short date and over stocked product sold by BD Report">
+                    <group>
+                        <group>
+                            <field name="compute_at_date" widget="radio" default="0"/>
+                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                        </group>
+                        <group>
+                            <field name="business_development"/>
+                        </group>
+                    </group>
+                    <div><b>Click On ' Export To File ' button to export Short date and over stocked product sold by BD report file</b></div>
+                    <footer>
+                        <button name="download_excel_product_sold_by_bd" string="Export To File" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- actions opening views on models -->
+        <record id="action_short_date_and_over_stocked_product_sold_by_bd" model="ir.actions.act_window">
+            <field name="name">Short date and over stocked product sold by BD</field>
+            <field name="res_model">popup.product.sold.by.bd</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_popup_for_product_sold_by_bd"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+
+        <!--<act_window name="Export Short date and over stocked product sold by BD Report"
+                    res_model="report.product.sold.by.bd.export"
+                    src_model="report.product.sold.by.bd"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="product_sold_by_bd_act_window"/>-->
+       <record id="product_sold_by_bd_act_window" model="ir.actions.act_window">
+            <field name="name">Export Short date and over stocked product sold by BD Report</field>
+            <field name="res_model">report.product.sold.by.bd.export</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_report_product_sold_by_bd" />
+        </record>
+
+
+
+      <record id="stocked_product_sold_by_bd_filter" model="ir.ui.view">
+            <field name="name">stocked.product.sold.by.bd.filter</field>
+            <field name="model">report.product.sold.by.bd</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="product_tmpl_id"/>
+                    <field name="customer_id"/>
+                    <field name="sale_order_id"/>
+                    <field name="business_development"/>
+                    <group expand="0" string="Group By">
+                        <filter name="product_tmpl_id" string="Product" domain="[]" context="{'group_by':'product_tmpl_id'}"/>
+                        <filter name="customer_id" string="Customer Name" domain="[]" context="{'group_by':'customer_id'}"/>
+                        <filter name="sale_order_id" string="Sale Order#" domain="[]" context="{'group_by':'sale_order_id'}"/>
+                        <filter name="business_development" string="Key Account" domain="[]" context="{'group_by':'business_development'}"/>
+                        <filter name="delivery_date" string="Delivery Date" domain="[]" context="{'group_by':'delivery_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Top menu item -->
+        <menuitem id="menu_sale_report_short_date_and_over_stocked_product_sold_by_bd"
+                   name="Short date and over stocked product sold by BD"
+                  action="action_short_date_and_over_stocked_product_sold_by_bd"
+                  parent="account_closed_by_bd.business_development_reports"
+                  sequence="4"/>
+
+    </data>
+</odoo>
