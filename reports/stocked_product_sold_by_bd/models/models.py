@@ -116,7 +116,7 @@ class StockedProductSoldByBd(models.Model):
                 (
                     PP.product_tmpl_id = PT.id)
 
-            WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL
+            WHERE SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL
 
         """
 
@@ -131,7 +131,7 @@ class StockedProductSoldByBd(models.Model):
                 select_query = select_query + " AND SP.date_done BETWEEN '" + str(
                     start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
         if business_development_id:
-            select_query = select_query + "AND SO.business_development = '" + str(business_development_id) + "'"
+            select_query = select_query + "AND SO.user_id = '" + str(business_development_id) + "'"
 
         group_by = """
                     GROUP BY

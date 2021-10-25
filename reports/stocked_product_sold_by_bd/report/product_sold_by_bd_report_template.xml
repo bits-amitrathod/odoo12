@@ -32,7 +32,7 @@
                                         Sale Order#
                                     </th>
                                     <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
-                                        Key Account
+                                        Business Development
                                     </th>
                                     <!--<th style="border: 1px solid black;text-align:  center !important;width: 8%;">
                                         Order Date
@@ -72,7 +72,7 @@
                                         <span t-esc="sale.sale_order_id.name"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.key_account.partner_id.name"/>
+                                        <span t-esc="sale.user_id.partner_id.name"/>
                                     </td>
                                     <!--<td style="border: 1px solid black;text-align: center;">
                                         <span t-esc="sale.date_order" t-options='{"widget": "date"}'/>

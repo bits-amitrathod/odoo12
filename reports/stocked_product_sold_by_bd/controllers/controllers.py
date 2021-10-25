@@ -76,20 +76,20 @@ class StockedProductSoldByBd(http.Controller):
         fp.close()
         return data
 
-    @http.route('/web/export/product_sold_by_bd_export/<string:start_date>/<string:end_date>/<string:key_account_id>',
+    @http.route('/web/export/product_sold_by_bd_export/<string:start_date>/<string:end_date>/<string:business_development_id>',
                 type='http',
                 auth="public")
     @serialize_exception
-    def download_document_xl(self, start_date, end_date, key_account_id, token=1, debug=1, **kw):
+    def download_document_xl(self, start_date, end_date, business_development_id, token=1, debug=1, **kw):
 
         select_query = """
                     SELECT
                         ROW_NUMBER () OVER (ORDER BY SP.id) AS id, 
                         SO.name                             AS sale_order_id, 
                         SO.date_order                       AS date_order,
-                        SO.account_manager                  AS key_account,
+                        SO.user_id                  AS business_development_id,
                         SP.date_done                        AS delivery_date,
-                        RP.name                             AS key_account,
+                        RP.name                             AS business_development,
                         ResPartner.name                     AS customer_id,
                         SO.state                            AS status,
                         PT.name                             AS product_tmpl_id, 
@@ -143,7 +143,7 @@ class StockedProductSoldByBd(http.Controller):
                         public.res_users RU 
                     ON 
                         (
-                            SO.account_manager = RU.id)
+                            SO.user_id = RU.id)
                     INNER JOIN 
                         public.res_partner RP 
                     ON
@@ -185,7 +185,7 @@ class StockedProductSoldByBd(http.Controller):
                         (
                             PT.uom_id = UU.id)
 
-                    WHERE SO.state NOT IN ('cancel', 'void') AND SO.account_manager IS NOT NULL
+                    WHERE SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL
 
                 """
 
@@ -193,8 +193,8 @@ class StockedProductSoldByBd(http.Controller):
             select_query = select_query + " AND SP.date_done BETWEEN '" + str(
                 start_date) + "'" + " AND '" + str(self.string_to_date(end_date) + datetime.timedelta(days=1)) + "'"
 
-        if key_account_id != "none":
-            select_query = select_query + "AND SO.account_manager = '" + str(key_account_id) + "'"
+        if business_development_id != "none":
+            select_query = select_query + "AND SO.user_id = '" + str(business_development_id) + "'"
 
         group_by = """
                             GROUP BY
@@ -212,14 +212,14 @@ class StockedProductSoldByBd(http.Controller):
 
         for line in order_lines:
             records.append([line['sku_code'], line['product_tmpl_id'], line['customer_id'], line['sale_order_id'],
-                            line['key_account'],
+                            line['business_development'],
                             line['delivery_date'],
                             line['status'],
                             line['qty_done'], line['product_uom_id'], line['unit_price'], line['total_amount']])
 
         res = request.make_response(
             self.from_data(
-                ["Product SKU", "Product Name", "Customer Name", "Sale Order#", "Key Account ", "Delivery Date",
+                ["Product SKU", "Product Name", "Customer Name", "Sale Order#", "Business Development ", "Delivery Date",
                  "Status", "Delivered Quantity", "Product UOM", "Unit Price", "Total"],
                 records),
             headers=[
