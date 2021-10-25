@@ -1,5 +1,5 @@
 <odoo>
-    <template id="surgical_products_sell_page_template1" name="Surgical Products Sell">
+    <template id="surgical_products_sell_page_template12" name="Surgical Products Sell">
         <t t-name="website.surgical_products_sell">
             <t t-call="website.layout">
                 <div id="wrap" class="surgical-product-sell oe_structure oe_empty">
@@ -7,7 +7,7 @@
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6 pb-3">
-                                    <h1 class="video-title"><span class="bold-font">Sell</span> Your Surplus Surgical Supplies.</h1>
+                                    <h1 class="video-title"><span class="bold-font">Sella</span> Your Surplus Surgical Supplies.</h1>
                                     <div class="section-description mt-3 mb-4">
                                         <p>If you have a surplus inventory of surgical products, why not sell them so they don’t go to waste? SPS will purchase your unused, in-date surgical supplies.
                                         </p>
@@ -137,7 +137,7 @@
                                 </div>
                                  <div class="col-md-12 text-center btn-wrapper pt-4">
 <!--                                    <a  class="btn btn-info btn-sm" href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS-Item-List-Template-2018-05.xlsx?_ga=2.252554889.1044020520.1573065283-120006612.1572717783">Download Item List Template</a>-->
-                                     <a  class="btn btn-info btn-sm" href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS%20Item%20List%20Template.xlsx">Download Item List Template</a>
+                                     <a  class="btn btn-info btn-sm"  href="https://surgicalproductsolutions.com/wp-content/uploads/2016/07/SPS%20Item%20List%20Template.xlsx">Download Item List Template</a>
                                 </div>
 
                                 <div class="col-12 pt-4">
