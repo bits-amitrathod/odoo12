@@ -116,7 +116,7 @@ class StockedProductSoldByBd(models.Model):
                 (
                     PP.product_tmpl_id = PT.id)
 
-            WHERE SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL
+            WHERE SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL AND SO.account_manager IS NULL
 
         """
 
