@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+report_product_sold_by_bd,report.product.sold.by.bd,model_report_product_sold_by_bd,,1,1,1,1
+report_product_sold_by_bd_export,report.product.sold.by.bd.export,model_report_product_sold_by_bd_export,,1,1,1,1
+popup_product_sold_by_bd,popup.product.sold.by.bd,model_popup_product_sold_by_bd,,1,1,1,1

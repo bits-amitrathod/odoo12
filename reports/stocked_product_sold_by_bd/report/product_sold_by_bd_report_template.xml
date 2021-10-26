@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="product_sold_by_bd_template">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <page>
+                    <div class="oe_structure"/>
+                    <div>
+                        <center>
+                            <b>
+                                <h2>Surgical Product Solutions</h2>
+                                <h4>Short date and over stocked product sold by BD</h4>
+                                <h4 t-if="date">
+                                   Date Range: <span t-esc="date"/>
+                               </h4>
+                            </b>
+                        </center>
+                    </div>
+                        <table class="table table-sm" style="border: 1px solid black;">
+                            <thead>
+                                <tr>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 15%;">
+                                        Product SKU
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;">
+                                        Product Name
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Customer Name
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Sale Order#
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Business Development
+                                    </th>
+                                    <!--<th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Order Date
+                                    </th>-->
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Delivery Date
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Status
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Delivered Quantity
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Product UOM
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Unit Price
+                                    </th>
+                                    <th style="border: 1px solid black;text-align:  center !important;width: 8%;">
+                                        Total
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="sales" t-as="sale" style="page-break-inside: avoid">
+                                    <td style="border: 1px solid black;">
+                                        <span t-esc="sale.sku_code"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-field="sale.product_tmpl_id"/>
+                                    </td>
+                                    <td style="border: 1px solid black;">
+                                        <span t-field="sale.customer_id.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.sale_order_id.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.user_id.partner_id.name"/>
+                                    </td>
+                                    <!--<td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.date_order" t-options='{"widget": "date"}'/>
+                                    </td>-->
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.delivery_date" t-options='{"widget": "date"}'/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.status"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.qty_done"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.product_uom_id.name"/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.unit_price" t-options='{"widget": "monetary","display_currency": sale.currency_id}'/>
+                                    </td>
+                                    <td style="border: 1px solid black;text-align: center;">
+                                        <span t-esc="sale.total_amount" t-options='{"widget": "monetary","display_currency": sale.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                </page>
+            </t>
+        </t>
+    </template>
+</odoo>
