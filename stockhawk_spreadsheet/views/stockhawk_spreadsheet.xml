@@ -23,11 +23,11 @@
                               <br></br>
                               <center>
 <!--                                  <img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>-->
-                              <img src="/stockhawk_spreadsheet/static/src/images/Stockhawk_Rapid_Quote_R1.png" class="img-fluid"   style=" max-width: 35%;" /> </center>
+                              <img src="/stockhawk_spreadsheet/static/src/images/Stockhawk_Rapid_Quote_R1.png" class="img-fluid"   style=" max-width: 30%;" /> </center>
                               <div class="container">
 <!--                                  <center style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 25px;">Rapid Quote</center>-->
-                                <center style="padding-top: 15px; padding-bottom: 5px;"> <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 17px;">
-                                    “Let Stockhawk generate your quote in under 1 minute.”
+                                <center style="padding-top: 15px; padding-bottom: 14px;"> <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 20px;">
+                                    “Let Stockhawk instantly generate your order.”
                                 </span></center>
                                   <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
                                       “Copy (Ctrl+C) and Paste (Ctrl+V) your product information into the spreadsheet below.
