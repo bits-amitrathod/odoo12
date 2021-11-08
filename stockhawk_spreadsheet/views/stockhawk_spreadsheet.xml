@@ -21,15 +21,21 @@
                               <div style="position: fixed; right: 0; top: .7em;">
                               </div>
                               <br></br>
-                              <center><img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/></center>
+                              <center>
+<!--                                  <img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>-->
+                              <img src="/stockhawk_spreadsheet/static/src/images/Stockhawk_Rapid_Quote_R1.png" class="img-fluid"   style=" max-width: 30%;" /> </center>
                               <div class="container">
-                                  <center style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 25px;">Rapid Quote</center>
-                                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
-                                    “StockHawk Rapid Quote is a quick and easy way to order the supplies you need from SPS.
-                                    Copy (Ctrl+C) and Paste (Ctrl+V) your product information into the spreadsheet below.
-                                    Update the QTY fields with your desired order amount, and whether you want to purchase single units (EA) or boxes (BX).
-                                    Do not edit the column titles SKU, QTY &amp; UOM .
-                                    Submit your sheet and allow 30 seconds to see your custom quote! After submission your products will be reserved on the quote for 15 minutes.”
+<!--                                  <center style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 25px;">Rapid Quote</center>-->
+                                <center style="padding-top: 15px; padding-bottom: 14px;"> <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 20px;">
+                                    Let Stockhawk instantly generate your order.
+                                </span></center>
+                                  <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                      Copy (Ctrl+C) and Paste (Ctrl+V) your product information into the spreadsheet below.
+                                      Update the QTY fields with your desired order amount, and
+                                      whether you want to purchase single units (EA) or boxes (BX).
+                                      Do not edit the column titles SKU, QTY &amp; UOM.
+                                      Submit and allow 30 seconds to see your quote! Your products will be reserved on the quote for 15 minutes.
+
                                 </span>
                               </div>
                               <!--loader-->
