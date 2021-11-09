@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ir_cron_captivea_edi_process_schedule" model="ir.cron">
+            <field name="name">EDI process Cron Job</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall">0</field>
+            <field name="model_id" ref="model_captivea_ediprocess"/>
+            <field name="state">code</field>
+            <field name="active">False</field>
+            <field name="code">model.edi_process_scheduler()</field>
+        </record>
+    </data>
+</odoo>
