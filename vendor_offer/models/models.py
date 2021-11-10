@@ -2136,7 +2136,8 @@ class VendorPricingExport(models.TransientModel):
                                                      ON pt.id = ppi.product_tmpl_id 
                                              inner join sale_order so 
                                                      ON so.id = sol.order_id 
-                                     WHERE  so.date_order >= %s 
+                                             INNER JOIN stock_picking sp ON sp.sale_id =so.id
+                                     WHERE   sp.date_done >= %s and sp.location_dest_id = 12
                                              AND so.state IN ( 'sale' ,'done') 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
