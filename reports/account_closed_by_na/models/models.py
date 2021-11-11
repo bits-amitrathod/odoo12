@@ -150,6 +150,7 @@ class AccountClosedByNaExport(models.TransientModel):
 
         s_date = self.string_to_date(str(self.start_date))
         e_date = s_date - datetime.timedelta(days=365)
+        e_date_from_first = datetime.date(e_date.year, e_date.month, 1)
         s_date = s_date + datetime.timedelta(days=1)
 
         if self.delivery_end_date:
@@ -158,7 +159,7 @@ class AccountClosedByNaExport(models.TransientModel):
         if self.national_account and self.delivery_start_date and self.delivery_end_date:
             return {
                 'type': 'ir.actions.act_url',
-                'url': '/web/export/account_closed_by_na_export/' + str(s_date) + '/' + str(e_date) + '/' +
+                'url': '/web/export/account_closed_by_na_export/' + str(s_date) + '/' + str(e_date_from_first) + '/' +
                        str(self.national_account.id) + '/' + str(self.delivery_start_date) + '/' +
                        str(updated_delivery_end_date),
                 'target': 'new'
@@ -166,7 +167,7 @@ class AccountClosedByNaExport(models.TransientModel):
         elif self.delivery_start_date and self.delivery_end_date:
             return {
                 'type': 'ir.actions.act_url',
-                'url': '/web/export/account_closed_by_na_export/' + str(s_date) + '/' + str(e_date) + '/' + str(
+                'url': '/web/export/account_closed_by_na_export/' + str(s_date) + '/' + str(e_date_from_first) + '/' + str(
                     'none') +
                        '/' + str(self.delivery_start_date) + '/' + str(updated_delivery_end_date),
                 'target': 'new'
@@ -175,14 +176,14 @@ class AccountClosedByNaExport(models.TransientModel):
         elif self.national_account and self.national_account is not None:
             return {
                 'type': 'ir.actions.act_url',
-                'url': '/web/export/account_closed_by_na_export/' + str(s_date) + '/' + str(e_date) + '/' +
+                'url': '/web/export/account_closed_by_na_export/' + str(s_date) + '/' + str(e_date_from_first) + '/' +
                        str(self.national_account.id) + '/' + str('none') + '/' + str('none'),
                 'target': 'new'
             }
         else:
             return {
                 'type': 'ir.actions.act_url',
-                'url': '/web/export/account_closed_by_na_export/' + str(s_date) + '/' + str(e_date) + '/' + str('none')
+                'url': '/web/export/account_closed_by_na_export/' + str(s_date) + '/' + str(e_date_from_first) + '/' + str('none')
                        + '/' + str('none') + '/' + str('none'),
                 'target': 'new'
             }
