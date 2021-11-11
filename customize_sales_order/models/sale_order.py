@@ -106,7 +106,10 @@ class sale_order(models.Model):
     @api.depends('signature')
     def _is_signature(self):
         clean = re.compile('<.*?>')
-        clean_text = re.sub(clean, '', self.order_processor.signature)
+        if self.order_processor.signature:
+            clean_text = re.sub(clean, '', self.order_processor.signature)
+        else:
+            clean_text = ''
         if len(clean_text.strip()) > 0:
             self.is_signature = 1
         else:
