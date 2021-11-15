@@ -1861,7 +1861,7 @@ from  product_product pp
  INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id
  INNER JOIN sale_order so ON so.id=sol.order_id
  INNER JOIN stock_picking sp ON sp.sale_id =so.id
- where pp.id =%s and sp.date_done>= %s and sp.date_done<=%s and sp.location_dest_id = 12
+ where pp.id =%s and sp.date_done>= %s and sp.date_done<=%s and sp.location_dest_id = 9
   group by sp.state"""
 
             self.env.cr.execute(sale_all_query, (line.id, last_yr,today_date))
@@ -2125,20 +2125,21 @@ class VendorPricingExport(models.TransientModel):
                                       GROUP  BY sml.product_id) AS all_sales 
                                   ON pp.id = all_sales.product_id 
                            left join (SELECT CASE 
-                                               WHEN Abs(SUM(sol.price_total)) IS NULL THEN 0 
-                                               ELSE Abs(SUM(sol.price_total)) 
+                                               WHEN Abs(SUM(sol.qty_delivered * sol.price_reduce)) IS NULL THEN 0 
+                                               ELSE Abs(SUM(sol.qty_delivered * sol.price_reduce)) 
                                              END AS total_sales, 
-                                             ppi.id 
+                                             ppi.id
+                                             
                                       FROM   product_product ppi 
                                              inner join sale_order_line sol 
-                                                     ON sol.product_id = ppi.id 
+                                                     ON sol.product_id = ppi.id  and sol.state NOT IN ('cancel','void')
                                              inner join product_template pt 
                                                      ON pt.id = ppi.product_tmpl_id 
                                              inner join sale_order so 
                                                      ON so.id = sol.order_id 
                                              INNER JOIN stock_picking sp ON sp.sale_id =so.id
-                                     WHERE   sp.date_done >= %s and sp.location_dest_id = 12
-                                             AND so.state IN ( 'sale' ,'done') 
+                                     WHERE   sp.date_done >= %s and sp.location_dest_id = 9
+                                             AND sp.state IN ('done') 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
                            left join (SELECT SUM(sml.qty_done) AS qty_done, 
@@ -2266,7 +2267,7 @@ class VendorPricingExport(models.TransientModel):
 
         start_time = time.time()
         #self.env.cr.execute(sql_fuction)
-        self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,today_date,
+        self.env.cr.execute(str_query + str_query_join, (cust_location_id,last_yr, cust_location_id, last_yr,today_date,
                                                          cust_location_id, last_3_months, today_date,
                                                          today_date, last_yr))
 
