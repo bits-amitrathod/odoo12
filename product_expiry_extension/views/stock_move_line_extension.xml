@@ -60,7 +60,7 @@
                 <field name="picking_type_use_existing_lots" invisible="1"/>
                 <field name="expiration_date" force_save="1"  attrs="{
                     'column_invisible': ['|', ('parent.use_expiration_date', '!=', True), ('parent.picking_code', '!=', 'incoming')],
-
+                       'readonly': 0,
                 }"/>
             </xpath>
         </field>
