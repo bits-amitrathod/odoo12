@@ -23,7 +23,7 @@
                               <br></br>
                               <center>
 <!--                                  <img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>-->
-                              <img src="/stockhawk_spreadsheet/static/src/images/Stockhawk_Rapid_Quote_R1.png" class="img-fluid"   style=" max-width: 30%;" /> </center>
+                              <img src="/stockhawk_spreadsheet/static/src/images/Stockhawk_Rapid_Order_R1.png" class="img-fluid"   style=" max-width: 30%;" /> </center>
                               <div class="container">
 <!--                                  <center style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 25px;">Rapid Quote</center>-->
                                 <center style="padding-top: 15px; padding-bottom: 14px;"> <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 20px;">
@@ -34,7 +34,7 @@
                                       Update the QTY fields with your desired order amount, and
                                       whether you want to purchase single units (EA) or boxes (BX).
                                       Do not edit the column titles SKU, QTY &amp; UOM.
-                                      Submit and allow 30 seconds to see your quote! Your products will be reserved on the quote for 15 minutes.
+                                      Submit and allow 30 seconds to see your Order! Your products will be reserved on the Order for 15 minutes.
 
                                 </span>
                               </div>
@@ -42,7 +42,7 @@
                               <div id="loader1" style="display: none;">
                                     <span id="loader" class="loader" ></span>
 <!--                                    <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11;filter: drop-shadow(2px 4px 6px black);display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Quote</h4>-->
-                                    <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11; display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Quote</h4>
+                                    <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11; display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Order</h4>
                               </div>
                               <!-- The Modal -->
                                 <div class="modal" id="help">
@@ -50,27 +50,27 @@
                                         <div class="modal-content">
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                              <h4 class="modal-title">Rapid Quote Help</h4>
+                                              <h4 class="modal-title">Rapid Order Help</h4>
                                             </div>
                                             <!-- Modal body -->
                                             <div class="modal-body">
                                               <div class="container">
                                                 <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
-                                                    <h4>Tips for using Stockhawk Rapid Quote:</h4>
+                                                    <h4>Tips for using Stockhawk Rapid Order:</h4>
                                                     <ul style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
                                                         <li style="font-weight: bold; margin:5px">Do not edit column titles (SKU, QTY, and UOM).</li>
                                                         <li style="margin:5px">Enter the product code or manufacturer product number in the SKU column.</li>
-                                                        <li style="margin:5px">Specify the exact number of products you are looking for in the QTY column. You will be able to decrease the quantity (not increase) after your quote has been generated.</li>
+                                                        <li style="margin:5px">Specify the exact number of products you are looking for in the QTY column. You will be able to decrease the quantity (not increase) after your order has been generated.</li>
                                                         <li style="margin:5px">Indicate whether you are looking for single units (EA) or boxes (BX) in the UOM column.</li>
-                                                        <li style="margin:5px">Once you submit your sheet, please allow 30 seconds for our system to generate a quote.</li>
-                                                        <li style="margin:5px">After receiving your quote, you will then be able to decrease quantities, see total QTY available, pay, and add notes prior to placing your order.</li>
-                                                        <li style="margin:5px">Your quote will only return with products/QTYs we can fill that are within your expiration date tolerance. If you want 5 of a product, but we only have 3 in stock your quote will only partially fill your order.</li>
+                                                        <li style="margin:5px">Once you submit your sheet, please allow 30 seconds for our system to generate a order.</li>
+                                                        <li style="margin:5px">After receiving your order, you will then be able to decrease quantities, see total QTY available, pay, and add notes prior to placing your order.</li>
+                                                        <li style="margin:5px">Your order will only return with products/QTYs we can fill that are within your expiration date tolerance. If you want 5 of a product, but we only have 3 in stock your order will only partially fill your order.</li>
                                                         <li style="margin:5px">If we cannot fill any of your order you will receive a popup notifying you that we are out of stock. </li>
-                                                        <li style="margin:5px">Products on your quote will be reserved for 15 minutes. After 15 minutes your quote will automatically cancel if you do not accept it. </li>
-                                                        <li style="margin:5px">If you do not wish to purchase products on your quote,please remove the line items before accepting.</li>
-                                                        <li style="margin:5px">If you do not want to proceed with the quote, please reject it as soon as possible.</li>
+                                                        <li style="margin:5px">Products on your order will be reserved for 15 minutes. After 15 minutes your order will automatically cancel if you do not accept it. </li>
+                                                        <li style="margin:5px">If you do not wish to purchase products on your order,please remove the line items before accepting.</li>
+                                                        <li style="margin:5px">If you do not want to proceed with the order, please reject it as soon as possible.</li>
                                                     </ul>
-                                                    <b>Note:</b> <i>Unless you update the Rapid Quote sheet, Stockhawk will automatically generate quotes for one (1) item, sold as an individual unit/each (EA).</i>
+                                                    <b>Note:</b> <i>Unless you update the Rapid Order sheet, Stockhawk will automatically generate orders for one (1) item, sold as an individual unit/each (EA).</i>
                                                 </span>
                                             </div>
                                             </div>
@@ -86,11 +86,11 @@
                                         <div class="modal-content">
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                              <h4 class="modal-title">Rapid Quote</h4>
+                                              <h4 class="modal-title">Rapid Order</h4>
                                             </div>
                                             <!-- Modal body -->
                                             <div class="modal-body">
-                                              You are about to submit your Rapid Quote. Please verify all information is correct. By clicking “Yes” you will be redirected to a loading page while your
+                                              You are about to submit your Rapid Order. Please verify all information is correct. By clicking “Yes” you will be redirected to a loading page while your
                                                 submission is processed.
                                             </div>
                                             <!-- Modal footer -->
@@ -106,7 +106,7 @@
                                         <div class="modal-content">
                                             <!-- Modal Header -->
                                             <div class="modal-header">
-                                              <h4 class="modal-title">Rapid Quote</h4>
+                                              <h4 class="modal-title">Rapid Order</h4>
                                             </div>
                                             <!-- Modal body -->
                                             <div class="modal-body" id="errorMessageDisplay">
@@ -139,7 +139,7 @@
             <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
                 <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
                     <div class="menu-rapid-quote-div">
-                        <a style="padding: 4px px 1px 0px;" href="/spreadsheet/stockhawk_spreadsheet" role="menuitem" class="dropdown-item ">Stockhawk Rapid Quote</a>
+                        <a style="padding: 4px px 1px 0px;" href="/spreadsheet/stockhawk_spreadsheet" role="menuitem" class="dropdown-item ">Stockhawk Rapid Order</a>
                     </div>
                 </t>
         </xpath>
