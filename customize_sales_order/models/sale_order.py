@@ -96,7 +96,8 @@ class sale_order(models.Model):
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
     def _get_user(self):
-        if self.env.user.email == "jtennant@surgicalproductsolutions.com":
+        if self.env.user.email in ('jtennant@surgicalproductsolutions.com', 'info@surgicalproductsolutions.com'
+                                   ,'bryon@surgicalproductsolutions.com'):
             self.field_read_only = 0
         else:
             self.field_read_only = 1
