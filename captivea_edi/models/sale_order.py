@@ -8,20 +8,20 @@ DOC_PREFIX_BIL = '810'  # Prefix for Invoice Document
 DOC_PREFIX_INV = '846'  # Prefix for Inventory Document
 
 VARIABLE_855 = """ISA^00^{eleven_spaces}^00^{eleven_spaces}^ZZ^{supplier_id}^ZZ^{receiver_id}^{current_date_year_only}^{current_time}^U^00401^{interchange_number}^0^T^>~
-GS^PR^{supplier_id}^{accounting_id}^{current_date}^{current_time}^8^X^004010~
+GS^PR^{supplier_id_no_space}^{accounting_id}^{current_date}^{current_time}^8^X^004010~
 ST^855^0001~
 BAK^06^AC^{po_number}^{po_date_with_cc}^^^^{sale_order_name}^{sale_order_date_with_cc}~
 REF^OQ^{ghx_order_ref}~
 N1^ST^^91^{x_edi_store_number}~
-N1^BT^^91^{x_billtoid}~
-N1^SN^^91^{x_storeid}~
-N1^VN^{seller_name}^92^{x_vendorid}~{so_lines}
+N1^BT^^{fields_91_bt}^{x_billtoid}~
+N1^SN^^{fields_92_sn}^{x_storeid}~
+N1^VN^{seller_name}^{fields_92_vn}^{x_vendorid}~{so_lines}
 CTT^{so_line_count}^14~
 SE^{segment_count}^0001~
 GE^1^8~
 IEA^1^{interchange_number}~
 """
-sale_line_str = """PO1^{line_num}^{quantity}^{uom}^{price_unit}^^VC^{vendor_part_number}^IN^{buyer_part_num}~
+sale_line_str = """PO1^{line_num}^{quantity}^{uom}^{price_unit}^^VC^{vendor_part_number}^{in_qualifier}^{buyer_part_num}~
 PID^F^^^^{vendor_part_description}~
 ACK^{ack_code}^{product_uom_qty}^{uom}^017^{commitment_date_with_cc}^^VC^{vendor_part_number}~"""
 
@@ -65,7 +65,7 @@ import csv
 import pysftp
 from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from odoo.exceptions import Warning
+from odoo.exceptions import ValidationError
 from odoo import api, fields, models, _
 
 
@@ -73,8 +73,8 @@ class SaleOrder(models.Model):
     _inherit = ['sale.order']
 
     file_ref = fields.Char()
-    x_edi_reference = fields.Char('EDI Reference', copy=False, store=True, compute='_compute_ref')
-    x_edi_accounting_id = fields.Char('Accounting ID', copy=False, compute='_compute_sale_edi_values', store=True)
+    x_edi_reference = fields.Char('EDI Reference', copy=False, store=False, compute='_compute_ref')
+    x_edi_accounting_id = fields.Char('Accounting ID', copy=False, compute='_compute_sale_edi_values', store=False)
     x_edi_store_number = fields.Char('Store number', related='partner_shipping_id.x_edi_store_number', copy=False)
     x_edi_flag = fields.Boolean('EDI Flag', copy=False)
     poack_created = fields.Boolean(string="Acknowledged?", copy=False)
@@ -89,7 +89,6 @@ class SaleOrder(models.Model):
         self.order_line.set_po_line_number()
         return res
 
-    @api.depends('client_order_ref')
     def _compute_ref(self):
         for sale in self:
             sale.x_edi_reference = sale.client_order_ref
@@ -114,20 +113,22 @@ class SaleOrder(models.Model):
         @return: log_id: log_id of sale_id.
         """
         user_tz = pytz.timezone(self.env.user.tz or 'utc')
-        po_date = str(self.date_order.astimezone(user_tz).date()) or str(self.customer_po_ref.po_date)
+        po_date = str(self.date_order.astimezone(user_tz).date()) or (
+                    self.customer_po_ref and self.customer_po_ref.po_date and str(self.customer_po_ref.po_date)) or ''
         log_id = self.env['setu.edi.log'].create({
-            'po_number': self.x_edi_reference,
+            'po_number': self.client_order_ref,
             'type': 'export',
             'document_type': '855',
             'sale_id': self.id,
-            'po_date': po_date
+            'po_date': po_date,
+            'x_hdr_ref1': self.customer_po_ref.x_hdr_ref1 if self.customer_po_ref else False
         })
         export_log = self.env['setu.poack.export.log.line']
 
         for line in self.order_line:
             export_log.create({
                 'accounting_id': self.x_edi_accounting_id,
-                'po_number': self.x_edi_reference,
+                'po_number': self.client_order_ref,
                 'vendor_part': line.product_id.default_code,
                 'po_date': po_date,
                 'company_id': self.company_id.id,
@@ -177,7 +178,7 @@ class SaleOrder(models.Model):
                                                   ('instance_active', '=', True),
                                                  ('instance_of', '=', self.order_of)])
         ftpdpath = sftp_conf['ftp_poack_dpath']
-        instance_of = 'TrueCommerce' if sftp_conf.instance_of == 'true'else 'GHX'
+        instance_of = 'TrueCommerce' if sftp_conf.instance_of == 'true' else 'GHX'
         now = datetime.now()
         current_date_year_only = now.date().strftime('%y%m%d')
         current_date = now.date().strftime('%Y%m%d')
@@ -185,10 +186,10 @@ class SaleOrder(models.Model):
         current_time = now.strftime('%H%M')
         file_current_date = now.strftime("%Y%m%d%H%S")
         if instance_of == 'TrueCommerce':
-            file_name = '/tmp/' + str(DOC_PREFIX_POA) + '_' + str(self.x_edi_reference) + str(self.partner_id.name) + \
+            file_name = '/tmp/' + str(DOC_PREFIX_POA) + '_' + str(self.client_order_ref) + str(self.partner_id.name) + \
                         '_' + '.csv'  # TO DO COMPLETE FILE NAME WITH CUSTOMER NAME
         else:
-            actual_file_name = '855' + '_' + '%s' % self.name + '_' + '%s'% file_current_date + '.txt'
+            actual_file_name = '855' + '_' + '%s' % self.name + '_' + '%s' % file_current_date + '.txt'
             file_name = '/tmp/' + actual_file_name  # TO DO COMPLETE FILE NAME WITH CUSTOMER NAME
         with open(file_name, 'w+') as file_pointer:
             if instance_of == 'TrueCommerce':
@@ -256,11 +257,16 @@ class SaleOrder(models.Model):
                 for row in log_id.edi_855_log_lines:
                     sale_line = row.sale_line_id
                     product = sale_line.product_id
-                    line = sale_line_str.format(line_num=row.line_num or '',quantity=row.qty,uom=row.uom or '',
-                         price_unit=sale_line.price_unit,vendor_part_number=product.default_code or '',
-                         buyer_part_num=row.buyer_part_number or '',vendor_part_description=product.name,
-                         ack_code=sale_line.ack_code,product_uom_qty=sale_line.product_uom_qty,commitment_date_with_cc=commitment_date_with_cc
-                         )
+                    line = sale_line_str.format(line_num=row.line_num or '', quantity=int(row.qty), uom=row.uom or '',
+                                                price_unit=sale_line.price_unit,
+                                                vendor_part_number=product.default_code or '',
+                                                buyer_part_num=row.buyer_part_number or '',
+                                                vendor_part_description=product.name,
+                                                in_qualifier='IN' if row.buyer_part_number else '',
+                                                ack_code=sale_line.ack_code,
+                                                product_uom_qty=int(sale_line.product_uom_qty),
+                                                commitment_date_with_cc=commitment_date_with_cc
+                                                )
                     if not first_line_po_date:
                         line = '\n' + line
                     sale_lines += line
@@ -268,17 +274,22 @@ class SaleOrder(models.Model):
                         po_date = row.po_date
                 po_date = po_date and datetime.strptime(po_date, '%Y-%m-%d').strftime('%Y%m%d') or ''
                 interchange_number = sftp_conf.update_interchange_number()
-                file_content = VARIABLE_855.format(eleven_spaces=" "*11, supplier_id=sftp_conf.sender_id or '',
-                                                   receiver_id=sftp_conf.receiver_id or '',
+                file_content = VARIABLE_855.format(eleven_spaces=" " * 10,
+                                                   supplier_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(
+                                                       15) or " " * 15,
+                                                   supplier_id_no_space=sftp_conf.sender_id or '',
+                                                   receiver_id=sftp_conf.receiver_id and sftp_conf.receiver_id.ljust(
+                                                       15) or " " * 15,
                                                    current_date_year_only=current_date_year_only,
                                                    current_time=current_time,
                                                    interchange_number=interchange_number or '',
                                                    accounting_id=sale_order.x_edi_accounting_id or '',
                                                    current_date=current_date,
-                                                   po_number=sale_order.x_edi_reference or '',
-                                                   po_date_with_cc=po_date or '',sale_order_name=sale_order.name,
+                                                   po_number=sale_order.client_order_ref or '',
+                                                   po_date_with_cc=po_date or '', sale_order_name=sale_order.name,
                                                    sale_order_date_with_cc=sale_order_date_with_cc,
-                                                   ghx_order_ref=log_id.x_hdr_ref1 or '',
+                                                   ghx_order_ref=log_id.x_hdr_ref1 or (
+                                                               self.customer_po_ref and self.customer_po_ref.x_hdr_ref1) or '',
                                                    x_edi_store_number=customer.x_edi_store_number or '',
                                                    x_billtoid=customer.x_billtoid or '',
                                                    x_storeid=customer.x_storeid or '',
@@ -287,7 +298,11 @@ class SaleOrder(models.Model):
                                                    included_segments=14,
                                                    so_lines=sale_lines,
                                                    seller_name=sftp_conf.company_name or 'Seller Name',
-                                                   segment_count=7 + (total_lines * 3)
+                                                   segment_count=7 + (total_lines * 3),
+                                                   fields_91_bt='91' if customer.x_billtoid else '',
+                                                   fields_92_sn='92' if customer.x_storeid else '',
+                                                   fields_92_vn='92' if customer.x_vendorid else ''
+
                                                    )
                 file_pointer.write(file_content)
 
@@ -295,7 +310,7 @@ class SaleOrder(models.Model):
             if sftp:
                 sftp.cwd(ftpdpath)
                 if instance_of == 'TrueCommerce':
-                    sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_POA) + '_' + str(self.x_edi_reference) + '_' + str(
+                    sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_POA) + '_' + str(self.client_order_ref) + '_' + str(
                         self.name) + '.csv')
                 else:
                     sftp.put(file_name, ftpdpath + '/' + actual_file_name)
@@ -326,11 +341,15 @@ class SaleOrder(models.Model):
         for record in self:
             if record.x_edi_accounting_id and record.partner_shipping_id.edi_855:
                 record.get_edi_status()
-        if not self.x_edi_accounting_id and self.partner_id.x_edi_flag and self.partner_shipping_id.edi_855:
-            raise Warning(
-                _("Please make sure the Accounting ID is properly set on the Customer so the PO Acknowledgment can be sent to the Customer"))
+        pop_error = False
+        for rec in self:
+            if not rec.x_edi_accounting_id and rec.partner_id.x_edi_flag and rec.partner_shipping_id.edi_855:
+                pop_error = True
+                if len(self) == 1:
+                    raise ValidationError(
+                        _("Please make sure the Accounting ID is properly set on the Customer so the PO Acknowledgment can be sent to the Customer"))
         res = super(SaleOrder, self).action_confirm()
-        if res:
+        if res and not pop_error:
             for record in self:
                 if record.x_edi_accounting_id and record.partner_shipping_id.edi_855 and not record.poack_created:
                     # if record.order_of == 'true':
@@ -340,7 +359,7 @@ class SaleOrder(models.Model):
                         pick.write(
                             {'x_edi_accounting_id': record.x_edi_accounting_id,
                              'sale_order_of': record.order_of,
-                             'ship_from_warehouse': pick.location_id.get_warehouse().id,
+                             # 'ship_from_warehouse': pick.location_id.get_warehouse().id,
                              'edi_vendor_number': pick.partner_id.parent_id.edi_vendor_number if pick.partner_id.parent_id else pick.partner_id.edi_vendor_number,
                              'x_edi_ship_to_type': self.partner_shipping_id.x_edi_ship_to_type}
                         )
@@ -363,7 +382,7 @@ class SaleOrder(models.Model):
                     log_ids |= sale.create_poack_export_log(sftp)
                 else:
                     log_id = self.env['setu.edi.log'].create({
-                        'po_number': sale.x_edi_reference,
+                        'po_number': sale.client_order_ref,
                         'type': 'export',
                         'document_type': '855',
                         'status': 'fail',
@@ -389,7 +408,7 @@ class SaleAdvPayinv(models.TransientModel):
         sale = self.env['sale.order'].browse(self.env.context.get('active_id'))
         sale_cr_invoices = sale.invoice_ids.filtered(lambda inv: not inv.reversed_entry_id)
         sale_cr_invoices.x_edi_accounting_id = sale.x_edi_accounting_id
-        sale_cr_invoices.x_studio_edi_reference = sale.x_edi_reference
+        sale_cr_invoices.x_studio_edi_reference = sale.client_order_ref
         sale_cr_invoices.x_edi_store_number = sale.x_edi_store_number
         sale_cr_invoices.x_edi_ship_to_type = sale.partner_shipping_id.x_edi_ship_to_type
         sale_cr_invoices.x_edi_transaction_type = 'DR'

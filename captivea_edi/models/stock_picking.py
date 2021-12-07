@@ -7,20 +7,17 @@ from datetime import date, datetime
 import pysftp
 
 from odoo import api, fields, models, SUPERUSER_ID, _
-from odoo.exceptions import UserError, ValidationError, Warning
+from odoo.exceptions import UserError, ValidationError
 
 HEAD = """ISA^00^          ^00^          ^ZZ^{sender_id}^ZZ^{receiver_id}^{YYMMDD}^{HHMM}^U^00401^{interchange_number}^0^T^>~
-GS^SH^{sender_id}^{accounting_id}^{current_date}^{current_time}^1^X^004010~
+GS^SH^{sender_id_with_no_space}^{accounting_id}^{current_date}^{current_time}^1^X^004010~
 ST^856^0001~
 BSN^00^{ship_id}^{date_done}^{date_done_time}~
 HL^1^^S~
 TD5^^2^{scac}~
 DTM^011^{date_done}~
 N1^ST^^91^{store_num}~
-N1^SF^{ship_from}^91^{vendor_number}~
-N2^{add1}~
-N3^{add2}~
-N4^{city}^{state}^12345~
+N1^SF^{ship_from}^{fields_91_sf}^{vendor_number}~{n2_line}{n3_line}{n4_line}
 HL^2^1^O~
 PRF^{client_order_ref}~
 REF^OQ^{order_ref}~
@@ -28,7 +25,7 @@ REF^CN^{carrier_tracking_ref}~"""
 
 LINE = """
 HL^{seq}^2^I~
-LIN^{line_num}^IN^{buyer_part}^VC^{vendor_part}~
+LIN^{line_num}^{in_qualifier}^{buyer_part}^VC^{vendor_part}~
 SN1^^{qty_done}^{uom}^12^20^BX~"""
 
 FOOT = """
@@ -82,17 +79,41 @@ class Picking(models.Model):
     ship_to_zip = fields.Char('Ship to zip')
     ship_to_country = fields.Char('Ship to country')
     ship_from_name = fields.Char('Ship from name')
-    ship_from_warehouse = fields.Many2one('stock.warehouse', compute='get_ship_from_warehouse', store=True)
-    ship_from = fields.Many2one(related='ship_from_warehouse.partner_id')
-    ship_from_address_1 = fields.Char('Ship from address 1', related='ship_from.street')
-    ship_from_address_2 = fields.Char('Ship from address 2', related='ship_from.street2')
-    ship_from_city = fields.Char('Ship from city', related='ship_from.city')
-    ship_from_state = fields.Char('Ship from state', related='ship_from.state_id.name')
-    ship_from_zip = fields.Char('Ship from zip', related='ship_from.zip')
-    ship_from_country = fields.Char('Ship from country', related='ship_from.country_id.name')
-    x_studio_edi_carton_count = fields.Integer('Package Count', default=1, compute="_compute_package_count", store=True)
+    ship_from_warehouse = fields.Many2one('stock.warehouse', compute='get_ship_from_warehouse', store=False)
+    ship_from = fields.Many2one('res.partner', compute='_compute_ship_from_address')
+    ship_from_address_1 = fields.Char('Ship from address 1', compute='_compute_ship_from_address'
+                                      )
+    ship_from_address_2 = fields.Char('Ship from address 2', compute='_compute_ship_from_address'
+                                      )
+    ship_from_city = fields.Char('Ship from city', compute='_compute_ship_from_address')
+    ship_from_state = fields.Char('Ship from state', compute='_compute_ship_from_address'
+                                  )
+    ship_from_zip = fields.Char('Ship from zip', compute='_compute_ship_from_address')
+    ship_from_country = fields.Char('Ship from country', compute='_compute_ship_from_address'
+                                    )
+    x_studio_edi_carton_count = fields.Integer('Package Count', default=1, compute="_compute_package_count",
+                                               store=False)
     asn_created = fields.Boolean('Notification Sent?')
-    sale_order_of = fields.Selection([('true', 'Truecommerce'), ('ghx', 'GHX')])
+    sale_order_of = fields.Selection([('true', 'Truecommerce'), ('ghx', 'GHX')], compute='_compute_sale_order_of',
+                                     store=True)
+
+    def _compute_ship_from_address(self):
+        for rec in self:
+            rec.ship_from = rec.ship_from_warehouse.partner_id
+            rec.ship_from_address_1 = rec.ship_from.street
+            rec.ship_from_address_2 = rec.ship_from.street2
+            rec.ship_from_city = rec.ship_from.city
+            rec.ship_from_state = rec.ship_from.state_id.name
+            rec.ship_from_zip = rec.ship_from.zip
+            rec.ship_from_country = rec.ship_from.country_id.name
+
+    @api.depends('sale_id')
+    def _compute_sale_order_of(self):
+        for rec in self:
+            if rec.sale_id:
+                rec.sale_order_of = rec.sale_id.order_of
+            else:
+                rec.sale_order_of = False
 
     shipping_service = fields.Char(string="Shipping Service")
     x_scac_kuebix = fields.Char(string="X-SCAC")
@@ -100,8 +121,7 @@ class Picking(models.Model):
     @api.depends('location_id')
     def get_ship_from_warehouse(self):
         for pick in self:
-            pick.ship_from_warehouse = self.env['stock.warehouse'].search(
-                [('wh_output_stock_loc_id', '=', pick.location_id.id)])
+            pick.ship_from_warehouse = pick.location_id.get_warehouse()
 
     def release_available_to_promise(self):
         res = super(Picking, self).release_available_to_promise()
@@ -113,9 +133,9 @@ class Picking(models.Model):
                                                                       'x_studio_edi_packaging_type': self.x_studio_edi_packaging_type
                                                                       })
             op_pick = pickings.filtered(lambda pick: pick.picking_type_id.code == 'outgoing')
-            pickings.write({
-                'ship_from_warehouse': op_pick.location_id.get_warehouse().id
-            })
+            # pickings.write({
+            #     'ship_from_warehouse': op_pick.location_id.get_warehouse().id
+            # })
         return res
 
     @api.depends('package_ids', 'x_studio_edi_packaging_type')
@@ -152,154 +172,163 @@ class Picking(models.Model):
         sftp_conf = self.env['setu.sftp'].search(
             [('company_id', '=', self.company_id.id), ('instance_active', '=', True),
              ('instance_of', '=', self.sale_order_of)])
-        ftpdpath = sftp_conf['ftp_shipack_dpath']
-        file_name = '/tmp/' + str(DOC_PREFIX_ASN) + '_' + \
-                    str(order.name) + 'OUT' + str(self.id) + '_' + str(order.partner_id.name) \
-                    + '.csv' if self.sale_order_of == 'true' else '/tmp/' + str(
-            DOC_PREFIX_ASN) + '_' + 'message_id' + str(datetime.now()) + '.txt'  # mayBe x_edi_reference is better
-        with open(file_name, 'w') as file_pointer:
-            if self.sale_order_of == 'true':
-                cvs_rows = []
-                writer = csv.DictWriter(file_pointer, fieldnames=ASN_FIELDS)
-                writer.writeheader()
-                line_count = 0
+        if sftp_conf:
+            ftpdpath = sftp_conf['ftp_shipack_dpath']
+            file_name = '/tmp/' + str(DOC_PREFIX_ASN) + '_' + \
+                        str(order.name) + 'OUT' + str(self.id) + '_' + str(order.partner_id.name) \
+                        + '.csv' if self.sale_order_of == 'true' else '/tmp/' + str(
+                DOC_PREFIX_ASN) + '_' + 'message_id' + str(datetime.now()) + '.txt'  # mayBe x_edi_reference is better
+            with open(file_name, 'w') as file_pointer:
+                if self.sale_order_of == 'true':
+                    cvs_rows = []
+                    writer = csv.DictWriter(file_pointer, fieldnames=ASN_FIELDS)
+                    writer.writeheader()
+                    line_count = 0
 
-                for row in self.edi_log_ref.edi_856_log_lines:
-                    line_count += 1
-                    cvs_rows.append({
-                        'TRANSACTION TYPE': DOC_PREFIX_ASN,
-                        'ACCOUNTING ID': row.accounting_id,
-                        'SHIPMENT ID': row.shipment_id,
-                        'SCAC': row.x_studio_scac,
-                        'CARRIER PRO NUMBER': row.carrier_tracking_ref,
-                        'BILL OF LADING': row.origin_sale_order.name,
-                        'SCHEDULED DELIVERY': 'null',
-                        'SHIP DATE': str(row.date_done) or False,
-                        'SHIP TO NAME': row.ship_to_name,
-                        'SHIP TO ADDRESS - LINE ONE':
-                            row.ship_to_address_1 or 'null',
-                        'SHIP TO ADDRESS - LINE TWO':
-                            row.ship_to_address_2 or 'null',
-                        'SHIP TO CITY': row.ship_to_city or 'null',
-                        'SHIP TO STATE': row.ship_to_state or 'null',
-                        'SHIP TO ZIP': row.ship_to_zip or 'null',
-                        'SHIP TO COUNTRY': row.ship_to_country or 'null',
-                        'SHIP TO ADDRESS CODE': 'null',
-                        'SHIP VIA': row.ship_via or '',
-                        'SHIP TO TYPE': row.x_edi_ship_to_type,
-                        'PACKAGING TYPE': row.x_studio_edi_packaging_type,
-                        'GROSS WEIGHT': row.weight,
-                        'GROSS WEIGHT UOM': row.weight_uom_name,
-                        'NUMBER OF CARTONS SHIPPED': row.x_studio_edi_carton_count,
-                        'CARRIER TRAILER NUMBER': 'null',
-                        'TRAILER INITIAL': 'null',
+                    for row in self.edi_log_ref.edi_856_log_lines:
+                        line_count += 1
+                        cvs_rows.append({
+                            'TRANSACTION TYPE': DOC_PREFIX_ASN,
+                            'ACCOUNTING ID': row.accounting_id,
+                            'SHIPMENT ID': row.shipment_id,
+                            'SCAC': row.x_studio_scac,
+                            'CARRIER PRO NUMBER': row.carrier_tracking_ref,
+                            'BILL OF LADING': row.origin_sale_order.name,
+                            'SCHEDULED DELIVERY': 'null',
+                            'SHIP DATE': str(row.date_done) or False,
+                            'SHIP TO NAME': row.ship_to_name,
+                            'SHIP TO ADDRESS - LINE ONE':
+                                row.ship_to_address_1 or 'null',
+                            'SHIP TO ADDRESS - LINE TWO':
+                                row.ship_to_address_2 or 'null',
+                            'SHIP TO CITY': row.ship_to_city or 'null',
+                            'SHIP TO STATE': row.ship_to_state or 'null',
+                            'SHIP TO ZIP': row.ship_to_zip or 'null',
+                            'SHIP TO COUNTRY': row.ship_to_country or 'null',
+                            'SHIP TO ADDRESS CODE': 'null',
+                            'SHIP VIA': row.ship_via or '',
+                            'SHIP TO TYPE': row.x_edi_ship_to_type,
+                            'PACKAGING TYPE': row.x_studio_edi_packaging_type,
+                            'GROSS WEIGHT': row.weight,
+                            'GROSS WEIGHT UOM': row.weight_uom_name,
+                            'NUMBER OF CARTONS SHIPPED': row.x_studio_edi_carton_count,
+                            'CARRIER TRAILER NUMBER': 'null',
+                            'TRAILER INITIAL': 'null',
 
-                        'SHIP FROM NAME': row.ship_from_company_id.name,
-                        'SHIP FROM ADDRESS - LINE ONE': row.ship_from_street or 'null',
-                        'SHIP FROM ADDRESS - LINE TWO': row.ship_from_street2 or 'null',
-                        'SHIP FROM CITY': row.ship_from_city or 'null',
-                        'SHIP FROM STATE': row.ship_from_state or 'null',
-                        'SHIP FROM ZIP': row.ship_from_zip or 'null',
-                        'SHIP FROM COUNTRY': row.ship_from_country or 'null',
-                        'SHIP FROM ADDRESS CODE': 'null',
-                        'VENDOR NUMBER': order.partner_id.edi_vendor_number,
-                        'DC CODE': 'null',
-                        'TRANSPORTATION METHOD': 'null',
-                        'PRODUCT GROUP': 'null',
-                        'STATUS': 'Complete Shipment ' if row.status == 'complete' else 'Partial Shipment',
-                        'TIME SHIPPED': 'null',
-                        'PO NUMBER': row.po_number,
-                        'PO DATE': row.po_date,
-                        'INVOICE NUMBER': 'null',
-                        'ORDER WEIGHT': row.weight,
-                        'STORE NAME': row.store_name,
-                        'STORE NUMBER': row.store_number,
-                        'MARK FOR CODE': 'null',
-                        'DEPARTMENT NUMBER': 'null',
-                        'ORDER LADING QUANTITY': row.x_studio_edi_carton_count or 'null',
-                        'PACKAGING TYPE': row.x_studio_edi_packaging_type,
-                        'UCC-128': row.ucc_128 or line_count,
-                        'PACK SIZE': 'null',
-                        'INNER PACK PER OUTER PACK': 'null',
-                        'PACK HEIGHT': 'null',
-                        'PACK LENGTH': 'null',
-                        'PACK WIDTH': 'null',
-                        'PACK WEIGHT': 'null',
-                        'QTY OF UPCS WITHIN PACK': row.upc_within_pack,
-                        'UOM OF UPCS': row.uom_of_upc,
-                        'LINE NUMBER': line_count,
-                        'VENDOR PART NUMBER': row.vendor_number or '',
-                        'BUYER PART NUMBER': row.buyer_part_number,
-                        'UPC NUMBER': row.upc,
-                        'ITEM DESCRIPTION': row.description_sale,
-                        'QUANTITY SHIPPED': row.quantity_done or 0.0,
-                        'UOM': row.uom,
-                        'QUANTITY ORDERED': row.product_uom_quantity or 0.0,
-                        'UNIT PRICE': row.unit_price,
-                        'PACK SIZE': 'null',
-                        'PACK UOM': 'null',
-                        'INNER PACKS PER OUTER PACK': 'null'
-                    })
-                writer.writerows(cvs_rows)
-            else:
-                current_date = str(date.today()).replace('-', '')
-                current_time = str(datetime.now().time()).replace(':', '')[0:4]
-                date_done = self.date_done and str(self.date_done.date()).replace('-', '')
-                date_done_time = self.date_done and str(self.date_done.time()).replace(':', '')[0:4]
-                seq = 2
-                x_interchange = sftp_conf.update_interchange_number()
+                            'SHIP FROM NAME': row.ship_from_company_id.name,
+                            'SHIP FROM ADDRESS - LINE ONE': row.ship_from_street or 'null',
+                            'SHIP FROM ADDRESS - LINE TWO': row.ship_from_street2 or 'null',
+                            'SHIP FROM CITY': row.ship_from_city or 'null',
+                            'SHIP FROM STATE': row.ship_from_state or 'null',
+                            'SHIP FROM ZIP': row.ship_from_zip or 'null',
+                            'SHIP FROM COUNTRY': row.ship_from_country or 'null',
+                            'SHIP FROM ADDRESS CODE': 'null',
+                            'VENDOR NUMBER': order.partner_id.edi_vendor_number,
+                            'DC CODE': 'null',
+                            'TRANSPORTATION METHOD': 'null',
+                            'PRODUCT GROUP': 'null',
+                            'STATUS': 'Complete Shipment ' if row.status == 'complete' else 'Partial Shipment',
+                            'TIME SHIPPED': 'null',
+                            'PO NUMBER': row.po_number,
+                            'PO DATE': row.po_date,
+                            'INVOICE NUMBER': 'null',
+                            'ORDER WEIGHT': row.weight,
+                            'STORE NAME': row.store_name,
+                            'STORE NUMBER': row.store_number,
+                            'MARK FOR CODE': 'null',
+                            'DEPARTMENT NUMBER': 'null',
+                            'ORDER LADING QUANTITY': row.x_studio_edi_carton_count or 'null',
+                            'PACKAGING TYPE': row.x_studio_edi_packaging_type,
+                            'UCC-128': row.ucc_128 or line_count,
+                            'PACK SIZE': 'null',
+                            'INNER PACK PER OUTER PACK': 'null',
+                            'PACK HEIGHT': 'null',
+                            'PACK LENGTH': 'null',
+                            'PACK WIDTH': 'null',
+                            'PACK WEIGHT': 'null',
+                            'QTY OF UPCS WITHIN PACK': row.upc_within_pack,
+                            'UOM OF UPCS': row.uom_of_upc,
+                            'LINE NUMBER': line_count,
+                            'VENDOR PART NUMBER': row.vendor_number or '',
+                            'BUYER PART NUMBER': row.buyer_part_number,
+                            'UPC NUMBER': row.upc,
+                            'ITEM DESCRIPTION': row.description_sale,
+                            'QUANTITY SHIPPED': row.quantity_done or 0.0,
+                            'UOM': row.uom,
+                            'QUANTITY ORDERED': row.product_uom_quantity or 0.0,
+                            'UNIT PRICE': row.unit_price,
+                            'PACK SIZE': 'null',
+                            'PACK UOM': 'null',
+                            'INNER PACKS PER OUTER PACK': 'null'
+                        })
+                    writer.writerows(cvs_rows)
+                else:
+                    current_date = str(date.today()).replace('-', '')
+                    current_time = str(datetime.now().time()).replace(':', '')[0:4]
+                    date_done = self.date_done and str(self.date_done.date()).replace('-', '')
+                    date_done_time = self.date_done and str(self.date_done.time()).replace(':', '')[0:4]
+                    seq = 2
+                    x_interchange = sftp_conf.update_interchange_number()
 
-                lines = """"""
-                for line in self.move_ids_without_package:
-                    seq += 1
-                    lines += LINE.format(seq=seq or '',
-                                         line_num=line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.line_num or '',
-                                         buyer_part=line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num or '',
-                                         vendor_part=line.product_id.default_code or '',
-                                         qty_done=line.quantity_done or '',
-                                         uom=line.product_id.uom_id.name or '')
+                    lines = """"""
+                    for line in self.move_ids_without_package:
+                        seq += 1
+                        lines += LINE.format(seq=seq or '',
+                                             line_num=line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.line_num or '',
+                                             buyer_part=line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num or '',
+                                             in_qualifier='IN' if line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num else '',
+                                             vendor_part=line.product_id.default_code or '',
+                                             qty_done=line.quantity_done or '',
+                                             uom=line.sale_line_id and line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.uom or line.product_id.uom_id.name or '')
 
-                head = HEAD.format(
-                    sender_id=sftp_conf.sender_id or '',
-                    receiver_id=sftp_conf.receiver_id or '',
-                    YYMMDD=current_date[2:] or '',
-                    HHMM=current_time or '',
-                    interchange_number=x_interchange or '',
-                    accounting_id=self.partner_id.parent_id and self.partner_id.parent_id.x_edi_accounting_id or '',
-                    current_date=current_date or '',
-                    current_time=current_time or '',
-                    ship_id=self.name or '',
-                    date_done=date_done or '',
-                    date_done_time=date_done_time or '',
-                    scac=self.x_scac_kuebix or '',
-                    store_num=self.partner_id and self.partner_id.x_edi_store_number or '',
-                    ship_from=self.ship_from and self.ship_from.name or '',
-                    vendor_number=self.partner_id and self.partner_id.edi_vendor_number or '',
-                    add1=self.ship_from_address_1 or '',
-                    add2=self.ship_from_address_2 or '',
-                    city=self.ship_from_city or '',
-                    state=self.ship_from_state or '',
-                    client_order_ref=self.sale_id and self.sale_id.client_order_ref or '',
-                    order_ref=self.sale_id and self.sale_id.x_hdr_ref1 or '',
-                    carrier_tracking_ref=self.carrier_tracking_ref or '')
+                    head = HEAD.format(
+                        sender_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(15) or " " * 15,
+                        receiver_id=sftp_conf.receiver_id and sftp_conf.receiver_id.ljust(15) or " " * 15,
+                        sender_id_with_no_space=sftp_conf.sender_id or '',
+                        YYMMDD=current_date[2:] or '',
+                        HHMM=current_time or '',
+                        interchange_number=x_interchange or '',
+                        accounting_id=self.partner_id.parent_id and self.partner_id.parent_id.x_edi_accounting_id or '',
+                        current_date=current_date or '',
+                        current_time=current_time or '',
+                        ship_id=self.name or '',
+                        date_done=date_done or '',
+                        date_done_time=date_done_time or '',
+                        scac=self.carrier_id and self.carrier_id.x_scac or '',
+                        store_num=self.partner_id and self.partner_id.x_edi_store_number or '',
+                        ship_from=self.ship_from and self.ship_from.name or '',
+                        fields_91_sf='91' if self.partner_id and self.partner_id.edi_vendor_number else '',
+                        vendor_number=self.partner_id and self.partner_id.edi_vendor_number or '',
+                        add1=self.ship_from_address_1 or '',
+                        add2=self.ship_from_address_2 or '',
+                        city=self.ship_from_city or '',
+                        state=self.ship_from_state or '',
+                        client_order_ref=self.sale_id and self.sale_id.client_order_ref or '',
+                        order_ref=self.sale_id and self.sale_id.x_hdr_ref1 or '',
+                        carrier_tracking_ref=self.carrier_tracking_ref or '',
+                        n2_line=f"\nN2^{self.ship_from_address_1}~" if self.ship_from_address_1 else '',
+                        n3_line=f"\nN3^{self.ship_from_address_2}~" if self.ship_from_address_2 else '',
+                        n4_line=f"\nN4^{self.ship_from_city}^{self.ship_from_state}^{self.ship_from_zip}~" if self.ship_from_city or self.ship_from_state or self.ship_from_zip else '')
 
-                foot = FOOT.format(interchange_number=x_interchange)
-                res = head + lines + foot
-                file_pointer.write(res)
+                    foot = FOOT.format(interchange_number=x_interchange)
+                    res = head + lines + foot
+                    file_pointer.write(res)
 
-            file_pointer.close()
-        if sftp:
-            sftp.cwd(ftpdpath)
-            if self.sale_order_of == 'true':
-                sftp.put(file_name,
-                         ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + str(order.name) + '_' + str(
-                             self.name.replace('/', '_')) + '_' + \
-                         str(order.partner_id.name) + '.csv')
-            else:
-                date_time = str(datetime.now()).replace('-', '').replace(':', '')[0:13].replace(' ', '')
-                sftp.put(file_name,
-                         ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + self.name.replace('/', '_') + '_' + date_time + '.txt')
-            return True
+                file_pointer.close()
+            if sftp:
+                sftp.cwd(ftpdpath)
+                if self.sale_order_of == 'true':
+                    sftp.put(file_name,
+                             ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + str(order.name) + '_' + str(
+                                 self.name.replace('/', '_')) + '_' + \
+                             str(order.partner_id.name) + '.csv')
+                else:
+                    date_time = str(datetime.now()).replace('-', '').replace(':', '')[0:13].replace(' ', '')
+                    sftp.put(file_name,
+                             ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + self.name.replace('/',
+                                                                                            '_') + '_' + date_time + '.txt')
+                return True
+            return False
         return False
 
     def create_asg_log(self, moves, po_number):
@@ -335,7 +364,7 @@ class Picking(models.Model):
             'upc': row.product_id.barcode or row.move_id.sale_line_id.upc_num,
             'picking_id': row.picking_id.id,
             'accounting_id': row.picking_id.x_edi_accounting_id,
-            'po_number': row.picking_id.sale_id.x_edi_reference,
+            'po_number': row.picking_id.sale_id.client_order_ref,
             'po_date': str(row.picking_id.sale_id.date_order.astimezone(
                 user_tz).date()) if row.picking_id and row.picking_id.sale_id else False,
             'ship_from_company_id': row.picking_id.company_id.id,
@@ -419,7 +448,7 @@ class Picking(models.Model):
 
             'picking_id': row.picking_id.id,
             'accounting_id': row.picking_id.x_edi_accounting_id,
-            'po_number': row.picking_id.sale_id.x_edi_reference,
+            'po_number': row.picking_id.sale_id.client_order_ref,
             'po_date': str(row.picking_id.sale_id.date_order.astimezone(
                 user_tz).date()) if row.picking_id and row.picking_id.sale_id else False,
             'ship_from_company_id': row.picking_id.company_id.id,
@@ -464,23 +493,25 @@ class Picking(models.Model):
          its move line data. It will create .csv file into grab folder location
         :return:
         """
-        if self:
-            for move in self.move_line_ids_without_package:
-                move.initial_product_uom_qty = move.product_uom_qty
-
+        for rec in self:
+            if rec.sale_id:
+                for move in rec.move_line_ids_without_package:
+                    move.initial_product_uom_qty = move.product_uom_qty
         res = super(Picking, self)._action_done()
-        if res and self:
-            if self.sale_order_of == 'true' and self.partner_id and self.partner_id.edi_856 and self.picking_type_id.code == 'outgoing' and not self.asn_created:
-                self.create_asn_log_and_asn_export()
-            else:
-                self.create_asn_log_and_asn_export_ghx()
+        for record in self:
+            # if self:
+            if res and record.sale_id:
+                if record.sale_order_of == 'true' and record.partner_id and record.partner_id.edi_856 and record.picking_type_id.code == 'outgoing' and not record.asn_created:
+                    record.create_asn_log_and_asn_export()
+                else:
+                    record.create_asn_log_and_asn_export_ghx()
         return res
 
     def create_asn_log_and_asn_export_ghx(self):
         log_ids = self.env['setu.edi.log']
         for pick in self:
             moves = pick.move_ids_without_package
-            po_number = pick.sale_id.x_edi_reference
+            po_number = pick.sale_id.client_order_ref
 
             sftp_conf = pick.env['setu.sftp'].search(
                 [('company_id', '=', pick.company_id.id), ('instance_of', '=', 'ghx'), ('instance_active', '=', True)])
@@ -534,9 +565,11 @@ class Picking(models.Model):
 
             if moves:
                 po_number = False
-                po_number_list = list(
-                    map(lambda sale: sale.x_edi_reference if sale.x_edi_reference else False, moves.picking_id.sale_id))
-                po_number_list = [x for x in po_number_list if x]
+                # po_number_list = list(
+                #     map(lambda sale: sale.x_edi_reference if sale.x_edi_reference else False, moves.picking_id.sale_id))
+                po_number_list = moves.mapped('picking_id').mapped('sale_id').filtered(
+                    lambda sale: sale.client_order_ref).mapped('client_order_ref')
+                # po_number_list = [x for x in po_number_list if x]
                 if po_number_list:
                     po_number = ", ".join(po_number_list)
 

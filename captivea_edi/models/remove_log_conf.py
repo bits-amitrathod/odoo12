@@ -6,6 +6,7 @@ from odoo.exceptions import ValidationError
 
 class LogRemove(models.Model):
     _name = 'log.remove'
+    _description = 'Remove Logs'
 
     document_type = fields.Selection([('850', '850 Customer PO'),
                                       ('855', '855 POACK'),

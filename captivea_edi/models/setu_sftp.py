@@ -8,6 +8,7 @@ from odoo.exceptions import ValidationError
 
 class ResCompany(models.Model):
     _name = 'setu.sftp'
+    _description='SFTP Server Configuration and Details'
     _rec_name = 'company_id'
 
     default_instance = fields.Boolean(default=False)

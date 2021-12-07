@@ -5,7 +5,7 @@ import csv
 import datetime
 from datetime import datetime
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError, ValidationError, Warning
+from odoo.exceptions import UserError, ValidationError
 import pysftp
 
 GHX_GLOBAL = {}
