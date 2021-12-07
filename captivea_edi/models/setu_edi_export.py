@@ -3,6 +3,7 @@ from odoo import fields, models, api
 
 class POACKExport(models.Model):
     _name = 'setu.poack.export.log.line'
+    _description = '855 Export Log Lines'
 
     accounting_id = fields.Char('Accounting ID')
     vendor_part = fields.Char('Vendor Part')
@@ -15,7 +16,7 @@ class POACKExport(models.Model):
     state = fields.Many2one(related='company_id.state_id', string='Selling Party State')
     country = fields.Many2one(related='company_id.country_id', string='Selling Party Country')
     zip = fields.Char(related='company_id.zip', string='Selling Party Zip')
-    x_edi_po_line_number = fields.Char('PO Line #')
+    x_edi_po_line_number = fields.Char('PO Line Number')
     product_template_id = fields.Many2one('product.template', 'Vendor Part #')
     qty = fields.Float('Qty')
     uom = fields.Char('UOM')
@@ -39,6 +40,7 @@ class POACKExport(models.Model):
 
 class SHIPACKExport(models.Model):
     _name = 'setu.shipack.export.log.line'
+    _description = '856 Export Log Lines'
 
     upc = fields.Char()
 
@@ -100,9 +102,10 @@ class SHIPACKExport(models.Model):
 
 class INVACKExport(models.Model):
     _name = 'setu.invack.export.log.line'
+    _description = '810 Export Log Lines'
 
     x_edi_ship_to_type = fields.Selection([('DC', 'Warehouse Number'), ('SN', 'Store Number')], string='Ship To Type')
-    x_edi_transaction_type = fields.Char('Transaction Type')
+    x_edi_transaction_type = fields.Char('EDI Transaction Type')
     invoice_name = fields.Char(related='edi_log_id.invoice_id.name')
     invoice_date = fields.Date(related='edi_log_id.invoice_id.invoice_date')
     bill_of_landing = fields.Char(related='edi_log_id.invoice_id.invoice_origin')
@@ -119,20 +122,20 @@ class INVACKExport(models.Model):
     scac = fields.Char()
     carrier_id = fields.Many2one('delivery.carrier')
     ship_to_name = fields.Many2one('res.partner')
-    ship_to_address_1 = fields.Char(related='ship_to_name.street')
-    ship_to_address_2 = fields.Char(related='ship_to_name.street2')
-    ship_to_city = fields.Char(related='ship_to_name.city')
-    ship_to_state = fields.Char(related='ship_to_name.state_id.name')
-    ship_to_country = fields.Char(related='ship_to_name.country_id.name')
-    ship_to_zip = fields.Char(related='ship_to_name.zip')
+    ship_to_address_1 = fields.Char(related='ship_to_name.street', string='Ship To Address 1')
+    ship_to_address_2 = fields.Char(related='ship_to_name.street2', string='Ship To Address 2')
+    ship_to_city = fields.Char(related='ship_to_name.city', string='Ship To City')
+    ship_to_state = fields.Char(related='ship_to_name.state_id.name', string='Ship to State')
+    ship_to_country = fields.Char(related='ship_to_name.country_id.name', string='Ship to Country')
+    ship_to_zip = fields.Char(related='ship_to_name.zip', string='Ship to Zip')
 
     bill_to_name = fields.Many2one('res.partner')
-    bill_to_address_1 = fields.Char(related='bill_to_name.street')
-    bill_to_address_2 = fields.Char(related='bill_to_name.street2')
-    bill_to_city = fields.Char(related='bill_to_name.city')
-    bill_to_state = fields.Char(related='bill_to_name.state_id.name')
-    bill_to_country = fields.Char(related='bill_to_name.country_id.name')
-    bill_to_zip = fields.Char(related='bill_to_name.zip')
+    bill_to_address_1 = fields.Char(related='bill_to_name.street', string='Bill To Address 1')
+    bill_to_address_2 = fields.Char(related='bill_to_name.street2', string='Bill To Address 2')
+    bill_to_city = fields.Char(related='bill_to_name.city',string='Bill To City')
+    bill_to_state = fields.Char(related='bill_to_name.state_id.name',string='Bill To State')
+    bill_to_country = fields.Char(related='bill_to_name.country_id.name',string='Bill To Country')
+    bill_to_zip = fields.Char(related='bill_to_name.zip',string='Bill To Zip')
 
     bill_to_code = fields.Char()
 

@@ -255,7 +255,7 @@ class CaptiveaEdiDocumentLog(models.Model):
         @param file_ref: 850 file name on sftp server.
         @return:
         """
-        order = self.env['sale.order'].search([('x_edi_reference', '=', log_id.po_number),
+        order = self.env['sale.order'].search([('client_order_ref', '=', log_id.po_number),
                                                ('state', 'not in', ['sale', 'done']),
                                                ('file_ref', '=', file_ref)])
         so_vals = {}
@@ -294,7 +294,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                                     'date_order': po_date,
                                     'commitment_date': ship_date,
                                     'payment_term_id':partner.property_payment_term_id.id,
-                                    'x_edi_reference': log_line.po_number,
+                                    # 'x_edi_reference': log_line.po_number,
                                     'x_edi_accounting_id': log_line.accounting_id,
                                     'client_order_ref': log_line.po_number,
                                     'x_edi_store_number': log_line.store_number,

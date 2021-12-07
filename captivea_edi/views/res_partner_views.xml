@@ -20,6 +20,7 @@
                             <field name="x_billtoid"/>
                             <field name="x_storeid"/>
                             <field name="x_vendorid"/>
+                            <field name="remit_to"/>
                         </group>
                     </page>
                 </xpath>

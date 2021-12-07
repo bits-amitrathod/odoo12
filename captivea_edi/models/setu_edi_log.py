@@ -4,6 +4,7 @@ from odoo import fields, models, api
 
 class EDILog(models.Model):
     _name = 'setu.edi.log'
+    _description = '855 Import Log Lines'
     _rec_name = 'seq'
     _order = 'id desc'
 
