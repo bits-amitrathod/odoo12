@@ -89,6 +89,7 @@ class SaleOrder(models.Model):
         self.order_line.set_po_line_number()
         return res
 
+    @api.depends('client_order_ref')
     def _compute_ref(self):
         for sale in self:
             sale.x_edi_reference = sale.client_order_ref

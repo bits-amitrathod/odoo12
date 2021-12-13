@@ -501,10 +501,11 @@ class Picking(models.Model):
         for record in self:
             # if self:
             if res and record.sale_id:
-                if record.sale_order_of == 'true' and record.partner_id and record.partner_id.edi_856 and record.picking_type_id.code == 'outgoing' and not record.asn_created:
-                    record.create_asn_log_and_asn_export()
-                else:
-                    record.create_asn_log_and_asn_export_ghx()
+                if record.partner_id and record.partner_id.edi_856 and record.picking_type_id.code == 'outgoing' and not record.asn_created:
+                    if record.sale_order_of == 'true':
+                        record.create_asn_log_and_asn_export()
+                    elif record.sale_order_of == 'ghx':
+                        record.create_asn_log_and_asn_export_ghx()
         return res
 
     def create_asn_log_and_asn_export_ghx(self):
