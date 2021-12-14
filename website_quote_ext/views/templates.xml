@@ -837,7 +837,8 @@
                                                 <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Ref #</span> </th>
                                                 <th><span>Description</span> </th>
                                                 <th class="text-left">Available Qty</th>
-                                                <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span> </th>
+<!--                                                <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span> </th>-->
+                                                <th><span t-if="any([line.order_id.team_id.team_type in ('engine', 'rapid_quote') for line in sale_order.order_line])">Expiration</span> </th>
                                                 <th><span t-if="any([line.req_date for line in sale_order.order_line])">Requisition Date</span></th>
                                                 <th><span t-if="any([line.req_no for line in sale_order.order_line])">Requisition No</span></th>
                                                 <th><span t-if="any([line.vendor for line in sale_order.order_line])">Vendor</span></th>
@@ -861,7 +862,8 @@
                                         <span t-esc="ol.product_id.name"/>
                                         </td>
                                         <td class="text-left" id="product_name"><span t-field="ol.product_id.product_tmpl_id.actual_quantity"/></td>
-                                        <td><span t-if="ol.order_id.team_id.team_type=='engine' and ol.product_min_max_exp_date" t-esc="ol.product_min_max_exp_date"/></td>
+<!--                                        <td><span t-if="ol.order_id.team_id.team_type=='engine' and ol.product_min_max_exp_date" t-esc="ol.product_min_max_exp_date"/></td>-->
+                                        <td><span t-if="ol.order_id.team_id.team_type in ('engine', 'rapid_quote') and ol.product_min_max_exp_date" t-esc="ol.product_min_max_exp_date"/></td>
                                         <td><span t-if="ol.req_date" t-field="ol.req_date" t-options='{"widget": "date"}'/></td>
                                         <td><span t-if="ol.req_no" t-field="ol.req_no"/></td>
                                         <td><span t-if="ol.vendor" t-field="ol.vendor"/></td>
