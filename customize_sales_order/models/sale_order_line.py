@@ -54,7 +54,10 @@ class SaleOrderLineInherit(models.Model):
                                     else:
                                         record.product_min_max_exp_date = None
                                 else:
-                                    record.product_min_max_exp_date = None
+                                    if record.product_min_max_exp_date:
+                                        record.product_min_max_exp_date = record.product_min_max_exp_date
+                                    else:
+                                        record.product_min_max_exp_date = None
                             else:
                                 record.product_min_max_exp_date = None
                     else:
