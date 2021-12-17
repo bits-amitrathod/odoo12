@@ -633,8 +633,16 @@ class CaptiveaEdiProcess(models.TransientModel):
                             # file = open('/tmp/test.txt','r')
                             log_id = False
                             log_ids = self.env['setu.edi.log']
-                            txt_file = file.xreadlines()
-                            lines = [x for x in txt_file]
+                            # txt_file = file.xreadlines()
+                            txt_file = file.readlines()
+                            lines = []
+                            # lines = [x for x in txt_file]
+                            for line in txt_file:
+                                    line = line.split('~')
+                                    for l in line:
+                                        if '^' in l:
+                                            lines.append(l)
+
                             row_count = 0
                             po_lines = {}
                             isa_id = False
@@ -723,7 +731,27 @@ class CaptiveaEdiProcess(models.TransientModel):
                                                                 sftp_conf,
                                                                 store_num)
                             else:
-                                STATE = 'Invalid Data in file'
+                                error_vals = []
+                                if not po_lines:
+                                    error_vals.append("PO Lines")
+                                if not accounting_id:
+                                    error_vals.append("Accounting ID")
+                                if not receiver_id:
+                                    error_vals.append("Receiver ID")
+                                if not store_num:
+                                    error_vals.append("Store Number")
+                                if not po_number:
+                                    error_vals.append("PO Number")
+
+                                if error_vals and file_status:
+                                    error_str = ", ".join(error_vals)
+                                    if len(error_vals) == 1:
+                                        error_str += " is"
+                                    else:
+                                        error_str += " are"
+                                    STATE = error_str + " not available in EDI file."
+                                else:
+                                    STATE = 'Invalid Data in file'
                             if file_status and STATE == 'pass':
                                 for line, product in po_lines.items():
                                     vals = {'create_date': datetime.now(),
