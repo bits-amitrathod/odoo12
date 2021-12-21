@@ -173,6 +173,7 @@
                         <th class="text-center"><strong>Catalog Number</strong></th>
                          <th class="text-center"><strong>Expiration Date or Condition</strong></th>
                         <th class="text-right"><strong>Qty</strong></th>
+                        <th class="text-center"><strong>UOM</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
                       <!--    <th class="text-right"><strong>Untaxed Offer</strong></th>
                          <th class="text-right"><strong>Taxes</strong></th>-->
@@ -196,6 +197,9 @@
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
                           <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
+                        </td>
+                        <td class="text-center">
+                            <span t-field="order_line.uom_str" />
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_offer_price" widget="monetary"/>
@@ -445,6 +449,7 @@
                         <th class="text-center"><strong>Catalog Number</strong></th>
                          <th class="text-center"><strong>Expiration Date or Condition</strong></th>
                         <th class="text-right"><strong>Qty</strong></th>
+                        <th class="text-center"><strong>UOM</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
                       <!--    <th class="text-right"><strong>Untaxed Offer</strong></th>
                          <th class="text-right"><strong>Taxes</strong></th>-->
@@ -467,6 +472,9 @@
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
                           <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
+                        </td>
+                        <td class="text-center">
+                            <span t-field="order_line.uom_str" />
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_offer_price" widget="monetary"/>

@@ -82,10 +82,13 @@ class vendor_offer_automation(models.Model):
                     sku_not_found_list = []
                     expiration_date_index = -1
                     quantity_index = False
+                    uom_index = -1
                     if 'mf_customer_sku' in mapping_fields:
                         sku_index = excel_columns.index(mapping_fields['mf_customer_sku'])
                     if 'mf_expiration_date' in mapping_fields:
                         expiration_date_index = excel_columns.index(mapping_fields['mf_expiration_date'])
+                    if 'mf_uom_ven' in mapping_fields:
+                        uom_index = excel_columns.index(mapping_fields['mf_uom_ven'])
                     if 'mf_quantity' in mapping_fields:
                         quantity_index = excel_columns.index(mapping_fields['mf_quantity'])
 
@@ -255,6 +258,7 @@ class vendor_offer_automation(models.Model):
                     order_list_list = []
                     sku_not_found_list = []
                     expiration_date_index = -1
+                    uom_index = -1
                     quantity_index = False
                     price_index = False
                     sales_count_index = False
@@ -276,6 +280,8 @@ class vendor_offer_automation(models.Model):
                         sku_index = excel_columns.index(mapping_fields['mf_customer_sku'])
                     if 'mf_expiration_date' in mapping_fields:
                         expiration_date_index = excel_columns.index(mapping_fields['mf_expiration_date'])
+                    if 'mf_uom_ven' in mapping_fields:
+                        uom_index = excel_columns.index(mapping_fields['mf_uom_ven'])
                     if 'mf_quantity' in mapping_fields:
                         quantity_index = excel_columns.index(mapping_fields['mf_quantity'])
 
@@ -337,6 +343,7 @@ class vendor_offer_automation(models.Model):
                             quantity_in_stock = offer_price = offer_price_total = retail_price = retail_price_total = 0
                             possible_competition_name = multiplier_name = margin_cost = 0
                             expiration_date = False
+                            uom = ''
 
                             if price_index and price_index >= 0:
                                 price = excel_data_row[price_index]
@@ -383,6 +390,8 @@ class vendor_offer_automation(models.Model):
 
                             if expiration_date_index and expiration_date_index >= 0:
                                 expiration_date = excel_data_row[expiration_date_index]
+                            if uom_index and uom_index >= 0:
+                                uom = excel_data_row[uom_index]
                             if margin_cost_index and margin_cost_index >= 0:
                                 margin_cost = excel_data_row[margin_cost_index]
 
@@ -453,6 +462,10 @@ class vendor_offer_automation(models.Model):
                                         order_line_obj.update({'expiration_date': expiration_date })
                                     else:
                                         order_line_obj.update({'expiration_date': None})
+                                    if uom:
+                                        order_line_obj.update({'uom_str': uom})
+                                    else:
+                                        order_line_obj.update({'uom_str': ''})
                                     order_list_list.append(order_line_obj)
                                     count_obj = count_obj + 1
                                 else:
@@ -553,12 +566,12 @@ class vendor_offer_automation(models.Model):
                                          " price_total," \
                                          " " \
                                          " multiplier," \
-                                         "expiration_date,expiration_date_str," \
+                                         "expiration_date,uom_str,expiration_date_str," \
                                          " import_type_ven_line,currency_id,product_sales_count_month" \
                                          " ,create_uid,company_id,create_date,price_tax,qty_invoiced" \
                                          ",qty_to_invoice,propagate_cancel,qty_received_method,product_uom_qty,qty_received,state)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s, %s, %s, %s, %s, %s, %s,%s, %s, %s," \
-                                         " %s, %s , %s ,%s ,%s,%s ,%s ,%s,%s ,%s,%s,%s,%s,%s,%s,%s) " \
+                                         " %s, %s , %s ,%s ,%s,%s ,%s ,%s,%s ,%s,%s,%s,%s,%s,%s,%s,%s) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -575,7 +588,7 @@ class vendor_offer_automation(models.Model):
                                         order_line_object['expired_inventory'],
                                         float("{0:.2f}".format(float(order_line_object['offer_price_total']))),
                                         order_line_object['multiplier'],
-                                        exp_date,exp_date_str,
+                                        exp_date,order_line_object['uom_str'],exp_date_str,
                                         order_line_object['import_type_ven_line'],
                                         currency_id_insert, 0,create_uid,company_id,create_date,0,0,0,'true','stock_moves',
                                         order_line_object['product_qty'],0,'ven_draft')

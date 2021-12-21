@@ -871,6 +871,7 @@ class VendorOfferProduct(models.Model):
                                   store=True)
     expiration_date = fields.Datetime(string="Expiration Date", readonly=True, )
     expiration_date_str = fields.Char(string="Expiration Date")
+    uom_str = fields.Char(string="UOM")
     expired_inventory = fields.Char(string="Expired Inventory Items", compute='onchange_product_id_vendor_offer',
                                     readonly=True,
                                     store=True)
