@@ -48,3 +48,4 @@ class VendorOfferAutomationTemplateClass(models.Model):
     mf_accelerator = fields.Char(string='Accelerator')
     mf_credit = fields.Char(string='Credit')
     #mf_margin_cost = fields.Char(string='Cost %')
+    mf_uom_ven = fields.Char(string='UOM')
