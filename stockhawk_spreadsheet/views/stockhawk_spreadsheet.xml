@@ -81,6 +81,28 @@
                                         </div>
                                     </div>
                                   </div>
+                              <div class="modal" id="paste">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                              <h4 class="modal-title">Rapid Order Paste Help</h4>
+                                            </div>
+                                            <!-- Modal body -->
+                                            <div class="modal-body">
+                                              <div class="container">
+                                                <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
+                                                    Please use: <b>Ctrl+C</b> for copy and <b>Ctrl+V</b> for paste.
+                                                </span>
+                                            </div>
+                                            </div>
+                                            <!-- Modal footer -->
+                                            <div class="modal-footer">
+                                                <button type="button" id="helpClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                              </div>
                                 <div class="modal" id="myModal">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -123,6 +145,7 @@
                               <center>
                                   <div class="text-right spreadsheet">
                                     <button style="justify-content: center;" type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help"> Info </button>
+                                    <button id="pastemod" hidden="hidden" style="justify-content: center;" type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#paste"> paste </button>
                                   </div>
                                   <div class="spreadsheet mb-5" id="x-spreadsheet-demo"></div>
                               </center>
