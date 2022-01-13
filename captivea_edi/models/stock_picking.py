@@ -29,8 +29,8 @@ LIN^{line_num}^{in_qualifier}^{buyer_part}^VC^{vendor_part}~
 SN1^^{qty_done}^{uom}^12^20^BX~"""
 
 FOOT = """
-CTT^4~
-SE^22^0002~
+CTT^{hl_count}~
+SE^{lines_count}^0002~
 GE^1^1~
 IEA^1^{interchange_number}~"""
 
@@ -271,6 +271,7 @@ class Picking(models.Model):
                     x_interchange = sftp_conf.update_interchange_number()
 
                     lines = """"""
+                    hl_count = 0
                     for line in self.move_ids_without_package:
                         seq += 1
                         lines += LINE.format(seq=seq or '',
@@ -280,6 +281,7 @@ class Picking(models.Model):
                                              vendor_part=line.product_id.default_code or '',
                                              qty_done=line.quantity_done or '',
                                              uom=line.sale_line_id and line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.uom or line.product_id.uom_id.name or '')
+                        # hl_count += 1
 
                     head = HEAD.format(
                         sender_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(15) or " " * 15,
@@ -297,8 +299,8 @@ class Picking(models.Model):
                         scac=self.carrier_id and self.carrier_id.x_scac or '',
                         store_num=self.partner_id and self.partner_id.x_edi_store_number or '',
                         ship_from=self.ship_from and self.ship_from.name or '',
-                        fields_91_sf='91' if self.partner_id and self.partner_id.edi_vendor_number else '',
-                        vendor_number=self.partner_id and self.partner_id.edi_vendor_number or '',
+                        fields_91_sf='91' if self.ship_from and self.ship_from.edi_vendor_number else '',
+                        vendor_number=self.ship_from and self.ship_from.edi_vendor_number or '',
                         add1=self.ship_from_address_1 or '',
                         add2=self.ship_from_address_2 or '',
                         city=self.ship_from_city or '',
@@ -310,7 +312,9 @@ class Picking(models.Model):
                         n3_line=f"\nN3^{self.ship_from_address_2}~" if self.ship_from_address_2 else '',
                         n4_line=f"\nN4^{self.ship_from_city}^{self.ship_from_state}^{self.ship_from_zip}~" if self.ship_from_city or self.ship_from_state or self.ship_from_zip else '')
 
-                    foot = FOOT.format(interchange_number=x_interchange)
+                    foot = FOOT.format(interchange_number=x_interchange,
+                                       lines_count=(len(self.move_ids_without_package) * 3) + 15,
+                                       hl_count=len(self.move_ids_without_package))
                     res = head + lines + foot
                     file_pointer.write(res)
 

@@ -11,10 +11,7 @@ VARIABLE_855 = """ISA^00^{eleven_spaces}^00^{eleven_spaces}^ZZ^{supplier_id}^ZZ^
 GS^PR^{supplier_id_no_space}^{accounting_id}^{current_date}^{current_time}^8^X^004010~
 ST^855^0001~
 BAK^06^AC^{po_number}^{po_date_with_cc}^^^^{sale_order_name}^{sale_order_date_with_cc}~
-REF^OQ^{ghx_order_ref}~
-N1^ST^^91^{x_edi_store_number}~
-N1^BT^^{fields_91_bt}^{x_billtoid}~
-N1^SN^^{fields_92_sn}^{x_storeid}~
+REF^OQ^{ghx_order_ref}~{three_n1_lines}
 N1^VN^{seller_name}^{fields_92_vn}^{x_vendorid}~{so_lines}
 CTT^{so_line_count}^14~
 SE^{segment_count}^0001~
@@ -115,7 +112,7 @@ class SaleOrder(models.Model):
         """
         user_tz = pytz.timezone(self.env.user.tz or 'utc')
         po_date = str(self.date_order.astimezone(user_tz).date()) or (
-                    self.customer_po_ref and self.customer_po_ref.po_date and str(self.customer_po_ref.po_date)) or ''
+                self.customer_po_ref and self.customer_po_ref.po_date and str(self.customer_po_ref.po_date)) or ''
         log_id = self.env['setu.edi.log'].create({
             'po_number': self.client_order_ref,
             'type': 'export',
@@ -177,7 +174,7 @@ class SaleOrder(models.Model):
         company = self.company_id
         sftp_conf = self.env['setu.sftp'].search([('company_id', '=', company.id),
                                                   ('instance_active', '=', True),
-                                                 ('instance_of', '=', self.order_of)])
+                                                  ('instance_of', '=', self.order_of)])
         ftpdpath = sftp_conf['ftp_poack_dpath']
         instance_of = 'TrueCommerce' if sftp_conf.instance_of == 'true' else 'GHX'
         now = datetime.now()
@@ -262,7 +259,7 @@ class SaleOrder(models.Model):
                                                 price_unit=sale_line.price_unit,
                                                 vendor_part_number=product.default_code or '',
                                                 buyer_part_num=row.buyer_part_number or '',
-                                                vendor_part_description=product.name,
+                                                vendor_part_description=product.name[0:80],
                                                 in_qualifier='IN' if row.buyer_part_number else '',
                                                 ack_code=sale_line.ack_code,
                                                 product_uom_qty=int(sale_line.product_uom_qty),
@@ -275,6 +272,25 @@ class SaleOrder(models.Model):
                         po_date = row.po_date
                 po_date = po_date and datetime.strptime(po_date, '%Y-%m-%d').strftime('%Y%m%d') or ''
                 interchange_number = sftp_conf.update_interchange_number()
+                x_edi_store_number = self.customer_po_ref and self.customer_po_ref.x_hdr_ref3 or '',
+                x_billtoid = self.customer_po_ref and self.customer_po_ref.x_hdr_ref4 or '',
+                x_storeid = self.customer_po_ref and self.customer_po_ref.x_hdr_ref5 or '',
+                set_st_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref3 else False
+                set_bt_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref4 else False
+                set_sn_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref5 else False
+                st = """
+N1^ST^^91^%s~""" % (x_edi_store_number)
+                bt = f"""
+N1^ST^^91^%s~""" % (x_billtoid)
+                sn = f"""
+N1^ST^^92^%s~""" % (x_storeid)
+                three_n1_lines = ''
+                if set_st_line:
+                    three_n1_lines += st
+                if set_bt_line:
+                    three_n1_lines += bt
+                if set_sn_line:
+                    three_n1_lines += sn
                 file_content = VARIABLE_855.format(eleven_spaces=" " * 10,
                                                    supplier_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(
                                                        15) or " " * 15,
@@ -290,19 +306,22 @@ class SaleOrder(models.Model):
                                                    po_date_with_cc=po_date or '', sale_order_name=sale_order.name,
                                                    sale_order_date_with_cc=sale_order_date_with_cc,
                                                    ghx_order_ref=log_id.x_hdr_ref1 or (
-                                                               self.customer_po_ref and self.customer_po_ref.x_hdr_ref1) or '',
-                                                   x_edi_store_number=customer.x_edi_store_number or '',
-                                                   x_billtoid=customer.x_billtoid or '',
-                                                   x_storeid=customer.x_storeid or '',
+                                                           self.customer_po_ref and self.customer_po_ref.x_hdr_ref1) or '',
+                                                   # x_edi_store_number=customer.x_edi_store_number or '',
+
+                                                   # x_vendorid=self.customer_po_ref and self.customer_po_ref.x_hdr_ref5 or '',
+                                                   # x_billtoid=customer.x_billtoid or '',
+                                                   # x_storeid=customer.x_storeid or '',
                                                    x_vendorid=customer.x_vendorid or '',
                                                    so_line_count=total_lines,
                                                    included_segments=14,
                                                    so_lines=sale_lines,
                                                    seller_name=sftp_conf.company_name or 'Seller Name',
-                                                   segment_count=7 + (total_lines * 3),
-                                                   fields_91_bt='91' if customer.x_billtoid else '',
-                                                   fields_92_sn='92' if customer.x_storeid else '',
-                                                   fields_92_vn='92' if customer.x_vendorid else ''
+                                                   segment_count=9 + (
+                                                           total_lines * 3),
+
+                                                   fields_92_vn='92' if customer.x_vendorid else '',
+                                                   three_n1_lines=three_n1_lines
 
                                                    )
                 file_pointer.write(file_content)
@@ -311,8 +330,9 @@ class SaleOrder(models.Model):
             if sftp:
                 sftp.cwd(ftpdpath)
                 if instance_of == 'TrueCommerce':
-                    sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_POA) + '_' + str(self.client_order_ref) + '_' + str(
-                        self.name) + '.csv')
+                    sftp.put(file_name,
+                             ftpdpath + '/' + str(DOC_PREFIX_POA) + '_' + str(self.client_order_ref) + '_' + str(
+                                 self.name) + '.csv')
                 else:
                     sftp.put(file_name, ftpdpath + '/' + actual_file_name)
                 self.poack_created = True

@@ -272,7 +272,7 @@ class CaptiveaEdiProcess(models.TransientModel):
 
         else:
             return 'no_connection'
-    
+
     def manual_export_poack_ghx(self, sftp_conf):
         """
         Manually export POACK from wizard.
@@ -512,7 +512,11 @@ class CaptiveaEdiProcess(models.TransientModel):
         if res[1] != 'Fail':
             current_orders, failed_log_ids = res[0], res[1]
             if failed_log_ids:
-                log_names = " ,".join(failed_log_ids.mapped('seq'))
+                seq_list = failed_log_ids.mapped('seq')
+                if False not in seq_list:
+                    log_names = " ,".join(seq_list)
+                else:
+                    log_names = 'UNKNOWN'
             if current_orders and not failed_log_ids:
                 self.notification = 'All files processed successfully.'
             elif current_orders and failed_log_ids:
@@ -638,10 +642,10 @@ class CaptiveaEdiProcess(models.TransientModel):
                             lines = []
                             # lines = [x for x in txt_file]
                             for line in txt_file:
-                                    line = line.split('~')
-                                    for l in line:
-                                        if '^' in l:
-                                            lines.append(l)
+                                line = line.split('~')
+                                for l in line:
+                                    if '^' in l:
+                                        lines.append(l)
 
                             row_count = 0
                             po_lines = {}
@@ -657,6 +661,9 @@ class CaptiveaEdiProcess(models.TransientModel):
                             po_number = False
                             po_date = False
                             store_num = False
+                            x_hdr_ref3 = False
+                            x_hdr_ref4 = False
+                            x_hdr_ref5 = False
                             for row in lines:  # Processing file begins here.
                                 row_count += 1
                                 fields = [field.strip() for field in row.replace('~', '').split('^')]
@@ -679,6 +686,11 @@ class CaptiveaEdiProcess(models.TransientModel):
                                         x_hdr_ref1 = fields[2]
                                     elif fields[0] == 'N1' and fields[1] == 'ST':
                                         store_num = fields[4]
+                                        x_hdr_ref3 = fields[4]
+                                    elif fields[0] == 'N1' and fields[1] == 'BT':
+                                        x_hdr_ref4 = fields[4]
+                                    elif fields[0] == 'N1' and fields[1] == 'SN':
+                                        x_hdr_ref5 = fields[4]
                                     elif fields[0] == 'AMT' and len(fields) > 3 and fields[1] == '1':
                                         x_hdr_ref2 = fields[3]
                                     elif fields[0] == 'IEA':
@@ -761,20 +773,21 @@ class CaptiveaEdiProcess(models.TransientModel):
                                             'accounting_id': accounting_id,
                                             'po_number': po_number,
                                             'po_date': po_date,
-
                                             'store_number': store_num,
                                             'line_num': line,
                                             'vendor_part_num': product['vendor_part'],
                                             'buyers_part_num': 'buyer_part' in product and product['buyer_part'] or '',
-
                                             'quantity': product['qty'],
                                             'uom': product['uom'],
                                             'unit_price': product['unit_price'],
                                             'edi_log_id': log_id.id
-
                                             }
                                     self.env['captivea.edidocumentlog'].create(vals)
                                     log_id.x_hdr_ref1 = x_hdr_ref1
+
+                                log_id.x_hdr_ref3 = x_hdr_ref3
+                                log_id.x_hdr_ref4 = x_hdr_ref4
+                                log_id.x_hdr_ref5 = x_hdr_ref5
 
                                 order = self.env['captivea.edidocumentlog']._create_sale_order(log_id,
                                                                                                file_ref_with_time)

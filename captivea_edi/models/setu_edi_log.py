@@ -41,11 +41,14 @@ class EDILog(models.Model):
     x_lin_ref3 = fields.Char('Line Ref 3')
     x_lin_ref4 = fields.Char('Line Ref 4')
     x_lin_ref5 = fields.Char('Line Ref 5')
+    x_hdr_ref3 = fields.Char('Ref 3')
+    x_hdr_ref4 = fields.Char('Ref 4')
+    x_hdr_ref5 = fields.Char('Ref 5')
 
     @api.model_create_multi
     def create(self, vals_list):
         vals_list[0].update({
-            'seq': self.env['ir.sequence'].next_by_code('edi.log.seq')
+            'seq': self.env['ir.sequence'].next_by_code('edi.log.seq') or 'LOG/UNKNOWN'
         })
         return super(EDILog, self).create(vals_list)
 

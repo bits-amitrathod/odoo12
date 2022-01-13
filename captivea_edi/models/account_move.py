@@ -29,8 +29,7 @@ LINE = """
 IT1^{line_num}^{qty_done}^{uom}^{unit_price}^^VC^{product_desc}^{in_value_field}^{buyer_part_num}~"""
 
 FOOT = """
-TDS^{amount_total}~
-TXI^ST^{tax_total}~
+TDS^{amount_total}~{line_of_total_tax}
 CTT^{invoice_lines_num}~
 SE^{number_of_segments}^3350001~
 GE^1^335~
@@ -93,8 +92,8 @@ class AccountMove(models.Model):
                                                                     line.mapped('sale_line_ids')[0] else False
         buyer_part = False
         if line.sale_line_ids and line.sale_line_ids.mapped('po_log_line_id'):
-
-            buyer_part = line.sale_line_ids and line.sale_line_ids[0].po_log_line_id and line.sale_line_ids[0].po_log_line_id.buyers_part_num or ''
+            buyer_part = line.sale_line_ids and line.sale_line_ids[0].po_log_line_id and line.sale_line_ids[
+                0].po_log_line_id.buyers_part_num or ''
         ship_date = order.picking_ids.filtered(
             lambda pick: pick.picking_type_id.code == 'outgoing' and pick.state == 'done') and str(
             order.picking_ids.filtered(lambda pick: pick.picking_type_id.code == 'outgoing' and pick.state == 'done')[
@@ -348,25 +347,36 @@ class AccountMove(models.Model):
                     seq += 1
                     po_log_line_id = line.sale_line_ids[0].po_log_line_id if line.sale_line_ids and line.sale_line_ids[
                         0] and line.sale_line_ids[0].po_log_line_id else False
-                    buyer_part = line.sale_line_ids and line.sale_line_ids[0].po_log_line_id and line.sale_line_ids[0].po_log_line_id.buyers_part_num or ''
+                    buyer_part = line.sale_line_ids and line.sale_line_ids[0].po_log_line_id and line.sale_line_ids[
+                        0].po_log_line_id.buyers_part_num or ''
                     line_num = '0000' + str(seq)
                     lines += LINE.format(
                         line_num=po_log_line_id.line_num if po_log_line_id else line_num[-4:] or '',
                         qty_done=int(line.quantity) or '',
-                        uom=line.sale_line_ids and line.sale_line_ids[0].po_log_line_id and line.sale_line_ids[0].po_log_line_id.uom or line.product_uom_id.name or '',
+                        uom=line.sale_line_ids and line.sale_line_ids[0].po_log_line_id and line.sale_line_ids[
+                            0].po_log_line_id.uom or line.product_uom_id.name or '',
                         unit_price=line.price_unit or '',
-                        product_desc=line.product_id.description_sale or line.product_id.name or '',
+                        product_desc=line.product_id.default_code or '',
                         buyer_part_num=buyer_part or '',
                         in_value_field='IN' if buyer_part else ''
                     )
-                segments = seq + 10
+                    tax_per_line = line.price_total - line.price_subtotal
+                    if tax_per_line > 0:
+                        seq+=1
+                        lines += f"""
+TXI^2^{tax_per_line}~"""
+                segments = seq + 14
+                if self.amount_tax > 0:
+                    segments += 1
 
                 foot = FOOT.format(
                     amount_total=int(self.amount_total * 100) or '',
-                    tax_total=line.move_id.amount_tax or '',
+                    tax_total=self.amount_tax or '',
                     invoice_lines_num=seq or '',
                     number_of_segments=segments or '',
-                    x_interchange=interchange or ''
+                    x_interchange=interchange or '',
+                    line_of_total_tax=f"""
+TXI^ST^{self.amount_tax}~""" if self.amount_tax > 0 else ''
                 )
                 res = head + lines + foot
                 file_pointer.write(res)
