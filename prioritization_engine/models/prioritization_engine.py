@@ -459,7 +459,15 @@ class PrioritizationEngine(models.TransientModel):
             else:
                 crm_team = self.env['crm.team'].search([('team_type', '=', 'engine')])
 
-            sale_order_dict = {'partner_id': partner_id_key, 'state': 'draft', 'team_id': crm_team['id']}
+            if partner_id_key:
+                partner_obj = self.env['res.partner'].search([('id', '=', partner_id_key)])
+                if partner_obj.property_payment_term_id:
+                    sale_order_dict = {'partner_id': partner_id_key, 'payment_term_id': partner_obj.property_payment_term_id.id
+                        , 'state': 'draft', 'team_id': crm_team['id']}
+                else:
+                    sale_order_dict = {'partner_id': partner_id_key, 'state': 'draft', 'team_id': crm_team['id']}
+
+            #sale_order_dict = {'partner_id': partner_id_key, 'state': 'draft', 'team_id': crm_team['id']}
             try:
                 self.env.cr.savepoint()
                 sale_order = self.env['sale.order'].create(dict(sale_order_dict))
