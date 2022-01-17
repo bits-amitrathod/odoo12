@@ -2,6 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 import csv
+import re
 import datetime
 from datetime import datetime
 from odoo import api, fields, models, _
@@ -664,6 +665,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                             x_hdr_ref3 = False
                             x_hdr_ref4 = False
                             x_hdr_ref5 = False
+                            vendor_id = False
                             for row in lines:  # Processing file begins here.
                                 row_count += 1
                                 fields = [field.strip() for field in row.replace('~', '').split('^')]
@@ -691,6 +693,8 @@ class CaptiveaEdiProcess(models.TransientModel):
                                         x_hdr_ref4 = fields[4]
                                     elif fields[0] == 'N1' and fields[1] == 'SN':
                                         x_hdr_ref5 = fields[4]
+                                    elif fields[0] == 'N1' and fields[1] == 'VN':
+                                        vendor_id = fields[4]
                                     elif fields[0] == 'AMT' and len(fields) > 3 and fields[1] == '1':
                                         x_hdr_ref2 = fields[3]
                                     elif fields[0] == 'IEA':
@@ -788,6 +792,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                                 log_id.x_hdr_ref3 = x_hdr_ref3
                                 log_id.x_hdr_ref4 = x_hdr_ref4
                                 log_id.x_hdr_ref5 = x_hdr_ref5
+                                log_id.vendor_id = vendor_id
 
                                 order = self.env['captivea.edidocumentlog']._create_sale_order(log_id,
                                                                                                file_ref_with_time)
@@ -842,6 +847,10 @@ class CaptiveaEdiProcess(models.TransientModel):
             else:
                 log_id.exception = e.args[0]
             return log_id, 'Fail'
+
+
+
+
 
     def _get_partner(self, accounting_id):
         partner = self.env['res.partner'].search([('x_edi_accounting_id', '=', accounting_id)])

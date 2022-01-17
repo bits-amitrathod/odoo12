@@ -11,8 +11,7 @@ VARIABLE_855 = """ISA^00^{eleven_spaces}^00^{eleven_spaces}^ZZ^{supplier_id}^ZZ^
 GS^PR^{supplier_id_no_space}^{accounting_id}^{current_date}^{current_time}^8^X^004010~
 ST^855^0001~
 BAK^06^AC^{po_number}^{po_date_with_cc}^^^^{sale_order_name}^{sale_order_date_with_cc}~
-REF^OQ^{ghx_order_ref}~{three_n1_lines}
-N1^VN^{seller_name}^{fields_92_vn}^{x_vendorid}~{so_lines}
+REF^OQ^{ghx_order_ref}~{three_n1_lines}{so_lines}
 CTT^{so_line_count}^14~
 SE^{segment_count}^0001~
 GE^1^8~
@@ -275,22 +274,33 @@ class SaleOrder(models.Model):
                 x_edi_store_number = self.customer_po_ref and self.customer_po_ref.x_hdr_ref3 or '',
                 x_billtoid = self.customer_po_ref and self.customer_po_ref.x_hdr_ref4 or '',
                 x_storeid = self.customer_po_ref and self.customer_po_ref.x_hdr_ref5 or '',
+                vendor_id = self.customer_po_ref and self.customer_po_ref.vendor_id or '',
                 set_st_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref3 else False
                 set_bt_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref4 else False
                 set_sn_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref5 else False
+                set_vn_line = True if self.customer_po_ref and self.customer_po_ref.vendor_id else False
+                counter = 0
                 st = """
 N1^ST^^91^%s~""" % (x_edi_store_number)
                 bt = f"""
-N1^ST^^91^%s~""" % (x_billtoid)
+N1^BT^^91^%s~""" % (x_billtoid)
                 sn = f"""
-N1^ST^^92^%s~""" % (x_storeid)
+N1^SN^^92^%s~""" % (x_storeid)
+                vn = f"""
+N1^VN^^92^%s~"""% (vendor_id)
                 three_n1_lines = ''
                 if set_st_line:
                     three_n1_lines += st
+                    counter += 1
                 if set_bt_line:
                     three_n1_lines += bt
+                    counter += 1
                 if set_sn_line:
                     three_n1_lines += sn
+                    counter += 1
+                if set_vn_line:
+                    three_n1_lines += vn
+                    counter += 1
                 file_content = VARIABLE_855.format(eleven_spaces=" " * 10,
                                                    supplier_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(
                                                        15) or " " * 15,
@@ -317,8 +327,8 @@ N1^ST^^92^%s~""" % (x_storeid)
                                                    included_segments=14,
                                                    so_lines=sale_lines,
                                                    seller_name=sftp_conf.company_name or 'Seller Name',
-                                                   segment_count=9 + (
-                                                           total_lines * 3),
+                                                   segment_count=5 + (
+                                                           total_lines * 3) + counter,
 
                                                    fields_92_vn='92' if customer.x_vendorid else '',
                                                    three_n1_lines=three_n1_lines
