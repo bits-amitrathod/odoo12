@@ -11,8 +11,9 @@
             <t t-call="website.layout">
                 <section id="quote" class="report">
                         <div class="text-center pt32 pb32 in-stock-title">
-                            <img src="/website_sales/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>
-                            <h1  class="about-header mb0"> My In-Stock Report </h1>
+                            <!--<img src="/website_sales/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>-->
+                            <img src="/website_sales/static/src/images/Stockhawk_InStock_Report_R1.png" class="img-fluid"/>
+                            <!--<h1  class="about-header mb0"> My In-Stock Report </h1>-->
                         </div>
                 <div class="container oe_website_sale py-2" style="padding-top: 0px !important;">
                     <div t-if="invalid_url and invalid_url != ''" class="js_cart_lines alert alert-info">
@@ -135,7 +136,7 @@
 
         <template id="my_in_stock_report_link" name="Link to frontend portal" inherit_id="portal.user_dropdown">
             <xpath expr="//a[@id='o_logout']" position="before">
-                <a href="/shop/my_in_stock_report" role="menuitem" class="dropdown-item">My In-Stock Report</a>
+                <a href="/shop/my_in_stock_report" role="menuitem" class="dropdown-item">In-Stock Report</a>
             </xpath>
         </template>
 
