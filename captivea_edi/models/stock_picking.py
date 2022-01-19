@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 import time
+import re
 import pytz
 import csv
 from datetime import date, datetime
@@ -320,12 +321,14 @@ class Picking(models.Model):
 
                 file_pointer.close()
             if sftp:
+                partner_name = order.partner_id.name
+                partner_name = re.sub('[^a-zA-Z0-9 \n\.]', '', partner_name)
                 sftp.cwd(ftpdpath)
                 if self.sale_order_of == 'true':
                     sftp.put(file_name,
                              ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + str(order.name) + '_' + str(
                                  self.name.replace('/', '_')) + '_' + \
-                             str(order.partner_id.name) + '.csv')
+                             str(partner_name) + '.csv')
                 else:
                     date_time = str(datetime.now()).replace('-', '').replace(':', '')[0:13].replace(' ', '')
                     sftp.put(file_name,

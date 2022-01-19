@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytz
+import re
 import time
 from datetime import date, datetime
 import csv
@@ -382,9 +383,11 @@ TXI^ST^{self.amount_tax}~""" if self.amount_tax > 0 else ''
                 file_pointer.write(res)
         if sftp:
             sftp.cwd(ftpdpath)
+            partner_name = order.partner_id.name
+            partner_name = re.sub('[^a-zA-Z0-9 \n\.]', '', partner_name)
             if self.sale_order_of == 'true':
                 sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_BIL) + '_' + str(order.client_order_ref) + '_' \
-                         + str(order.partner_id.name) + '_' + str(self.name).replace('/', '_') + '.csv')
+                         + str(partner_name) + '_' + str(self.name).replace('/', '_') + '.csv')
             else:
                 date_time = str(datetime.now()).replace('-', '').replace(':', '')[0:13].replace(' ', '')
                 sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_BIL) + '_' + str(self.name).replace('/', '_') + '_' \
