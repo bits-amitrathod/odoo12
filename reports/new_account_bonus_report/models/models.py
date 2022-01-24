@@ -71,6 +71,7 @@ class NewAccountBonusReport(models.Model):
                         X.first_occurence                   AS date_of_first_order
                 FROM public.sale_order so
                 INNER JOIN
+                    (
                     (SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
                             DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                         FROM public.sale_order sos
