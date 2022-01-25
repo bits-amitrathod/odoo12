@@ -82,14 +82,14 @@ class NewAccountBonusReport(models.Model):
                         
                         UNION
                         
-                        ( SELECT sos.partner_id, aii.invoice_date As first_occurence,
-                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', aii.invoice_date)) AS months    
+                        ( SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
+                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                         FROM public.sale_order sos 
                         INNER JOIN public.res_partner rep ON sos.partner_id= rep.id 
                         INNER JOIN public.account_move aii ON sos.name = aii.invoice_origin 
                         where rep.reinstated_date > ' """ + str(end_date) + """ ' and rep.reinstated_date is not null
-                        GROUP BY sos.partner_id,aii.invoice_date
-                        Having aii.invoice_date > ' """ + str(end_date) + """ ' )
+                       
+                        and  aii.invoice_date > ' """ + str(end_date) + """ '  GROUP BY sos.partner_id )
                         
                     ) X
                         ON so.partner_id = X.partner_id
