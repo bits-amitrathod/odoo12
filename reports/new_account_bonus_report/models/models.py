@@ -72,13 +72,26 @@ class NewAccountBonusReport(models.Model):
                 FROM public.sale_order so
                 INNER JOIN
                     (
-                        SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
+                    (SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
                             DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                         FROM public.sale_order sos
                         INNER JOIN 
                             public.account_move aii ON sos.name = aii.invoice_origin
                         GROUP BY sos.partner_id
-                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ') X
+                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ')
+                        
+                        UNION
+                        
+                        ( SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
+                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
+                        FROM public.sale_order sos 
+                        INNER JOIN public.res_partner rep ON sos.partner_id= rep.id 
+                        INNER JOIN public.account_move aii ON sos.name = aii.invoice_origin 
+                        where rep.reinstated_date > ' """ + str(end_date) + """ ' and rep.reinstated_date is not null
+                       
+                        and  aii.invoice_date > ' """ + str(end_date) + """ '  GROUP BY sos.partner_id )
+                        
+                    ) X
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
                         public.account_move ai ON so.name = ai.invoice_origin AND ai.state in ('posted')
