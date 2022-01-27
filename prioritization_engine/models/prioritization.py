@@ -85,7 +85,7 @@ class Customer(models.Model):
     def write(self, vals):
         self.copy_parent_date(vals)
         res = super(Customer, self).write(vals)
-
+        self.copy_parent_date(vals)
         return res
 
     def copy_parent_date(self, vals):
