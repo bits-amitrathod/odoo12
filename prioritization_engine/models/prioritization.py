@@ -95,6 +95,8 @@ class Customer(models.Model):
             for child_id in ml.child_ids:
                 child_id.write({'on_hold': ml.on_hold,
                                 'is_broker': ml.is_broker,
+                                'is_wholesaler': ml.is_wholesaler,
+                                'charity': ml.charity,
                                 'carrier_info': ml.carrier_info,
                                 'carrier_acc_no': ml.carrier_acc_no,
                                 'quickbook_id': ml.quickbook_id,
@@ -118,9 +120,18 @@ class Customer(models.Model):
                                 'max_threshold': ml.max_threshold,
                                 'is_share': ml.is_share,
                                 'sale_margine': ml.sale_margine,
-                                'property_delivery_carrier_id' : ml.property_delivery_carrier_id
+                                'property_delivery_carrier_id' : ml.property_delivery_carrier_id,
+                                'category_id': ml.category_id,
+                                'contract': ml.contract,
+                                'reinstated_date': ml.reinstated_date,
                                 })
 
+                if 'is_broker' in vals:
+                    child_id.write({'is_broker': vals['is_broker']})
+                if 'is_wholesaler' in vals:
+                    child_id.write({'is_wholesaler': vals['is_wholesaler']})
+                if 'charity' in vals:
+                    child_id.write({'charity': vals['charity']})
                 if 'preferred_method' in vals:
                     child_id.write({'preferred_method': vals['preferred_method']})
                 if 'on_hold' in vals:
@@ -169,6 +180,12 @@ class Customer(models.Model):
                     child_id.write({'sale_margine': vals['sale_margine']})
                 if 'property_delivery_carrier_id' in vals:
                     child_id.write({'property_delivery_carrier_id': vals['property_delivery_carrier_id']})
+                if 'category_id' in vals:
+                    child_id.write({'category_id': vals['category_id']})
+                if 'contract' in vals:
+                    child_id.write({'contract': vals['contract']})
+                if 'reinstated_date' in vals:
+                    child_id.write({'reinstated_date': vals['reinstated_date']})
 
 
     def action_view_notification(self):
