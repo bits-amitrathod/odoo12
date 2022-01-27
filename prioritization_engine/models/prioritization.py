@@ -124,6 +124,9 @@ class Customer(models.Model):
                                 'category_id': ml.category_id,
                                 'contract': ml.contract,
                                 'reinstated_date': ml.reinstated_date,
+                                'account_manager_cust': ml.account_manager_cust,
+                                'national_account_rep': ml.national_account_rep,
+                                'user_id': ml.user_id
                                 })
 
                 if 'is_broker' in vals:
@@ -186,6 +189,12 @@ class Customer(models.Model):
                     child_id.write({'contract': vals['contract']})
                 if 'reinstated_date' in vals:
                     child_id.write({'reinstated_date': vals['reinstated_date']})
+                if 'account_manager_cust' in vals:
+                    child_id.write({'account_manager_cust': vals['account_manager_cust']})
+                if 'national_account_rep' in vals:
+                    child_id.write({'national_account_rep': vals['national_account_rep']})
+                if 'user_id' in vals:
+                    child_id.write({'user_id': vals['user_id']})
 
 
     def action_view_notification(self):
