@@ -5,6 +5,7 @@ class SaleOrderLine(models.Model):
     _inherit = ['sale.order.line']
 
     edi_id = fields.Many2one('setu.edi.log', string='EDI ID', copy=False)
+    price_unit_850 = fields.Float('850 Unit Price')
     x_edi_mismatch = fields.Boolean('EDI Mismatch', compute='_compute_edi_price_mismatch', readonly=True)
     x_edi_po_line_number = fields.Char('PO #', readonly=True)
     x_edi_status = fields.Selection([('accept', 'Accept'), ('reject', 'Reject')], string='Status')
@@ -27,16 +28,15 @@ class SaleOrderLine(models.Model):
                         count += 1
                 if line.order_id.order_of == 'ghx':
                     count = str(count)
-                    num_of_zero = '000' if len(count) == 1 else '00' if len(count) == 2 else '0' if len(count) == 3 else ''
+                    num_of_zero = '000' if len(count) == 1 else '00' if len(count) == 2 else '0' if len(
+                        count) == 3 else ''
                     count = num_of_zero + count
                 line.x_edi_po_line_number = count
 
-
-    @api.onchange('price_unit')
+    @api.onchange('price_unit', 'price_unit_850')
     def _compute_edi_price_mismatch(self):
         for rec in self:
-            price = rec.product_id and rec._get_display_price(rec.product_id) or 0
-            if price == rec.price_unit:
+            if rec.price_unit == rec.price_unit_850:
                 rec.x_edi_mismatch = False
             else:
                 rec.x_edi_mismatch = True

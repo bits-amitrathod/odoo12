@@ -25,6 +25,10 @@
                 <field name="x_edi_po_line_number"/>
                 <field name="ack_code" required="1"/>
             </xpath>
+            <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_unit']"
+                   position="after">
+                <field name="price_unit_850" optional="show" readonly="1"/>
+            </xpath>
         </field>
     </record>
 

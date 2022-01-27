@@ -109,6 +109,11 @@ class CaptiveaEdiDocumentLog(models.Model):
     line_state = fields.Char(default='fail')
     x_hdr_ref1 = fields.Char('Order Ref')
     x_hdr_ref2 = fields.Char()
+    x_lin_ref1 = fields.Char('Line Ref 1')
+    x_lin_ref2 = fields.Char('Line Ref 2')
+    x_lin_ref3 = fields.Char('Line Ref 3')
+    x_lin_ref4 = fields.Char('Line Ref 4')
+    x_lin_ref5 = fields.Char('Line Ref 5')
 
     def _get_shipping_partner(self, new_record, partner):
         verify = False
@@ -236,7 +241,8 @@ class CaptiveaEdiDocumentLog(models.Model):
                 'edi_id': log_line.edi_log_id.id,
                 'order_id': order.id,
                 'product_id': product.id,
-                'price_unit': log_line.unit_price,
+                'price_unit_850':log_line.unit_price,
+                # 'price_unit': log_line.unit_price,
                 'product_uom_qty': float(log_line.quantity),
                 'x_edi_po_line_number': log_line.line_num,
                 'product_template_id': product_tmpl.id,

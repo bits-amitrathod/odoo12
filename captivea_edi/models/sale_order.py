@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
+from xdg.Menu import __getFileName
+
 DOC_PREFIX_PO = '850'  # Prefix for Purchase Order Document
 DOC_PREFIX_POC = '860'  # Prefix for Purchase Order Change Document
 DOC_PREFIX_POA = '855'  # Prefix for Purchase Order Aknowledgment Document
@@ -17,7 +19,7 @@ SE^{segment_count}^0001~
 GE^1^8~
 IEA^1^{interchange_number}~
 """
-sale_line_str = """PO1^{line_num}^{quantity}^{uom}^{price_unit}^^VC^{vendor_part_number}^{in_qualifier}^{buyer_part_num}~
+sale_line_str = """PO1^{line_num}^{quantity}^{uom}^{price_unit}^^VC^{vendor_part_number}{in_qualifier_buyer_part_num}~
 PID^F^^^^{vendor_part_description}~
 ACK^{ack_code}^{product_uom_qty}^{uom}^017^{commitment_date_with_cc}^^VC^{vendor_part_number}~"""
 
@@ -63,6 +65,8 @@ from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
 from odoo.exceptions import ValidationError
 from odoo import api, fields, models, _
+import logging
+_logger = logging.getLogger(__name__)
 
 
 class SaleOrder(models.Model):
@@ -243,7 +247,7 @@ class SaleOrder(models.Model):
             elif instance_of == 'GHX':
                 sale_order = log_id.sale_id
                 date_order = sale_order.date_order or ''
-                commitment_date = sale_order.commitment_date or ''
+                commitment_date = sale_order.expected_date or ''
                 commitment_date_with_cc = commitment_date and commitment_date.strftime('%Y%m%d')
                 sale_order_date_with_cc = date_order and date_order.strftime('%Y%m%d')
                 po_date = log_id.po_date
@@ -254,12 +258,14 @@ class SaleOrder(models.Model):
                 for row in log_id.edi_855_log_lines:
                     sale_line = row.sale_line_id
                     product = sale_line.product_id
+                    in_qualifier_buyer_part_num = row.buyer_part_number and '^IN^%s'%(row.buyer_part_number) or ''
                     line = sale_line_str.format(line_num=row.line_num or '', quantity=int(row.qty), uom=row.uom or '',
                                                 price_unit=sale_line.price_unit,
                                                 vendor_part_number=product.default_code or '',
-                                                buyer_part_num=row.buyer_part_number or '',
+                                                #buyer_part_num=row.buyer_part_number or '',
                                                 vendor_part_description=product.name[0:80],
-                                                in_qualifier='IN' if row.buyer_part_number else '',
+                                                #in_qualifier='IN' if row.buyer_part_number else '',
+                                                in_qualifier_buyer_part_num=in_qualifier_buyer_part_num,
                                                 ack_code=sale_line.ack_code,
                                                 product_uom_qty=int(sale_line.product_uom_qty),
                                                 commitment_date_with_cc=commitment_date_with_cc
@@ -339,12 +345,15 @@ N1^VN^^92^%s~"""% (vendor_id)
             file_pointer.close()
             if sftp:
                 sftp.cwd(ftpdpath)
-                if instance_of == 'TrueCommerce':
-                    sftp.put(file_name,
-                             ftpdpath + '/' + str(DOC_PREFIX_POA) + '_' + str(self.client_order_ref) + '_' + str(
-                                 self.name) + '.csv')
-                else:
-                    sftp.put(file_name, ftpdpath + '/' + actual_file_name)
+                try:
+                    if instance_of == 'TrueCommerce':
+                        sftp.put(file_name,
+                                 ftpdpath + '/' + str(DOC_PREFIX_POA) + '_' + str(self.client_order_ref) + '_' + str(
+                                     self.name) + '.csv')
+                    else:
+                        sftp.put(file_name, ftpdpath + '/' + actual_file_name)
+                except Exception as e:
+                    _logger.info('===============%s=============='%e)
                 self.poack_created = True
                 log_id.create_date = date.today()
                 return True

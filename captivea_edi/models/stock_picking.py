@@ -6,6 +6,8 @@ import pytz
 import csv
 from datetime import date, datetime
 import pysftp
+import logging
+_logger = logging.getLogger(__name__)
 
 from odoo import api, fields, models, SUPERUSER_ID, _
 from odoo.exceptions import UserError, ValidationError
@@ -18,7 +20,7 @@ HL^1^^S~
 TD5^^2^{scac}~
 DTM^011^{date_done}~
 N1^ST^^91^{store_num}~
-N1^SF^{ship_from}^{fields_91_sf}^{vendor_number}~{n2_line}{n3_line}{n4_line}
+N1^SF^{ship_from}^{fields_91_sf}^{vendor_number}~{n3_line}{n4_line}
 HL^2^1^O~
 PRF^{client_order_ref}~
 REF^OQ^{order_ref}~
@@ -26,8 +28,8 @@ REF^CN^{carrier_tracking_ref}~"""
 
 LINE = """
 HL^{seq}^2^I~
-LIN^{line_num}^{in_qualifier}^{buyer_part}^VC^{vendor_part}~
-SN1^^{qty_done}^{uom}^12^20^BX~"""
+LIN^{line_num}^VC^{vendor_part}~
+SN1^{line_num}^{qty_done}^{uom}~"""
 
 FOOT = """
 CTT^{hl_count}~
@@ -272,18 +274,29 @@ class Picking(models.Model):
                     x_interchange = sftp_conf.update_interchange_number()
 
                     lines = """"""
-                    hl_count = 0
+                    # hl_count = 0
                     for line in self.move_ids_without_package:
                         seq += 1
                         lines += LINE.format(seq=seq or '',
-                                             line_num=line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.line_num or '',
+                                             line_num=(line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.line_num) or
+                                                      (line.sale_line_id.x_edi_po_line_number) or '',
                                              buyer_part=line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num or '',
                                              in_qualifier='IN' if line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num else '',
                                              vendor_part=line.product_id.default_code or '',
                                              qty_done=line.quantity_done or '',
                                              uom=line.sale_line_id and line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.uom or line.product_id.uom_id.name or '')
                         # hl_count += 1
-
+                    ship_name = self.name
+                    ship_id = ship_name and '/' in ship_name and \
+                              ship_name.rsplit("/", 1) and len(ship_name.rsplit("/", 1)) > 0 \
+                              and ship_name.rsplit("/", 1)[1] or ''
+                    domain = [('name', '=', self.ship_from_state)]
+                    if self.ship_from_country:
+                        domain.append(('country_id.name', '=', self.ship_from_country))
+                    ship_from_state_id = self.ship_from_state and self.env['res.country.state'].sudo().search(domain, limit=1) or False
+                    ship_from_state_code = ''
+                    if ship_from_state_id:
+                        ship_from_state_code = ship_from_state_id.code
                     head = HEAD.format(
                         sender_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(15) or " " * 15,
                         receiver_id=sftp_conf.receiver_id and sftp_conf.receiver_id.ljust(15) or " " * 15,
@@ -294,7 +307,7 @@ class Picking(models.Model):
                         accounting_id=self.partner_id.parent_id and self.partner_id.parent_id.x_edi_accounting_id or '',
                         current_date=current_date or '',
                         current_time=current_time or '',
-                        ship_id=self.name or '',
+                        ship_id=ship_id,
                         date_done=date_done or '',
                         date_done_time=date_done_time or '',
                         scac=self.carrier_id and self.carrier_id.x_scac or '',
@@ -309,31 +322,35 @@ class Picking(models.Model):
                         client_order_ref=self.sale_id and self.sale_id.client_order_ref or '',
                         order_ref=self.sale_id and self.sale_id.x_hdr_ref1 or '',
                         carrier_tracking_ref=self.carrier_tracking_ref or '',
-                        n2_line=f"\nN2^{self.ship_from_address_1}~" if self.ship_from_address_1 else '',
-                        n3_line=f"\nN3^{self.ship_from_address_2}~" if self.ship_from_address_2 else '',
-                        n4_line=f"\nN4^{self.ship_from_city}^{self.ship_from_state}^{self.ship_from_zip}~" if self.ship_from_city or self.ship_from_state or self.ship_from_zip else '')
+                        # n2_line=f"\nN2^{self.ship_from_address_1}~" if self.ship_from_address_1 else '',
+                        n3_line=f"\nN3^{self.ship_from_address_1}~" if self.ship_from_address_1 else '',
+                        n4_line=f"\nN4^{self.ship_from_city}^{ship_from_state_code}^{self.ship_from_zip}~" if self.ship_from_city or ship_from_state_code or self.ship_from_zip else '')
 
                     foot = FOOT.format(interchange_number=x_interchange,
                                        lines_count=(len(self.move_ids_without_package) * 3) + 15,
-                                       hl_count=len(self.move_ids_without_package))
+                                       hl_count=len(self.move_ids_without_package)+2)
+                    # + 2 <-- 2 HL count in HEAD section
                     res = head + lines + foot
                     file_pointer.write(res)
 
                 file_pointer.close()
             if sftp:
-                partner_name = order.partner_id.name
-                partner_name = re.sub('[^a-zA-Z0-9 \n\.]', '', partner_name)
                 sftp.cwd(ftpdpath)
-                if self.sale_order_of == 'true':
-                    sftp.put(file_name,
-                             ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + str(order.name) + '_' + str(
-                                 self.name.replace('/', '_')) + '_' + \
-                             str(partner_name) + '.csv')
-                else:
-                    date_time = str(datetime.now()).replace('-', '').replace(':', '')[0:13].replace(' ', '')
-                    sftp.put(file_name,
-                             ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + self.name.replace('/',
+                try:
+                    partner_name = order.partner_id.name
+                    partner_name = re.sub('[^a-zA-Z0-9 \n\.]', '', partner_name)
+                    if self.sale_order_of == 'true':
+                        sftp.put(file_name,
+                                 ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + str(order.name) + '_' + str(
+                                     self.name.replace('/', '_')) + '_' + \
+                                 str(partner_name) + '.csv')
+                    else:
+                        date_time = str(datetime.now()).replace('-', '').replace(':', '')[0:13].replace(' ', '')
+                        sftp.put(file_name,
+                                 ftpdpath + '/' + str(DOC_PREFIX_ASN) + '_' + self.name.replace('/',
                                                                                             '_') + '_' + date_time + '.txt')
+                except Exception as e:
+                    _logger.info("==========%s=========="%e)
                 return True
             return False
         return False

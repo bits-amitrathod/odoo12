@@ -36,11 +36,7 @@ class EDILog(models.Model):
     x_hdr_ref3 = fields.Char('Ref 3')
     x_hdr_ref4 = fields.Char('Ref 4')
     x_hdr_ref5 = fields.Char('Ref 5')
-    x_lin_ref1 = fields.Char('Line Ref 1')
-    x_lin_ref2 = fields.Char('Line Ref 2')
-    x_lin_ref3 = fields.Char('Line Ref 3')
-    x_lin_ref4 = fields.Char('Line Ref 4')
-    x_lin_ref5 = fields.Char('Line Ref 5')
+
     x_hdr_ref3 = fields.Char('Ref 3')
     x_hdr_ref4 = fields.Char('Ref 4')
     x_hdr_ref5 = fields.Char('Ref 5')

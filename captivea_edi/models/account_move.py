@@ -5,6 +5,8 @@ import time
 from datetime import date, datetime
 import csv
 import pysftp
+import logging
+_logger = logging.getLogger(__name__)
 
 from odoo import api, fields, models, _
 
@@ -12,7 +14,7 @@ from odoo import api, fields, models, _
 INTEGRITY_HASH_MOVE_FIELDS = ('date', 'journal_id', 'company_id')
 INTEGRITY_HASH_LINE_FIELDS = ('debit', 'credit', 'account_id', 'partner_id')
 
-HEAD = """ISA^00^          ^00^          ^ZZ^{sender_id}^ZZ^{receiver_id}^{YYMMHH}^{HHMM}^U^00401^{x_interchange}^0^T^|~
+HEAD = """ISA^00^          ^00^          ^ZZ^{sender_id_with_space}^ZZ^{receiver_id}^{YYMMHH}^{HHMM}^U^00401^{x_interchange}^0^T^|~
 GS^IN^{sender_id}^{accounting_id}^{current_date}^{HHMM}^335^X^004010~
 ST^810^3350001~
 BIG^{invoice_date}^{invoice_name}^^{po_number}^^^DI~
@@ -20,17 +22,16 @@ REF^OQ^{order_ref}~
 N1^BT^^{fields_92_bt}^{bill_to_id}~
 N1^ST^^91^{store_num}~
 N1^RI^^{fields_91_ri}^{x_store_id}~
-N2^{add1}~
 N3^{add2}~
 N4^{city}^{state}^{zip}~
 N1^VN^^{fields_92_vn}^{remit_to}~
 ITD^ZZ^3^^^^20051009^30~"""
 
 LINE = """
-IT1^{line_num}^{qty_done}^{uom}^{unit_price}^^VC^{product_desc}^{in_value_field}^{buyer_part_num}~"""
+IT1^{line_num}^{qty_done}^{uom}^{unit_price}^^VC^{product_desc}{buyer_part_num}~"""
 
 FOOT = """
-TDS^{amount_total}~{line_of_total_tax}
+TDS^{amount_total}~{sca_str}{line_of_total_tax}
 CTT^{invoice_lines_num}~
 SE^{number_of_segments}^3350001~
 GE^1^335~
@@ -317,12 +318,12 @@ class AccountMove(models.Model):
                 invoice_date = str(self.invoice_date).replace('-', '')
 
                 head = HEAD.format(
-                    add1=self.partner_id and self.partner_id.street or '',
-                    add2=self.partner_id and self.partner_id.street2 or '',
+                    # add1=self.partner_id and self.partner_id.street or '',
+                    add2=self.partner_id and self.partner_id.street or '',
                     city=self.partner_id and self.partner_id.city or '',
-                    state=self.partner_id and self.partner_id.state_id and self.partner_id.state_id.name or '',
+                    state=self.partner_id and self.partner_id.state_id and self.partner_id.state_id.code or '',
                     zip=self.partner_id and self.partner_id.zip,
-                    # sender_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(15) or '',
+                    sender_id_with_space=sftp_conf.sender_id and sftp_conf.sender_id.ljust(15) or '',
                     sender_id=sftp_conf.sender_id or '',
                     receiver_id=sftp_conf.receiver_id and sftp_conf.receiver_id.ljust(15) or '',
                     YYMMHH=current_date[2:] or '',
@@ -343,14 +344,21 @@ class AccountMove(models.Model):
                     fields_92_vn='92' if order.partner_id.remit_to else ''
                 )
                 seq = 0
+                line_tax_seq = 0
                 lines = """"""
+                shipment_amount = 0
+                sca_str = ""
                 for line in self.invoice_line_ids:
+                    if line.product_id and line.product_id.type == 'service' and line.product_id.default_code == 'Delivery':
+                        shipment_amount += line.price_subtotal
+                        continue
                     seq += 1
                     po_log_line_id = line.sale_line_ids[0].po_log_line_id if line.sale_line_ids and line.sale_line_ids[
                         0] and line.sale_line_ids[0].po_log_line_id else False
                     buyer_part = line.sale_line_ids and line.sale_line_ids[0].po_log_line_id and line.sale_line_ids[
                         0].po_log_line_id.buyers_part_num or ''
-                    line_num = '0000' + str(seq)
+                    in_and_buyer_part = buyer_part and '^IN^%s'%buyer_part or ''
+                    line_num = (line.sale_line_ids and line.sale_line_ids[0].x_edi_po_line_number) or ('0000' + str(seq))
                     lines += LINE.format(
                         line_num=po_log_line_id.line_num if po_log_line_id else line_num[-4:] or '',
                         qty_done=int(line.quantity) or '',
@@ -358,24 +366,28 @@ class AccountMove(models.Model):
                             0].po_log_line_id.uom or line.product_uom_id.name or '',
                         unit_price=line.price_unit or '',
                         product_desc=line.product_id.default_code or '',
-                        buyer_part_num=buyer_part or '',
-                        in_value_field='IN' if buyer_part else ''
+                        buyer_part_num=in_and_buyer_part,
+                        # in_value_field='IN' if buyer_part else ''
                     )
                     tax_per_line = line.price_total - line.price_subtotal
                     if tax_per_line > 0:
-                        seq+=1
+                        line_tax_seq += 1
                         lines += f"""
 TXI^2^{tax_per_line}~"""
-                segments = seq + 14
+                segments = seq + line_tax_seq + 13
                 if self.amount_tax > 0:
                     segments += 1
-
+                if shipment_amount > 0:
+                    sca_str = f"""
+SAC^{shipment_amount}^C~"""
+                    segments += 1
                 foot = FOOT.format(
                     amount_total=int(self.amount_total * 100) or '',
                     tax_total=self.amount_tax or '',
                     invoice_lines_num=seq or '',
                     number_of_segments=segments or '',
                     x_interchange=interchange or '',
+                    sca_str=sca_str,
                     line_of_total_tax=f"""
 TXI^ST^{self.amount_tax}~""" if self.amount_tax > 0 else ''
                 )
@@ -383,15 +395,18 @@ TXI^ST^{self.amount_tax}~""" if self.amount_tax > 0 else ''
                 file_pointer.write(res)
         if sftp:
             sftp.cwd(ftpdpath)
-            partner_name = order.partner_id.name
-            partner_name = re.sub('[^a-zA-Z0-9 \n\.]', '', partner_name)
-            if self.sale_order_of == 'true':
-                sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_BIL) + '_' + str(order.client_order_ref) + '_' \
-                         + str(partner_name) + '_' + str(self.name).replace('/', '_') + '.csv')
-            else:
-                date_time = str(datetime.now()).replace('-', '').replace(':', '')[0:13].replace(' ', '')
-                sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_BIL) + '_' + str(self.name).replace('/', '_') + '_' \
-                         + date_time + '.txt')
+            try:
+                partner_name = order.partner_id.name
+                partner_name = re.sub('[^a-zA-Z0-9 \n\.]', '', partner_name)
+                if self.sale_order_of == 'true':
+                    sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_BIL) + '_' + str(order.client_order_ref) + '_' \
+                             + str(partner_name) + '_' + str(self.name).replace('/', '_') + '.csv')
+                else:
+                    date_time = str(datetime.now()).replace('-', '').replace(':', '')[0:13].replace(' ', '')
+                    sftp.put(file_name, ftpdpath + '/' + str(DOC_PREFIX_BIL) + '_' + str(self.name).replace('/', '_') + '_' \
+                             + date_time + '.txt')
+            except Exception as e:
+                _logger.info("==========%s=========="%e)
             return True
         return False
 

@@ -784,6 +784,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                                             'quantity': product['qty'],
                                             'uom': product['uom'],
                                             'unit_price': product['unit_price'],
+                                            'x_lin_ref1': product['unit_price'],
                                             'edi_log_id': log_id.id
                                             }
                                     self.env['captivea.edidocumentlog'].create(vals)
