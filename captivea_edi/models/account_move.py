@@ -19,12 +19,12 @@ GS^IN^{sender_id}^{accounting_id}^{current_date}^{HHMM}^335^X^004010~
 ST^810^3350001~
 BIG^{invoice_date}^{invoice_name}^^{po_number}^^^DI~
 REF^OQ^{order_ref}~
-N1^BT^^{fields_92_bt}^{bill_to_id}~
+N1^BT^^{fields_91_bt}^{bill_to_id}~
 N1^ST^^91^{store_num}~
-N1^RI^^{fields_91_ri}^{x_store_id}~
+N1^RI^{remit_name}^{fields_91_ri}^{remit_to}~
 N3^{add2}~
 N4^{city}^{state}^{zip}~
-N1^VN^^{fields_92_vn}^{remit_to}~
+N1^VN^{vendor_name}^{fields_92_vn}^{x_vendor_id}~
 ITD^ZZ^3^^^^20051009^30~"""
 
 LINE = """
@@ -316,7 +316,8 @@ class AccountMove(models.Model):
                 current_date = str(date.today()).replace('-', '')
                 current_time = str(datetime.now().time()).replace(':', '')[0:4]
                 invoice_date = str(self.invoice_date).replace('-', '')
-
+                invoice_name_split = self.name.split('/')
+                company_address = self.company_id and self.company_id.partner_id
                 head = HEAD.format(
                     # add1=self.partner_id and self.partner_id.street or '',
                     add2=self.partner_id and self.partner_id.street or '',
@@ -332,16 +333,18 @@ class AccountMove(models.Model):
                     accounting_id=self.partner_id.x_edi_accounting_id or '',
                     current_date=current_date or '',
                     invoice_date=invoice_date or '',
-                    invoice_name=self.name or '',
+                    invoice_name=invoice_name_split and len(invoice_name_split) > 2 and invoice_name_split[-1] or '',
                     po_number=order and order.customer_po_ref and order.customer_po_ref.po_number or '',
                     order_ref=order.x_hdr_ref1 or '',
                     bill_to_id=order.partner_id.x_billtoid or '',
                     store_num=self.x_edi_store_number or '',
-                    x_store_id=order.partner_id.x_storeid or '',
-                    remit_to=order.partner_id.remit_to or '',
-                    fields_92_bt='92' if order.partner_id.x_billtoid else '',
-                    fields_91_ri='91' if order.partner_id.x_storeid else '',
-                    fields_92_vn='92' if order.partner_id.remit_to else ''
+                    x_vendor_id=company_address.x_vendorid or '',
+                    remit_to=company_address.remit_to or '',
+                    fields_91_bt='91' if order.partner_id.x_billtoid else '',
+                    fields_92_vn='92' if company_address and company_address.x_vendorid else '',
+                    vendor_name=company_address and company_address.vendor_name or '',
+                    fields_91_ri='91' if company_address and company_address.remit_to else '',
+                    remit_name=company_address and company_address.remit_to_name or ''
                 )
                 seq = 0
                 line_tax_seq = 0
@@ -378,8 +381,9 @@ TXI^2^{tax_per_line}~"""
                 if self.amount_tax > 0:
                     segments += 1
                 if shipment_amount > 0:
+                    shipment_amount_str = str(int(round(shipment_amount, 2) * 100))
                     sca_str = f"""
-SAC^{shipment_amount}^C~"""
+SAC^{shipment_amount_str}^C~"""
                     segments += 1
                 foot = FOOT.format(
                     amount_total=int(self.amount_total * 100) or '',

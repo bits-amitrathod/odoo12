@@ -21,7 +21,7 @@ IEA^1^{interchange_number}~
 """
 sale_line_str = """PO1^{line_num}^{quantity}^{uom}^{price_unit}^^VC^{vendor_part_number}{in_qualifier_buyer_part_num}~
 PID^F^^^^{vendor_part_description}~
-ACK^{ack_code}^{product_uom_qty}^{uom}^017^{commitment_date_with_cc}^^VC^{vendor_part_number}~"""
+ACK^{ack_code}^{product_uom_qty}^{uom}^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~"""
 
 POA_FIELDS = ['TRANSACTION ID', 'ACCOUNTING ID', 'PURPOSE', 'TYPE STATUS',
               'PO #', 'PO DATE', 'RELEASE NUMBER', 'REQUEST REFERENCE NUMBER',

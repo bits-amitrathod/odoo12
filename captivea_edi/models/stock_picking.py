@@ -7,6 +7,7 @@ import csv
 from datetime import date, datetime
 import pysftp
 import logging
+
 _logger = logging.getLogger(__name__)
 
 from odoo import api, fields, models, SUPERUSER_ID, _
@@ -16,15 +17,13 @@ HEAD = """ISA^00^          ^00^          ^ZZ^{sender_id}^ZZ^{receiver_id}^{YYMMD
 GS^SH^{sender_id_with_no_space}^{accounting_id}^{current_date}^{current_time}^1^X^004010~
 ST^856^0001~
 BSN^00^{ship_id}^{date_done}^{date_done_time}~
-HL^1^^S~
-TD5^^2^{scac}~
+HL^1^^S~{TD5_scac_line}
 DTM^011^{date_done}~
 N1^ST^^91^{store_num}~
 N1^SF^{ship_from}^{fields_91_sf}^{vendor_number}~{n3_line}{n4_line}
 HL^2^1^O~
 PRF^{client_order_ref}~
-REF^OQ^{order_ref}~
-REF^CN^{carrier_tracking_ref}~"""
+REF^OQ^{order_ref}~{REF_CN_line}"""
 
 LINE = """
 HL^{seq}^2^I~
@@ -33,7 +32,7 @@ SN1^{line_num}^{qty_done}^{uom}~"""
 
 FOOT = """
 CTT^{hl_count}~
-SE^{lines_count}^0002~
+SE^{lines_count}^0001~
 GE^1^1~
 IEA^1^{interchange_number}~"""
 
@@ -272,6 +271,7 @@ class Picking(models.Model):
                     date_done_time = self.date_done and str(self.date_done.time()).replace(':', '')[0:4]
                     seq = 2
                     x_interchange = sftp_conf.update_interchange_number()
+                    REF_CN_line = ''
 
                     lines = """"""
                     # hl_count = 0
@@ -283,7 +283,7 @@ class Picking(models.Model):
                                              buyer_part=line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num or '',
                                              in_qualifier='IN' if line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num else '',
                                              vendor_part=line.product_id.default_code or '',
-                                             qty_done=line.quantity_done or '',
+                                             qty_done=int(line.quantity_done) or '',
                                              uom=line.sale_line_id and line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.uom or line.product_id.uom_id.name or '')
                         # hl_count += 1
                     ship_name = self.name
@@ -297,6 +297,11 @@ class Picking(models.Model):
                     ship_from_state_code = ''
                     if ship_from_state_id:
                         ship_from_state_code = ship_from_state_id.code
+                    TD5_scac_line = """
+TD5^^2^%s~""" % (self.carrier_id and self.carrier_id.x_scac or '',)
+                    if self.carrier_tracking_ref:
+                        REF_CN_line = """
+REF^CN^%s~""" % (self.carrier_tracking_ref or '')
                     head = HEAD.format(
                         sender_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(15) or " " * 15,
                         receiver_id=sftp_conf.receiver_id and sftp_conf.receiver_id.ljust(15) or " " * 15,
@@ -308,9 +313,10 @@ class Picking(models.Model):
                         current_date=current_date or '',
                         current_time=current_time or '',
                         ship_id=ship_id,
+                        TD5_scac_line=TD5_scac_line if self.carrier_id and self.carrier_id.x_scac else '',
                         date_done=date_done or '',
                         date_done_time=date_done_time or '',
-                        scac=self.carrier_id and self.carrier_id.x_scac or '',
+                        
                         store_num=self.partner_id and self.partner_id.x_edi_store_number or '',
                         ship_from=self.ship_from and self.ship_from.name or '',
                         fields_91_sf='91' if self.ship_from and self.ship_from.edi_vendor_number else '',
@@ -321,14 +327,19 @@ class Picking(models.Model):
                         state=self.ship_from_state or '',
                         client_order_ref=self.sale_id and self.sale_id.client_order_ref or '',
                         order_ref=self.sale_id and self.sale_id.x_hdr_ref1 or '',
+                        REF_CN_line=REF_CN_line,
                         carrier_tracking_ref=self.carrier_tracking_ref or '',
                         # n2_line=f"\nN2^{self.ship_from_address_1}~" if self.ship_from_address_1 else '',
                         n3_line=f"\nN3^{self.ship_from_address_1}~" if self.ship_from_address_1 else '',
                         n4_line=f"\nN4^{self.ship_from_city}^{ship_from_state_code}^{self.ship_from_zip}~" if self.ship_from_city or ship_from_state_code or self.ship_from_zip else '')
-
+                    lines_count = (len(self.move_ids_without_package) * 3) + 13
+                    if self.carrier_tracking_ref:
+                        lines_count += 1
+                    if self.carrier_id and self.carrier_id.x_scac:
+                        lines_count += 1
                     foot = FOOT.format(interchange_number=x_interchange,
-                                       lines_count=(len(self.move_ids_without_package) * 3) + 15,
-                                       hl_count=len(self.move_ids_without_package)+2)
+                                       lines_count=lines_count,
+                                       hl_count=len(self.move_ids_without_package) + 2)
                     # + 2 <-- 2 HL count in HEAD section
                     res = head + lines + foot
                     file_pointer.write(res)

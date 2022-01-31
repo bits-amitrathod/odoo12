@@ -1,5 +1,5 @@
-from odoo import fields, models, api, _
 from odoo.exceptions import ValidationError
+from odoo import fields, models, api, _
 
 
 class ResPartner(models.Model):
@@ -13,10 +13,12 @@ class ResPartner(models.Model):
     edi_810 = fields.Boolean('Send EDI 810')
     edi_vendor_number = fields.Char('Customer Number')
     x_edi_ship_to_type = fields.Selection([('DC', 'Warehouse Number'), ('SN', 'Store Number')], string='Ship To Type')
-    remit_to = fields.Char('Remit To')
+    remit_to = fields.Char('Remit To ID')
+    remit_to_name = fields.Char('Remit To Name')
     x_billtoid = fields.Char("Bill To")
     x_storeid = fields.Char("Store ID")
     x_vendorid = fields.Char("Vendor ID")
+    vendor_name = fields.Char('Vendor Name')
 
     @api.model
     def create(self, vals_list):
