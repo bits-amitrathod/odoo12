@@ -26,7 +26,8 @@ class NaAccountClosedReportPopup(models.TransientModel):
         res_model = 'report.na.account.closed'
         margins_context = {'start_date': start_date, 'end_date': end_date_from_first, 'national_account': self.national_account.id}
         self.env[res_model].with_context(margins_context).delete_and_create()
-        group_by_domain = ['national_account', 'customer', 'delivery_date:month']
+        # group_by_domain = ['national_account', 'customer', 'delivery_date:month']
+        group_by_domain = ['national_account', 'customer', 'invoice_date:month']
 
         action = {
             'type': 'ir.actions.act_window',

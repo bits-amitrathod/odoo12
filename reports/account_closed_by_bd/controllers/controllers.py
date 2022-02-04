@@ -144,8 +144,6 @@ class ExportAccountClosedByBd(http.Controller):
             start_date) + "' AND SPS.date_done <= (COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) + " \
                           "INTERVAL '1 year')  "
 
-        business_development_id = self.env.context.get('business_development')
-
         if business_development_id:
             select_query = select_query + "AND so.user_id = '" + str(business_development_id) + "'"
 
