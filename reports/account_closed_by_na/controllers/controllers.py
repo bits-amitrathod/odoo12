@@ -134,6 +134,8 @@ class ExportAccountClosedByNa(http.Controller):
                             (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 
                             AND state = 'done' ORDER BY origin) AS SPS 
                             ON so.id = SPS.sale_id
+                            INNER JOIN  public.product_product  pp on SOL.product_id = pp.id 
+                    INNER JOIN  public.product_template  pt on pp.product_tmpl_id = pt.id and pt.type!='service'
 
                         WHERE so.invoice_status = 'invoiced'                
                            """
