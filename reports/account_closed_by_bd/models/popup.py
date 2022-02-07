@@ -26,7 +26,7 @@ class BdAccountClosedReportPopup(models.TransientModel):
         res_model = 'report.bd.account.closed'
         margins_context = {'start_date': start_date, 'end_date': end_date_from_first, 'business_development': self.business_development.id}
         self.env[res_model].with_context(margins_context).delete_and_create()
-        group_by_domain = ['business_development', 'customer', 'delivery_date:month']
+        group_by_domain = ['business_development', 'customer', 'invoice_date:month']
 
         action = {
             'type': 'ir.actions.act_window',

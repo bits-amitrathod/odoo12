@@ -21,11 +21,110 @@ class AccountClosedByBd(models.Model):
     total_amount = fields.Float('Total', digits=dp.get_precision('Product Price'))
     currency_id = fields.Many2one('res.currency', string='Currency')
 
+    invoice_date = fields.Date('Invoice Date')
+    date_of_first_order = fields.Date('Date of First Order')
+
     #  @api.model_cr
     def init(self):
         self.init_table()
 
     def init_table(self):
+        tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
+
+        start_date = self.env.context.get('start_date')
+        end_date = self.env.context.get('end_date')
+        # business_development_id = self.env.context.get('business_development')
+        # key_account_id = self.env.context.get('key_account')
+
+        if start_date and end_date:
+            select_query = """
+                SELECT ROW_NUMBER () OVER (ORDER BY so.id)  AS id, 
+                        so.id                               AS sale_order_id, 
+                        so.partner_id                       AS customer, 
+                        so.user_id                          AS business_development,
+                        so.account_manager                  AS key_account,
+                        so.state                            AS state,
+                        MAX(SPS.date_done)                  AS delivery_date, 
+                        rp.user_id                          AS customer_business_development,
+                        rp.account_manager_cust             AS customer_key_account,
+                        ai.invoice_date                     AS invoice_date, 
+                        CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status,
+                        CASE WHEN ai.state = 'posted' then 'Posted' END AS invoice_state,
+                        SUM(SOL.qty_delivered * SOL.price_reduce)                   AS total_amount, 
+                        X.months                            AS months,
+                        ai.currency_id                      AS currency_id,
+                        X.first_occurence                   AS date_of_first_order
+                FROM public.sale_order so
+                INNER JOIN
+                   (
+                    (SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
+                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
+                        FROM public.sale_order sos
+                        INNER JOIN 
+                            public.account_move aii ON sos.name = aii.invoice_origin
+                        GROUP BY sos.partner_id
+                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ')
+                        
+                        UNION
+                        
+                        ( SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
+                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
+                        FROM public.sale_order sos 
+                        INNER JOIN public.res_partner rep ON sos.partner_id= rep.id 
+                        INNER JOIN public.account_move aii ON sos.name = aii.invoice_origin 
+                        where rep.reinstated_date > ' """ + str(end_date) + """ ' and rep.reinstated_date is not null
+                       
+                        and  aii.invoice_date > ' """ + str(end_date) + """ '  GROUP BY sos.partner_id )
+                        
+                    ) X
+                        ON so.partner_id = X.partner_id
+                    INNER JOIN 
+                        public.account_move ai ON so.name = ai.invoice_origin AND ai.state in ('posted')
+                    INNER JOIN 
+                        public.res_partner rp ON so.partner_id = rp.id
+                        
+                    INNER JOIN public.sale_order_line SOL ON so.id = SOL.order_id 
+                    INNER JOIN 
+                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 
+                    AND state = 'done' ORDER BY origin) AS SPS 
+                    ON so.id = SPS.sale_id
+                    INNER JOIN  public.product_product  pp on SOL.product_id = pp.id 
+                    INNER JOIN  public.product_template  pt on pp.product_tmpl_id = pt.id and pt.type!='service'
+                
+                WHERE so.invoice_status = 'invoiced'                
+                   """
+
+            select_query = select_query + " AND SPS.date_done >= COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) " \
+                                          " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(
+                start_date) + "' AND SPS.date_done <= (COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) + " \
+                              "INTERVAL '1 year')  "
+
+            business_development_id = self.env.context.get('business_development')
+
+            if business_development_id:
+                select_query = select_query + "AND so.user_id = '" + str(business_development_id) + "'"
+
+            group_by = """ GROUP BY so.id, SPS.date_done, SOL.currency_id,rp.user_id, rp.account_manager_cust,
+              X.months  ,X.first_occurence ,ai.invoice_date,ai.state,ai.currency_id  """
+
+            select_query = select_query + group_by
+
+            order_by = " ORDER BY ai.invoice_date asc"
+
+            select_query = select_query + order_by
+
+            self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )")
+        else:
+            # This Code For only console error resolve purposr
+            self.env.cr.execute('''
+                             CREATE OR REPLACE VIEW %s AS (
+                             SELECT  so.id AS id,
+                                     so.name AS name
+                             FROM sale_order so
+                             )''' % (self._table)
+                                )
+
+    def init_table_backup(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
         start_date = self.env.context.get('start_date')
