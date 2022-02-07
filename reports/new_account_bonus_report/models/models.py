@@ -65,7 +65,7 @@ class NewAccountBonusReport(models.Model):
                         ai.invoice_date                     AS invoice_date, 
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status,
                         CASE WHEN ai.state = 'posted' then 'Posted' END AS invoice_state,
-                        ai.amount_total                     AS amount_total, 
+                        SUM(SOL.qty_delivered * SOL.price_reduce)                     AS amount_total, 
                         X.months                            AS months,
                         ai.currency_id                      AS currency_id,
                         X.first_occurence                   AS date_of_first_order
@@ -97,6 +97,13 @@ class NewAccountBonusReport(models.Model):
                         public.account_move ai ON so.name = ai.invoice_origin AND ai.state in ('posted')
                     INNER JOIN 
                         public.res_partner rp ON so.partner_id = rp.id
+                        INNER JOIN public.sale_order_line SOL ON so.id = SOL.order_id 
+                    INNER JOIN 
+                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 
+                    AND state = 'done' ORDER BY origin) AS SPS 
+                    ON so.id = SPS.sale_id
+                    INNER JOIN  public.product_product  pp on SOL.product_id = pp.id 
+                    INNER JOIN  public.product_template  pt on pp.product_tmpl_id = pt.id and pt.type!='service'
                 WHERE so.invoice_status = 'invoiced'                
                    """
 
@@ -105,6 +112,11 @@ class NewAccountBonusReport(models.Model):
 
             if key_account_id:
                 select_query = select_query + " AND rp.account_manager_cust = '" + str(key_account_id) + "'"
+
+            group_by = """ GROUP BY so.id, so.partner_id,so.user_id,rp.user_id, so.account_manager ,rp.account_manager_cust,
+                         X.months  ,X.first_occurence ,ai.invoice_date,ai.state,ai.currency_id  """
+
+            select_query = select_query + group_by
 
             order_by = " ORDER BY ai.invoice_date asc"
 
