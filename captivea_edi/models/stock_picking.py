@@ -98,6 +98,14 @@ class Picking(models.Model):
     asn_created = fields.Boolean('Notification Sent?')
     sale_order_of = fields.Selection([('true', 'Truecommerce'), ('ghx', 'GHX')], compute='_compute_sale_order_of',
                                      store=True)
+    is_picking_of_edi = fields.Boolean(string='Is EDI and OUTGOING picking?', compute='_compute_is_picking_of_edi')
+
+    def _compute_is_picking_of_edi(self):
+        for pick in self:
+            if pick.sale_id and pick.partner_id and pick.partner_id.edi_856 and pick.picking_type_id.code == 'outgoing':
+                pick.is_picking_of_edi = True
+            else:
+                pick.is_picking_of_edi = False
 
     def _compute_ship_from_address(self):
         for rec in self:

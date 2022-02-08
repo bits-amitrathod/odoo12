@@ -50,6 +50,25 @@
             </xpath>
         </field>
     </record>
+
+    <record id="view_picking_form_carrier_attributes" model="ir.ui.view">
+        <field name="name">view_picking_form_carrier_attributes</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+        <field name="arch" type="xml">
+            <field name="carrier_id" position="before">
+                <field name="is_picking_of_edi" invisible="1"/>
+            </field>
+            <field name="carrier_id" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('done', 'cancel'))],'required':[('is_picking_of_edi','=',True)]}</attribute>
+            </field>
+            <field name="carrier_tracking_ref" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('done', 'cancel'))],'required':[('is_picking_of_edi','=',True)]}</attribute>
+            </field>
+        </field>
+    </record>
+
+
     <record id="edi_picking_from_po_import_tree" model="ir.ui.view">
         <field name="name">stock.picking.tree</field>
         <field name="model">stock.picking</field>

@@ -381,9 +381,11 @@ TXI^2^{tax_per_line}~"""
                 if self.amount_tax > 0:
                     segments += 1
                 if shipment_amount > 0:
-                    shipment_amount_str = str(int(round(shipment_amount, 2) * 100))
+                    shipment_amount_str = str(int(round(round(shipment_amount, 2) * 100)))
+#                     sca_str = f"""
+# SAC^{shipment_amount_str}^C~"""
                     sca_str = f"""
-SAC^{shipment_amount_str}^C~"""
+SAC^C^G830^AX^FC^{shipment_amount_str}^^^^^^^06^^^FREIGHT~"""
                     segments += 1
                 foot = FOOT.format(
                     amount_total=int(self.amount_total * 100) or '',
