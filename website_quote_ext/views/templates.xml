@@ -1060,6 +1060,44 @@
                     <t t-set="count" t-value="vendor_count"/>
                 </t>
             </xpath>
+            <xpath expr="//div[hasclass('o_portal_my_home')]" position="after">
+
+                <div style="text-align: center !important;" class="container">
+                      <div class="row ">
+                          <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
+                            <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
+                                <div class="col-sm">
+                                      <a id="" href="/stockhawk_spreadsheet" >
+                                        <div class="o_app_icon">
+                                            <img src="/website_quote_ext/static/src/img/shop.png" align="right" style="height: auto; width: 150px;" alt="Shop"/>
+                                        </div>
+                                        <div class="o_caption">Rapid Quote</div>
+                                        <div class="">Copy and paste your list of items to instantly generate your order</div>
+                                     </a>
+                                </div>
+                            </t>
+
+                        <div class="col-sm">
+                          <a id="" href="/shop/my_in_stock_report" >
+                              <div style="" class="o_app_icon">
+                                  <img src="/website_quote_ext/static/src/img/shop.png" align="right" style="height: auto; width: 150px;" alt="Shop"/>
+                              </div>
+                              <div class="o_caption">Re-Order</div>
+                              <div class="">Quickly and easily re-order the same product</div>
+                          </a>
+                        </div>
+                        <div class="col-sm">
+                          <a id="" href="/shop" >
+                              <div style="" class="o_app_icon">
+                                  <img src="/website_quote_ext/static/src/img/shop.png" align="right" style="height: auto; width: 150px;" alt="Shop"/>
+                              </div>
+                              <div style="" class="o_caption">Shop</div>
+                              <div class="">Browse our surgical disposable and equipment</div>
+                             </a>
+                        </div>
+                      </div>
+                </div>
+            </xpath>
         </template>
 
         <template id="portal_my_vendor_offers" name="Portal: My Vendor Offers">
