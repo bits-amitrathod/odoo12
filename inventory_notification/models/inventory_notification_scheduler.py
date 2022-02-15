@@ -438,7 +438,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                       " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>" \
                                                                       """<center>
                                                                                 <a target="_blank" href="/shop/quote_my_report/""" + str(
-                    customr.id) + """" style="background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 6px 5px #808080; " class="o_default_snippet_text">BUY NOW</a>
+                    customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0; " class="o_default_snippet_text">BUY NOW</a>
                                                                         </center>"""
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date',
