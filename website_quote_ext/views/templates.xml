@@ -1063,36 +1063,36 @@
             <xpath expr="//div[hasclass('o_portal_my_home')]" position="after">
 
                 <div style="text-align: center !important;" class="container">
-                      <div class="row ">
+                      <div class="row " style="padding-top: 50px">
                           <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
                             <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
                                 <div class="col-sm">
-                                      <a id="" href="/stockhawk_spreadsheet" >
+                                      <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="display: inline-grid;" >
                                         <div class="o_app_icon">
-                                            <img src="/website_quote_ext/static/src/img/shop.png" align="right" style="height: auto; width: 150px;" alt="Shop"/>
+                                            <img src="/website_quote_ext/static/src/img/rapid_quote.png" align="center"  alt="Rapid Quote"/>
                                         </div>
-                                        <div class="o_caption">Rapid Quote</div>
-                                        <div class="">Copy and paste your list of items to instantly generate your order</div>
+                                        <div class="o_caption" style="font-size: 25px; color:black;">Rapid Quote</div>
+                                        <div class="" style="color:black;">Copy and paste your list of items to instantly generate your order</div>
                                      </a>
                                 </div>
                             </t>
 
                         <div class="col-sm">
-                          <a id="" href="/shop/my_in_stock_report" >
+                          <a id="" href="/shop/my_in_stock_report" style="display: inline-grid;" >
                               <div style="" class="o_app_icon">
-                                  <img src="/website_quote_ext/static/src/img/shop.png" align="right" style="height: auto; width: 150px;" alt="Shop"/>
+                                  <img src="/website_quote_ext/static/src/img/re_order.png" align="center"  alt="Re-Order"/>
                               </div>
-                              <div class="o_caption">Re-Order</div>
-                              <div class="">Quickly and easily re-order the same product</div>
+                              <div class="o_caption" style="font-size: 25px; color:black;">Re-Order</div>
+                              <div class="" style="color:black;">Quickly and easily re-order the same product</div>
                           </a>
                         </div>
                         <div class="col-sm">
-                          <a id="" href="/shop" >
+                          <a id="" href="/shop" style="display: inline-grid;">
                               <div style="" class="o_app_icon">
-                                  <img src="/website_quote_ext/static/src/img/shop.png" align="right" style="height: auto; width: 150px;" alt="Shop"/>
+                                  <img src="/website_quote_ext/static/src/img/shop_img.png" align="center"  alt="Shop"/>
                               </div>
-                              <div style="" class="o_caption">Shop</div>
-                              <div class="">Browse our surgical disposable and equipment</div>
+                              <div  class="o_caption" style="font-size: 25px; color:black;">Shop</div>
+                              <div class="" style=" color:black;">Browse our surgical disposable and equipment</div>
                              </a>
                         </div>
                       </div>
