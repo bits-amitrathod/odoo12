@@ -1067,7 +1067,7 @@
                           <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
                             <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
                                 <div class="col-sm">
-                                      <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="display: inline-grid;" >
+                                      <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="display: inline-grid;text-decoration: none;" >
                                         <div class="o_app_icon">
                                             <img src="/website_quote_ext/static/src/img/rapid_quote.png" align="center"  alt="Rapid Order"/>
                                         </div>
@@ -1078,7 +1078,7 @@
                             </t>
 
                         <div class="col-sm">
-                          <a id="" href="/shop/my_in_stock_report" style="display: inline-grid;" >
+                          <a id="" href="/shop/my_in_stock_report" style="display: inline-grid;text-decoration: none;" >
                               <div style="" class="o_app_icon">
                                   <img src="/website_quote_ext/static/src/img/re_order.png" align="center"  alt="In-Stock Report"/>
                               </div>
@@ -1087,7 +1087,7 @@
                           </a>
                         </div>
                         <div class="col-sm">
-                          <a id="" href="/shop" style="display: inline-grid;">
+                          <a id="" href="/shop" style="display: inline-grid;text-decoration: none;">
                               <div style="" class="o_app_icon">
                                   <img src="/website_quote_ext/static/src/img/shop_img.png" align="center"  alt="Shop"/>
                               </div>
