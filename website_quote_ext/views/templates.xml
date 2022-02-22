@@ -1069,9 +1069,9 @@
                                 <div class="col-sm">
                                       <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="display: inline-grid;" >
                                         <div class="o_app_icon">
-                                            <img src="/website_quote_ext/static/src/img/rapid_quote.png" align="center"  alt="Rapid Quote"/>
+                                            <img src="/website_quote_ext/static/src/img/rapid_quote_new.png"  style="box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" align="center"  alt="Rapid Quote"/>
                                         </div>
-                                        <div class="o_caption" style="font-size: 25px; color:black;">Rapid Quote</div>
+                                        <div class="o_caption" style="font-size: 25px; color:black;padding-top: 20px;">Rapid Quote</div>
                                         <div class="" style="color:black;">Copy and paste your list of items to instantly generate your order</div>
                                      </a>
                                 </div>
@@ -1080,18 +1080,18 @@
                         <div class="col-sm">
                           <a id="" href="/shop/my_in_stock_report" style="display: inline-grid;" >
                               <div style="" class="o_app_icon">
-                                  <img src="/website_quote_ext/static/src/img/re_order.png" align="center"  alt="Re-Order"/>
+                                  <img src="/website_quote_ext/static/src/img/re_order_new.png" align="center" style="box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" alt="Re-Order"/>
                               </div>
-                              <div class="o_caption" style="font-size: 25px; color:black;">Re-Order</div>
+                              <div class="o_caption" style="font-size: 25px; color:black;padding-top: 20px;">Re-Order</div>
                               <div class="" style="color:black;">Quickly and easily re-order the same product</div>
                           </a>
                         </div>
                         <div class="col-sm">
                           <a id="" href="/shop" style="display: inline-grid;">
                               <div style="" class="o_app_icon">
-                                  <img src="/website_quote_ext/static/src/img/shop_img.png" align="center"  alt="Shop"/>
+                                  <img src="/website_quote_ext/static/src/img/shop_img_new.png" align="center" style="box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" alt="Shop"/>
                               </div>
-                              <div  class="o_caption" style="font-size: 25px; color:black;">Shop</div>
+                              <div  class="o_caption" style="font-size: 25px; color:black;padding-top: 20px;">Shop</div>
                               <div class="" style=" color:black;">Browse our surgical disposable and equipment</div>
                              </a>
                         </div>
