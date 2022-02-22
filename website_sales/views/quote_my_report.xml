@@ -30,7 +30,7 @@
                             <button type="submit" disabled="true" id="add_product_in_to_cart"
                                     title="Select at least one product" style="float: right;
                                     margin-top: 50px !important; margin-bottom: 100px;  position: fixed;
-                                    top: 335px;  right: 120px;"
+                                    top: 300px;  right: 50px;"
                                     class="btn btn-primary btn-lg mt8 js_check_product a-submit">Add to Cart</button>
                         </form>
                     </div>
