@@ -260,10 +260,10 @@ class SaleOrder(models.Model):
                     product = sale_line.product_id
                     in_qualifier_buyer_part_num = row.buyer_part_number and '^IN^%s'%(row.buyer_part_number) or ''
                     line = sale_line_str.format(line_num=row.line_num or '', quantity=int(row.qty), uom=row.uom or '',
-                                                price_unit=sale_line.price_unit,
-                                                vendor_part_number=product.default_code or '',
+                                                price_unit=sale_line.price_unit or sale_line.price_unit_850,
+                                                vendor_part_number=product.default_code or '' if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else '',
                                                 #buyer_part_num=row.buyer_part_number or '',
-                                                vendor_part_description=product.name[0:80],
+                                                vendor_part_description=product.name[0:80] if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else '',
                                                 #in_qualifier='IN' if row.buyer_part_number else '',
                                                 in_qualifier_buyer_part_num=in_qualifier_buyer_part_num,
                                                 ack_code=sale_line.ack_code,

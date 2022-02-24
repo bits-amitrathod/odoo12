@@ -11,4 +11,5 @@ from . import setu_sftp
 from . import captivea_edi
 from . import remove_log_conf
 from . import ir_cron
+from . import customer_uom_conf
 
