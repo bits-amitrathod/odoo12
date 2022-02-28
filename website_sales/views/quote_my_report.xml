@@ -30,7 +30,7 @@
                             <button type="submit" disabled="true" id="add_product_in_to_cart"
                                     title="Select at least one product" style="float: right;
                                     margin-top: 50px !important; margin-bottom: 100px;  position: fixed;
-                                    top: 300px;  right: 50px;"
+                                    top: 450px;  right: 50px;"
                                     class="btn btn-primary btn-lg mt8 js_check_product a-submit">Add to Cart</button>
                         </form>
                     </div>
@@ -66,13 +66,14 @@
 <!--                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'>-->
 <!--                                    <span t-field="product_list.get(product[0])['product'].image_128" t-options="{'widget': 'image', 'class': 'rounded'}" />-->
 <!--                                </td>-->
-                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='align-middle'>
+                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='align-middle' style="font-weight: 600;">
                                     <span t-field="product_list.get(product[0])['product'].default_code"  />
                                 </td>
-                                <td t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-product_name align-middle'>
+                                <!--td-product_name-->
+                                <td t-if="product_list.get(product[0])['product'].product_tmpl_id" class=' align-middle'>
                                     <div>
                                         <t t-call="website_sales.cart_line_product_link">
-                                            <span t-esc="product_list.get(product[0])['product'].product_tmpl_id.name"/>
+                                            <span t-esc="product_list.get(product[0])['product'].product_tmpl_id.name" style="color:black;"/>
                                         </t>
                                     </div>
                                 </td>
