@@ -1062,7 +1062,7 @@
             </xpath>
             <xpath expr="//div[hasclass('o_portal_my_home')]" position="after">
 
-                <div style="text-align: center !important;" class="container">
+                <!--<div style="text-align: center !important;" class="container">
                       <div class="row " style="padding-top: 50px">
                           <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
                             <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
@@ -1096,7 +1096,55 @@
                              </a>
                         </div>
                       </div>
+                </div>-->
+
+
+
+                <div class="container">
+                      <div class="row " style="padding: 50px 16px 0px 15px;">
+                                         <div class="o_app_icon">
+                                             <img src="/website_quote_ext/static/src/img/StockHawk_Logo_TM_R1.png"  style="width:240px;" align="center"  alt="Rapid Order"/>
+                                             <span  style=" font-size: 28px; color: black;    vertical-align: middle;"> Tools</span>
+                                         </div>
+
+                          <div class="table-responsive" style="border: 1px solid #e0d6d6;  border-radius: 3px;">
+
+                                        <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
+                                        <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
+                                        <div class="col-sm" style="border-bottom: 1px solid #e0d6d6;padding:10px;">
+                                             <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="text-decoration: none;width:100%" >
+                                               <div class="o_app_icon">
+                                                    <img src="/website_quote_ext/static/src/img/Stockhawk_Rapid_Order_R1.png"  style="width:300px;" align="center"  alt="Rapid Order"/>
+                                                    <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:30px;float:right" align="center"  alt="Rapid Order"/>
+                                                </div>
+                                              </a>
+                                        </div>
+                                        </t>
+
+                                            <div class="col-sm" style="border-bottom:  1px solid #e0d6d6;padding:10px;">
+                                              <a id="" href="/shop/my_in_stock_report" style="text-decoration: none;width:100%;" >
+                                                  <div style="" class="o_app_icon">
+                                                      <img src="/website_quote_ext/static/src/img/Stockhawk_InStock_Report_R1.png" align="center" style="width:300px;" alt="In-Stock Report"/>
+                                                      <img src="/website_quote_ext/static/src/img/arrow.jpg" style="width:30px;float:right" align="center"  alt="In-Stock Report"/>
+                                                  </div>
+                                                 </a>
+                                              </div>
+
+                                        <div class="col-sm" style="padding:10px;">
+                                              <a id="" href="/shop" style="text-decoration: none;width:100%;">
+                                                  <div style="" class="o_app_icon">
+                                                      <span style=" font-size: 21px; color: black;">Shop</span>
+                                                      <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:30px;float:right" align="center"  alt="Shop"/>
+                                                  </div>
+                                                  </a>
+                                         </div>
+
+                          </div>
+
+                      </div>
                 </div>
+
+
             </xpath>
         </template>
 
