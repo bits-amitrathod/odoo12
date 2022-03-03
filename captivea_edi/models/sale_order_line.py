@@ -19,36 +19,6 @@ class SaleOrderLine(models.Model):
                                  ('IB', 'Back Order'),
                                  ('IR', 'Rejected')], default="IA", string="Ack Code")
 
-    def set_ack_code_to_edi_sales(self):
-        query = """
-                   update sale_order_line
-                   set ack_code = 'IP'
-                   where id in                
-                   (select sol.id from sale_order_line sol
-                   inner join sale_order so on so.id = sol.order_id
-                   where so.state not in ('sale','done','cancel')
-                   and sol.price_unit_850 != 0
-                   and sol.price_unit_850 != sol.price_unit
-                   and so.customer_po_ref is not null
-                   and sol.ack_code != 'IP');
-                   """
-        self._cr.execute(query)
-        self._cr.commit()
-        query = """
-                   update sale_order_line
-                   set ack_code = 'IR'
-                   where id in                
-                   (select sol.id from sale_order_line sol
-                   inner join sale_order so on so.id = sol.order_id
-                   where so.state not in ('sale','done','cancel')
-                   and (sol.product_id is null or sol.display_type = 'line_note')
-                   and so.customer_po_ref is not null
-                   and sol.ack_code != 'IR');
-                   """
-        self._cr.execute(query)
-        self._cr.commit()
-
-
     def set_po_line_number(self):
         for line in self:
             if not line.po_log_line_id or not line.po_log_line_id.line_num:
