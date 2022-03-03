@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-from xdg.Menu import __getFileName
+# from xdg.Menu import __getFileName
 
 DOC_PREFIX_PO = '850'  # Prefix for Purchase Order Document
 DOC_PREFIX_POC = '860'  # Prefix for Purchase Order Change Document
