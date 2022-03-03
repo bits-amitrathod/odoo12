@@ -12,6 +12,7 @@
         <field name="state">code</field>
         <field name="active">False</field>
         <field name="code">model.edi_process_scheduler()</field>
+        </record>
     </data>
     <data noupdate="1">
         <record id="ir_cron_set_ack_code_in_sol" model="ir.cron">
