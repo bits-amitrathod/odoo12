@@ -20,7 +20,7 @@
         'views/sale_views.xml',
         'views/stock_picking_views.xml',
         'data/ir_cron_jobs.xml',
-        'views/res_partner_views.xml',
+        # 'views/res_partner_views.xml',
         'views/setu_edi_export_views.xml',
         'views/log_remove.xml',
         'views/product_template.xml',
