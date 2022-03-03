@@ -5,7 +5,6 @@ class IrCron(models.Model):
     _inherit = 'ir.cron'
 
     def ir_cron_edi_return_action(self):
-        print('get')
         return {
             'name': 'Scheduler',
             # 'view_type': 'tree',

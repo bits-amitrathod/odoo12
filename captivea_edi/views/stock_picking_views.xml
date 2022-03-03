@@ -68,7 +68,6 @@
         </field>
     </record>
 
-
     <record id="edi_picking_from_po_import_tree" model="ir.ui.view">
         <field name="name">stock.picking.tree</field>
         <field name="model">stock.picking</field>
