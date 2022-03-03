@@ -867,9 +867,9 @@ class CaptiveaEdiProcess(models.TransientModel):
             validation_error = 'Partner is not available.'
             return validation_error
         partner_uom_conf = False
-        if partner_id:
-            partner_uom_conf = self.env['customer.uom.conf'].search([('name', '=', partner_id.edi_vendor_number)],
-                                                                    limit=1)
+        # if partner_id:
+        #     partner_uom_conf = self.env['customer.uom.conf'].search([('name', '=', partner_id.edi_vendor_number)],
+        #                                                             limit=1)
 
         for num, product in po_lines.items():
             if not self.env['product.product'].search(
@@ -877,9 +877,10 @@ class CaptiveaEdiProcess(models.TransientModel):
                 # validation_error = 'Product(s) not available.'
                 # return validation_error
                 product['has_exceptions'] = True
-            if product['uom'] and partner_uom_conf and not partner_uom_conf.line_ids.filtered(
-                    lambda l: l.edi_uom.lower() == product['uom'].lower()):
-                product['has_exceptions'] = True
+            if product['uom'] and partner_uom_conf:
+                if not partner_uom_conf.line_ids.filtered(
+                        lambda l: l.edi_uom.lower() == product['uom'].lower()):
+                    product['has_exceptions'] = True
             else:
                 product['has_exceptions'] = True
 
