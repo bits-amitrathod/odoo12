@@ -7,4 +7,3 @@ captivea_user_permission_edi_855_log,User Permission EDI 855 LOG,model_setu_poac
 captivea_user_permission_edi_856_log,User Permission EDI 856 LOG,model_setu_shipack_export_log_line,group_captivea_edi_user,1,1,1,0
 captivea_user_permission_edi_810_log,User Permission EDI 810 LOG,model_setu_invack_export_log_line,group_captivea_edi_user,1,1,1,0
 captivea_user_permission_log_remove,User Permission Log Remove Rules,model_log_remove,group_captivea_edi_user,1,1,1,1
-

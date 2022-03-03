@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
-# from xdg.Menu import __getFileName
+from xdg.Menu import __getFileName
 
 DOC_PREFIX_PO = '850'  # Prefix for Purchase Order Document
 DOC_PREFIX_POC = '860'  # Prefix for Purchase Order Change Document
@@ -260,10 +260,10 @@ class SaleOrder(models.Model):
                     product = sale_line.product_id
                     in_qualifier_buyer_part_num = row.buyer_part_number and '^IN^%s'%(row.buyer_part_number) or ''
                     line = sale_line_str.format(line_num=row.line_num or '', quantity=int(row.qty), uom=row.uom or '',
-                                                price_unit=sale_line.price_unit or sale_line.price_unit_850,
-                                                vendor_part_number=product.default_code or '' if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else '',
+                                                price_unit=sale_line.price_unit,
+                                                vendor_part_number=product.default_code or '',
                                                 #buyer_part_num=row.buyer_part_number or '',
-                                                vendor_part_description=product.name[0:80] if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else '',
+                                                vendor_part_description=product.name[0:80],
                                                 #in_qualifier='IN' if row.buyer_part_number else '',
                                                 in_qualifier_buyer_part_num=in_qualifier_buyer_part_num,
                                                 ack_code=sale_line.ack_code,
