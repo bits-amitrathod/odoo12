@@ -24,6 +24,7 @@
         'views/setu_edi_export_views.xml',
         'views/log_remove.xml',
         'views/product_template.xml',
+        'views/customer_uom_conf.xml',
         'data/cron_log_remove.xml'
 
     ],
