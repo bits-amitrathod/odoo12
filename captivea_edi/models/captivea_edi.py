@@ -114,7 +114,7 @@ class CaptiveaEdiDocumentLog(models.Model):
     x_lin_ref3 = fields.Char('Line Ref 3')
     x_lin_ref4 = fields.Char('Line Ref 4')
     x_lin_ref5 = fields.Char('Line Ref 5')
-    has_exceptions = fields.Boolean()
+    has_exceptions = fields.Boolean("Has Exceptions?")
 
     def _get_shipping_partner(self, new_record, partner):
         verify = False
