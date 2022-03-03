@@ -713,6 +713,9 @@ class CaptiveaEdiProcess(models.TransientModel):
 
                                                 }
                                             })
+                                            po_lines[fields[1]].update({
+                                                'has_exceptions': False
+                                            })
                                             if len(fields) > 3:
                                                 po_lines[fields[1]].update({
                                                     'uom': fields[3]
@@ -773,7 +776,6 @@ class CaptiveaEdiProcess(models.TransientModel):
                                     vals = {'create_date': datetime.now(),
                                             'x_hdr_ref1': x_hdr_ref1,
                                             'x_hdr_ref2': x_hdr_ref2,
-
                                             'accounting_id': accounting_id,
                                             'po_number': po_number,
                                             'po_date': po_date,
@@ -785,7 +787,8 @@ class CaptiveaEdiProcess(models.TransientModel):
                                             'uom': product['uom'],
                                             'unit_price': product['unit_price'],
                                             'x_lin_ref1': product['unit_price'],
-                                            'edi_log_id': log_id.id
+                                            'edi_log_id': log_id.id,
+                                            'has_exceptions': product['has_exceptions']
                                             }
                                     self.env['captivea.edidocumentlog'].create(vals)
                                     log_id.x_hdr_ref1 = x_hdr_ref1
@@ -849,10 +852,6 @@ class CaptiveaEdiProcess(models.TransientModel):
                 log_id.exception = e.args[0]
             return log_id, 'Fail'
 
-
-
-
-
     def _get_partner(self, accounting_id):
         partner = self.env['res.partner'].search([('x_edi_accounting_id', '=', accounting_id)])
         if partner:
@@ -862,15 +861,28 @@ class CaptiveaEdiProcess(models.TransientModel):
     def _validate_gxh_file(self, po_lines, accounting_id, sender_id, receiver_id, sftp_conf, store_num):
         if not (sender_id == sftp_conf.sender_id_850 and receiver_id == sftp_conf.receiver_id_850):
             return 'Sender ID or Receiver ID is invalid.'
+        partner_id = self.env['res.partner'].search(
+            [('x_edi_accounting_id', '=', accounting_id)])
+        if not partner_id:
+            validation_error = 'Partner is not available.'
+            return validation_error
+        partner_uom_conf = False
+        if partner_id:
+            partner_uom_conf = self.env['customer.uom.conf'].search([('name', '=', partner_id.edi_vendor_number)],
+                                                                    limit=1)
+
         for num, product in po_lines.items():
             if not self.env['product.product'].search(
                     [('default_code', '=', product['vendor_part'])]):
-                validation_error = 'Product(s) not available.'
-                return validation_error
-        if not self.env['res.partner'].search(
-                [('x_edi_accounting_id', '=', accounting_id)]):
-            validation_error = 'Partner is not available.'
-            return validation_error
+                # validation_error = 'Product(s) not available.'
+                # return validation_error
+                product['has_exceptions'] = True
+            if product['uom'] and partner_uom_conf and not partner_uom_conf.line_ids.filtered(
+                    lambda l: l.edi_uom.lower() == product['uom'].lower()):
+                product['has_exceptions'] = True
+            else:
+                product['has_exceptions'] = True
+
         if not self.env['res.partner'].sudo().search(
                 [('x_edi_store_number', '=', store_num)], limit=1):
             validation_error = 'Delivery Partner is not available.'

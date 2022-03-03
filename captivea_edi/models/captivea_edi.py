@@ -114,6 +114,7 @@ class CaptiveaEdiDocumentLog(models.Model):
     x_lin_ref3 = fields.Char('Line Ref 3')
     x_lin_ref4 = fields.Char('Line Ref 4')
     x_lin_ref5 = fields.Char('Line Ref 5')
+    has_exceptions = fields.Boolean()
 
     def _get_shipping_partner(self, new_record, partner):
         verify = False
@@ -200,7 +201,7 @@ class CaptiveaEdiDocumentLog(models.Model):
             ship_date = ship_date.astimezone(pytz.utc)
             s_date = datetime(ship_date.year, ship_date.month, ship_date.day, ship_date.hour, ship_date.minute,
                               ship_date.second)
-            return datetime.strptime(s_date.strftime('%Y-%m-%d %H:%M:%S'),'%Y-%m-%d %H:%M:%S')
+            return datetime.strptime(s_date.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
         elif dt == 'po':
             if new_record.po_date:
                 if '/' in new_record.po_date:
@@ -209,7 +210,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                                                                                                    minutes=zone_time.minute,
                                                                                                    seconds=zone_time.second)
                 else:
-                    s_date= [new_record.po_date[0:4],new_record.po_date[4:6],new_record.po_date[6:8]]
+                    s_date = [new_record.po_date[0:4], new_record.po_date[4:6], new_record.po_date[6:8]]
                     po_date = datetime(int(s_date[0]), int(s_date[1]), int(s_date[2])) + timedelta(hours=zone_time.hour,
                                                                                                    minutes=zone_time.minute,
                                                                                                    seconds=zone_time.second)
@@ -236,19 +237,45 @@ class CaptiveaEdiDocumentLog(models.Model):
     def _create_sale_order_line(self, log_line, order, product):
         if not order.order_line.filtered(
                 lambda line: line.x_edi_po_line_number == log_line.line_num and line.product_id.default_code == log_line.vendor_part_num):
-            product_tmpl = self.env['product.template'].search([('name', '=', log_line.vendor_part_num)])
+
             new_order_line = {
                 'edi_id': log_line.edi_log_id.id,
                 'order_id': order.id,
-                'product_id': product.id,
-                'price_unit_850':log_line.unit_price,
+                # 'product_id': product.id,
+                'price_unit_850': log_line.unit_price,
                 # 'price_unit': log_line.unit_price,
                 'product_uom_qty': float(log_line.quantity),
                 'x_edi_po_line_number': log_line.line_num,
-                'product_template_id': product_tmpl.id,
+                # 'product_template_id': product_tmpl.id,
                 'upc_num': log_line.upc_num,
                 'po_log_line_id': log_line.id
             }
+            if product:
+                product_tmpl = self.env['product.template'].search([('name', '=', log_line.vendor_part_num)])
+                new_order_line.update({
+                    'product_id': product.id,
+                    'product_template_id': product_tmpl.id
+                })
+            else:
+                new_order_line.update({
+                    'display_type': 'line_note',
+                    'product_id': False,
+                    'ack_code': 'IR',
+                    'name': f'Product not found. Internal Reference: {log_line.vendor_part_num}, Price: {log_line.unit_price}, Quantity: {float(log_line.quantity)}, UoM: {log_line.uom}, PO Line#: {log_line.line_num}, Buyer Part: {log_line.buyers_part_num}'
+                })
+            uom_conf = self.env['customer.uom.conf'].search([('name', '=', order.partner_id.edi_vendor_number)],
+                                                            limit=1)
+            if log_line.uom and uom_conf and uom_conf.line_ids and uom_conf.line_ids.filtered(
+                    lambda l: l.edi_uom.lower() == log_line.uom.lower()):
+                pass
+            elif product:
+                new_order_line.update({
+                    'display_type': 'line_note',
+                    'product_id': product.id,
+                    'ack_code': 'IR',
+                    'name': f'UoM not found. Product: {product.name}, Internal Reference: {log_line.vendor_part_num}, Price: {log_line.unit_price}, Quantity: {float(log_line.quantity)}, UoM: {log_line.uom}, PO Line#: {log_line.line_num}, Buyer Part: {log_line.buyers_part_num}'
+                })
+
             sale_order_line = self.env['sale.order.line']
             line = sale_order_line.sudo().create(new_order_line)
             price_mismatch = self._check_price(line)
@@ -271,12 +298,13 @@ class CaptiveaEdiDocumentLog(models.Model):
                 limit=1)
             if not order:
                 partner = self.env['res.partner'].sudo().search(
-                    [('x_edi_accounting_id', '=', log_line.accounting_id), ('parent_id','=', False)], limit=1)
-                if partner and product:
+                    [('x_edi_accounting_id', '=', log_line.accounting_id), ('parent_id', '=', False)], limit=1)
+                if partner:
                     shipping_partner = self.env['res.partner'].sudo().search(
                         [('x_edi_store_number', '=', log_line.store_number)], limit=1)
                     if shipping_partner == partner and log_line.store_number:
-                        actual_shipping_partner = partner.child_ids.filtered(lambda sp: sp.type == 'delivery' and sp.x_edi_store_number == log_line.store_number)
+                        actual_shipping_partner = partner.child_ids.filtered(
+                            lambda sp: sp.type == 'delivery' and sp.x_edi_store_number == log_line.store_number)
                         if actual_shipping_partner:
                             shipping_partner = actual_shipping_partner
                     if not log_line.store_number:
@@ -299,7 +327,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                                     'partner_shipping_id': shipping_partner.id,
                                     'date_order': po_date,
                                     'commitment_date': ship_date,
-                                    'payment_term_id':partner.property_payment_term_id.id,
+                                    'payment_term_id': partner.property_payment_term_id.id,
                                     # 'x_edi_reference': log_line.po_number,
                                     'x_edi_accounting_id': log_line.accounting_id,
                                     'client_order_ref': log_line.po_number,
