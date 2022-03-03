@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <data>
     <record id="customer_uom_conf_form_view" model="ir.ui.view">
         <field name="name">customer.uom.conf.form</field>
         <field name="model">customer.uom.conf</field>
@@ -53,5 +54,5 @@
     <menuitem name="Customer UoM Configuration" id="customer_uom_conf_menu" parent="captivea_edi.edi_config_menu"
               action="customer_uom_conf_act_window" sequence="99"/>
 
-
+    </data>
 </odoo>
