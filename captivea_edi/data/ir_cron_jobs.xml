@@ -13,7 +13,8 @@
             <field name="active">False</field>
             <field name="code">model.edi_process_scheduler()</field>
         </record>
-         <record id="ir_cron_set_ack_code_in_sol" model="ir.cron">
+
+        <record id="ir_cron_set_ack_code_in_sol" model="ir.cron">
             <field name="name">Set ACK Code in Sale Order Line</field>
             <field name="user_id" ref="base.user_root"/>
             <field name="interval_number">2</field>
@@ -24,5 +25,6 @@
             <field name="state">code</field>
             <field name="active">False</field>
             <field name="code">model.set_ack_code_to_edi_sales()</field>
+        </record>
     </data>
 </odoo>
