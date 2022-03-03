@@ -119,11 +119,17 @@ class TempProductList(models.Model):
                 result = self.env.cr.dictfetchone()
 
                 if partner.property_product_pricelist.id and product:
-                    price_list = partner.property_product_pricelist.get_product_price(
+                    price_list_without_round_off = partner.property_product_pricelist.get_product_price(
                         product, product.product_tmpl_id.actual_quantity, partner)
+                    #price_list = float("{0:.2f}".format(price_list_without_round_off))
+                    price_list = round(price_list_without_round_off,2)
                 else:
-                    price_list = product.product_tmpl_id.list_price
+                    if product.product_tmpl_id.list_price:
+                        price_list = float("{0:.2f}".format(product.product_tmpl_id.list_price))
+                    else:
+                        price_list = product.product_tmpl_id.list_price
 
+                company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
                 product_dict = {'product': product,
                                 'partner': partner,
                                 'partn_name': query_result['partn_name'],
@@ -132,6 +138,7 @@ class TempProductList(models.Model):
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
                                 'price_list': price_list,
+                                'price_curr': company_fetch.currency_id,
                                 'quantity': query_result['quantity'],
                                 'select': False}
 

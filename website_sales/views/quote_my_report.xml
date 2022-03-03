@@ -25,6 +25,15 @@
                     <div t-if="not bool(active)" class="js_cart_lines alert alert-info">
                         You are inactive customer, please contact your administrator!
                     </div>
+                    <div t-if="bool(product_list)">
+                        <form t-attf-action="/add/product/cart" method="POST">
+                            <button type="submit" disabled="true" id="add_product_in_to_cart"
+                                    title="Select at least one product" style="float: right;
+                                    margin-top: 50px !important; margin-bottom: 100px;  position: fixed;
+                                    top: 450px;  right: 50px;"
+                                    class="btn btn-primary btn-lg mt8 js_check_product a-submit">Add to Cart</button>
+                        </form>
+                    </div>
                     <table class="mb16 table table-striped table-sm js_cart_lines remove-odd" id="quote_products" t-if="bool(product_list)">
                     <thead>
                         <tr>
@@ -54,13 +63,17 @@
                                            t-att-data-available-qty="product_list.get(product[0])['product'].actual_quantity"/>
                                 </td>
                                 <td colspan="2" t-if="not product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'></td>
-                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'>
-                                    <span t-field="product_list.get(product[0])['product'].image_128" t-options="{'widget': 'image', 'class': 'rounded'}" />
+<!--                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'>-->
+<!--                                    <span t-field="product_list.get(product[0])['product'].image_128" t-options="{'widget': 'image', 'class': 'rounded'}" />-->
+<!--                                </td>-->
+                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='align-middle' style="font-weight: 600;">
+                                    <span t-field="product_list.get(product[0])['product'].default_code"  />
                                 </td>
-                                <td t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-product_name align-middle'>
+                                <!--td-product_name-->
+                                <td t-if="product_list.get(product[0])['product'].product_tmpl_id" class=' align-middle'>
                                     <div>
                                         <t t-call="website_sales.cart_line_product_link">
-                                            <span t-esc="product_list.get(product[0])['product'].product_tmpl_id.name"/>
+                                            <span t-esc="product_list.get(product[0])['product'].product_tmpl_id.name" style="color:black;"/>
                                         </t>
                                     </div>
                                 </td>
@@ -84,7 +97,7 @@
                                         <strong><span t-esc="product_list.get(product[0])['product'].actual_quantity" t-options='{"widget": "integer"}'/></strong>
                                     </div>
                                 </td>
-                                <td class="text-center td-qty align-middle">
+                                <td class="text-center td-qty align-middle" style="width:10%">
                                     <div class="css_quantity input-group oe_website_spinner m-auto">
                                         <div class="input-group-prepend">
                                             <a t-attf-id="allow_qty_minus_{{product_list.get(product[0])['partn_name']}}" aria-label="Remove one" title="Remove one" t-attf-href="#"
@@ -110,8 +123,8 @@
                                     </div>
                                 </td>
                                 <td class="text-center td-price align-middle" name="price">
-                                    <span t-esc="product_list.get(product[0])['price_list']" style="white-space: nowrap;"/>
-                                    <!--t-options="{'widget': 'monetary', 'display_currency': product_list.get(product[0])['product'].product_tmpl_id.company_id.currency_id}"-->
+                                    <span t-esc="product_list.get(product[0])['price_list']" style="white-space: nowrap;"
+                                    t-options="{'widget': 'monetary', 'display_currency': product_list.get(product[0])['price_curr']}" />
                                 </td>
                                 <!--<td>
                                     &lt;!&ndash;<input type="hidden" t-att-data-product-id="product.product.id"&ndash;&gt;
@@ -122,13 +135,13 @@
                         </t>
                     </tbody>
                 </table>
-                    <div t-if="bool(product_list)">
+                    <!--<div t-if="bool(product_list)">
                         <form t-attf-action="/add/product/cart" method="POST">
                             <button type="submit" disabled="true" id="add_product_in_to_cart"
                                     title="Select at least one product" style="float: right; margin-top: 50px !important; margin-bottom: 100px;"
                                     class="btn btn-primary btn-lg mt8 js_check_product a-submit">Add to Cart</button>
                         </form>
-                    </div>
+                    </div>-->
                 </div>
             </section>
             </t>
