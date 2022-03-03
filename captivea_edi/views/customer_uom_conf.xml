@@ -35,7 +35,6 @@
             <field name="arch" type="xml">
                 <tree string="Customer UoM Configuration">
                     <field name="name"/>
-
                     <field name="line_ids"/>
                 </tree>
             </field>

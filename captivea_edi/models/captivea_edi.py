@@ -266,7 +266,7 @@ class CaptiveaEdiDocumentLog(models.Model):
             uom_conf = self.env['customer.uom.conf'].search([('name', '=', order.partner_id.edi_vendor_number)],
                                                             limit=1)
             if log_line.uom and uom_conf and uom_conf.line_ids and uom_conf.line_ids.filtered(
-                    lambda l: l.edi_uom == log_line.uom):
+                    lambda l: l.edi_uom.lower() == log_line.uom.lower()):
                 pass
             elif product:
                 new_order_line.update({

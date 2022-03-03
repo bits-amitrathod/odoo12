@@ -878,7 +878,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                 # return validation_error
                 product['has_exceptions'] = True
             if product['uom'] and partner_uom_conf and not partner_uom_conf.line_ids.filtered(
-                    lambda l: l.edi_uom == product['uom']):
+                    lambda l: l.edi_uom.lower() == product['uom'].lower()):
                 product['has_exceptions'] = True
             else:
                 product['has_exceptions'] = True
