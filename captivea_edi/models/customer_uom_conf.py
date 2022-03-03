@@ -2,7 +2,6 @@ from odoo import fields, models, api, _
 from odoo.exceptions import Warning
 
 
-
 class CustomerUoMConf(models.Model):
     _name = 'customer.uom.conf'
     _description = 'Customer UoM Configuration'
