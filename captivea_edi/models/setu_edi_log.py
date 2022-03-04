@@ -44,9 +44,10 @@ class EDILog(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        vals_list[0].update({
-            'seq': self.env['ir.sequence'].next_by_code('edi.log.seq') or 'LOG/UNKNOWN'
-        })
+        for val in vals_list:
+            val.update({
+                'seq': self.env['ir.sequence'].next_by_code('edi.log.seq') or 'LOG/UNKNOWN'
+            })
         return super(EDILog, self).create(vals_list)
 
     @api.depends('edi_log_line_ids.log_type')

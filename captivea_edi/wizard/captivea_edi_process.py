@@ -863,6 +863,10 @@ class CaptiveaEdiProcess(models.TransientModel):
             return 'Sender ID or Receiver ID is invalid.'
         partner_id = self.env['res.partner'].search(
             [('x_edi_accounting_id', '=', accounting_id)])
+
+        if len(partner_id) > 1:
+            partner_id = partner_id[0].commercial_partner_id
+
         if not partner_id:
             validation_error = 'Partner is not available.'
             return validation_error
