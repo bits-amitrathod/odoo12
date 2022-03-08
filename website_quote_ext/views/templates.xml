@@ -1103,7 +1103,7 @@
                 <div class="container">
                       <div class="row " style="padding: 50px 16px 0px 15px;">
                                          <div class="o_app_icon" style="display: inline-flex;">
-                                             <img src="/website_quote_ext/static/src/img/StockHawk_Logo_TM_R1.png"  style="width:240px;" align="center"  alt="Rapid Order"/>
+                                             <img src="/website_quote_ext/static/src/img/StockHawk_Logo_TM_R1.png"  style="width:181px;padding-top: 9px;" align="center"  alt="Rapid Order"/>
                                              <!--<span  style=" font-size: 28px; color: black;    vertical-align: middle;">Ordering Tools</span>-->
                                              <h3  style="vertical-align: middle;padding-top: 19px;">Ordering Tools</h3>
                                          </div>
@@ -1114,8 +1114,8 @@
                                              <div class="col-sm" style="border-bottom:  1px solid #e0d6d6;padding:10px;">
                                               <a id="" href="/shop/my_in_stock_report" style="text-decoration: none;width:100%;" >
                                                   <div style="" class="o_app_icon">
-                                                      <img src="/website_quote_ext/static/src/img/Stockhawk_InStock_Report_R1_new.png" align="center" style="width:177px;" alt="In-Stock Report"/>
-                                                      <img src="/website_quote_ext/static/src/img/arrow.jpg" style="width:20px;float:right" align="center"  alt="In-Stock Report"/>
+                                                      <img src="/website_quote_ext/static/src/img/Stockhawk_InStock_Report_R1_new.png" align="center" style="width:120px;" alt="In-Stock Report"/>
+                                                      <img src="/website_quote_ext/static/src/img/arrow.jpg" style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="In-Stock Report"/>
                                                   </div>
                                                  </a>
                                               </div>
@@ -1123,8 +1123,8 @@
                                         <div class="col-sm" style="border-bottom: 1px solid #e0d6d6;padding:10px;">
                                              <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="text-decoration: none;width:100%" >
                                                <div class="o_app_icon">
-                                                    <img src="/website_quote_ext/static/src/img/Stockhawk_Rapid_Order_R1_new.png"  style="width:137px;" align="center"  alt="Rapid Order"/>
-                                                    <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:20px;float:right" align="center"  alt="Rapid Order"/>
+                                                    <img src="/website_quote_ext/static/src/img/Stockhawk_Rapid_Order_R1_new.png"  style="width:93px;" align="center"  alt="Rapid Order"/>
+                                                    <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="Rapid Order"/>
                                                 </div>
                                               </a>
                                         </div>
@@ -1132,8 +1132,8 @@
                                         <div class="col-sm" style="padding:10px;">
                                               <a id="" href="/shop" style="text-decoration: none;width:100%;">
                                                   <div style="" class="o_app_icon">
-                                                      <span style=" font-size: 21px; color: black;    padding-left: 5px;">Shop Our Website</span>
-                                                      <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:20px;float:right" align="center"  alt="Shop"/>
+                                                      <span style=" font-size: 14px; color: #495057;    padding-left: 5px;">Shop Our Website</span>
+                                                      <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="Shop"/>
                                                   </div>
                                                   </a>
                                          </div>
