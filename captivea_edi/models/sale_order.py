@@ -21,7 +21,7 @@ IEA^1^{interchange_number}~
 """
 sale_line_str = """PO1^{line_num}^{quantity}^{uom}^{price_unit}^^VC^{vendor_part_number}{in_qualifier_buyer_part_num}~
 PID^F^^^^{vendor_part_description}~
-ACK^{ack_code}^{product_uom_qty}^{uom}^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~"""
+ACK^{ack_code}^{product_uom_qty}^{uom}{ack_remaining_line}"""
 
 POA_FIELDS = ['TRANSACTION ID', 'ACCOUNTING ID', 'PURPOSE', 'TYPE STATUS',
               'PO #', 'PO DATE', 'RELEASE NUMBER', 'REQUEST REFERENCE NUMBER',
@@ -259,16 +259,22 @@ class SaleOrder(models.Model):
                     sale_line = row.sale_line_id
                     product = sale_line.product_id
                     in_qualifier_buyer_part_num = row.buyer_part_number and '^IN^%s'%(row.buyer_part_number) or ''
+                    vendor_part_number = product.default_code or '' if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else ''
                     line = sale_line_str.format(line_num=row.line_num or '', quantity=int(row.qty), uom=row.uom or '',
                                                 price_unit=sale_line.price_unit or sale_line.price_unit_850,
-                                                vendor_part_number=product.default_code or '' if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else '',
-                                                #buyer_part_num=row.buyer_part_number or '',
-                                                vendor_part_description=product.name[0:80] if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else '',
-                                                #in_qualifier='IN' if row.buyer_part_number else '',
+                                                vendor_part_number=vendor_part_number,
+                                                # buyer_part_num=row.buyer_part_number or '',
+                                                vendor_part_description=product.name[
+                                                                        0:80] if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else '',
+                                                # in_qualifier='IN' if row.buyer_part_number else '',
                                                 in_qualifier_buyer_part_num=in_qualifier_buyer_part_num,
                                                 ack_code=sale_line.ack_code,
-                                                product_uom_qty=int(sale_line.product_uom_qty),
-                                                commitment_date_with_cc=commitment_date_with_cc
+                                                product_uom_qty=int(
+                                                    sale_line.product_uom_qty) if sale_line.ack_code != 'IR' else int(
+                                                    sale_line.po_log_line_id.quantity) if sale_line.po_log_line_id else int(
+                                                    sale_line.product_uom_qty),
+                                                commitment_date_with_cc=commitment_date_with_cc,
+                                                ack_remaining_line='~' if sale_line.ack_code == 'IR' else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~"
                                                 )
                     if not first_line_po_date:
                         line = '\n' + line
