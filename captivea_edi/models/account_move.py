@@ -26,7 +26,7 @@ N3^{add2}~
 N4^{city}^{state}^{zip}~
 N1^VN^{vendor_name}^{fields_92_vn}^{x_vendor_id}~
 ITD^ZZ^3^^^^20051009^30~"""
-
+#N1^VN^{vendor_name}^{fields_92_vn}^{x_vendor_id}~
 LINE = """
 IT1^{line_num}^{qty_done}^{uom}^{unit_price}^^VC^{product_desc}{buyer_part_num}~"""
 
@@ -318,6 +318,9 @@ class AccountMove(models.Model):
                 invoice_date = str(self.invoice_date).replace('-', '')
                 invoice_name_split = self.name.split('/')
                 company_address = self.company_id and self.company_id.partner_id
+                customer_po_ref_id = order.customer_po_ref
+                vendor_id_str = customer_po_ref_id and customer_po_ref_id.vendor_id or ''
+                vendor_ref_str = customer_po_ref_id and customer_po_ref_id.vendor_ref or ''
                 head = HEAD.format(
                     # add1=self.partner_id and self.partner_id.street or '',
                     add2=self.partner_id and self.partner_id.street or '',
@@ -338,11 +341,14 @@ class AccountMove(models.Model):
                     order_ref=order.x_hdr_ref1 or '',
                     bill_to_id=order.partner_id.x_billtoid or '',
                     store_num=self.x_edi_store_number or '',
-                    x_vendor_id=company_address.x_vendorid or '',
+                    # x_vendor_id=company_address.x_vendorid or '',
+                    x_vendor_id=vendor_id_str or '',
                     remit_to=company_address.remit_to or '',
                     fields_91_bt='91' if order.partner_id.x_billtoid else '',
-                    fields_92_vn='92' if company_address and company_address.x_vendorid else '',
-                    vendor_name=company_address and company_address.vendor_name or '',
+                    # vendor_with_92 = '%s^92^%s'%(vendor_ref_str, vendor_id_str) if vendor_id_str else '',
+                    # fields_92_vn='92' if company_address and company_address.x_vendorid else '',
+                    fields_92_vn='92' if vendor_id_str else '',
+                    vendor_name= vendor_ref_str,#company_address and company_address.vendor_name or '',
                     fields_91_ri='91' if company_address and company_address.remit_to else '',
                     remit_name=company_address and company_address.remit_to_name or ''
                 )
@@ -352,6 +358,9 @@ class AccountMove(models.Model):
                 shipment_amount = 0
                 sca_str = ""
                 for line in self.invoice_line_ids:
+                    rejected_list = line.sale_line_ids.mapped('ack_code')
+                    if rejected_list and any(item in rejected_list for item in ['IR','R2','R3']):
+                        continue
                     if line.product_id and line.product_id.type == 'service' and line.product_id.default_code == 'Delivery':
                         shipment_amount += line.price_subtotal
                         continue

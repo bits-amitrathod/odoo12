@@ -270,11 +270,11 @@ class SaleOrder(models.Model):
                                                 in_qualifier_buyer_part_num=in_qualifier_buyer_part_num,
                                                 ack_code=sale_line.ack_code,
                                                 product_uom_qty=int(
-                                                    sale_line.product_uom_qty) if sale_line.ack_code != 'IR' else int(
+                                                    sale_line.product_uom_qty) if sale_line.ack_code not in ['IR','R2','R3'] else int(
                                                     sale_line.po_log_line_id.quantity) if sale_line.po_log_line_id else int(
                                                     sale_line.product_uom_qty),
                                                 commitment_date_with_cc=commitment_date_with_cc,
-                                                ack_remaining_line='~' if sale_line.ack_code == 'IR' else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~"
+                                                ack_remaining_line='~' if sale_line.ack_code in ['IR','R2','R3'] else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~"
                                                 )
                     if not first_line_po_date:
                         line = '\n' + line
@@ -283,10 +283,11 @@ class SaleOrder(models.Model):
                         po_date = row.po_date
                 po_date = po_date and datetime.strptime(po_date, '%Y-%m-%d').strftime('%Y%m%d') or ''
                 interchange_number = sftp_conf.update_interchange_number()
-                x_edi_store_number = self.customer_po_ref and self.customer_po_ref.x_hdr_ref3 or '',
-                x_billtoid = self.customer_po_ref and self.customer_po_ref.x_hdr_ref4 or '',
-                x_storeid = self.customer_po_ref and self.customer_po_ref.x_hdr_ref5 or '',
-                vendor_id = self.customer_po_ref and self.customer_po_ref.vendor_id or '',
+                x_edi_store_number = self.customer_po_ref and self.customer_po_ref.x_hdr_ref3 or ''
+                x_billtoid = self.customer_po_ref and self.customer_po_ref.x_hdr_ref4 or ''
+                x_storeid = self.customer_po_ref and self.customer_po_ref.x_hdr_ref5 or ''
+                vendor_id = self.customer_po_ref and self.customer_po_ref.vendor_id or ''
+                vendor_ref = self.customer_po_ref and self.customer_po_ref.vendor_ref or ''
                 set_st_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref3 else False
                 set_bt_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref4 else False
                 set_sn_line = True if self.customer_po_ref and self.customer_po_ref.x_hdr_ref5 else False
@@ -299,7 +300,7 @@ N1^BT^^91^%s~""" % (x_billtoid)
                 sn = f"""
 N1^SN^^92^%s~""" % (x_storeid)
                 vn = f"""
-N1^VN^^92^%s~"""% (vendor_id)
+N1^VN^{str(vendor_ref)}^92^{str(vendor_id)}~"""
                 three_n1_lines = ''
                 if set_st_line:
                     three_n1_lines += st

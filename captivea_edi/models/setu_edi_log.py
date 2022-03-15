@@ -41,6 +41,7 @@ class EDILog(models.Model):
     x_hdr_ref4 = fields.Char('Ref 4')
     x_hdr_ref5 = fields.Char('Ref 5')
     vendor_id = fields.Char('Vendor ID')
+    vendor_ref = fields.Char("Vendor Reference")
 
     @api.model_create_multi
     def create(self, vals_list):

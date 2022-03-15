@@ -17,7 +17,9 @@ class SaleOrderLine(models.Model):
                                  ('IC', 'Substitution'),
                                  ('BP', 'Partial Shipment'),
                                  ('IB', 'Back Order'),
-                                 ('IR', 'Rejected')], default="IA", string="Ack Code")
+                                 ('IR', 'Rejected'),
+                                 ('R2', 'Item Rejected, Invalid Item Product Number'),
+                                 ('R3', 'Item Rejected, Invalid Unit of Issue')], default="IA", string="Ack Code")
 
     def set_ack_code_to_edi_sales(self):
         query = """
@@ -36,15 +38,27 @@ class SaleOrderLine(models.Model):
         self._cr.commit()
         query = """
                 update sale_order_line
-                set ack_code = 'IR'
+                set ack_code = 'R2'
                 where id in                
                 (select sol.id from sale_order_line sol
                 inner join sale_order so on so.id = sol.order_id
                 where so.state not in ('sale','done','cancel')
-                and (sol.product_id is null or sol.display_type = 'line_note')
+                and (sol.product_id is null)
                 and so.customer_po_ref is not null
-                and sol.ack_code != 'IR');
+                and sol.ack_code != 'R2');
                 """
+        self._cr.execute(query)
+        query = """
+                        update sale_order_line
+                        set ack_code = 'R3'
+                        where id in                
+                        (select sol.id from sale_order_line sol
+                        inner join sale_order so on so.id = sol.order_id
+                        where so.state not in ('sale','done','cancel')
+                        and (sol.product_id is not null and sol.display_type = 'line_note')
+                        and so.customer_po_ref is not null
+                        and sol.ack_code != 'R3');
+                        """
         self._cr.execute(query)
         self._cr.commit()
 

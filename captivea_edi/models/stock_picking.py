@@ -27,7 +27,7 @@ REF^OQ^{order_ref}~{REF_CN_line}"""
 
 LINE = """
 HL^{seq}^2^I~
-LIN^{line_num}^VC^{vendor_part}~
+LIN^{line_num}^VC^{vendor_part}{in_buyer_part}~
 SN1^{line_num}^{qty_done}^{uom}~"""
 
 FOOT = """
@@ -285,12 +285,14 @@ class Picking(models.Model):
                     # hl_count = 0
                     for line in self.move_ids_without_package:
                         seq += 1
+                        buyers_part_num_str = line.sale_line_id.po_log_line_id.buyers_part_num or ''
                         lines += LINE.format(seq=seq or '',
                                              line_num=(line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.line_num) or
                                                       (line.sale_line_id.x_edi_po_line_number) or '',
                                              buyer_part=line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num or '',
-                                             in_qualifier='IN' if line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.buyers_part_num else '',
+                                             in_qualifier='IN' if buyers_part_num_str else '',
                                              vendor_part=line.product_id.default_code or '',
+                                             in_buyer_part = '^IN^%s'%(buyers_part_num_str) if buyers_part_num_str else '',
                                              qty_done=int(line.quantity_done) or '',
                                              uom=line.sale_line_id and line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.uom or line.product_id.uom_id.name or '')
                         # hl_count += 1
