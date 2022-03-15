@@ -251,10 +251,10 @@ class CaptiveaEdiDocumentLog(models.Model):
                 'po_log_line_id': log_line.id
             }
             if product:
-                product_tmpl = self.env['product.template'].search([('name', '=', log_line.vendor_part_num)])
+                # product_tmpl = self.env['product.template'].search([('name', '=', log_line.vendor_part_num)])
                 new_order_line.update({
                     'product_id': product.id,
-                    'product_template_id': product_tmpl.id
+                    'product_template_id': product.product_tmpl_id.id
                 })
             else:
                 new_order_line.update({
@@ -272,14 +272,16 @@ class CaptiveaEdiDocumentLog(models.Model):
                 new_order_line.update({
                     'display_type': 'line_note',
                     'product_id': product.id,
+                    'product_template_id': product.product_tmpl_id.id,
                     'ack_code': 'IR',
                     'name': f'UoM not found. Product: {product.name}, Internal Reference: {log_line.vendor_part_num}, Price: {log_line.unit_price}, Quantity: {float(log_line.quantity)}, UoM: {log_line.uom}, PO Line#: {log_line.line_num}, Buyer Part: {log_line.buyers_part_num}'
                 })
 
             sale_order_line = self.env['sale.order.line']
             line = sale_order_line.sudo().create(new_order_line)
-            price_mismatch = self._check_price(line)
-            line.x_edi_mismatch = price_mismatch
+            if line.product_id:
+                price_mismatch = self._check_price(line)
+                line.x_edi_mismatch = price_mismatch
 
     def _create_sale_order(self, log_id, file_ref):
         """
