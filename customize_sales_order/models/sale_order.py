@@ -96,7 +96,7 @@ class sale_order(models.Model):
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
     original_team_id = fields.Many2one(
-        'crm.team', 'Original Sales Team',
+        'crm.team', 'First Sales Team',
         tracking=True, check_company=True,  # Unrequired company
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
