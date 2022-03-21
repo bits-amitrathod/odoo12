@@ -1060,7 +1060,7 @@
                     <t t-set="count" t-value="vendor_count"/>
                 </t>
             </xpath>
-            <xpath expr="//div[hasclass('o_portal_my_home')]" position="after">
+            <xpath expr="//div[hasclass('o_portal_my_home')]" position="before">
 
                 <!--<div style="text-align: center !important;" class="container">
                       <div class="row " style="padding-top: 50px">
@@ -1100,7 +1100,7 @@
                 
 
                 <div class="container">
-                      <div class="row " style="padding: 50px 16px 0px 15px;">
+                      <div class="row " style="padding: 0px 16px 50px 15px;">
                                          <div class="o_app_icon" style="display: inline-flex;">
                                              <img src="/website_quote_ext/static/src/img/StockHawk_Logo_TM_R1.png"  style="width:181px;padding-top: 9px;" align="center"  alt="Rapid Order"/>
                                              <!--<span  style=" font-size: 28px; color: black;    vertical-align: middle;">Ordering Tools</span>-->
