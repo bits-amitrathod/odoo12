@@ -1051,16 +1051,19 @@
             </t>
         </template>
 
+
+
         <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry"
                   inherit_id="portal.portal_my_home" priority="25">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
                 <t t-if="vendor_count" t-call="portal.portal_docs_entry">
-                    <t t-set="title">Vendor Offer</t>
+                    <t t-set="title">Vendor Offers</t>
                     <t t-set="url" t-value="'/my/vendor'"/>
                     <t t-set="count" t-value="vendor_count"/>
                 </t>
             </xpath>
-            <xpath expr="//div[hasclass('o_portal_my_home')]" position="after">
+
+            <xpath expr="//div[hasclass('o_portal_my_home')]" position="before">
 
                 <!--<div style="text-align: center !important;" class="container">
                       <div class="row " style="padding-top: 50px">
@@ -1100,8 +1103,8 @@
                 
 
                 <div class="container">
-                      <div class="row " style="padding: 50px 16px 0px 15px;">
-                                         <div class="o_app_icon" style="display: inline-flex;">
+                      <div class="row " style="padding: 0px 16px 30px 15px;">
+                                         <div class="o_app_icon" style="display: inline-flex;margin-top: -22px;">
                                              <img src="/website_quote_ext/static/src/img/StockHawk_Logo_TM_R1.png"  style="width:181px;padding-top: 9px;" align="center"  alt="Rapid Order"/>
                                              <!--<span  style=" font-size: 28px; color: black;    vertical-align: middle;">Ordering Tools</span>-->
                                              <h3  style="vertical-align: middle;padding-top: 19px;">Ordering Tools</h3>
