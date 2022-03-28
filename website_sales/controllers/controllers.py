@@ -281,6 +281,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             msg = "Channel Type : " + str(sale_order.team_id.name) + " -> " + str(crm_team.name)
             sale_order.sudo().message_post(body=msg)
             sale_order.team_id = crm_team.id
+            sale_order.original_team_id = crm_team.id
 
         if sale_order.state != 'draft':
             request.session['sale_order_id'] = None

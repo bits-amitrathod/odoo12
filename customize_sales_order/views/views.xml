@@ -247,6 +247,9 @@
                     <field name="account_manager" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="national_account" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                 </xpath>
+                <xpath expr="//group[@name='sales_person']/field[@name='team_id']"  position="before">
+                   <field name="original_team_id" readonly="1" options="{'no_create': True,'no_edit': True,'no_open' : True}"/>
+                </xpath>
             </field>
       </record>
 

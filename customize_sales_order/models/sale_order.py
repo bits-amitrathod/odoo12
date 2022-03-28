@@ -95,6 +95,11 @@ class sale_order(models.Model):
         change_default=True, default=_get_default_team, tracking=True, check_company=True,  # Unrequired company
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
+    original_team_id = fields.Many2one(
+        'crm.team', 'First Sales Team',
+        tracking=True, check_company=True,  # Unrequired company
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
+
     def _get_user(self):
         if self.env.user.email in ('jtennant@surgicalproductsolutions.com', 'info@surgicalproductsolutions.com'
                                    ,'bryon@surgicalproductsolutions.com'):
@@ -143,6 +148,8 @@ class sale_order(models.Model):
     @api.model
     def create(self, vals):
         # add account manager
+        if 'team_id' in vals:
+            vals['original_team_id']=vals['team_id']
         if 'partner_id' in vals and vals['partner_id'] is not None:
             res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
             if res_partner and res_partner.user_id and res_partner.user_id.id:
