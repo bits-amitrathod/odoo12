@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <!-- Top menu item -->
+
+    <!-- PURCHASE (MAIN USER MENU) -->
+    <menuitem
+        id="crm_menu_purchase"
+        name="Acquisitions"
+        parent="crm.crm_menu_root"
+        sequence="3"/>
+
+    <menuitem
+        id="menu_crm_purchase_opportunities"
+        name="My Pipeline"
+        action="sps_crm.action_your_purchase_pipeline"
+        parent="crm_menu_purchase"
+        sequence="1"/>
+    <menuitem
+        id="my_vendor_offers_menu"
+        name="My Vendor Offers"
+        parent="crm_menu_purchase"
+        action="vendor_offer.action_window"
+        sequence="2"/>
+    <menuitem
+        id="purchase_order_menu"
+        name="My Purchase Orders"
+        parent="crm_menu_purchase"
+        action="vendor_offer.purchase_form_action_vendor"
+        sequence="3"/>
+    <menuitem
+        id="crm_lead_menu_my_activities"
+        name="My Activities"
+        parent="crm_menu_purchase"
+        action="sales_team.crm_team_salesteams_pipelines_act"
+        sequence="4"/>
+    <menuitem
+        id="vendors_menu"
+        name="Vendors"
+        parent="crm_menu_purchase"
+        action="account.res_partner_action_supplier"
+        sequence="5"/>
+
+    <!-- CONFIGURATION -->
+    <menuitem
+        id="menu_crm_config_purchase"
+        name="Purchase Pipeline"
+        parent="crm.crm_menu_config"
+        sequence="16"
+        groups="sales_team.group_sale_manager"/>
+
+    <menuitem
+        id="menu_crm_purchase_stage_act"
+        name="Stages"
+        action="sps_crm.crm_purchase_stage_action"
+        sequence="0"
+        parent="menu_crm_config_purchase"
+        groups="base.group_no_one"/>
+
+    <menuitem
+        id="menu_crm_purchase_tag"
+        name="Tags"
+        action="sps_crm.crm_purchase_tag_action"
+        parent="menu_crm_config_purchase"
+        sequence="1"
+        groups="base.group_no_one"/>
+
+    <menuitem
+        id="menu_crm_lost_reason_purchase"
+        name="Lost Reasons"
+        action="sps_crm.crm_purchase_lost_reason_action"
+        parent="menu_crm_config_purchase"
+        sequence="6"
+        groups="base.group_no_one"/>
+
+</odoo>

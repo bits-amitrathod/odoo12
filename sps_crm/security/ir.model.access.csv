@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_crm_stage,crm.purchase.stage,model_crm_purchase_stage,,1,0,0,0
+access_purchase_crm_stage_manager,crm.purchase.stage,model_crm_purchase_stage,,1,1,1,1
+access_purchase_crm_lost,crm.purchase.lost.reason,model_crm_purchase_lost_reason,,1,0,0,0
+access_purchase_crm_lost_manager,crm.purchase.lost.reason,model_crm_purchase_lost_reason,,1,1,1,1
+access_purchase_crm_tag,crm.purchase.tag,model_crm_purchase_tag,,1,0,0,0
+access_purchase_crm_tag_manager,crm.purchase.tag,model_crm_purchase_tag,,1,1,1,1
+
