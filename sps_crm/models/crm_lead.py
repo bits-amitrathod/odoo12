@@ -50,6 +50,7 @@ class Lead(models.Model):
     po_ref = fields.Many2one('purchase.order', string="PO#")
 
     product_list_doc = fields.Binary('Upload File')
+    file_name = fields.Char("File Name")
 
     purchase_lost_reason = fields.Many2one(
         'crm.purchase.lost.reason', string='Purchase Lost Reason',
@@ -152,6 +153,53 @@ class Lead(models.Model):
             }
         return True
 
+    def _handle_won_lost(self, vals):
+        """ This method handle the state changes :
+        - To lost : We need to increment corresponding lost count in scoring frequency table
+        - To won : We need to increment corresponding won count in scoring frequency table
+        - From lost to Won : We need to decrement corresponding lost count + increment corresponding won count
+        in scoring frequency table.
+        - From won to lost : We need to decrement corresponding won count + increment corresponding lost count
+        in scoring frequency table."""
+        Lead = self.env['crm.lead']
+        leads_reach_won = Lead
+        leads_leave_won = Lead
+        leads_reach_lost = Lead
+        leads_leave_lost = Lead
+        won_stage_ids = self.env['crm.stage'].search([('is_won', '=', True)]).ids
+        won_purchase_stage_ids = self.env['crm.purchase.stage'].search([('is_won', '=', True)]).ids
+        for lead in self:
+            if 'stage_id' in vals:
+                if vals['stage_id'] in won_stage_ids:
+                    if lead.probability == 0:
+                        leads_leave_lost |= lead
+                    leads_reach_won |= lead
+                elif lead.stage_id.id in won_stage_ids and lead.active:  # a lead can be lost at won_stage
+                    leads_leave_won |= lead
+
+            if 'purchase_stage_id' in vals:
+                if vals['purchase_stage_id'] in won_purchase_stage_ids:
+                    if lead.probability == 0:
+                        leads_leave_lost |= lead
+                    leads_reach_won |= lead
+                elif lead.purchase_stage_id.id in won_purchase_stage_ids and lead.active:  # a lead can be lost at won_stage
+                    leads_leave_won |= lead
+
+            if 'active' in vals:
+                if not vals['active'] and lead.active:  # archive lead
+                    if lead.stage_id.id in won_stage_ids and lead not in leads_leave_won:
+                        leads_leave_won |= lead
+                    if lead.purchase_stage_id.id in won_purchase_stage_ids and lead not in leads_leave_won:
+                        leads_leave_won |= lead
+                    leads_reach_lost |= lead
+                elif vals['active'] and not lead.active:  # restore lead
+                    leads_leave_lost |= lead
+
+        leads_reach_won._pls_increment_frequencies(to_state='won')
+        leads_leave_won._pls_increment_frequencies(from_state='won')
+        leads_reach_lost._pls_increment_frequencies(to_state='lost')
+        leads_leave_lost._pls_increment_frequencies(from_state='lost')
+
     def write(self, vals):
         if vals.get('website'):
             vals['website'] = self.env['res.partner']._clean_website(vals['website'])
@@ -181,3 +229,4 @@ class Lead(models.Model):
         write_result = super(Lead, self).write(vals)
 
         return write_result
+
