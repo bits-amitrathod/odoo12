@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 {
     'name': 'Captivea EDI',
-    'version': '7.0',
+    'version': '8.0',
     'author': 'Captivea LLC',
     'summary': 'Handle EDI documents',
     'category': 'Extra Tools',
