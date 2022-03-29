@@ -270,11 +270,11 @@ class SaleOrder(models.Model):
                                                 in_qualifier_buyer_part_num=in_qualifier_buyer_part_num,
                                                 ack_code=sale_line.ack_code,
                                                 product_uom_qty=int(
-                                                    sale_line.product_uom_qty) if sale_line.ack_code not in ['IR','R2','R3'] else int(
+                                                    sale_line.product_uom_qty) if sale_line.ack_code not in ['IR','R2','R3','R4'] else int(
                                                     sale_line.po_log_line_id.quantity) if sale_line.po_log_line_id else int(
                                                     sale_line.product_uom_qty),
                                                 commitment_date_with_cc=commitment_date_with_cc,
-                                                ack_remaining_line='~' if sale_line.ack_code in ['IR','R2','R3'] else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~"
+                                                ack_remaining_line='~' if sale_line.ack_code in ['IR','R2','R3','R4'] else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~"
                                                 )
                     if not first_line_po_date:
                         line = '\n' + line
