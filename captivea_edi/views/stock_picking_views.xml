@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="view_delivery_carrier_edi_form" model="ir.ui.view">
+        <field name="name">delivery.carrier.edi.form</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+            <field name="active" position="after">
+                <field name="x_scac" string="SCAC"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">view_picking_form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='note']" position="after">
+                <page string="EDI" name="edi">
+                    <group>
+                        <group>
+                            <field name="x_edi_accounting_id" readonly="1"/>
+                            <field name="store_number" readonly="1"/>
+                            <field name="edi_vendor_number" readonly="1"/>
+                            <field name="x_edi_ship_to_type" readonly="1"/>
+                            <field name="x_studio_edi_packaging_type"/>
+                            <field name="x_studio_edi_carton_count" readonly="1"/>
+                            <field name="asn_created" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="ship_to_name"/>
+                            <field name="ship_to_address_1"/>
+                            <field name="ship_to_address_2"/>
+                            <field name="ship_to_city"/>
+                            <field name="ship_to_state"/>
+                            <field name="ship_to_zip"/>
+                            <field name="ship_to_country"/>
+                            <field name="ship_from_name"/>
+                            <field name="ship_from_address_1"/>
+                            <field name="ship_from_address_2"/>
+                            <field name="ship_from_city"/>
+                            <field name="ship_from_state"/>
+                            <field name="ship_from_zip"/>
+                            <field name="ship_from_country"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_picking_form_carrier_attributes" model="ir.ui.view">
+        <field name="name">view_picking_form_carrier_attributes</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+        <field name="arch" type="xml">
+            <field name="carrier_id" position="before">
+                <field name="is_picking_of_edi" invisible="1"/>
+            </field>
+            <field name="carrier_id" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('done', 'cancel'))],'required':[('is_picking_of_edi','=',True)]}</attribute>
+            </field>
+            <field name="carrier_tracking_ref" position="attributes">
+                <attribute name="attrs">{'readonly': [('state', 'in', ('done', 'cancel'))],'required':[('is_picking_of_edi','=',True)]}</attribute>
+            </field>
+        </field>
+    </record>
+
+
+    <record id="edi_picking_from_po_import_tree" model="ir.ui.view">
+        <field name="name">stock.picking.tree</field>
+        <field name="model">stock.picking</field>
+        <field name="arch" type="xml">
+            <tree string="Picking list"
+                  default_order="id desc"
+                  multi_edit="1" create="false" delete="false"
+                  decoration-info="state == 'draft'" decoration-muted="state == 'cancel'"
+                  decoration-danger="state not in ('cancel', 'done') and scheduled_date &lt; current_date">
+                <field name="id" invisible="1"/>
+                <field name="name"/>
+                <field name="location_id" options="{'no_create': True}" string="From"
+                       groups="stock.group_stock_multi_locations" optional="show"/>
+                <field name="location_dest_id" options="{'no_create': True}" string="To"
+                       groups="stock.group_stock_multi_locations" optional="show"/>
+                <field name="partner_id" optional="show"/>
+                <field name="user_id" optional="hide"/>
+                <field name="date" invisible="1"/>
+                <field name="scheduled_date" optional="show"/>
+                <field name="origin" optional="show"/>
+                <field name="group_id" invisible="1"/>
+                <field name="backorder_id" optional="hide"/>
+                <field name="state" optional="show"/>
+                <field name="priority" optional="hide"/>
+                <field name="picking_type_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_edi_integration_view_picking_tree" model="ir.actions.act_window.view">
+        <field eval="10" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="captivea_edi.edi_picking_from_po_import_tree"/>
+        <field name="act_window_id" ref="captivea_edi.action_picking_documents"/>
+    </record>
+
+    <record id="action_edi_integration_view_picking_to_be_notified_tree" model="ir.actions.act_window.view">
+        <field eval="10" name="sequence"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="captivea_edi.edi_picking_from_po_import_tree"/>
+        <field name="act_window_id" ref="captivea_edi.action_picking_notification_remaining"/>
+    </record>
+
+</odoo>
