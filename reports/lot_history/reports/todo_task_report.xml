@@ -1,13 +1,24 @@
 <odoo>
 
-    <report id="action_todo_model_report"
+    <!--<report id="action_todo_model_report"
             string="Lot History"
             model="lot.history.report"
             report_type="qweb-html"
             file="lot_history.purchase_report"
             name="lot_history.purchase_report"
             menu="False"
-    />
+    />-->
+
+    <record id="action_todo_model_report" model="ir.actions.report">
+            <field name="name">Lot History</field>
+            <field name="model">lot.history.report</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">lot_history.purchase_report</field>
+            <field name="report_file">lot_history.purchase_report</field>
+            <field name="print_report_name">Lot History</field>
+            <field name="binding_model_id" ref="model_lot_history_report"/>
+            <field name="binding_type">report</field>
+        </record>
 
     <template id="purchase_report">
         <t t-call="web.html_container">

@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+        <!--<report
                 id="action_pick_report"
                 string="Pick Report"
                 model="pick_report.popup"
                 report_type="qweb-html"
                 file="pick_report.pick_tmpl"
                 name="pick_report.pick_tmpl"
-                />
+                />-->
+
+        <record id="action_pick_report" model="ir.actions.report">
+            <field name="name">Pick Report</field>
+            <field name="model">pick_report.popup</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">pick_report.pick_tmpl</field>
+            <field name="report_file">pick_report.pick_tmpl</field>
+            <field name="print_report_name">Pick Report</field>
+            <field name="binding_model_id" ref="model_pick_report_popup"/>
+            <field name="binding_type">report</field>
+        </record>
 
         <!-- QWeb Reports -->
-        <report
+        <!--<report
             id="action_pick_report_pdf"
             string="Pick Report"
             model="pick_report.popup"
@@ -19,6 +30,19 @@
             file="pick_report.pick_tmpl"
             name="pick_report.pick_tmpl"
             attachment_use="True"
-        />
+        />-->
+
+        <record id="action_pick_report_pdf" model="ir.actions.report">
+            <field name="name">Pick Report</field>
+            <field name="model">pick_report.popup</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">pick_report.pick_tmpl</field>
+            <field name="report_file">pick_report.pick_tmpl</field>
+            <field name="print_report_name">Pick Report</field>
+          <!--  <field name="attachment_use">True</field>-->
+            <field name="binding_model_id" ref="model_pick_report_popup"/>
+            <field name="binding_type">report</field>
+        </record>
+
     </data>
 </odoo>

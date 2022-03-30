@@ -1,14 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+        <!--<report
                 id="action_report_mtd_sales"
                 string="MTD Sales"
                 model="mtd_sales"
                 report_type="qweb-html"
                 file="mtd_sales.mtd_temp"
                 name="mtd_sales.mtd_temp"
-                />
+                />-->
+        <record id="action_report_mtd_sales" model="ir.actions.report">
+            <field name="name">MTD Sales</field>
+            <field name="model">mtd_sales</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">mtd_sales.mtd_temp</field>
+            <field name="report_file">mtd_sales.mtd_temp</field>
+            <field name="print_report_name">MTD Sales</field>
+            <field name="binding_model_id" ref="model_mtd_sales"/>
+            <field name="binding_type">report</field>
+        </record>
 
     </data>
 </odoo>

@@ -9,6 +9,7 @@ class mtd_sales(models.Model):
 
     _name = 'mtd_sales'
     _auto = False
+    _description = 'Mtd Sales'
 
     day_of_month = fields.Integer('Day')
     amount_total = fields.Float('Amount')
