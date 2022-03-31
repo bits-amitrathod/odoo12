@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+      <!--  <report
                 id="action_report_on_hand_by_date"
                 string="On Hand By Date"
                 model="report.on.hand.by.date"
@@ -9,9 +9,18 @@
                 file="on_hand_by_date.on_hand_by_date_temp"
                 name="on_hand_by_date.on_hand_by_date_temp"
                 menu="False"
-                />
-
-        <report
+                />-->
+       <!-- <record id="action_report_on_hand_by_date" model="ir.actions.report">
+                    <field name="name">On Hand By Date</field>
+                    <field name="model">report.on.hand.by.date</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">on_hand_by_date.on_hand_by_date_temp</field>
+                    <field name="report_file">on_hand_by_date.on_hand_by_date_temp</field>
+                    <field name="print_report_name">On Hand By Date</field>
+                    <field name="binding_model_id" ref="model_report_on_hand_by_date"/>
+                    <field name="binding_type">report</field>
+                </record>-->
+       <!-- <report
                 id="action_report_on_hand_by_date_cost"
                 string="On Hand By Date"
                 model="report.on.hand.by.date.cost"
@@ -19,6 +28,16 @@
                 file="on_hand_by_date.on_hand_by_date_temp"
                 name="on_hand_by_date.on_hand_by_date_temp"
                 menu="False"
-                />
+                />-->
+         <!--<record id="action_report_on_hand_by_date_cost" model="ir.actions.report">
+                    <field name="name">On Hand By Date</field>
+                    <field name="model">report.on.hand.by.date.cost</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">on_hand_by_date.on_hand_by_date_temp</field>
+                    <field name="report_file">on_hand_by_date.on_hand_by_date_temp</field>
+                    <field name="print_report_name">On Hand By Date</field>
+                    <field name="binding_model_id" ref="model_report_on_hand_by_date_cost"/>
+                    <field name="binding_type">report</field>
+                </record>-->
     </data>
 </odoo>

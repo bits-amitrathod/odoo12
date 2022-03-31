@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+        <!--<report
                 id="action_rma_report"
                 string="RMA Report"
                 model="rma.report.popup"
                 report_type="qweb-html"
                 file="rma_report.rma_tmpl"
                 name="rma_report.rma_tmpl"
-                />
+                />-->
+
+          <record id="action_rma_report" model="ir.actions.report">
+                    <field name="name">RMA Report</field>
+                    <field name="model">rma.report.popup</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">rma_report.rma_tmpl</field>
+                    <field name="report_file">rma_report.rma_tmpl</field>
+                    <field name="print_report_name">RMA Report</field>
+                    <field name="binding_model_id" ref="model_rma_report_popup"/>
+                    <field name="binding_type">report</field>
+                </record>
     </data>
 </odoo>

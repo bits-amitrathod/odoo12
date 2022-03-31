@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+       <!-- <report
                 id="action_report_on_hand_by_expiry"
                 string="On Hand By Expiration"
                 model="on_hand_by_expiry"
@@ -9,6 +9,16 @@
                 file="on_hand_by_expiry.templ"
                 name="on_hand_by_expiry.templ"
                 menu="False"
-                />
+                />-->
+       <!-- <record id="action_report_on_hand_by_expiry" model="ir.actions.report">
+                    <field name="name">On Hand By Expiration</field>
+                    <field name="model">on_hand_by_expiry</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">on_hand_by_expiry.templ</field>
+                    <field name="report_file">on_hand_by_expiry.templ</field>
+                    <field name="print_report_name">On Hand By Expiration</field>
+                    <field name="binding_model_id" ref="model_on_hand_by_expiry"/>
+                    <field name="binding_type">report</field>
+                </record>-->
     </data>
 </odoo>

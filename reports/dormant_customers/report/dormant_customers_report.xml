@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+      <!--  <report
                 id="action_report_dormant_customers"
                 string="Dormant Customers"
                 model="res.partner"
                 report_type="qweb-html"
                 file="dormant_customers.dorm_cust_report_temp"
                 name="dormant_customers.dorm_cust_report_temp"
-                />
+                />-->
+
+        <record id="action_report_dormant_customers" model="ir.actions.report">
+                    <field name="name">Dormant Customers</field>
+                    <field name="model">res.partner</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">dormant_customers.dorm_cust_report_temp</field>
+                    <field name="report_file">dormant_customers.dorm_cust_report_temp</field>
+                    <field name="print_report_name">Dormant Customers</field>
+                    <field name="binding_model_id" ref="model_res_partner"/>
+                    <field name="binding_type">report</field>
+                </record>
     </data>
 </odoo>

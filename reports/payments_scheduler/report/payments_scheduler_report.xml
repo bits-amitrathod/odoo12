@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+        <!--<report
                 id="payments_scheduler_temp"
                 string="Payments Scheduled Report"
                 model="account.move"
                 report_type="qweb-html"
                 file="payments_scheduler.payments_scheduler_temp_test"
                 name="payments_scheduler.payments_scheduler_temp_test"
-        />
+        />-->
+       <!-- <record id="payments_scheduler_temp" model="ir.actions.report">
+                    <field name="name">Payments Scheduled Report</field>
+                    <field name="model">account.move</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">payments_scheduler.payments_scheduler_temp_test</field>
+                    <field name="report_file">payments_scheduler.payments_scheduler_temp_test</field>
+                    <field name="print_report_name">Payments Scheduled Report</field>
+                    <field name="binding_model_id" ref="model_account_move"/>
+                    <field name="binding_type">report</field>
+                </record>-->
     </data>
 </odoo>

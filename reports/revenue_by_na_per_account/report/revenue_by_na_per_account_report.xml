@@ -1,13 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+       <!-- <report
                 id="action_report_revenue_by_na_per_account"
                 string="Revenue By National Account Per Account"
                 model="report.na.revenue.per.account"
                 report_type="qweb-html"
                 file="revenue_by_na_per_account.na_revenue_pa_temp_test"
                 name="revenue_by_na_per_account.na_revenue_pa_temp_test"
-        />
+        />-->
+        <record id="action_report_revenue_by_na_per_account" model="ir.actions.report">
+                    <field name="name">Revenue By National Account Per Account</field>
+                    <field name="model">report.na.revenue.per.account</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">revenue_by_na_per_account.na_revenue_pa_temp_test</field>
+                    <field name="report_file">revenue_by_na_per_account.na_revenue_pa_temp_test</field>
+                    <field name="print_report_name">Revenue By National Account Per Account</field>
+                    <field name="binding_model_id" ref="model_report_na_revenue_per_account"/>
+                    <field name="binding_type">report</field>
+                </record>
     </data>
 </odoo>

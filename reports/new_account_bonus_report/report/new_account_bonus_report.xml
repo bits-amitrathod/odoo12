@@ -1,13 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+       <!-- <report
                 id="action_report_new_account_bonus_report"
                 string="New Account Bonus Report"
                 model="new.account.bonus.report"
                 report_type="qweb-html"
                 file="new_account_bonus_report.new_account_bonus_report_test"
                 name="new_account_bonus_report.new_account_bonus_report_test"
-        />
+        />-->
+
+        <record id="action_report_new_account_bonus_report" model="ir.actions.report">
+                    <field name="name">New Account Bonus Report</field>
+                    <field name="model">new.account.bonus.report</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">new_account_bonus_report.new_account_bonus_report_test</field>
+                    <field name="report_file">new_account_bonus_report.new_account_bonus_report_test</field>
+                    <field name="print_report_name">New Account Bonus Report</field>
+                    <field name="binding_model_id" ref="model_new_account_bonus_report"/>
+                    <field name="binding_type">report</field>
+                </record>
+
     </data>
 </odoo>

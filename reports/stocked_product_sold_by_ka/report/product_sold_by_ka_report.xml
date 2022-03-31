@@ -1,13 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
+       <!-- <report
                 id="action_report_product_sold_by_ka"
                 string="Short date and over stocked product sold by KA"
                 model="report.product.sold.by.ka"
                 report_type="qweb-html"
                 file="stocked_product_sold_by_ka.product_sold_by_ka_template"
                 name="stocked_product_sold_by_ka.product_sold_by_ka_template"
-                />
+                />-->
+
+         <record id="action_report_product_sold_by_ka" model="ir.actions.report">
+                    <field name="name">Short date and over stocked product sold by KA</field>
+                    <field name="model">report.product.sold.by.ka"</field>
+                    <field name="report_type">qweb-html</field>
+                    <field name="report_name">stocked_product_sold_by_ka.product_sold_by_ka_template</field>
+                    <field name="report_file">stocked_product_sold_by_ka.product_sold_by_ka_template</field>
+                    <field name="print_report_name">Short date and over stocked product sold by KA</field>
+                    <field name="binding_model_id" ref="model_report_product_sold_by_ka"/>
+                    <field name="binding_type">report</field>
+                </record>
     </data>
 </odoo>
