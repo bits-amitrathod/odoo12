@@ -4,6 +4,7 @@ import datetime
 from odoo import api, fields, models, _
 from odoo.tools.safe_eval import safe_eval
 from odoo import api, fields, models, tools, SUPERUSER_ID
+import base64
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -49,7 +50,7 @@ class Lead(models.Model):
     contract = fields.Many2many('contract.contract', string="Contract", compute='_compute_contact_values')
     po_ref = fields.Many2one('purchase.order', string="PO#")
 
-    product_list_doc = fields.Binary('Upload File')
+    product_list_doc = fields.Binary(string='Upload File', attachment=True)
     file_name = fields.Char("File Name")
 
     purchase_lost_reason = fields.Many2one(
@@ -216,6 +217,9 @@ class Lead(models.Model):
             if stage_id.is_won:
                 vals.update({'probability': 100, 'automated_probability': 100})
 
+        #  Used to Send Email (Attached Doc)
+        if 'product_list_doc' in vals:
+            self.action_send_mail()
 
         # stage change with new stage: update probability and date_closed
         if vals.get('probability', 0) >= 100 or not vals.get('active', True):
@@ -226,7 +230,39 @@ class Lead(models.Model):
         if any(field in ['active', 'stage_id', 'purchase_stage_id'] for field in vals):
             self._handle_won_lost(vals)
 
+
+
         write_result = super(Lead, self).write(vals)
 
         return write_result
 
+    #  Here Write the Code Of email Send
+    def action_send_mail(self):
+        _logger.info(" Email Sending  ........")
+        template = self.env.ref('sps_crm.email_to_crm').sudo()
+
+        if self.product_list_doc:
+            filename = str(self.file_name)
+            if filename is not None:
+                try:
+                    file_extension = filename[filename.rindex('.') + 1:]
+                    print('file extension : ' + file_extension)
+                except Exception as e:
+                    _logger.info(str(e))
+
+            values = {'attachment_ids': [(0, 0, {'name': str(self.file_name),
+                                                 'type': 'binary',
+                                                 'mimetype': 'application/' + file_extension,
+                                                 'store_fname': str(self.file_name),
+                                                 'datas': base64.b64encode(self.product_list_doc)})],
+                      'model': None, 'res_id': False}
+
+            local_context = {'emailFrom': 'email_from', 'customerName': '', 'email': 'test@email.com',
+                         'documentName': 'document_name', 'documentStatus': 'document_status', 'source': 'source',
+                         'date': 'today_date', 'reason': 'reason'}
+            try:
+                sent_email_template= template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
+                self.env['mail.mail'].sudo().browse(sent_email_template).write(values)
+            except Exception as exc:
+                _logger.error('Unable to connect to SMTP Server : %r', exc)
+                response = {'message': 'Unable to connect to SMTP Server'}

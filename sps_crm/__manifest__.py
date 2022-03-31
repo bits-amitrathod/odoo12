@@ -22,6 +22,7 @@
         'views/sps_crm_purchase_tag_views.xml',
         'views/sps_crm_stage_views.xml',
         'views/sps_crm_menu_views.xml',
+        'views/email_template.xml',
 
     ],
     'demo': [
