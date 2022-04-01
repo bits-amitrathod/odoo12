@@ -7,7 +7,7 @@ class EDILog(models.Model):
     _description = '855 Import Log Lines'
     _rec_name = 'seq'
     _order = 'id desc'
-    _inherit = ['mail.thread']
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     company_id = fields.Many2one('res.company')
     exception = fields.Text()
