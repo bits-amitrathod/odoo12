@@ -56,6 +56,7 @@ from odoo import api, fields, models, _
 class CaptiveaEdiDocumentLog(models.Model):
     _name = 'captivea.edidocumentlog'
     _description = 'EDI processed log document'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # active = fields.Boolean('Active?', default=True)
     edi_log_id = fields.Many2one('setu.edi.log', ondelete='cascade')
