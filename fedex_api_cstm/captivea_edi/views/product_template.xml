@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_product_tempalate_inherit_edi_form" model="ir.ui.view">
+            <field name="name">product.template.edi</field>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='invoicing']" position="after">
+                        <page name="edi" string="EDI">
+                            <group>
+                                <group>
+                                    <field name="edi_charge_amount" string="Charge Amount"/>
+                                </group>
+                                <group>
+                                    <field name="edi_allowance_amount" string="Allowance Amount"/>
+                                </group>
+                            </group>
+                        </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_product_product_inherit_edi_form" model="ir.ui.view">
+            <field name="name">product.template.edi</field>
+            <field name="inherit_id" ref="product.product_normal_form_view"/>
+            <field name="model">product.product</field>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='invoicing']" position="after">
+                        <page name="edi" string="EDI">
+                            <group>
+                                <group>
+                                    <field name="edi_charge_amount" string="Charge Amount"/>
+                                </group>
+                                <group>
+                                    <field name="edi_allowance_amount" string="Allowance Amount"/>
+                                </group>
+                            </group>
+                        </page>
+                </xpath>
+            </field>
+        </record>
+
+    </data>
+</odoo>
