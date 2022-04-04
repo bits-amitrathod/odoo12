@@ -19,7 +19,7 @@ class CustomerContract(models.Model):
         if res_users:
             return res_users.id
 
-    facility_type = fields.Selection(string='Facility Type',
+    facility_tpcd = fields.Selection(string='Facility Type',
                                      selection=[('health_sys', 'Health System'),
                                                 ('hospital', 'Hospital'),
                                                 ('surgery_cen', 'Surgery Center'),

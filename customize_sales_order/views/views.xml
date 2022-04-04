@@ -261,14 +261,14 @@
             </field>
       </record>
 
-      <record id="view_res_partner_facility_type" model="ir.ui.view">
+      <record id="view_res_partner_facility_tpcd" model="ir.ui.view">
             <field name="name">res.partner.form.facility.type</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field eval="20" name="priority"/>
             <field name="arch" type="xml">
                   <field name="lang" position="after">
-                      <field name="facility_type" />
+                      <field name="facility_tpcd" />
                   </field>
             </field>
         </record>
