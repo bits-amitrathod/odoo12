@@ -35,6 +35,7 @@ class Customer(models.Model):
     order_ids = fields.One2many('sale.order', 'partner_id')
     gl_account = fields.One2many('gl.account', 'partner_id', string="GL Account")
     on_hold = fields.Boolean("On Hold")
+    on_hold_readonly = fields.Boolean("On Hold",compute="on_hold_value_copy")
     is_broker = fields.Boolean("Is a Broker?")
     carrier_info = fields.Char("Carrier Info")
     carrier_acc_no = fields.Char("Carrier Account No")
@@ -57,6 +58,12 @@ class Customer(models.Model):
         ('3', 'Freight Collect')], string='Shipping Terms')
     allow_purchase = fields.Boolean("Purchase Order Method")
     is_parent = fields.Boolean("Purchase Order Method", default=True)
+
+    @api.onchange('on_hold_readonly','on_hold')
+    @api.depends('on_hold_readonly', 'on_hold')
+    def on_hold_value_copy(self):
+        for obj in self:
+            obj.on_hold_readonly = obj.on_hold
 
     @api.onchange('doc_process_count')
     def _onchange_doc_process_count(self):
