@@ -19,6 +19,19 @@ class CustomerContract(models.Model):
         if res_users:
             return res_users.id
 
+    facility_tpcd = fields.Selection(string='Facility Type',
+                                     selection=[('health_sys', 'Health System'),
+                                                ('hospital', 'Hospital'),
+                                                ('surgery_cen', 'Surgery Center'),
+                                                ('pur_alli', 'Purchasing Alliance'),
+                                                ('charity', 'Charity'),
+                                                ('broker', 'Broker'),
+                                                ('veterinarian', 'Veterinarian'),
+                                                ('closed', 'Non-Surgery/Closed'),
+                                                ('wholesale', 'Wholesale'),
+                                                ('national_acc', 'National Account Target')],
+                                     tracking=True)
+
     company_type = fields.Selection(string='Company Type',
                                     selection=[('person', 'Individual'), ('company', 'Company')],
                                     compute='_compute_company_type', inverse='_write_company_type',tracking=True)
