@@ -430,7 +430,7 @@
                                 <field name="po_ref"/>
                                 <field name="product_list_doc" filename="file_name" widget="binary"/>
                                 <field name="file_name" invisible="1"/>
-
+                                <field name="appraisal_no"/>
                             </group>
 
                             <group name="opportunity_info" attrs="{'invisible': [('type', '=', 'lead')]}">
