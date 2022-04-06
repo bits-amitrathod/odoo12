@@ -25,7 +25,7 @@ class SaleOrderLine(models.Model):
     ack_code_r = fields.Selection(GLOBAL_ACK_CODES, default="IR",
                                   string="Ack Code Rejected QTY")
 
-    product_850_qty = fields.Float('Reject QTY')
+    product_850_qty = fields.Float(string='Reject QTY')
 
     def set_ack_code_to_edi_sales(self):
         query = """
