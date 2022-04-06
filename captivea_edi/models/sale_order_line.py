@@ -1,6 +1,14 @@
 from odoo import fields, models, api
 
-
+GLOBAL_ACK_CODES=[('IA', 'Acceptance'),
+                                   ('IP', 'Accepted with price changes'),
+                                   ('IC', 'Substitution'),
+                                   ('BP', 'Partial Shipment'),
+                                   ('IB', 'Back Order'),
+                                   ('IR', 'Rejected'),
+                                   ('R2', 'Item Rejected, Invalid Item Product Number'),
+                                   ('R3', 'Item Rejected, Invalid Unit of Issue'),
+                                   ('R4', 'Item Rejected, Contract Item Not Available')]
 class SaleOrderLine(models.Model):
     _inherit = ['sale.order.line']
 
@@ -12,15 +20,11 @@ class SaleOrderLine(models.Model):
     upc_num = fields.Char('Barcode')
     po_log_line_id = fields.Many2one('captivea.edidocumentlog', copy=False)
     initial_product_uom_qty = fields.Float()
-    ack_code = fields.Selection([('IA', 'Acceptance'),
-                                 ('IP', 'Accepted with price changes'),
-                                 ('IC', 'Substitution'),
-                                 ('BP', 'Partial Shipment'),
-                                 ('IB', 'Back Order'),
-                                 ('IR', 'Rejected'),
-                                 ('R2', 'Item Rejected, Invalid Item Product Number'),
-                                 ('R3', 'Item Rejected, Invalid Unit of Issue'),
-                                 ('R4', 'Item Rejected, Contract Item Not Available')], default="IA", string="Ack Code")
+    ack_code = fields.Selection(GLOBAL_ACK_CODES, default="IA",
+                                  string="Ack Code Accepted QTY")
+    ack_code_r = fields.Selection(GLOBAL_ACK_CODES, default="IR",
+                                  string="Ack Code Rejected QTY")
+
     product_850_qty = fields.Float('Reject QTY')
 
     def set_ack_code_to_edi_sales(self):
@@ -63,7 +67,6 @@ class SaleOrderLine(models.Model):
                         """
         self._cr.execute(query)
         self._cr.commit()
-
 
     def set_po_line_number(self):
         for line in self:

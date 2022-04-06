@@ -262,7 +262,7 @@ class SaleOrder(models.Model):
                     vendor_part_number = product.default_code or '' if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else ''
                     order_line = ''
                     if row.sale_line_id.product_uom_qty > 0:
-                        accept_line = "\nACK^IA^{product_uom_qty}^{uom}{ack_remaining_line}".format(
+                        accept_line = "\nACK^{ack_code}^{product_uom_qty}^{uom}{ack_remaining_line}".format(
                             ack_remaining_line='~' if sale_line.ack_code in ['IR',
                                                                                'R2',
                                                                                'R3',
@@ -280,7 +280,7 @@ class SaleOrder(models.Model):
                                                                                'R4'] else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~",
                             uom=row.uom or '',
                             product_uom_qty=sale_line.product_850_qty,
-                            ack_code=sale_line.ack_code
+                            ack_code=sale_line.ack_code_r
                         )
                         order_line += reject_line
 

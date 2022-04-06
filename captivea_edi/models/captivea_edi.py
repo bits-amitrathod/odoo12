@@ -266,10 +266,15 @@ class CaptiveaEdiDocumentLog(models.Model):
                 })
             uom_conf = self.env['customer.uom.conf'].search([('name', '=', order.partner_id.edi_vendor_number)],
                                                             limit=1)
-            if log_line.uom and uom_conf and uom_conf.line_ids and uom_conf.line_ids.filtered(
-                    lambda l: l.edi_uom.lower() == log_line.uom.lower()):
-                pass
-            elif product:
+            no_uom_found_boolean = True
+            uom_line = False
+            if log_line.uom and uom_conf and uom_conf.line_ids:
+                uom_line = uom_conf.line_ids.filtered(
+                    lambda l: l.edi_uom.lower() == log_line.uom.lower())
+                if uom_line:
+                    no_uom_found_boolean = False
+                    pass
+            if no_uom_found_boolean and product:
                 new_order_line.update({
                     'display_type': 'line_note',
                     'product_id': product.id,
@@ -277,9 +282,15 @@ class CaptiveaEdiDocumentLog(models.Model):
                     'ack_code': 'R3',
                     'name': f'UoM not found. Product: {product.name}, Internal Reference: {log_line.vendor_part_num}, Price: {log_line.unit_price}, Quantity: {float(log_line.quantity)}, UoM: {log_line.uom}, PO Line#: {log_line.line_num}, Buyer Part: {log_line.buyers_part_num}'
                 })
+            elif not no_uom_found_boolean:
+                new_order_line.update({
+                    'product_uom': uom_line.uom_id.id,
+                })
 
             sale_order_line = self.env['sale.order.line']
             line = sale_order_line.sudo().create(new_order_line)
+            # if line and uom_line:
+            #     line.product_uom = uom_line.uom_id
             if line.product_id:
                 price_mismatch = self._check_price(line)
                 line.x_edi_mismatch = price_mismatch

@@ -24,6 +24,7 @@
                 <field name="x_edi_mismatch" string="Price Mismatch"/>
                 <field name="x_edi_po_line_number"/>
                 <field name="ack_code" required="1"/>
+
             </xpath>
             <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='price_unit']"
                    position="after">
@@ -32,6 +33,7 @@
             <xpath expr="//page[@name='order_lines']/field[@name='order_line']/tree/field[@name='product_uom_qty']"
                    position="after">
                 <field name="product_850_qty"/>
+                <field name="ack_code_r"/>
             </xpath>
         </field>
     </record>
