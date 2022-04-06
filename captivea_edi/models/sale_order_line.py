@@ -21,6 +21,7 @@ class SaleOrderLine(models.Model):
                                  ('R2', 'Item Rejected, Invalid Item Product Number'),
                                  ('R3', 'Item Rejected, Invalid Unit of Issue'),
                                  ('R4', 'Item Rejected, Contract Item Not Available')], default="IA", string="Ack Code")
+    product_850_qty = fields.Float('Reject QTY')
 
     def set_ack_code_to_edi_sales(self):
         query = """

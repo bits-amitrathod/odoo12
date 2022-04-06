@@ -299,7 +299,7 @@ class Picking(models.Model):
                                              vendor_part=line.product_id.default_code or '',
                                              in_buyer_part = '^IN^%s'%(buyers_part_num_str) if buyers_part_num_str else '',
                                              qty_done=int(quantity) or '',
-                                             uom=line.sale_line_id and line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.uom or line.product_id.uom_id.name or '')
+                                             uom=line.sale_line_id and line.sale_line_id.po_log_line_id and line.sale_line_id.po_log_line_id.uom or line.sale_line_id.product_uom.name or '')
                         # hl_count += 1
                     ship_name = self.name
                     ship_id = ship_name and '/' in ship_name and \
