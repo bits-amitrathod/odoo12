@@ -47,31 +47,28 @@
         id="menu_crm_config_purchase"
         name="Purchase Pipeline"
         parent="crm.crm_menu_config"
-        sequence="16"
-        groups="sales_team.group_sale_manager"/>
+        sequence="16"/>
 
     <menuitem
-        id="menu_crm_purchase_stage_act"
+        id="menu_crm_purchase_stage_act1"
         name="Stages"
+        parent="menu_crm_config_purchase"
         action="sps_crm.crm_purchase_stage_action"
         sequence="0"
-        parent="menu_crm_config_purchase"
-        groups="base.group_no_one"/>
+        />
 
     <menuitem
-        id="menu_crm_purchase_tag"
+        id="menu_crm_purchase_tag1"
         name="Tags"
-        action="sps_crm.crm_purchase_tag_action"
         parent="menu_crm_config_purchase"
-        sequence="1"
-        groups="base.group_no_one"/>
+        action="sps_crm.crm_purchase_tag_action"
+        sequence="1"/>
 
     <menuitem
-        id="menu_crm_lost_reason_purchase"
+        id="menu_crm_lost_reason_purchase1"
         name="Lost Reasons"
-        action="sps_crm.crm_purchase_lost_reason_action"
         parent="menu_crm_config_purchase"
-        sequence="6"
-        groups="base.group_no_one"/>
+        action="sps_crm.crm_purchase_lost_reason_action"
+        sequence="6"/>
 
 </odoo>
