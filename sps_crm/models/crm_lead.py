@@ -58,14 +58,19 @@ class Lead(models.Model):
         'crm.purchase.lost.reason', string='Purchase Lost Reason',
         index=True, ondelete='restrict', tracking=True)
 
-    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no", readonly=False, store=True)
+    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no1", readonly=False, store=True)
 
     @api.onchange('appraisal_no')
-    def _default_appraisal_no(self):
+    def _default_appraisal_no1(self):
         for lead in self:
             if (lead.appraisal_no == False):
-                lead.appraisal_no = 'AP' + str(randint(11111, 99999))
-
+                while True:
+                    number_str = 'AP' + str(randint(111111, 999999))
+                    query_str = 'SELECT count(*) FROM crm_lead WHERE appraisal_no LIKE %s'
+                    self.env.cr.execute(query_str,[number_str])
+                    if 0 == self._cr.fetchone()[0]:
+                        lead.appraisal_no = number_str
+                        break
 
     def _purchase_stage_find(self, team_id=False, domain=None, order='sequence'):
         """ Determine the stage of the current lead with its teams, the given domain and the given team_id
