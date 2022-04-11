@@ -14,7 +14,7 @@ class CrmLeadLost(models.TransientModel):
     _inherit = 'crm.lead.lost'
     _description = 'Get Lost Reason'
 
-    purchase_lost_reason_id = fields.Many2one('crm.purchase.lost.reason', 'purchase Lost Reason')
+    purchase_lost_reason_id = fields.Many2one('crm.purchase.lost.reason', 'Lost Reason')
 
     def action_lost_reason_apply(self):
         leads = self.env['crm.lead'].browse(self.env.context.get('active_ids'))
@@ -55,7 +55,7 @@ class Lead(models.Model):
     file_name = fields.Char("File Name")
 
     purchase_lost_reason = fields.Many2one(
-        'crm.purchase.lost.reason', string='Purchase Lost Reason',
+        'crm.purchase.lost.reason', string='Lost Reason',
         index=True, ondelete='restrict', tracking=True)
 
     appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no1", readonly=False, store=True)

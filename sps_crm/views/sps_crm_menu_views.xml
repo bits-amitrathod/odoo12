@@ -68,7 +68,7 @@
         id="menu_crm_lost_reason_purchase1"
         name="Lost Reasons"
         parent="menu_crm_config_purchase"
-        action="sps_crm.crm_purchase_lost_reason_action"
+        action="sps_crm.crm_purchase_lost_reason_action1"
         sequence="6"/>
 
 </odoo>
