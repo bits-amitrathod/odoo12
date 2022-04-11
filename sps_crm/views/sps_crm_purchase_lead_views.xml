@@ -205,7 +205,7 @@
             <field name="arch" type="xml">
                 <form class="o_lead_opportunity_form" js_class="crm_form">
                     <header>
-                        <button name="action_purchase_set_won_rainbowman" string="Mark Won PUR"
+                        <button name="action_purchase_set_won_rainbowman" string="Mark Won"
                             type="object" class="oe_highlight"
                             attrs="{'invisible': ['|','|', ('active','=',False), ('probability', '=', 100), ('type', '=', 'lead')]}"/>
                         <button name="%(sps_crm.crm_lead_purchase_lost_action)d" string="Mark Lost"

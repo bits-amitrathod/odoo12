@@ -17,7 +17,7 @@
         <field name="name">crm.purchase.lost.reason.form</field>
         <field name="model">crm.purchase.lost.reason</field>
         <field name="arch" type="xml">
-            <form string="Purchase Lost Reason">
+            <form string="Acquisition Lost Reason">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="action_lost_leads" type="object"
@@ -55,7 +55,7 @@
 
     <!-- Configuration/Lead & Opportunities/Lost Reasons Menu -->
     <record id="crm_purchase_lost_reason_action" model="ir.actions.act_window">
-        <field name="name">Purchase Lost Reasons</field>
+        <field name="name">Acquisition Lost Reasons</field>
         <field name="res_model">crm.purchase.lost.reason</field>
         <field name="view_mode">tree,form</field>
         <field name="help" type="html">
