@@ -44,7 +44,8 @@
                     <field name="lang"/>
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="on_hold" groups="account.group_account_manager" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="on_hold_readonly" groups="!account.group_account_manager" readonly="1"/>
                     <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}" invisible="1"/>
                     <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <!--<field name="charity"/>-->
