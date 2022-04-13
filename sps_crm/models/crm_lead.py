@@ -51,7 +51,7 @@ class Lead(models.Model):
     contract = fields.Many2many('contract.contract', string="Contract", compute='_compute_contact_values')
     po_ref = fields.Many2one('purchase.order', string="PO#")
 
-    product_list_doc = fields.Binary(string='Upload File', attachment=True)
+    product_list_doc = fields.Many2many('ir.attachment', string='Upload File', attachment=True)
     file_name = fields.Char("File Name")
 
     purchase_lost_reason = fields.Many2one(
@@ -71,6 +71,12 @@ class Lead(models.Model):
                     if 0 == self._cr.fetchone()[0]:
                         lead.appraisal_no = number_str
                         break
+
+    @api.constrains('product_list_doc')
+    def _check_docs_ids_mimetype(self):
+        for doc in self:
+            if any(not d.mimetype.startswith('application') for d in doc.product_list_doc):
+                raise UserError(_('Uploaded file does not seem to be a valid xlsx.'))
 
     def _purchase_stage_find(self, team_id=False, domain=None, order='sequence'):
         """ Determine the stage of the current lead with its teams, the given domain and the given team_id
@@ -231,10 +237,6 @@ class Lead(models.Model):
             if stage_id.is_won:
                 vals.update({'probability': 100, 'automated_probability': 100})
 
-        #  Used to Send Email (Attached Doc)
-        if 'product_list_doc' in vals:
-            self.action_send_mail()
-
         # stage change with new stage: update probability and date_closed
         if vals.get('probability', 0) >= 100 or not vals.get('active', True):
             vals['date_closed'] = fields.Datetime.now()
@@ -248,29 +250,20 @@ class Lead(models.Model):
 
         write_result = super(Lead, self).write(vals)
 
+        #  Used to Send Email (Attached Doc)
+        #  Right Place to Send Email bcz of All uploaded file Operation Completed before this step
+        if 'product_list_doc' in vals:
+            self.action_send_mail()
+
         return write_result
 
     #  Here Write the Code Of email Send
     def action_send_mail(self):
         _logger.info(" Email Sending  ........")
         template = self.env.ref('sps_crm.email_to_crm').sudo()
-
         if self.product_list_doc:
-            filename = str(self.file_name)
-            if filename is not None:
-                try:
-                    file_extension = filename[filename.rindex('.') + 1:]
-                    print('file extension : ' + file_extension)
-                except Exception as e:
-                    _logger.info(str(e))
-
-            values = {'attachment_ids': [(0, 0, {'name': str(self.file_name),
-                                                 'type': 'binary',
-                                                 'mimetype': 'application/' + file_extension,
-                                                 'store_fname': str(self.file_name),
-                                                 'datas': base64.b64encode(self.product_list_doc)})],
-                      'model': None, 'res_id': False}
-
+            values = {'attachment_ids':self.product_list_doc,
+                          'model': None, 'res_id': False}
             local_context = {'emailFrom': 'email_from', 'customerName': '', 'email': 'test@email.com',
                          'documentName': 'document_name', 'documentStatus': 'document_status', 'source': 'source',
                          'date': 'today_date', 'reason': 'reason'}

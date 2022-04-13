@@ -429,7 +429,7 @@
                                 <field name="payment_type"/>
                                 <field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>
                                 <field name="po_ref"/>
-                                <field name="product_list_doc" filename="file_name" widget="binary"/>
+                                <field name="product_list_doc" filename="file_name" widget="many2many_binary"/>
                                 <field name="file_name" invisible="1"/>
                                 <field name="appraisal_no"/>
                             </group>
