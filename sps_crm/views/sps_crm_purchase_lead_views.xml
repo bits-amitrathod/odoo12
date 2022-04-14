@@ -1,6 +1,17 @@
 <?xml version="1.0"?>
 <odoo>
 
+    <record id="view_crm_case_opportunities_filter_custom" model="ir.ui.view">
+            <field name="name">crm.lead.search.opportunity</field>
+            <field name="model">crm.lead</field>
+            <field name="inherit_id" ref="crm.view_crm_case_opportunities_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="/search/filter[@name='won']" position="after">
+		            <filter string="Aqu Won" name="won" domain="['&amp;', ('active', '=', True), ('purchase_stage_id.is_won', '=', True)]"/>
+		        </xpath>
+            </field>
+    </record>
+
     <record id="crm_lead_purchase_lost_view_form" model="ir.ui.view">
             <field name="name">crm.lead.lost.form</field>
             <field name="model">crm.lead.lost</field>
@@ -411,12 +422,20 @@
                                 <field name="priority" widget="priority"/>
                                 <field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                             </group>
-                            <group>
+                            <group invisible="1">
                                 <field name="user_id" domain="[('share', '=', False)]"
                                     context="{'default_sales_team_id': team_id}" widget="many2one_avatar_user"/>
                                 <field name="team_id" widget="selection"
                                     domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]"/>
                                 <field name="type" invisible="1"/>
+                            </group>
+                            <group name="payment_priority0" attrs="{'invisible': [('type', '=', 'lead')]}">
+                                <field name="property_supplier_payment_term_id"/>
+<!--                                <field name="contract_ids"/>-->
+                                <field name="payment_type"/>
+                                <field name="facility_tpcd"/>
+                                <field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>
+                                <field name="po_ref"/>
                             </group>
                             <group name="lead_priority" attrs="{'invisible': [('type', '=', 'purchase_opportunity')]}">
                                 <field name="priority" widget="priority"/>
@@ -424,13 +443,8 @@
                             </group>
                             <!-- ADD NEW FIELD HERE REGARDING AQU -->
                             <group name="payment_priority" attrs="{'invisible': [('type', '=', 'lead')]}">
-                                <field name="property_supplier_payment_term_id"/>
-<!--                                <field name="contract_ids"/>-->
-                                <field name="payment_type"/>
-                                <field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>
-                                <field name="po_ref"/>
-                                <field name="product_list_doc" filename="file_name" widget="many2many_binary"/>
-                                <field name="file_name" invisible="1"/>
+                                <field name="product_list_doc" widget="many2many_binary"/>
+<!--                                <field name="file_name" invisible="1"/>-->
                                 <field name="appraisal_no"/>
                             </group>
 
@@ -525,7 +539,7 @@
 
         <!-- THIS IS CALL FROM PY FILE-->
         <record model="ir.actions.act_window" id="crm_purchase_lead_action_pipeline">
-            <field name="name">Purchase Pipeline</field>
+            <field name="name">Acquisition Pipeline</field>
             <field name="res_model">crm.lead</field>
             <field name="view_mode">kanban,tree,graph,pivot,form,calendar,activity</field>
             <field name="domain">[('type','=','purchase_opportunity')]</field>

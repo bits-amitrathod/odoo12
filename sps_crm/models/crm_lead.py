@@ -37,9 +37,9 @@ class Lead(models.Model):
         copy=False, group_expand='_read_group_purchase_stage_ids', ondelete='restrict',
         domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")
 
-    tag_purchase_ids = fields.Many2many(
-        'crm.purchase.tag', string='Purchase Tags',
-        help="Classify and analyze your lead/opportunity categories like: Training, Service")
+    tag_purchase_ids = fields.Selection([
+        ('cash', 'Cash'), ('credit', 'Credit'), ('cashcredit', 'Cash/Credit')
+    ], string='Payment Type', default='cashcredit')
 
     property_supplier_payment_term_id = fields.Many2one('account.payment.term', company_dependent=True,
         string='Vendor Payment Terms',
@@ -52,13 +52,26 @@ class Lead(models.Model):
     po_ref = fields.Many2one('purchase.order', string="PO#")
 
     product_list_doc = fields.Many2many('ir.attachment', string='Upload File', attachment=True)
-    file_name = fields.Char("File Name")
+    # file_name = fields.Char("File Name")
 
     purchase_lost_reason = fields.Many2one(
         'crm.purchase.lost.reason', string='Lost Reason',
         index=True, ondelete='restrict', tracking=True)
 
     appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no1", readonly=False, store=True)
+
+    facility_tpcd = fields.Selection(string='Facility Type',
+                                     selection=[('health_sys', 'Health System'),
+                                                ('hospital', 'Hospital'),
+                                                ('surgery_cen', 'Surgery Center'),
+                                                ('pur_alli', 'Purchasing Alliance'),
+                                                ('charity', 'Charity'),
+                                                ('broker', 'Broker'),
+                                                ('veterinarian', 'Veterinarian'),
+                                                ('closed', 'Non-Surgery/Closed'),
+                                                ('wholesale', 'Wholesale'),
+                                                ('national_acc', 'National Account Target')],
+                                     tracking=True)
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no1(self):
@@ -72,11 +85,12 @@ class Lead(models.Model):
                         lead.appraisal_no = number_str
                         break
 
-    @api.constrains('product_list_doc')
-    def _check_docs_ids_mimetype(self):
-        for doc in self:
-            if any(not d.mimetype.startswith('application') for d in doc.product_list_doc):
-                raise UserError(_('Uploaded file does not seem to be a valid xlsx.'))
+    # Need To More Dev
+    # @api.constrains('product_list_doc')
+    # def _check_docs_ids_mimetype(self):
+    #     for doc in self:
+    #         if any(not d.mimetype.startswith('application') for d in doc.product_list_doc):
+    #             raise UserError(_('Uploaded file does not seem to be a valid xlsx.'))
 
     def _purchase_stage_find(self, team_id=False, domain=None, order='sequence'):
         """ Determine the stage of the current lead with its teams, the given domain and the given team_id
@@ -130,6 +144,16 @@ class Lead(models.Model):
         stage_ids = stages._search(search_domain, order=order, access_rights_uid=SUPERUSER_ID)
         return stages.browse(stage_ids)
 
+    @api.depends(lambda self: ['tag_ids', 'stage_id', 'team_id', 'purchase_stage_id'] + self._pls_get_safe_fields())
+    def _compute_probabilities(self):
+        lead_probabilities = self._pls_get_naive_bayes_probabilities()
+        for lead in self:
+            if lead.id in lead_probabilities:
+                was_automated = lead.active and lead.is_automated_probability
+                lead.automated_probability = lead_probabilities[lead.id]
+                if was_automated:
+                    lead.probability = lead.automated_probability
+
     #  Used to auto fetch data from contact
     @api.depends('partner_id')
     def _compute_contact_values(self):
@@ -138,6 +162,7 @@ class Lead(models.Model):
         self.property_supplier_payment_term_id = self.partner_id.property_supplier_payment_term_id.id
         # self.payment_type = self.partner_id.payment_type
         self.contract = self.partner_id.contract
+        self.facility_tpcd = self.partner_id.facility_tpcd
 
         print("Compute _compute_contact_values...............")
 
