@@ -174,7 +174,7 @@ class NewAccountBonusReport(models.Model):
                         CASE WHEN ai.state = 'posted' then 'Posted' END AS invoice_state,
                         0                     AS amount_total, 
                         SUM(SOL.qty_delivered * SOL.price_reduce)    as amount_total_thirteen,
-                        X.months                            AS months,
+                        DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(ai.invoice_date))) AS months ,
                         ai.currency_id                      AS currency_id,
                         X.first_occurence                   AS date_of_first_order
                 FROM public.sale_order so
