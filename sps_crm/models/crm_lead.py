@@ -32,7 +32,7 @@ class Lead(models.Model):
         default=lambda self: 'lead' if self.env['res.users'].has_group('crm.group_use_lead') else 'opportunity')
 
     purchase_stage_id = fields.Many2one(
-        'crm.purchase.stage', string='Purchase Stage', index=True, tracking=True,
+        'crm.purchase.stage', string='Stage', index=True, tracking=True,
         compute='_compute_purchase_stage_id', readonly=False, store=True,
         copy=False, group_expand='_read_group_purchase_stage_ids', ondelete='restrict',
         domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")

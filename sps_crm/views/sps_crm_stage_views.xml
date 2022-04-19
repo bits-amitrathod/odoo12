@@ -2,7 +2,7 @@
 <odoo>
 
     <record id="crm_purchase_lead_stage_search" model="ir.ui.view">
-        <field name="name">Purchase Stage - Search</field>
+        <field name="name">Stage - Search</field>
         <field name="model">crm.purchase.stage</field>
         <field name="arch" type="xml">
             <search string="Stage Search">
@@ -33,7 +33,7 @@
         <field name="model">crm.purchase.stage</field>
         <field name="priority" eval="1"/>
         <field name="arch" type="xml">
-            <form string="Purchase Stage">
+            <form string="Stage">
                 <sheet>
                     <div class="oe_title">
                         <div class="oe_edit_only">
@@ -59,7 +59,7 @@
     </record>
 
     <record id="crm_purchase_stage_action" model="ir.actions.act_window">
-        <field name="name">Purchase Stages</field>
+        <field name="name">Stages</field>
         <field name="res_model">crm.purchase.stage</field>
         <field name="view_id" ref="sps_crm.crm_purchase_stage_tree"/>
         <field name="help" type="html">

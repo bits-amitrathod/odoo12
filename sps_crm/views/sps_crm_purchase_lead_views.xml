@@ -535,7 +535,18 @@
             </field>
         </record>
 
-
+        <!-- GRAPH VIEW -->
+        <record id="crm_purchase_lead_view_graph" model="ir.ui.view">
+            <field name="name">crm.lead.view.graph</field>
+            <field name="model">crm.lead</field>
+            <field name="arch" type="xml">
+                <graph string="Opportunities" sample="1">
+                    <field name="purchase_stage_id" type="col"/>
+                    <field name="user_id" type="row"/>
+                    <field name="color" invisible="1"/>
+                </graph>
+            </field>
+        </record>
 
         <!-- THIS IS CALL FROM PY FILE-->
         <record model="ir.actions.act_window" id="crm_purchase_lead_action_pipeline">
@@ -574,6 +585,7 @@
             <field name="act_window_id" ref="crm_purchase_lead_action_pipeline"/>
         </record>
 
+         <!-- CALENDER VIEW WINDOWS ACTION-->
         <record id="crm_purchase_lead_action_pipeline_view_calendar" model="ir.actions.act_window.view">
             <field name="sequence" eval="2"/>
             <field name="view_mode">calendar</field>
@@ -581,6 +593,7 @@
             <field name="act_window_id" ref="crm_purchase_lead_action_pipeline"/>
         </record>
 
+        <!-- PIVOT VIEW WINDOWS ACTION-->
         <record id="crm_purchase_lead_action_pipeline_view_pivot" model="ir.actions.act_window.view">
             <field name="sequence" eval="3"/>
             <field name="view_mode">pivot</field>
@@ -588,10 +601,11 @@
             <field name="act_window_id" ref="crm_purchase_lead_action_pipeline"/>
         </record>
 
+        <!-- GRAPH VIEW WINDOWS ACTION-->
         <record id="crm_purchase_lead_action_pipeline_view_graph" model="ir.actions.act_window.view">
             <field name="sequence" eval="5"/>
             <field name="view_mode">graph</field>
-            <field name="view_id" ref="crm.crm_lead_view_graph"/>
+            <field name="view_id" ref="crm_purchase_lead_view_graph"/>
             <field name="act_window_id" ref="crm_purchase_lead_action_pipeline"/>
         </record>
 
