@@ -7,6 +7,7 @@ from odoo import api, fields, models, tools, SUPERUSER_ID
 import base64
 from random import randint
 import logging
+from odoo.exceptions import ValidationError,UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -84,6 +85,11 @@ class Lead(models.Model):
                     if 0 == self._cr.fetchone()[0]:
                         lead.appraisal_no = number_str
                         break
+            else:
+                query_str = 'SELECT count(*) FROM crm_lead WHERE appraisal_no LIKE %s'
+                self.env.cr.execute(query_str, [lead.appraisal_no])
+                if 0 != self._cr.fetchone()[0]:
+                    raise ValidationError(_('Appraisal No# Already Exist'))
 
     # Need To More Dev
     # @api.constrains('product_list_doc')
