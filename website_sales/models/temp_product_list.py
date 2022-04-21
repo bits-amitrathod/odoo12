@@ -172,9 +172,13 @@ class TempProductList(models.Model):
                 partner_product_list.get(product_id)['quantity'] = set_qty
             elif product_id is not None and product_id in partner_product_list.keys() and select is not None:
                 partner_product_list.get(product_id)['select'] = select
+                _logger.info('select true set 1')
             elif product_id is None and select is not None:
                 for product_id in partner_product_list:
                     partner_product_list.get(product_id)['select'] = select
+                    _logger.info('select true set 2')
+
+        _logger.info(partner_product_list)
 
     def get_product_list(self, partner_id):
         _logger.info('In get_product_list -  partner_id : %s', str(partner_id))
