@@ -170,9 +170,6 @@ class Lead(models.Model):
         self.contract = self.partner_id.contract
         self.facility_tpcd = self.partner_id.facility_tpcd
 
-        print("Compute _compute_contact_values...............")
-
-
     def action_purchase_set_won(self):
         """ Won semantic: probability = 100 (active untouched) """
         self.action_unarchive()
