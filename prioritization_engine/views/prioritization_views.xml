@@ -144,6 +144,20 @@
             </field>
         </record>
 
+        <record id="view_partner_property_form_readonly_added" model="ir.ui.view">
+            <field name="name">res.partner.product.property.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="groups_id" eval="[(4, ref('product.group_product_pricelist'))]"/>
+            <field name="arch" type="xml">
+                <group name="sale">
+                    <field name="property_product_pricelist" groups="product.group_product_pricelist" attrs="{'readonly': [('is_company','=',False),('parent_id','!=',False)]
+                    ,'invisible': [('parent_id','=',False)] }"/>
+
+                </group>
+            </field>
+        </record>
+
         <record id="contact_tree_ex" model="ir.ui.view">
             <field name="name">res.partner.tree_ex</field>
             <field name="model">res.partner</field>
