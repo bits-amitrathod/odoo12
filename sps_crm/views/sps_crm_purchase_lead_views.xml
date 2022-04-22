@@ -72,6 +72,7 @@
                         <field name="company_currency" invisible="1"/>
                         <field name="property_supplier_payment_term_id" invisible="1"/>
                         <field name="contract" invisible="1"/>
+                        <field name="competitors" invisible="1"/>
                         <field name="company_id" invisible="1"/>
                         <field name="user_id" invisible="1"/>
                         <field name="team_id" invisible="1"/>
@@ -438,6 +439,7 @@
                                 <field name="payment_type"/>
                                 <field name="facility_tpcd"/>
                                 <field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>
+                                <field name="competitors" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Competitors..."/>
                                 <field name="po_ref"/>
                             </group>
                             <group name="lead_priority" attrs="{'invisible': [('type', '=', 'purchase_opportunity')]}">

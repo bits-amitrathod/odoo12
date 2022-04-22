@@ -49,7 +49,8 @@ class Lead(models.Model):
 
     # contract_ids = fields.One2many('account.analytic.account', 'partner_id', string='Contracts', readonly=True)
     payment_type = fields.Selection([('outbound', 'Send Money'), ('inbound', 'Receive Money')], string='Payment Type')
-    contract = fields.Many2many('contract.contract', string="Contract", compute='_compute_contact_values')
+    contract = fields.Many2many('contract.contract', string="Contract")
+    competitors = fields.Many2many('res.partner.category', string="Competitors")
     po_ref = fields.Many2one('purchase.order', string="PO#")
 
     product_list_doc = fields.Many2many('ir.attachment', string='Upload File', attachment=True)
@@ -71,8 +72,7 @@ class Lead(models.Model):
                                                 ('veterinarian', 'Veterinarian'),
                                                 ('closed', 'Non-Surgery/Closed'),
                                                 ('wholesale', 'Wholesale'),
-                                                ('national_acc', 'National Account Target')],
-                                     tracking=True)
+                                                ('national_acc', 'National Account Target')])
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no1(self):
@@ -161,7 +161,7 @@ class Lead(models.Model):
                     lead.probability = lead.automated_probability
 
     #  Used to auto fetch data from contact
-    @api.depends('partner_id')
+    @api.onchange('partner_id')
     def _compute_contact_values(self):
         """ compute the new values when partner_id has changed """
         _logger.error(" Compute method Called ........")
@@ -169,6 +169,7 @@ class Lead(models.Model):
         # self.payment_type = self.partner_id.payment_type
         self.contract = self.partner_id.contract
         self.facility_tpcd = self.partner_id.facility_tpcd
+        self.competitors = self.partner_id.category_id
 
     def action_purchase_set_won(self):
         """ Won semantic: probability = 100 (active untouched) """
