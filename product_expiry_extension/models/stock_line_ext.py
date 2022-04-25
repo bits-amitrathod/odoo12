@@ -7,6 +7,7 @@ from odoo import models, fields, api
 from odoo.tools import OrderedSet
 import logging
 import datetime
+from odoo.http import request
 
 _logger = logging.getLogger(__name__)
 from odoo.tools.float_utils import float_round, float_compare, float_is_zero
@@ -266,16 +267,51 @@ class InventoryExe(models.Model):
 class ProductionLotNameAppendDate(models.Model):
     _inherit = 'stock.production.lot'
 
+    # def name_get(self):
+    #     result = []
+    #     if self.env.context is None:
+    #         self.env.context = {}
+    #     for record in self:
+    #         name = record.name
+    #         if self.env.context.get('lot_date_display_name'):
+    #             if record.use_date:
+    #                 name = record.name + ': #Exp Date :' + str(record.use_date)[0:10] + ':#Qty :' +str(record.product_qty)
+    #             else:
+    #                 name = record.name
+    #         result.append((record.id, name))
+    #     return result
+
     def name_get(self):
         result = []
         if self.env.context is None:
             self.env.context = {}
         for record in self:
             name = record.name
-            if self.env.context.get('lot_date_display_name'):
+            if self.env.context.get('lot_date_display_name_so'):
+
+                pick_id = self.env.context.get('active_picking_id')
+                pick_obj = request.env['stock.picking'].search([('id', '=', pick_id)])
+                stock_move = request.env['stock.move'].search([('picking_id', '=', pick_id)])
+                aval_qty = request.env['stock.quant']._get_available_quantity\
+                    (record.product_id,stock_move.location_id,lot_id=record,package_id=None,
+                     owner_id=None, strict=False,allow_negative=False)
+
                 if record.use_date:
-                    name = record.name + ': #Exp Date :' + str(record.use_date)[0:10] + ':#Qty :' +str(record.product_qty)
+                    name = record.name + ': #Exp Date :' + str(record.use_date)[0:10]\
+                           + ':#Qty :' +str(record.product_qty) + ':#Avl Qty :' +str(aval_qty)
                 else:
                     name = record.name
-            result.append((record.id, name))
+
+                result.append((record.id, name))
+
+            elif self.env.context.get('lot_date_display_name_po'):
+                if record.use_date:
+                    name = record.name + ': #Exp Date :' + str(record.use_date)[0:10] + ':#Qty :' + str(record.product_qty)
+                else:
+                    name = record.name
+                result.append((record.id, name))
+
+            else:
+                result.append((record.id, name))
+
         return result
