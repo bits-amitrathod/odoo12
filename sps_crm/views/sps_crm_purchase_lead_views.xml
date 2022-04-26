@@ -435,12 +435,8 @@
                             </group>
                             <group name="payment_priority0" attrs="{'invisible': [('type', '=', 'lead')]}">
                                 <field name="property_supplier_payment_term_id"/>
-<!--                                <field name="contract_ids"/>-->
-                                <field name="payment_type"/>
-                                <field name="facility_tpcd"/>
-                                <field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>
-                                <field name="competitors" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Competitors..."/>
-                                <field name="po_ref"/>
+                                <field name="appraisal_no"/>
+                                <field name="product_list_doc" widget="many2many_binary"/>
                             </group>
                             <group name="lead_priority" attrs="{'invisible': [('type', '=', 'purchase_opportunity')]}">
                                 <field name="priority" widget="priority"/>
@@ -448,9 +444,11 @@
                             </group>
                             <!-- ADD NEW FIELD HERE REGARDING AQU -->
                             <group name="payment_priority" attrs="{'invisible': [('type', '=', 'lead')]}">
-                                <field name="product_list_doc" widget="many2many_binary"/>
-<!--                                <field name="file_name" invisible="1"/>-->
-                                <field name="appraisal_no"/>
+                                <field name="payment_type"/>
+                                <field name="facility_tpcd"/>
+                                <field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>
+                                <field name="competitors" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Competitors..."/>
+                                <field name="po_ref"/>
                             </group>
 
                             <group name="opportunity_info" attrs="{'invisible': [('type', '=', 'lead')]}">

@@ -48,7 +48,7 @@ class Lead(models.Model):
         help="This payment term will be used instead of the default one for purchase orders and vendor bills")
 
     # contract_ids = fields.One2many('account.analytic.account', 'partner_id', string='Contracts', readonly=True)
-    payment_type = fields.Selection([('outbound', 'Send Money'), ('inbound', 'Receive Money')], string='Payment Type')
+    payment_type = fields.Selection([('cash', 'Cash'), ('credit', 'Credit'), ('cashcredit', 'Cash/Credit')], string='Payment Type')
     contract = fields.Many2many('contract.contract', string="Contract")
     competitors = fields.Many2many('res.partner.category', string="Competitors")
     po_ref = fields.Many2one('purchase.order', string="PO#")
