@@ -20,7 +20,7 @@
                             'active_picking_id': picking_id,
                             'default_company_id': parent.company_id,
                             'default_product_id': parent.product_id,
-                            'lot_date_display_name': True
+                            'lot_date_display_name_so': True
                         }"
                     />
             <field class="min_width" name="lot_id_po" groups="stock.group_production_lot"
@@ -31,7 +31,7 @@
                             'active_picking_id': picking_id,
                             'default_company_id': parent.company_id,
                             'default_product_id': parent.product_id,
-                            'lot_date_display_name': True
+                            'lot_date_display_name_po': True
                         }"
                     />
         </field>
