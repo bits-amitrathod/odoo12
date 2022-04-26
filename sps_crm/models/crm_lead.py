@@ -38,9 +38,9 @@ class Lead(models.Model):
         copy=False, group_expand='_read_group_purchase_stage_ids', ondelete='restrict',
         domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")
 
-    tag_purchase_ids = fields.Selection([
-        ('cash', 'Cash'), ('credit', 'Credit'), ('cashcredit', 'Cash/Credit')
-    ], string='Payment Type', default='cashcredit')
+    tag_purchase_ids = fields.Many2many(
+        'crm.purchase.tag', string='Tags',
+        help="Classify and analyze your lead/opportunity categories like: Training, Service")
 
     property_supplier_payment_term_id = fields.Many2one('account.payment.term', company_dependent=True,
         string='Vendor Payment Terms',
