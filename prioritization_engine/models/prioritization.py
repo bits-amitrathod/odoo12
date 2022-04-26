@@ -98,6 +98,7 @@ class Customer(models.Model):
     def copy_parent_date(self, vals):
         # self.ensure_one()
         #_logger.info("pritization engin :%r", vals)
+        # this below if condition code  is added for trending report timeout issue.
         if not any(f in vals for f in ['month1', 'month2', 'month3','month4', 'month5', 'month6','month7', 'month8', 'month9','month10', 'month11', 'month12']):
             _logger.info("pritization engin  :%r", vals)
             for ml in self:
@@ -202,6 +203,8 @@ class Customer(models.Model):
                         child_id.write({'national_account_rep': vals['national_account_rep']})
                     if 'user_id' in vals:
                         child_id.write({'user_id': vals['user_id']})
+                    if 'property_product_pricelist' in vals:
+                        child_id.write({'property_product_pricelist': vals['property_product_pricelist']})
 
 
     def action_view_notification(self):
