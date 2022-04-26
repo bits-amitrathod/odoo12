@@ -262,7 +262,8 @@ class CaptiveaEdiDocumentLog(models.Model):
                     'display_type': 'line_note',
                     'product_850_qty': float(log_line.quantity),
                     'product_id': False,
-                    'ack_code': 'R2',
+                    # 'ack_code': 'R2',
+                    'ack_code_r': 'R2',
                     'name': f'Product not found. Internal Reference: {log_line.vendor_part_num}, Price: {log_line.unit_price}, Quantity: {float(log_line.quantity)}, UoM: {log_line.uom}, PO Line#: {log_line.line_num}, Buyer Part: {log_line.buyers_part_num}'
                 })
             uom_conf = self.env['customer.uom.conf'].search([('name', '=', order.partner_id.edi_vendor_number)],
@@ -281,7 +282,8 @@ class CaptiveaEdiDocumentLog(models.Model):
                     'product_id': product.id,
                     'product_template_id': product.product_tmpl_id.id,
                     'product_850_qty': float(log_line.quantity),
-                    'ack_code': 'R3',
+                    # 'ack_code': 'R3',
+                    'ack_code_r': 'R3',
                     'name': f'UoM not found. Product: {product.name}, Internal Reference: {log_line.vendor_part_num}, Price: {log_line.unit_price}, Quantity: {float(log_line.quantity)}, UoM: {log_line.uom}, PO Line#: {log_line.line_num}, Buyer Part: {log_line.buyers_part_num}'
                 })
             elif not no_uom_found_boolean:
