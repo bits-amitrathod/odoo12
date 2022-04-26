@@ -182,15 +182,9 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
     # @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
     @http.route(['/shop/confirmation'], type='http', auth="public", website=True, sitemap=False)
     def payment_confirmation(self, **post):
-        _logger.info('start In payment_confirmation')
         responce = super(WebsiteSales, self).payment_confirmation(**post)
         order = responce.qcontext['order']
         order.workflow_process_id = 1
-
-        _logger.info('- sale_order_no: %s', order.name)
-        _logger.info('- workflow_id : %s', order.workflow_process_id)
-        if order.workflow_process_id:
-            _logger.info('- workflow_name : %s', order.workflow_process_id.name)
 
         template = request.env.ref('website_sales.website_order_placed').sudo()
 
@@ -200,7 +194,6 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         template.send_mail(order.id, force_send=False)
         msg = "Quotation Email Sent to: " + order.user_id.login
         order.message_post(body=msg)
-        _logger.info('End In payment_confirmation')
         return responce
 
     @http.route(['/shop/quote_my_report/update_json'], type='json', auth="public", methods=['POST'], website=True)
@@ -288,7 +281,6 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             msg = "Channel Type : " + str(sale_order.team_id.name) + " -> " + str(crm_team.name)
             sale_order.sudo().message_post(body=msg)
             sale_order.team_id = crm_team.id
-            sale_order.original_team_id = crm_team.id
 
         if sale_order.state != 'draft':
             request.session['sale_order_id'] = None

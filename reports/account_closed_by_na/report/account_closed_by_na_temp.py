@@ -18,9 +18,8 @@ class ReportNaAccountClosed(models.AbstractModel):
         if popup.start_date:
             s_date = self.string_to_date(str(popup.start_date))
             e_date = s_date - datetime.timedelta(days=365)
-            e_date_from_first = datetime.date(e_date.year, e_date.month, 1)
 
-            date = datetime.datetime.strptime(str(e_date_from_first), '%Y-%m-%d').strftime(
+            date = datetime.datetime.strptime(str(e_date), '%Y-%m-%d').strftime(
                 '%m/%d/%Y') + " - " + datetime.datetime.strptime(
                 str(s_date), '%Y-%m-%d').strftime('%m/%d/%Y')
         else:

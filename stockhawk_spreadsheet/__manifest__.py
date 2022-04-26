@@ -13,7 +13,7 @@
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'views/stockhawk_submission.xml',
         'views/views.xml',
         'views/stockhawk_spreadsheet.xml',

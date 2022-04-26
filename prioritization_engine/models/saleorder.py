@@ -383,7 +383,7 @@ class StockPicking(models.Model):
                 pickings_without_quantities |= picking
 
             if self.partner_id.on_hold:
-                if picking_type.code in ("internal","outgoing"):
+                if picking_type.code == "outgoing":
                     raise UserError(_('Customer is on hold. You cannot validate a transfer.'))
 
             if picking_type.use_create_lots or picking_type.use_existing_lots:

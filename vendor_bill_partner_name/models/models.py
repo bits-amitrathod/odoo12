@@ -24,8 +24,7 @@ class VendorBillPartnerName(models.Model):
          # ('ap', 'AP Address'),
          ], string='Address Type',
         default='contact',
-        help="Used to select automatically the right address according to the context in sales and purchases documents.",
-        track_visibility='onchange')
+        help="Used to select automatically the right address according to the context in sales and purchases documents.")
 
     #@api.multi
     # def name_get(self):

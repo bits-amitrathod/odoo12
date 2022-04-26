@@ -19,7 +19,6 @@ from odoo.tools import pycompat
 from werkzeug.urls import url_encode
 
 from .fedex_request import FedexRequest
-from dateutil.relativedelta import relativedelta
 
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
@@ -871,7 +870,6 @@ class VendorOfferProduct(models.Model):
                                   store=True)
     expiration_date = fields.Datetime(string="Expiration Date", readonly=True, )
     expiration_date_str = fields.Char(string="Expiration Date")
-    uom_str = fields.Char(string="UOM")
     expired_inventory = fields.Char(string="Expired Inventory Items", compute='onchange_product_id_vendor_offer',
                                     readonly=True,
                                     store=True)
@@ -1856,16 +1854,14 @@ class VendorPricingList(models.Model):
             ''' state = sale condition added in all sales amount to match the value of sales amount to 
             clients PPvendorpricing file '''
 
-            sale_all_query = """SELECT  sum(sol.price_total) as total_sales
-from  product_product pp 
- INNER JOIN sale_order_line sol ON sol.product_id=pp.id 
- INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id
- INNER JOIN sale_order so ON so.id=sol.order_id
- INNER JOIN stock_picking sp ON sp.sale_id =so.id
- where pp.id =%s and sp.date_done>= %s and sp.date_done<=%s and sp.location_dest_id = 9
-  group by sp.state"""
-
-            self.env.cr.execute(sale_all_query, (line.id, last_yr,today_date))
+            # sale_all_query = "SELECT  sum(sol.price_total) as total_sales " \
+            #                  "                   from  product_product pp   " \
+            #                  "                    INNER JOIN sale_order_line sol ON sol.product_id=pp.id " \
+            #                  "                    INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id " \
+            #                  "                    INNER JOIN sale_order so ON so.id=sol.order_id   " \
+            #                  "        where pp.id =%s and so.confirmation_date>= %s   	and so.state in ('sale')"
+            #
+            # self.env.cr.execute(sale_all_query, (line.id, last_yr))
 
             sales_all_value = 0
             sales_all_val = self.env.cr.fetchone()
@@ -2126,21 +2122,19 @@ class VendorPricingExport(models.TransientModel):
                                       GROUP  BY sml.product_id) AS all_sales 
                                   ON pp.id = all_sales.product_id 
                            left join (SELECT CASE 
-                                               WHEN Abs(SUM(sol.qty_delivered * sol.price_reduce)) IS NULL THEN 0 
-                                               ELSE Abs(SUM(sol.qty_delivered * sol.price_reduce)) 
+                                               WHEN Abs(SUM(sol.price_total)) IS NULL THEN 0 
+                                               ELSE Abs(SUM(sol.price_total)) 
                                              END AS total_sales, 
-                                             ppi.id
-                                             
+                                             ppi.id 
                                       FROM   product_product ppi 
                                              inner join sale_order_line sol 
-                                                     ON sol.product_id = ppi.id  and sol.state NOT IN ('cancel','void')
+                                                     ON sol.product_id = ppi.id 
                                              inner join product_template pt 
                                                      ON pt.id = ppi.product_tmpl_id 
                                              inner join sale_order so 
                                                      ON so.id = sol.order_id 
-                                             INNER JOIN stock_picking sp ON sp.sale_id =so.id
-                                     WHERE   sp.date_done >= %s and sp.location_dest_id = 9
-                                             AND sp.state IN ('done') 
+                                     WHERE  so.date_order >= %s 
+                                             AND so.state IN ( 'sale' ,'done') 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
                            left join (SELECT SUM(sml.qty_done) AS qty_done, 
@@ -2268,7 +2262,7 @@ class VendorPricingExport(models.TransientModel):
 
         start_time = time.time()
         #self.env.cr.execute(sql_fuction)
-        self.env.cr.execute(str_query + str_query_join, (cust_location_id,last_yr, cust_location_id, last_yr,today_date,
+        self.env.cr.execute(str_query + str_query_join, (cust_location_id, last_yr, cust_location_id, last_yr,today_date,
                                                          cust_location_id, last_3_months, today_date,
                                                          today_date, last_yr))
 

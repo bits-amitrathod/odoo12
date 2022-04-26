@@ -13,14 +13,13 @@ class report_print_check(models.Model):
         multi_stub = self.company_id.account_check_printing_multi_stub
         # self.set_check_amount_in_words()
         parent_name = ''
-        # if self.partner_id.parent_id:
-        #     partner_id = self.partner_id
-        #     while partner_id.parent_id:
-        #         partner_id = partner_id.parent_id
-        #     parent_name = partner_id.name
-        # else:
-        #     parent_name = self.partner_id.name
-        parent_name = self.reconciled_bill_ids[0].partner_id.name if self.reconciled_bill_ids else self.partner_id.name
+        if self.partner_id.parent_id:
+            partner_id = self.partner_id
+            while partner_id.parent_id:
+                partner_id = partner_id.parent_id
+            parent_name = partner_id.name
+        else:
+            parent_name = self.partner_id.name
 
         # return {
         #     'sequence_number': self.check_number if (self.journal_id.check_manual_sequencing and self.check_number != 0) else False,
@@ -44,7 +43,7 @@ class report_print_check(models.Model):
             'payment_date': format_date(self.env, self.date),
             'date': format_date(self.env, self.date),
             'partner_id': self.reconciled_bill_ids[0].partner_id if self.reconciled_bill_ids else self.partner_id,
-            'partner_name': parent_name,
+            'partner_name': self.partner_id.name,
             'currency': self.currency_id,
             'state': self.state,
             'amount': formatLang(self.env, self.amount, currency_obj=self.currency_id) if i == 0 else 'VOID',
