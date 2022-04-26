@@ -260,6 +260,7 @@ class CaptiveaEdiDocumentLog(models.Model):
             else:
                 new_order_line.update({
                     'display_type': 'line_note',
+                    'product_850_qty': float(log_line.quantity),
                     'product_id': False,
                     'ack_code': 'R2',
                     'name': f'Product not found. Internal Reference: {log_line.vendor_part_num}, Price: {log_line.unit_price}, Quantity: {float(log_line.quantity)}, UoM: {log_line.uom}, PO Line#: {log_line.line_num}, Buyer Part: {log_line.buyers_part_num}'
@@ -279,6 +280,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                     'display_type': 'line_note',
                     'product_id': product.id,
                     'product_template_id': product.product_tmpl_id.id,
+                    'product_850_qty': float(log_line.quantity),
                     'ack_code': 'R3',
                     'name': f'UoM not found. Product: {product.name}, Internal Reference: {log_line.vendor_part_num}, Price: {log_line.unit_price}, Quantity: {float(log_line.quantity)}, UoM: {log_line.uom}, PO Line#: {log_line.line_num}, Buyer Part: {log_line.buyers_part_num}'
                 })
