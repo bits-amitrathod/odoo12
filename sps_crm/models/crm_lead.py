@@ -39,19 +39,19 @@ class Lead(models.Model):
         domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")
 
     tag_purchase_ids = fields.Many2many(
-        'crm.purchase.tag', string='Tags',
+        'crm.purchase.tag', string='Tags', tracking=True,
         help="Classify and analyze your lead/opportunity categories like: Training, Service")
 
     property_supplier_payment_term_id = fields.Many2one('account.payment.term', company_dependent=True,
-        string='Vendor Payment Terms',
+        string='Vendor Payment Terms', tracking=True,
         domain="[('company_id', 'in', [current_company_id, False])]",
         help="This payment term will be used instead of the default one for purchase orders and vendor bills")
 
     # contract_ids = fields.One2many('account.analytic.account', 'partner_id', string='Contracts', readonly=True)
-    payment_type = fields.Selection([('cash', 'Cash'), ('credit', 'Credit'), ('cashcredit', 'Cash/Credit')], string='Payment Type')
-    contract = fields.Many2many('contract.contract', string="Contract")
-    competitors = fields.Many2many('res.partner.category', string="Competitors")
-    po_ref = fields.Many2one('purchase.order', string="PO#")
+    payment_type = fields.Selection([('cash', 'Cash'), ('credit', 'Credit'), ('cashcredit', 'Cash/Credit')], string='Payment Type', tracking=True)
+    contract = fields.Many2many('contract.contract', string="Contract", tracking=True)
+    competitors = fields.Many2many('res.partner.category', string="Competitors", tracking=True)
+    po_ref = fields.Many2one('purchase.order', string="PO#", tracking=True)
 
     product_list_doc = fields.Many2many('ir.attachment', string='Upload File', attachment=True)
     # file_name = fields.Char("File Name")
@@ -60,7 +60,7 @@ class Lead(models.Model):
         'crm.purchase.lost.reason', string='Lost Reason',
         index=True, ondelete='restrict', tracking=True)
 
-    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no1", readonly=False, store=True)
+    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no1", readonly=False, store=True, tracking=True)
 
     facility_tpcd = fields.Selection(string='Facility Type',
                                      selection=[('health_sys', 'Health System'),
@@ -72,7 +72,7 @@ class Lead(models.Model):
                                                 ('veterinarian', 'Veterinarian'),
                                                 ('closed', 'Non-Surgery/Closed'),
                                                 ('wholesale', 'Wholesale'),
-                                                ('national_acc', 'National Account Target')])
+                                                ('national_acc', 'National Account Target')], tracking=True)
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no1(self):
