@@ -7,6 +7,7 @@ from odoo import api, fields, models, tools, SUPERUSER_ID
 import base64
 from random import randint
 import logging
+import pathlib
 from odoo.exceptions import ValidationError,UserError
 
 _logger = logging.getLogger(__name__)
@@ -92,11 +93,14 @@ class Lead(models.Model):
                     raise ValidationError(_('Appraisal No# Already Exist'))
 
     # Need To More Dev
-    # @api.constrains('product_list_doc')
-    # def _check_docs_ids_mimetype(self):
-    #     for doc in self:
-    #         if any(not d.mimetype.startswith('application') for d in doc.product_list_doc):
-    #             raise UserError(_('Uploaded file does not seem to be a valid xlsx.'))
+    @api.constrains('product_list_doc')
+    def _check_docs_ids_mimetype(self):
+        required_extensions_list = ['.xlsx', '.pdf']
+        for doc in self:
+            file_name_list = [d.name for d in doc.product_list_doc]
+        extensions_list = [pathlib.Path(f).suffix for f in file_name_list]
+        if not set(extensions_list).issubset(required_extensions_list):
+            raise ValidationError(_('Uploaded file does not seem to be a valid \n Required Extensions List :-' + str(required_extensions_list)))
 
     def _purchase_stage_find(self, team_id=False, domain=None, order='sequence'):
         """ Determine the stage of the current lead with its teams, the given domain and the given team_id
