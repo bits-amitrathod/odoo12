@@ -29,38 +29,38 @@ class Lead(models.Model):
 
     type = fields.Selection([
         ('lead', 'Lead'), ('opportunity', 'Opportunity'), ('purchase_opportunity', 'Purchase Opportunity')],
-        index=True, required=True, tracking=15,
+        index=True, required=True,
         default=lambda self: 'lead' if self.env['res.users'].has_group('crm.group_use_lead') else 'opportunity')
 
     purchase_stage_id = fields.Many2one(
-        'crm.purchase.stage', string='Stage', index=True, tracking=True,
+        'crm.purchase.stage', string='Stage', index=True,
         compute='_compute_purchase_stage_id', readonly=False, store=True,
         copy=False, group_expand='_read_group_purchase_stage_ids', ondelete='restrict',
         domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")
 
     tag_purchase_ids = fields.Many2many(
-        'crm.purchase.tag', string='Tags', tracking=True,
+        'crm.purchase.tag', string='Tags',
         help="Classify and analyze your lead/opportunity categories like: Training, Service")
 
     property_supplier_payment_term_id = fields.Many2one('account.payment.term', company_dependent=True,
-        string='Vendor Payment Terms', tracking=True,
+        string='Vendor Payment Terms',
         domain="[('company_id', 'in', [current_company_id, False])]",
         help="This payment term will be used instead of the default one for purchase orders and vendor bills")
 
     # contract_ids = fields.One2many('account.analytic.account', 'partner_id', string='Contracts', readonly=True)
-    payment_type = fields.Selection([('cash', 'Cash'), ('credit', 'Credit'), ('cashcredit', 'Cash/Credit')], string='Payment Type', tracking=True)
-    contract = fields.Many2many('contract.contract', string="Contract", tracking=True)
-    competitors = fields.Many2many('res.partner.category', string="Competitors", tracking=True)
-    po_ref = fields.Many2one('purchase.order', string="PO#", tracking=True)
+    payment_type = fields.Selection([('cash', 'Cash'), ('credit', 'Credit'), ('cashcredit', 'Cash/Credit')], string='Payment Type')
+    contract = fields.Many2many('contract.contract', string="Contract")
+    competitors = fields.Many2many('res.partner.category', string="Competitors")
+    po_ref = fields.Many2one('purchase.order', string="PO#")
 
     product_list_doc = fields.Many2many('ir.attachment', string='Upload File', attachment=True)
     # file_name = fields.Char("File Name")
 
     purchase_lost_reason = fields.Many2one(
         'crm.purchase.lost.reason', string='Lost Reason',
-        index=True, ondelete='restrict', tracking=True)
+        index=True, ondelete='restrict')
 
-    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no1", readonly=False, store=True, tracking=True)
+    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no1", readonly=False, store=True)
 
     facility_tpcd = fields.Selection(string='Facility Type',
                                      selection=[('health_sys', 'Health System'),
@@ -72,7 +72,7 @@ class Lead(models.Model):
                                                 ('veterinarian', 'Veterinarian'),
                                                 ('closed', 'Non-Surgery/Closed'),
                                                 ('wholesale', 'Wholesale'),
-                                                ('national_acc', 'National Account Target')], tracking=True)
+                                                ('national_acc', 'National Account Target')])
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no1(self):

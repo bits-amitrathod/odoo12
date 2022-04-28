@@ -462,7 +462,7 @@
                             <page string="Internal Notes" name="internal_notes">
                                 <field name="description" placeholder="Add a description..."/>
                             </page>
-                            <page name="extra" string="Extra Info" attrs="{'invisible': [('type', '=', 'opportunity')]}">
+                            <page name="extra" string="Extra Info" attrs="{'invisible': [('type', '=', 'purchase_opportunity')]}">
                                 <group>
                                     <group string="Email" groups="base.group_no_one">
                                         <field name="message_bounce" readonly="1"/>
