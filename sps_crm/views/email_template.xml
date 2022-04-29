@@ -3,17 +3,18 @@
        <record id="email_to_crm" model="mail.template">
             <field name="name">email CRM Template</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">a@gmail.com</field>
-            <field name="email_to">test@gmail.com</field>
+            <field name="email_from">info@surgicalproductsolutions.com</field>
+            <field name="email_to">appraisal@surgicalproductsolutions.com</field>
             <field name="subject">CRM Acquisitions Product List received </field>
             <field name="body_html"><![CDATA[
                 <p>
-                    Hi,<br/>
-                    You have received Product list in Attachment <br/>
+                    Dear Team,<br/>
+                    Please see the attachment for the product list you received for the new opportunity. <br/>
                 </p>
 
                 <p>
-                    Thanks <br/>
+                    You can reply to this email if you have any questions.<br/>
+                    Thank you <br/>
                 </p>
 
             ]]></field>

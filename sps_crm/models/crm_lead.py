@@ -100,7 +100,7 @@ class Lead(models.Model):
             file_name_list = [d.name for d in doc.product_list_doc]
         extensions_list = [pathlib.Path(f).suffix for f in file_name_list]
         if not set(extensions_list).issubset(required_extensions_list):
-            raise ValidationError(_('Uploaded file does not seem to be a valid \n Required Extensions List :-' + str(required_extensions_list)))
+            raise ValidationError(_('Uploaded file does not seem to be a valid \n Required Extensions  :-' + str(required_extensions_list)))
 
     def _purchase_stage_find(self, team_id=False, domain=None, order='sequence'):
         """ Determine the stage of the current lead with its teams, the given domain and the given team_id
