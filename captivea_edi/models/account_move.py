@@ -25,7 +25,6 @@ N1^RI^{remit_name}^{fields_91_ri}^{remit_to}~
 N3^{add2}~
 N4^{city}^{state}^{zip}~{vendor_reference}
 ITD^ZZ^3^^^^20051009^30~"""
-#N1^VN^{vendor_name}^{fields_92_vn}^{x_vendor_id}~
 LINE = """
 IT1^{line_num}^{qty_done}^{uom}^{unit_price}^^VC^{product_desc}{buyer_part_num}~"""
 
