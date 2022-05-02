@@ -23,8 +23,7 @@ N1^BT^^{fields_91_bt}^{bill_to_id}~
 N1^ST^^91^{store_num}~
 N1^RI^{remit_name}^{fields_91_ri}^{remit_to}~
 N3^{add2}~
-N4^{city}^{state}^{zip}~
-N1^VN^{vendor_name}^{fields_92_vn}^{x_vendor_id}~
+N4^{city}^{state}^{zip}~{vendor_reference}
 ITD^ZZ^3^^^^20051009^30~"""
 #N1^VN^{vendor_name}^{fields_92_vn}^{x_vendor_id}~
 LINE = """
@@ -321,6 +320,7 @@ class AccountMove(models.Model):
                 customer_po_ref_id = order.customer_po_ref
                 vendor_id_str = customer_po_ref_id and customer_po_ref_id.vendor_id or ''
                 vendor_ref_str = customer_po_ref_id and customer_po_ref_id.vendor_ref or ''
+                vendor_reference = "\nN1^VN^{vendor_ref_str}^92^{vendor_id_str}~".format(vendor_ref_str=vendor_ref_str, vendor_id_str=vendor_id_str) if vendor_ref_str and vendor_id_str else ''
                 head = HEAD.format(
                     # add1=self.partner_id and self.partner_id.street or '',
                     add2=self.partner_id and self.partner_id.street or '',
@@ -349,6 +349,7 @@ class AccountMove(models.Model):
                     # fields_92_vn='92' if company_address and company_address.x_vendorid else '',
                     fields_92_vn='92' if vendor_id_str else '',
                     vendor_name= vendor_ref_str,#company_address and company_address.vendor_name or '',
+                    vendor_reference=vendor_reference,
                     fields_91_ri='91' if company_address and company_address.remit_to else '',
                     remit_name=company_address and company_address.remit_to_name or ''
                 )
