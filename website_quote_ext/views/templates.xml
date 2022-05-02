@@ -347,8 +347,7 @@
                             <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Ref #</span></th>
                             <th class="text-left">Description</th>
                             <th class="text-left">Available Qty</th>
-<!--                            <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span></th>-->
-                            <th class="text-left"><span t-if="any([line.order_id.team_id.team_type in ('engine', 'rapid_quote') for line in sale_order.order_line])">Expiration</span></th>
+                            <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span></th>
                             <th><span t-if="any([line.req_date for line in sale_order.order_line])">Requisition Date</span></th>
                             <th><span t-if="any([line.req_no for line in sale_order.order_line])">Requisition No</span></th>
                             <th><span t-if="any([line.vendor for line in sale_order.order_line])">Vendor</span></th>
@@ -382,8 +381,7 @@
                                     <td id="product_sku_code"><span t-if="line.order_id.team_id.team_type=='engine'" t-field="line.product_id.product_tmpl_id.sku_code"/> </td>
                                     <td id="product_name"><span t-field="line.name"/> </td>
                                     <td class="text-right" id="product_name"><span t-field="line.product_id.product_tmpl_id.actual_quantity"/></td>
-<!--                                    <td id="product_name"><span t-if="line.order_id.team_id.team_type=='engine' and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>-->
-                                    <td id="product_name"><span t-if="line.order_id.team_id.team_type in ('engine', 'rapid_quote') and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>
+                                    <td id="product_name"><span t-if="line.order_id.team_id.team_type=='engine' and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>
                                     <td><span t-if="line.req_date" t-field="line.req_date" t-options='{"widget": "date"}'/></td>
                                     <td><span t-if="line.req_no" t-field="line.req_no"/></td>
                                     <td><span t-if="line.vendor" t-field="line.vendor"/></td>
@@ -837,8 +835,7 @@
                                                 <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Ref #</span> </th>
                                                 <th><span>Description</span> </th>
                                                 <th class="text-left">Available Qty</th>
-<!--                                                <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span> </th>-->
-                                                <th><span t-if="any([line.order_id.team_id.team_type in ('engine', 'rapid_quote') for line in sale_order.order_line])">Expiration</span> </th>
+                                                <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span> </th>
                                                 <th><span t-if="any([line.req_date for line in sale_order.order_line])">Requisition Date</span></th>
                                                 <th><span t-if="any([line.req_no for line in sale_order.order_line])">Requisition No</span></th>
                                                 <th><span t-if="any([line.vendor for line in sale_order.order_line])">Vendor</span></th>
@@ -862,8 +859,7 @@
                                         <span t-esc="ol.product_id.name"/>
                                         </td>
                                         <td class="text-left" id="product_name"><span t-field="ol.product_id.product_tmpl_id.actual_quantity"/></td>
-<!--                                        <td><span t-if="ol.order_id.team_id.team_type=='engine' and ol.product_min_max_exp_date" t-esc="ol.product_min_max_exp_date"/></td>-->
-                                        <td><span t-if="ol.order_id.team_id.team_type in ('engine', 'rapid_quote') and ol.product_min_max_exp_date" t-esc="ol.product_min_max_exp_date"/></td>
+                                        <td><span t-if="ol.order_id.team_id.team_type=='engine' and ol.product_min_max_exp_date" t-esc="ol.product_min_max_exp_date"/></td>
                                         <td><span t-if="ol.req_date" t-field="ol.req_date" t-options='{"widget": "date"}'/></td>
                                         <td><span t-if="ol.req_no" t-field="ol.req_no"/></td>
                                         <td><span t-if="ol.vendor" t-field="ol.vendor"/></td>
@@ -1051,101 +1047,14 @@
             </t>
         </template>
 
-
-
         <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry"
                   inherit_id="portal.portal_my_home" priority="25">
             <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
                 <t t-if="vendor_count" t-call="portal.portal_docs_entry">
-                    <t t-set="title">Vendor Offers</t>
+                    <t t-set="title">Vendor Offer</t>
                     <t t-set="url" t-value="'/my/vendor'"/>
                     <t t-set="count" t-value="vendor_count"/>
                 </t>
-            </xpath>
-
-            <xpath expr="//div[hasclass('o_portal_my_home')]" position="before">
-
-                <!--<div style="text-align: center !important;" class="container">
-                      <div class="row " style="padding-top: 50px">
-                          <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
-                            <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
-                                <div class="col-sm">
-                                      <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="display: inline-grid;text-decoration: none;" >
-                                        <div class="o_app_icon">
-                                            <img src="/website_quote_ext/static/src/img/rapid_quote_new.png"  style="box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" align="center"  alt="Rapid Quote"/>
-                                        </div>
-                                        <div class="o_caption" style="font-size: 25px; color:black;padding-top: 20px;">Rapid Order</div>
-                                        <div class="" style="color:black;">Copy and paste your list of items to instantly generate your order</div>
-                                     </a>
-                                </div>
-                            </t>
-
-                        <div class="col-sm">
-                          <a id="" href="/shop/my_in_stock_report" style="display: inline-grid;text-decoration: none;" >
-                              <div style="" class="o_app_icon">
-                                  <img src="/website_quote_ext/static/src/img/re_order_new.png" align="center" style="box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" alt="In-Stock Report"/>
-                              </div>
-                              <div class="o_caption" style="font-size: 25px; color:black;padding-top: 20px;white-space: nowrap;">In-Stock Report</div>
-                              <div class="" style="color:black;">Easily re-order products</div>
-                          </a>
-                        </div>
-                        <div class="col-sm">
-                          <a id="" href="/shop" style="display: inline-grid;text-decoration: none;">
-                              <div style="" class="o_app_icon">
-                                  <img src="/website_quote_ext/static/src/img/shop_img_new.png" align="center" style="box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" alt="Shop"/>
-                              </div>
-                              <div  class="o_caption" style="font-size: 25px; color:black;padding-top: 20px;">Shop</div>
-                              <div class="" style=" color:black;">Browse our surgical disposables and equipment</div>
-                             </a>
-                        </div>
-                      </div>
-                </div>-->
-                
-
-                <div class="container">
-                      <div class="row " style="padding: 0px 16px 30px 15px;">
-                                         <div class="o_app_icon" style="display: inline-flex;margin-top: -22px;">
-                                             <img src="/website_quote_ext/static/src/img/StockHawk_Logo_TM_R1.png"  style="width:181px;padding-top: 9px;" align="center"  alt="Rapid Order"/>
-                                             <!--<span  style=" font-size: 28px; color: black;    vertical-align: middle;">Ordering Tools</span>-->
-                                             <h3  style="vertical-align: middle;padding-top: 19px;">Ordering Tools</h3>
-                                         </div>
-
-                          <div class="table-responsive" style="border: 1px solid #e0d6d6;  border-radius: 3px;">
-
-                                        <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
-                                             <div class="col-sm" style="border-bottom:  1px solid #e0d6d6;padding:10px;">
-                                              <a id="" href="/shop/my_in_stock_report" style="text-decoration: none;width:100%;" >
-                                                  <div style="" class="o_app_icon">
-                                                      <img src="/website_quote_ext/static/src/img/Stockhawk_InStock_Report_R1_new.png" align="center" style="width:120px;" alt="In-Stock Report"/>
-                                                      <img src="/website_quote_ext/static/src/img/arrow.jpg" style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="In-Stock Report"/>
-                                                  </div>
-                                                 </a>
-                                              </div>
-                                        <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
-                                        <div class="col-sm" style="border-bottom: 1px solid #e0d6d6;padding:10px;">
-                                             <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="text-decoration: none;width:100%" >
-                                               <div class="o_app_icon">
-                                                    <img src="/website_quote_ext/static/src/img/Stockhawk_Rapid_Order_R1_new.png"  style="width:93px;" align="center"  alt="Rapid Order"/>
-                                                    <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="Rapid Order"/>
-                                                </div>
-                                              </a>
-                                        </div>
-                                        </t>
-                                        <div class="col-sm" style="padding:10px;">
-                                              <a id="" href="/shop" style="text-decoration: none;width:100%;">
-                                                  <div style="" class="o_app_icon">
-                                                      <span style=" font-size: 14px; color: #495057;    padding-left: 5px;">Shop Our Website</span>
-                                                      <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="Shop"/>
-                                                  </div>
-                                                  </a>
-                                         </div>
-
-                          </div>
-
-                      </div>
-                </div>
-
-
             </xpath>
         </template>
 

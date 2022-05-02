@@ -92,33 +92,20 @@ class ExportNewAccountBonusReport(http.Controller):
                         ai.invoice_date                     AS invoice_date, 
                         CASE WHEN so.invoice_status = 'invoiced' then 'Fully Invoiced' END AS invoice_status,
                         CASE WHEN ai.state = 'posted' then 'Posted' END AS invoice_state,
-                          SUM(SOL.qty_delivered * SOL.price_reduce)                      AS amount_total, 
+                        ai.amount_total                     AS amount_total, 
                         X.months                            AS months,
                         ai.currency_id                      AS currency_id,
                         X.first_occurence                   AS date_of_first_order
                 FROM public.sale_order so
                 INNER JOIN
                     (
-                    (SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
+                        SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
                             DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                         FROM public.sale_order sos
                         INNER JOIN 
                             public.account_move aii ON sos.name = aii.invoice_origin
                         GROUP BY sos.partner_id
-                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ')
-                        
-                        UNION
-                        
-                        ( SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
-                            DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
-                        FROM public.sale_order sos 
-                        INNER JOIN public.res_partner rep ON sos.partner_id= rep.id 
-                        INNER JOIN public.account_move aii ON sos.name = aii.invoice_origin 
-                        where rep.reinstated_date > ' """ + str(end_date) + """ ' and rep.reinstated_date is not null
-                       
-                        and  aii.invoice_date > ' """ + str(end_date) + """ '  GROUP BY sos.partner_id )
-                        
-                    ) X
+                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ') X
                         ON so.partner_id = X.partner_id
                     INNER JOIN 
                         public.account_move ai ON so.name = ai.invoice_origin AND ai.state in ('posted')
@@ -140,13 +127,6 @@ class ExportNewAccountBonusReport(http.Controller):
                         public.res_users russ ON rp.account_manager_cust = russ.id
                     LEFT OUTER JOIN 
                         public.res_partner rpss ON russ.partner_id = rpss.id
-                    INNER JOIN public.sale_order_line SOL ON so.id = SOL.order_id 
-                    INNER JOIN 
-                    (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 
-                    AND state = 'done' ORDER BY origin) AS SPS 
-                    ON so.id = SPS.sale_id
-                    INNER JOIN  public.product_product  pp on SOL.product_id = pp.id 
-                    INNER JOIN  public.product_template  pt on pp.product_tmpl_id = pt.id and pt.type!='service'
                 WHERE so.invoice_status = 'invoiced'                
                    """
 
@@ -155,12 +135,6 @@ class ExportNewAccountBonusReport(http.Controller):
 
         if key_account_id != "none":
             select_query = select_query + " AND rp.account_manager_cust = '" + str(key_account_id) + "'"
-
-        group_by = """ GROUP BY so.id,rp.name, rpp.name, rppp.name ,rps.name  ,rpss.name 
-        ,rp.user_id, 
-         X.months  ,X.first_occurence ,ai.invoice_date,ai.state,ai.currency_id  """
-
-        select_query = select_query + group_by
 
         order_by = " ORDER BY rp.name"
 

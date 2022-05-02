@@ -35,7 +35,6 @@ class Customer(models.Model):
     order_ids = fields.One2many('sale.order', 'partner_id')
     gl_account = fields.One2many('gl.account', 'partner_id', string="GL Account")
     on_hold = fields.Boolean("On Hold")
-    on_hold_readonly = fields.Boolean("On Hold",compute="on_hold_value_copy")
     is_broker = fields.Boolean("Is a Broker?")
     carrier_info = fields.Char("Carrier Info")
     carrier_acc_no = fields.Char("Carrier Account No")
@@ -58,12 +57,6 @@ class Customer(models.Model):
         ('3', 'Freight Collect')], string='Shipping Terms')
     allow_purchase = fields.Boolean("Purchase Order Method")
     is_parent = fields.Boolean("Purchase Order Method", default=True)
-
-    @api.onchange('on_hold_readonly','on_hold')
-    @api.depends('on_hold_readonly', 'on_hold')
-    def on_hold_value_copy(self):
-        for obj in self:
-            obj.on_hold_readonly = obj.on_hold
 
     @api.onchange('doc_process_count')
     def _onchange_doc_process_count(self):
@@ -92,119 +85,40 @@ class Customer(models.Model):
     def write(self, vals):
         self.copy_parent_date(vals)
         res = super(Customer, self).write(vals)
-        self.copy_parent_date(vals)
+
         return res
 
     def copy_parent_date(self, vals):
         # self.ensure_one()
-        #_logger.info("pritization engin :%r", vals)
-        # this below if condition code  is added for trending report timeout issue.
-        if not any(f in vals for f in ['month1', 'month2', 'month3','month4', 'month5', 'month6','month7', 'month8', 'month9','month10', 'month11', 'month12']):
-            _logger.info("pritization engin  :%r", vals)
-            for ml in self:
-                for child_id in ml.child_ids:
-                    child_id.write({'on_hold': ml.on_hold,
-                                    'is_broker': ml.is_broker,
-                                    'is_wholesaler': ml.is_wholesaler,
-                                    'charity': ml.charity,
-                                    'carrier_info': ml.carrier_info,
-                                    'carrier_acc_no': ml.carrier_acc_no,
-                                    'quickbook_id': ml.quickbook_id,
-                                    'having_carrier': ml.having_carrier,
-                                    'preferred_method': ml.preferred_method,
-                                    'shipping_terms': ml.shipping_terms,
-                                    'allow_purchase': ml.allow_purchase,
-                                    'sku_preconfig': ml.sku_preconfig,
-                                    'sku_postconfig': ml.sku_postconfig,
-                                    'is_parent': False,
-                                    'prioritization': ml.prioritization,
-                                    'prioritization_ids': ml.prioritization_ids,
-                                    'min_threshold': ml.min_threshold,
-                                    'priority': ml.priority,
-                                    'partial_UOM': ml.partial_UOM,
-                                    'partial_ordering': ml.partial_ordering,
-                                    'auto_allocate': ml.auto_allocate,
-                                    'length_of_hold': ml.length_of_hold,
-                                    'expiration_tolerance': ml.expiration_tolerance,
-                                    'cooling_period': ml.cooling_period,
-                                    'max_threshold': ml.max_threshold,
-                                    'is_share': ml.is_share,
-                                    'sale_margine': ml.sale_margine,
-                                    'property_delivery_carrier_id' : ml.property_delivery_carrier_id,
-                                    'category_id': ml.category_id,
-                                    'contract': ml.contract,
-                                    'reinstated_date': ml.reinstated_date,
-
-                                    })
-
-                    if 'is_broker' in vals:
-                        child_id.write({'is_broker': vals['is_broker']})
-                    if 'is_wholesaler' in vals:
-                        child_id.write({'is_wholesaler': vals['is_wholesaler']})
-                    if 'charity' in vals:
-                        child_id.write({'charity': vals['charity']})
-                    if 'preferred_method' in vals:
-                        child_id.write({'preferred_method': vals['preferred_method']})
-                    if 'on_hold' in vals:
-                        child_id.write({'on_hold': vals['on_hold']})
-                    if 'carrier_info' in vals:
-                        child_id.write({'carrier_info': vals['carrier_info']})
-                    if 'carrier_acc_no' in vals:
-                        child_id.write({'carrier_acc_no': vals['carrier_acc_no']})
-                    if 'quickbook_id' in vals:
-                        child_id.write({'quickbook_id': vals['quickbook_id']})
-                    if 'having_carrier' in vals:
-                        child_id.write({'having_carrier': vals['having_carrier']})
-                    if 'shipping_terms' in vals:
-                        child_id.write({'shipping_terms': vals['shipping_terms']})
-                    if 'allow_purchase' in vals:
-                        child_id.write({'allow_purchase': vals['allow_purchase']})
-                    if 'sku_preconfig' in vals:
-                        child_id.write({'sku_preconfig': vals['sku_preconfig']})
-                    if 'sku_postconfig' in vals:
-                        child_id.write({'sku_postconfig': vals['sku_postconfig']})
-                    if 'prioritization' in vals:
-                        child_id.write({'prioritization': vals['prioritization']})
-                    if 'prioritization_ids' in vals:
-                        child_id.write({'prioritization_ids': vals['prioritization_ids']})
-                    if 'min_threshold' in vals:
-                        child_id.write({'min_threshold': vals['min_threshold']})
-                    if 'priority' in vals:
-                        child_id.write({'priority': vals['priority']})
-                    if 'partial_UOM' in vals:
-                        child_id.write({'partial_UOM': vals['partial_UOM']})
-                    if 'partial_ordering' in vals:
-                        child_id.write({'partial_ordering': vals['partial_ordering']})
-                    if 'auto_allocate' in vals:
-                        child_id.write({'auto_allocate': vals['auto_allocate']})
-                    if 'length_of_hold' in vals:
-                        child_id.write({'length_of_hold': vals['length_of_hold']})
-                    if 'expiration_tolerance' in vals:
-                        child_id.write({'expiration_tolerance': vals['expiration_tolerance']})
-                    if 'cooling_period' in vals:
-                        child_id.write({'cooling_period': vals['cooling_period']})
-                    if 'max_threshold' in vals:
-                        child_id.write({'max_threshold': vals['max_threshold']})
-                    if 'is_share' in vals:
-                        child_id.write({'is_share': vals['is_share']})
-                    if 'sale_margine' in vals:
-                        child_id.write({'sale_margine': vals['sale_margine']})
-                    if 'property_delivery_carrier_id' in vals:
-                        child_id.write({'property_delivery_carrier_id': vals['property_delivery_carrier_id']})
-                    if 'category_id' in vals:
-                        child_id.write({'category_id': vals['category_id']})
-                    if 'contract' in vals:
-                        child_id.write({'contract': vals['contract']})
-                    if 'reinstated_date' in vals:
-                        child_id.write({'reinstated_date': vals['reinstated_date']})
-                    if 'account_manager_cust' in vals:
-                        child_id.write({'account_manager_cust': vals['account_manager_cust']})
-                    if 'national_account_rep' in vals:
-                        child_id.write({'national_account_rep': vals['national_account_rep']})
-                    if 'user_id' in vals:
-                        child_id.write({'user_id': vals['user_id']})
-                    if 'property_product_pricelist' in vals:
-                        child_id.write({'property_product_pricelist': vals['property_product_pricelist']})
+        _logger.info("pritization engin :%r", vals)
+        for ml in self:
+            for child_id in ml.child_ids:
+                child_id.write({'on_hold': ml.on_hold,
+                                'is_broker': ml.is_broker,
+                                'carrier_info': ml.carrier_info,
+                                'carrier_acc_no': ml.carrier_acc_no,
+                                'quickbook_id': ml.quickbook_id,
+                                'having_carrier': ml.having_carrier,
+                                'preferred_method': ml.preferred_method,
+                                'shipping_terms': ml.shipping_terms,
+                                'allow_purchase': ml.allow_purchase,
+                                'sku_preconfig': ml.sku_preconfig,
+                                'sku_postconfig': ml.sku_postconfig,
+                                'is_parent': False,
+                                'prioritization': ml.prioritization,
+                                'prioritization_ids': ml.prioritization_ids,
+                                'min_threshold': ml.min_threshold,
+                                'priority': ml.priority,
+                                'partial_UOM': ml.partial_UOM,
+                                'partial_ordering': ml.partial_ordering,
+                                'auto_allocate': ml.auto_allocate,
+                                'length_of_hold': ml.length_of_hold,
+                                'expiration_tolerance': ml.expiration_tolerance,
+                                'cooling_period': ml.cooling_period,
+                                'max_threshold': ml.max_threshold,
+                                'is_share': ml.is_share,
+                                'sale_margine': ml.sale_margine
+                                })
 
 
     def action_view_notification(self):

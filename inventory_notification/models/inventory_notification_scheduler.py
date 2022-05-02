@@ -436,10 +436,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                       "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
                                                                       "In addition, below is the link to download full product catalog. Please let us know what" \
                                                                       " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>" \
-                                                                      """<br/><center>
+                                                                      """<center>
                                                                                 <a target="_blank" href="/shop/quote_my_report/""" + str(
-                    customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0; " class="o_default_snippet_text">BUY NOW</a>
-                                                                        </center><br/><br/>"""
+                    customr.id) + """" style="background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Click to Order</a>
+                                                                        </center>"""
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date',
                           'Max Exp. Date', 'Unit Of Measure']
@@ -485,9 +485,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </tr>
                                     </tbody>
                                     </table>
-                                    <br/>
                                     <div class="text-center" style="text-align: center;">
-                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">BUY NOW</a>
+                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px; text-decoration:none; color:#fff; border-radius:5px; font-size:16px" class="o_default_snippet_text">Click to Order</a>
                                     </div>
 
                                     """
@@ -597,16 +596,16 @@ class InventoryNotificationScheduler(models.TransientModel):
             self.process_packing_email_notification(vals)
 
             # final_date = fields.Datetime.from_string(today_start)
-        # products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
-        #                                                ('stock_move_ids.state', '=', 'done'),
-        #                                                ('stock_move_ids.picking_id', '!=', False),
-        #                                                ('stock_move_ids.move_line_ids.state', '=', 'done'),
-        #                                                ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
-        #                                                ('stock_move_ids.move_line_ids.write_date', '<', final_date),
-        #                                                ('stock_move_ids.move_line_ids.qty_done', '>', 0),
-        #                                                ('stock_move_ids.move_line_ids.lot_id', '!=', None)
-        #                                                ])
-        #self.process_notification_for_product_red_status(products)
+        products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
+                                                       ('stock_move_ids.state', '=', 'done'),
+                                                       ('stock_move_ids.picking_id', '!=', False),
+                                                       ('stock_move_ids.move_line_ids.state', '=', 'done'),
+                                                       ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
+                                                       ('stock_move_ids.move_line_ids.write_date', '<', final_date),
+                                                       ('stock_move_ids.move_line_ids.qty_done', '>', 0),
+                                                       ('stock_move_ids.move_line_ids.lot_id', '!=', None)
+                                                       ])
+        self.process_notification_for_product_red_status(products)
 
     def process_on_hold_customer(self):
         customers = self.env['res.partner'].search([('on_hold', '=', True), ('is_parent', '=', True)])
@@ -948,10 +947,10 @@ class InventoryNotificationScheduler(models.TransientModel):
         closing_content = "Thanks & Regards,<br/> Warehouse Team"
         self.process_common_product_scheduler(subject, descrption, products, header, columnProps, closing_content,
                                               self.sales_email)
-        # quant = self.env['stock.quant'].search(
-        #     [('write_date', '>=', last_day), ('quantity', '>', 0), ])
-        # products = quant.mapped('product_id')
-        #self.process_notification_for_product_green_status(products)
+        quant = self.env['stock.quant'].search(
+            [('write_date', '>=', last_day), ('quantity', '>', 0), ])
+        products = quant.mapped('product_id')
+        self.process_notification_for_product_green_status(products)
 
     def process_packing_email_notification(self, vals):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])

@@ -9,7 +9,7 @@ class ParnerOnHoldStatus(models.Model):
 
     #@api.multi
     def write(self, vals):
-        #_logger.info("res.partner vals :%r",vals)
+        _logger.info("res.partner vals :%r",vals)
         for ml in self:
             res = super(ParnerOnHoldStatus, ml).write(vals)
             if res and ml.is_parent and 'on_hold' in vals  and not vals.get('on_hold'):

@@ -87,15 +87,6 @@ class DocumentProcessTransientModel(models.TransientModel):
                                     if sale_order_line.order_id and sale_order_line.order_id.id and sale_order_line.order_id.access_token:
                                         return dict(errorCode=501, message=file_uploaded_record.document_logs, orderId=sale_order_line.order_id.id, accessToken=sale_order_line.order_id.access_token)
                 else:
-                    document = self.env['sps.cust.uploaded.documents'].search(
-                        [('id', '=', int(document_id)), ('status', '=', 'In Process')])
-                    document.write({'status': 'Completed'})
-                    document.write({'high_priority_doc_pro_count': 1})
-                    document.write({'document_processed_count': 1})
-                    if file_uploaded_record.request_ids:
-                        for request_id in file_uploaded_record.request_ids:
-                            request_id.write({'status': 'Unprocessed'})
-
                     response = dict(errorCode=500, message=file_uploaded_record.document_logs)
                 # if document has all voided products then Send Email Notification to customer.
                 self._all_voided_products(document_id, user_model, file_uploaded_record)
