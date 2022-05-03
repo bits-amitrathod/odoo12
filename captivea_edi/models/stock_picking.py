@@ -20,7 +20,7 @@ BSN^00^{ship_id}^{date_done}^{date_done_time}~
 HL^1^^S~{TD5_scac_line}
 DTM^011^{date_done}~
 N1^ST^^91^{store_num}~
-N1^SF^{ship_from}^{fields_91_sf}^{vendor_number}~{n3_line}{n4_line}
+N1^SF^{ship_from}^{fields_91_sf}^{vendor_number}~{n3_line}{n4_line}{vendor_reference}
 HL^2^1^O~
 PRF^{client_order_ref}~
 REF^OQ^{order_ref}~{REF_CN_line}"""
@@ -317,6 +317,12 @@ TD5^^2^%s~""" % (self.carrier_id and self.carrier_id.x_scac or '',)
                     if self.carrier_tracking_ref:
                         REF_CN_line = """
 REF^CN^%s~""" % (self.carrier_tracking_ref or '')
+                    customer_po_ref_id = order.customer_po_ref
+                    vendor_id_str = customer_po_ref_id and customer_po_ref_id.vendor_id or ''
+                    vendor_ref_str = customer_po_ref_id and customer_po_ref_id.vendor_ref or ''
+                    vendor_reference = "\nN1^VN^{vendor_ref_str}^92^{vendor_id_str}~".format(
+                        vendor_ref_str=vendor_ref_str,
+                        vendor_id_str=vendor_id_str) if vendor_ref_str and vendor_id_str else ''
                     head = HEAD.format(
                         sender_id=sftp_conf.sender_id and sftp_conf.sender_id.ljust(15) or " " * 15,
                         receiver_id=sftp_conf.receiver_id and sftp_conf.receiver_id.ljust(15) or " " * 15,
@@ -345,6 +351,7 @@ REF^CN^%s~""" % (self.carrier_tracking_ref or '')
                         REF_CN_line=REF_CN_line,
                         carrier_tracking_ref=self.carrier_tracking_ref or '',
                         # n2_line=f"\nN2^{self.ship_from_address_1}~" if self.ship_from_address_1 else '',
+                        vendor_reference=vendor_reference,
                         n3_line=f"\nN3^{self.ship_from_address_1}~" if self.ship_from_address_1 else '',
                         n4_line=f"\nN4^{self.ship_from_city}^{ship_from_state_code}^{self.ship_from_zip}~" if self.ship_from_city or ship_from_state_code or self.ship_from_zip else '')
                     lines_count = (len(self.move_ids_without_package) * 3) + 13

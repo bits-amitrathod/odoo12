@@ -274,7 +274,7 @@ class SaleOrder(models.Model):
                         order_line += accept_line
                     if row.sale_line_id.product_850_qty > 0:
                         reject_line = "\nACK^{ack_code}^{product_uom_qty}^{uom}{ack_remaining_line}".format(
-                            ack_remaining_line='~' if sale_line.ack_code in ['IR',
+                            ack_remaining_line='~' if sale_line.ack_code_r in ['IR',
                                                                                'R2',
                                                                                'R3',
                                                                                'R4'] else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~",
