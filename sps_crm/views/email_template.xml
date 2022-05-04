@@ -7,9 +7,51 @@
             <field name="email_to">appraisal@surgicalproductsolutions.com</field>
             <field name="subject">CRM Acquisitions Product List received </field>
             <field name="body_html"><![CDATA[
-                <p>
+
+            <p>
                     Dear Team,<br/>
                     Please see the attachment for the product list you received for the new opportunity. <br/>
+            </p>
+                %if ctx.get('rep') :
+                <p> Rep:${ctx['rep']} <br/> </p>
+                %endif
+
+                %if ctx.get('unq_ac') :
+                <p> Unique Account #: ${ctx['unq_ac']} <br/> </p>
+                %endif
+
+                %if ctx.get('facility_type') :
+                <p> Facility Type:  ${ctx['facility_type']} <br/> </p>
+                %endif
+
+                %if ctx.get('contracts') :
+                <p> Contracts/Affiliation:   ${ctx['contracts']} <br/> </p>
+                %endif
+
+                %if ctx.get('history') :
+                <p> History:${ctx['history']} <br/> </p>
+                %endif
+
+                %if ctx.get('competitors') :
+                    <p> Competitors:
+                    % for com in ctx.get('competitors'):
+                          ${com.name},
+                    %endfor
+                    </br> </p>
+                %endif
+
+                %if ctx.get('payment_type') :
+                <p> Payment Type:   ${ctx['payment_type']} <br/> </p>
+                %endif
+
+                %if ctx.get('payment_terms') :
+                <p> Payment Terms : ${ctx['payment_terms']} <br/> </p>
+                %endif
+
+                %if ctx.get('additional_notes') :
+                <p> Additional Notes: ${ctx['additional_notes']} <br/> </p>
+                %endif
+
                 </p>
 
                 <p>
