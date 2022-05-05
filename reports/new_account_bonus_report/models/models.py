@@ -175,7 +175,7 @@ class NewAccountBonusReport(models.Model):
                         CASE WHEN ai.state = 'posted' then 'Posted' END AS invoice_state,
                         0                     AS amount_total, 
                         SUM(SOL.qty_delivered * SOL.price_reduce)    as amount_total_thirteen,
-                        Case WHEN X.months = 0 THEN 13 Else  X.months  END     AS months,
+                        DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(ai.invoice_date))) AS months ,
                         ai.currency_id                      AS currency_id,
                         X.first_occurence                   AS date_of_first_order
                 FROM public.sale_order so
@@ -184,11 +184,14 @@ class NewAccountBonusReport(models.Model):
                     (SELECT sos.partner_id, MIN(aii.invoice_date) As first_occurence,
                             DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                         FROM public.sale_order sos
+                           INNER JOIN public.res_partner rep ON sos.partner_id= rep.id 
                         INNER JOIN 
                             public.account_move aii ON sos.name = aii.invoice_origin
+                        where rep.reinstated_date is  null
                         GROUP BY sos.partner_id
                         Having MIN(aii.invoice_date) > '""" + str(end_date_13) + """ '  and 
                          MIN(aii.invoice_date) < '""" + str(end_date) + """ ' )
+                          
                         
                         UNION
                         
