@@ -682,12 +682,12 @@
         </record>
 
         <!-- MAP VIEW WINDOWS ACTION -->
-        <!--<record id="crm_aqu_pipeline_action_view_map" model="ir.actions.act_window.view">
+        <record id="crm_aqu_pipeline_action_view_map" model="ir.actions.act_window.view">
             <field name="sequence" eval="9"/>
             <field name="view_mode">map</field>
             <field name="view_id" ref="crm_aqu_pipeline_view_map1"/>
             <field name="act_window_id" ref="crm_purchase_lead_action_pipeline"/>
-        </record>-->
+        </record>
 
         <!-- ACTION STARTING POINT -->
         <record id="action_your_purchase_pipeline" model="ir.actions.server">
