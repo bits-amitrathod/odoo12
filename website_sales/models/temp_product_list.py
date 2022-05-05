@@ -180,6 +180,18 @@ class TempProductList(models.Model):
 
         _logger.info(partner_product_list)
 
+    def update_quantity_from_list(self, partner_id, product_id, set_qty, select):
+        parent_partner_id = self.get_parent(partner_id)
+        partner_product_list = self.product_list.get(parent_partner_id)
+        if partner_product_list:
+            if product_id is not None and product_id in partner_product_list.keys() and set_qty is not None:
+                partner_product_list.get(product_id)['quantity'] = set_qty
+            if product_id is not None and product_id in partner_product_list.keys() and select is not None:
+                partner_product_list.get(product_id)['select'] = select
+            elif product_id is None and select is not None:
+                for product_id in partner_product_list:
+                    partner_product_list.get(product_id)['select'] = select
+
     def get_product_list(self, partner_id):
         _logger.info('In get_product_list -  partner_id : %s', str(partner_id))
         try:
