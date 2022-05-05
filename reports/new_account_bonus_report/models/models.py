@@ -277,9 +277,12 @@ class NewAccountBonusReportExport(models.TransientModel):
 
         start_date = self.string_to_date(str(self.start_date))
         end_date = start_date - datetime.timedelta(days=365)
+        end_date_13 = start_date - datetime.timedelta(days=396)
+        end_date_13_12months = end_date_13 + datetime.timedelta(days=365)
         # start_date = start_date + datetime.timedelta(days=1)
 
-        url = '/web/export/new_account_bonus_report_export/' + str(start_date) + '/' + str(end_date) + '/'
+        url = '/web/export/new_account_bonus_report_export/' + str(start_date) + '/' + str(end_date)\
+              + '/' + str(end_date_13) + '/' + str(end_date_13_12months) + '/'
 
         if self.business_development and self.business_development is not None:
             url = url + str(self.business_development.id) + '/'
