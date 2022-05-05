@@ -52,6 +52,7 @@ class NewAccountBonusReport(models.Model):
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')
         end_date_13 = self.env.context.get('end_date_13')
+        end_date_13_12months = end_date_13 + datetime.timedelta(days=365)
         business_development_id = self.env.context.get('business_development')
         key_account_id = self.env.context.get('key_account')
 
@@ -174,7 +175,7 @@ class NewAccountBonusReport(models.Model):
                         CASE WHEN ai.state = 'posted' then 'Posted' END AS invoice_state,
                         0                     AS amount_total, 
                         SUM(SOL.qty_delivered * SOL.price_reduce)    as amount_total_thirteen,
-                        X.months                            AS months,
+                        Case WHEN X.months = 0 THEN 13 Else  X.months  END     AS months,
                         ai.currency_id                      AS currency_id,
                         X.first_occurence                   AS date_of_first_order
                 FROM public.sale_order so
@@ -215,7 +216,8 @@ class NewAccountBonusReport(models.Model):
                     ON so.id = SPS.sale_id
                     INNER JOIN  public.product_product  pp on SOL.product_id = pp.id 
                     INNER JOIN  public.product_template  pt on pp.product_tmpl_id = pt.id and pt.type!='service'
-                WHERE so.invoice_status = 'invoiced'       and ai.invoice_date >= ' """ + str(end_date) + """ ' 
+                WHERE so.invoice_status = 'invoiced' and   (    ai.invoice_date >= ' """ + str(end_date_13) + """ ' 
+                 and ai.invoice_date <  ' """ + str(end_date_13_12months) + """ ' )
                          
 
                             """
