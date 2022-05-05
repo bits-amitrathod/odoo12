@@ -261,6 +261,10 @@ class SaleOrder(models.Model):
                     in_qualifier_buyer_part_num = row.buyer_part_number and '^IN^%s' % (row.buyer_part_number) or ''
                     vendor_part_number = product.default_code or '' if product else sale_line.po_log_line_id.vendor_part_num if sale_line.po_log_line_id else ''
                     order_line = ''
+                    line_qty = sale_line.product_850_qty
+                    line_qty = int(line_qty) if (line_qty - int(line_qty)) == 0 else line_qty
+                    po_line_qty = sale_line.po_log_line_id.quantity if sale_line.po_log_line_id else (sale_line.product_uom_qty)
+                    po_line_qty = int(po_line_qty) if (po_line_qty - int(po_line_qty)) == 0 else po_line_qty
                     if row.sale_line_id.product_uom_qty > 0:
                         accept_line = "\nACK^{ack_code}^{product_uom_qty}^{uom}{ack_remaining_line}".format(
                             ack_remaining_line='~' if sale_line.ack_code in ['IR',
@@ -268,7 +272,7 @@ class SaleOrder(models.Model):
                                                                                'R3',
                                                                                'R4'] else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~",
                             uom=row.uom or '',
-                            product_uom_qty=sale_line.product_uom_qty,
+                            product_uom_qty=line_qty,
                             ack_code=sale_line.ack_code
                         )
                         order_line += accept_line
@@ -279,12 +283,12 @@ class SaleOrder(models.Model):
                                                                                'R3',
                                                                                'R4'] else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~",
                             uom=row.uom or '',
-                            product_uom_qty=sale_line.product_850_qty,
+                            product_uom_qty=line_qty,
                             ack_code=sale_line.ack_code_r
                         )
                         order_line += reject_line
 
-                    line = sale_line_str.format(line_num=row.line_num or '', quantity=sale_line.po_log_line_id.quantity if sale_line.po_log_line_id else (sale_line.product_uom_qty),
+                    line = sale_line_str.format(line_num=row.line_num or '', quantity= po_line_qty,
                                                 uom=row.uom or '',
                                                 price_unit=sale_line.price_unit or sale_line.price_unit_850,
                                                 vendor_part_number=vendor_part_number,

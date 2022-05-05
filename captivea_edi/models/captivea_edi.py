@@ -251,6 +251,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                 'upc_num': log_line.upc_num,
                 'po_log_line_id': log_line.id
             }
+            ack_code_r = ''
             if product:
                 # product_tmpl = self.env['product.template'].search([('name', '=', log_line.vendor_part_num)])
                 new_order_line.update({
@@ -258,6 +259,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                     'product_template_id': product.product_tmpl_id.id
                 })
             else:
+                ack_code_r = 'R2'
                 new_order_line.update({
                     'display_type': 'line_note',
                     'product_850_qty': float(log_line.quantity),
@@ -277,6 +279,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                     no_uom_found_boolean = False
                     pass
             if no_uom_found_boolean and product:
+                ack_code_r = 'R3'
                 new_order_line.update({
                     'display_type': 'line_note',
                     'product_id': product.id,
@@ -293,6 +296,8 @@ class CaptiveaEdiDocumentLog(models.Model):
 
             sale_order_line = self.env['sale.order.line']
             line = sale_order_line.sudo().create(new_order_line)
+            if ack_code_r:
+                line.ack_code_r = ack_code_r
             # if line and uom_line:
             #     line.product_uom = uom_line.uom_id
             if line.product_id:
