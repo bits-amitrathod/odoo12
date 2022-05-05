@@ -296,8 +296,8 @@ class CaptiveaEdiDocumentLog(models.Model):
 
             sale_order_line = self.env['sale.order.line']
             line = sale_order_line.sudo().create(new_order_line)
-            if ack_code_r:
-                line.ack_code_r = ack_code_r
+            # if ack_code_r:
+            #     line.ack_code_r = ack_code_r
             # if line and uom_line:
             #     line.product_uom = uom_line.uom_id
             if line.product_id:
