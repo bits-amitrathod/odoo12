@@ -20,15 +20,8 @@ class ProcessHighPriorityRequests(models.Model):
         elif source == 'Portal' and document_id and document_id is not None:
             document = self.env['sps.cust.uploaded.documents'].search([('id', '=', int(document_id)), ('status', '=', 'Portal In Process')])
         if len(document) == 1:
-            # if source == 'Portal':
-            #     high_priority_requests = self.env['sps.customer.requests'].search(
-            #         [('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0),
-            #          '|', ('required_quantity', '>', 0), ('quantity', '>', 0)])
-            # else:
-            high_priority_requests = self.env['sps.customer.requests'].search(
-                [('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0),
-                 ('available_qty', '>', 0),
-                 '|', ('required_quantity', '>', 0), ('quantity', '>', 0)])
+            high_priority_requests = self.env['sps.customer.requests'].search([('document_id', '=', document.id), ('status', '=', 'New'), ('priority', '=', 0), ('available_qty', '>', 0),
+                                                                               '|', ('required_quantity', '>', 0), ('quantity', '>', 0)])
 
             if len(high_priority_requests) > 0:
                 try:

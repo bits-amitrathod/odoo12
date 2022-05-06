@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="action_captivea_edidocumentlog" model="ir.actions.act_window">
+        <field name="name">Captivea EDI Document Log</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">captivea.edidocumentlog</field>
+        <field name="view_id" ref="view_tree_captivea_edidocumentlog"/>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <record id="action_captivea_ediwizardprocess" model="ir.actions.act_window">
+        <field name="name">EDI Operations</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">captivea.ediprocess</field>
+        <field name="view_id" ref="captivea_edi_manualprocess_wizard_view"/>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+
+    </record>
+    <record id="action_sale_order_documents" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Sale Orders</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('client_order_ref', '!=', False)]</field>
+    </record>
+
+    <record id="action_sale_order_ackn_remaining" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Sale Orders To Acknowledge</field>
+        <field name="res_model">sale.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('client_order_ref', '!=', False),('partner_shipping_id.edi_855','=',True),
+                              ('poack_created', '=', False),('state','not in',['cancel'])]</field>
+    </record>
+
+    <record id="action_picking_documents" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Transfers</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('x_edi_accounting_id', '!=', False),('picking_type_id.code', '=', 'outgoing')]</field>
+    </record>
+
+    <record id="action_picking_notification_remaining" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Transfers To Notify</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('x_edi_accounting_id', '!=', False),('picking_type_id.code', '=', 'outgoing'),('partner_id.edi_856','=',True),
+                              ('asn_created', '=', False),('state','not in',['cancel'])]</field>
+    </record>
+
+    <record id="action_invoice_documents" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+    	        (0, 0, {'view_mode': 'tree', 'view_id': ref('captivea_edi.view_edi_documents_invoice_tree')}),
+    	        (0, 0, {'view_mode': 'form'})]"/>
+        <!--        <field name="view_mode">tree,form</field>-->
+        <field name="domain">[('x_edi_accounting_id', '!=', False)]</field>
+    </record>
+
+    <record id="action_invoice_to_notify_documents" model="ir.actions.act_window">
+        <field name="type">ir.actions.act_window</field>
+        <field name="name">Invoices</field>
+        <field name="res_model">account.move</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+    	        (0, 0, {'view_mode': 'tree', 'view_id': ref('captivea_edi.view_edi_documents_invoice_tree')}),
+    	        (0, 0, {'view_mode': 'form'})]"/>
+        <!--        <field name="view_mode">tree,form</field>-->
+        <field name="domain">[('x_edi_accounting_id', '!=', False),('partner_id.edi_810','=',True),('invn_sent','=',False),('state','not in',['cancel'])]</field>
+    </record>
+
+    <record id="setu_cron_server_action" model="ir.actions.server">
+        <field name="type">ir.actions.server</field>
+        <field name="name">Scheduler</field>
+        <field name="model_id" ref="captivea_edi.model_ir_cron"/>
+        <field name="state">code</field>
+        <field name="code">action = model.ir_cron_edi_return_action()</field>
+    </record>
+
+    <!-->MENU ROOT<-->
+    <menuitem id="captivea_menu_edi"
+              name="EDI"
+              groups="group_captivea_edi_user"
+              web_icon="captivea_edi,static/description/icon.png"
+              sequence="100"/>
+
+    <menuitem id="captivea_menu_edimain01"
+              name="Operations"
+              parent="captivea_menu_edi"
+              action="action_captivea_ediwizardprocess"
+              sequence="2"/>
+
+    <menuitem id="menu_log_book"
+              name="Log Book"
+              parent="captivea_menu_edi"
+              sequence="3"/>
+    <menuitem id="setu_edi_log"
+              name="EDI Process Logs"
+              parent="menu_log_book"
+              action="action_edi_log"
+              sequence="1"/>
+
+    <menuitem id="setu_edi_documents"
+              name="Documents"
+              parent="captivea_menu_edi"
+              sequence="1"/>
+
+    <menuitem id="setu_edi_sale_order_documents"
+              name="Sale Orders"
+              parent="setu_edi_documents"
+              sequence="1"
+              action="action_sale_order_documents"/>
+
+    <menuitem id="setu_edi_invoice_documents"
+              name="Invoices"
+              parent="setu_edi_documents"
+              sequence="2"
+              action="action_invoice_documents"/>
+
+    <menuitem id="setu_edi_sale_order_ackn"
+              name="Sale Orders To Acknowledge"
+              parent="setu_edi_documents"
+              sequence="4"
+              action="action_sale_order_ackn_remaining"/>
+
+    <menuitem id="setu_edi_picking_documents"
+              name="Transfers"
+              parent="setu_edi_documents"
+              sequence="3"
+              action="action_picking_documents"/>
+
+    <menuitem id="setu_edi_pickings_to_notify"
+              name="Transfers To Notify"
+              parent="setu_edi_documents"
+              sequence="5"
+              action="action_picking_notification_remaining"/>
+
+    <menuitem id="setu_edi_invoice_to_notify_documents"
+              name="Invoices To Notify"
+              parent="setu_edi_documents"
+              sequence="6"
+              action="action_invoice_to_notify_documents"/>
+
+    <menuitem id="edi_config_menu"
+              name="Settings"
+              parent="captivea_menu_edi"/>
+    <menuitem id="edi_sftp_menu"
+              name="SFTP Instance"
+              parent="edi_config_menu"
+              sequence="1"
+              action="setu_sftp_action"/>
+
+    <menuitem id="scheduler_menu"
+              name="Scheduler"
+              parent="edi_config_menu"
+              sequence="2"
+              action="setu_cron_server_action"/>
+
+</odoo>

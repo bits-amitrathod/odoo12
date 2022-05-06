@@ -119,17 +119,11 @@ class TempProductList(models.Model):
                 result = self.env.cr.dictfetchone()
 
                 if partner.property_product_pricelist.id and product:
-                    price_list_without_round_off = partner.property_product_pricelist.get_product_price(
+                    price_list = partner.property_product_pricelist.get_product_price(
                         product, product.product_tmpl_id.actual_quantity, partner)
-                    #price_list = float("{0:.2f}".format(price_list_without_round_off))
-                    price_list = round(price_list_without_round_off,2)
                 else:
-                    if product.product_tmpl_id.list_price:
-                        price_list = float("{0:.2f}".format(product.product_tmpl_id.list_price))
-                    else:
-                        price_list = product.product_tmpl_id.list_price
+                    price_list = product.product_tmpl_id.list_price
 
-                company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
                 product_dict = {'product': product,
                                 'partner': partner,
                                 'partn_name': query_result['partn_name'],
@@ -138,7 +132,6 @@ class TempProductList(models.Model):
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
                                 'price_list': price_list,
-                                'price_curr': company_fetch.currency_id,
                                 'quantity': query_result['quantity'],
                                 'select': False}
 
@@ -161,32 +154,12 @@ class TempProductList(models.Model):
         self.init_table()
 
     def update_quantity(self, partner_id, product_id, set_qty, select):
-        _logger.info('In update quantity method')
-        _logger.info(set_qty)
-        _logger.info(select)
         parent_partner_id = self.get_parent(partner_id)
         partner_product_list = self.product_list.get(parent_partner_id)
-        _logger.info(partner_product_list)
         if partner_product_list:
             if product_id is not None and product_id in partner_product_list.keys() and set_qty is not None:
                 partner_product_list.get(product_id)['quantity'] = set_qty
             elif product_id is not None and product_id in partner_product_list.keys() and select is not None:
-                partner_product_list.get(product_id)['select'] = select
-                _logger.info('select true set 1')
-            elif product_id is None and select is not None:
-                for product_id in partner_product_list:
-                    partner_product_list.get(product_id)['select'] = select
-                    _logger.info('select true set 2')
-
-        _logger.info(partner_product_list)
-
-    def update_quantity_from_list(self, partner_id, product_id, set_qty, select):
-        parent_partner_id = self.get_parent(partner_id)
-        partner_product_list = self.product_list.get(parent_partner_id)
-        if partner_product_list:
-            if product_id is not None and product_id in partner_product_list.keys() and set_qty is not None:
-                partner_product_list.get(product_id)['quantity'] = set_qty
-            if product_id is not None and product_id in partner_product_list.keys() and select is not None:
                 partner_product_list.get(product_id)['select'] = select
             elif product_id is None and select is not None:
                 for product_id in partner_product_list:

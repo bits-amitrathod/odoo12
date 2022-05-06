@@ -200,7 +200,7 @@
                     </h5>
 
                     <div  itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer"
-                         class="product_price 111" t-if="product.product_variant_ids"
+                         class="product_price" t-if="product.product_variant_ids"
                          style="position: relative;">
                         <t t-if="combination_info['price'] &gt; 0">
                             <strong>
@@ -215,9 +215,6 @@
                                       t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                                 <span itemprop="price" style="display:none;" t-esc="combination_info['price']"/>
                                 <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/> -->
-                               <span t-attf-class="text-danger oe_default_price {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="text-decoration: line-through; white-space: nowrap;"
-                  t-esc="combination_info['list_price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
-              />
                                 <span t-if="combination_info['price']" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
                                 <span itemprop="price" style="display:none;" t-esc="combination_info['price']" />
                                 <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name" />

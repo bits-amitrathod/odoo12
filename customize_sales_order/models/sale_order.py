@@ -19,19 +19,6 @@ class CustomerContract(models.Model):
         if res_users:
             return res_users.id
 
-    facility_tpcd = fields.Selection(string='Facility Type',
-                                     selection=[('health_sys', 'Health System'),
-                                                ('hospital', 'Hospital'),
-                                                ('surgery_cen', 'Surgery Center'),
-                                                ('pur_alli', 'Purchasing Alliance'),
-                                                ('charity', 'Charity'),
-                                                ('broker', 'Broker'),
-                                                ('veterinarian', 'Veterinarian'),
-                                                ('closed', 'Non-Surgery/Closed'),
-                                                ('wholesale', 'Wholesale'),
-                                                ('national_acc', 'National Account Target')],
-                                     tracking=True)
-
     company_type = fields.Selection(string='Company Type',
                                     selection=[('person', 'Individual'), ('company', 'Company')],
                                     compute='_compute_company_type', inverse='_write_company_type',tracking=True)
@@ -108,14 +95,8 @@ class sale_order(models.Model):
         change_default=True, default=_get_default_team, tracking=True, check_company=True,  # Unrequired company
         domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
 
-    original_team_id = fields.Many2one(
-        'crm.team', 'First Sales Team',
-        tracking=True, check_company=True,  # Unrequired company
-        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")
-
     def _get_user(self):
-        if self.env.user.email in ('jtennant@surgicalproductsolutions.com', 'info@surgicalproductsolutions.com'
-                                   ,'bryon@surgicalproductsolutions.com'):
+        if self.env.user.email == "jtennant@surgicalproductsolutions.com":
             self.field_read_only = 0
         else:
             self.field_read_only = 1
@@ -125,10 +106,7 @@ class sale_order(models.Model):
     @api.depends('signature')
     def _is_signature(self):
         clean = re.compile('<.*?>')
-        if self.order_processor.signature:
-            clean_text = re.sub(clean, '', self.order_processor.signature)
-        else:
-            clean_text = ''
+        clean_text = re.sub(clean, '', self.order_processor.signature)
         if len(clean_text.strip()) > 0:
             self.is_signature = 1
         else:
@@ -161,8 +139,6 @@ class sale_order(models.Model):
     @api.model
     def create(self, vals):
         # add account manager
-        if 'team_id' in vals:
-            vals['original_team_id']=vals['team_id']
         if 'partner_id' in vals and vals['partner_id'] is not None:
             res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
             if res_partner and res_partner.user_id and res_partner.user_id.id:

@@ -320,7 +320,6 @@
                                                 <field name="name" invisible="1"/>
                                                 <field name="product_tier" readonly="1"/>
                                                 <field name="product_qty"/>
-                                                <field name="uom_str"/>
                                                 <field name="expiration_date_str">
 
                                                 </field>
@@ -372,7 +371,6 @@
                                         <field name="name" invisible="1"/>
                                         <field name="product_tier" readonly="1"/>
                                         <field name="product_qty" />
-                                        <field name="uom_str"/>
                                         <field name="expiration_date_str"  />
                                         <field name="qty_in_stock" />
                                         <field name="product_sales_count" />

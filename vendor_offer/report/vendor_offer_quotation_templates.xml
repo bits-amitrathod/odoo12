@@ -133,7 +133,7 @@
               <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL EQUIPMENT:</u> OFFER IS BASED UPON SELLER’S LISTED CONDITION OF EQUIPMENT. </strong></p></div>
 
               <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPS’S QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES IN THE SELLER’S STATED CONDITION AND/OR EXPIRATION OF ITEM(S).</strong></p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>For detailed Terms of Purchase, refer to the SPS website: <a>https://www.shopsps.com/terms_of_purchase</a></strong></p></div>
+              <br></br>
               <div><p style="margin: 3px 0;font-size:13px;"><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
               <div><p style="margin: 3px 0;font-size:13px;"><img src ='/vendor_offer/static/img/unchecked.png' style="height:10px;width:10px;margin-right:8px;"/><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
             <table class="table table-condensed" style="width:850px;">
@@ -173,7 +173,6 @@
                         <th class="text-center"><strong>Catalog Number</strong></th>
                          <th class="text-center"><strong>Expiration Date or Condition</strong></th>
                         <th class="text-right"><strong>Qty</strong></th>
-                        <th class="text-center"><strong>UOM</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
                       <!--    <th class="text-right"><strong>Untaxed Offer</strong></th>
                          <th class="text-right"><strong>Taxes</strong></th>-->
@@ -197,9 +196,6 @@
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
                           <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
-                        </td>
-                        <td class="text-center">
-                            <span t-field="order_line.uom_str" />
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_offer_price" widget="monetary"/>
@@ -410,7 +406,7 @@
             <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL EQUIPMENT:</u> OFFER IS BASED UPON SELLER’S LISTED CONDITION OF EQUIPMENT. </strong></p></div>
 
             <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPS’S QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES IN THE SELLER’S STATED CONDITION AND/OR EXPIRATION OF ITEM(S).</strong></p></div>
-            <div><p style="margin: 3px 0;font-size:13px;"><strong>For detailed Terms of Purchase, refer to the SPS website: <a>https://www.shopsps.com/terms_of_purchase</a></strong></p></div>
+            <br></br>
             <div><p style="margin: 3px 0;font-size:13px;"><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
             <div><p style="margin: 3px 0;font-size:13px;"><img src ='/vendor_offer/static/img/unchecked.png' style="height:10px;width:10px;margin-right:8px;"/><strong></strong>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
             <table class="table table-condensed" style="width:850px;">
@@ -449,7 +445,6 @@
                         <th class="text-center"><strong>Catalog Number</strong></th>
                          <th class="text-center"><strong>Expiration Date or Condition</strong></th>
                         <th class="text-right"><strong>Qty</strong></th>
-                        <th class="text-center"><strong>UOM</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
                       <!--    <th class="text-right"><strong>Untaxed Offer</strong></th>
                          <th class="text-right"><strong>Taxes</strong></th>-->
@@ -472,9 +467,6 @@
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
                           <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
-                        </td>
-                        <td class="text-center">
-                            <span t-field="order_line.uom_str" />
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_offer_price" widget="monetary"/>
