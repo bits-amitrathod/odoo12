@@ -318,9 +318,9 @@ class AccountMove(models.Model):
                 invoice_name_split = self.name.split('/')
                 company_address = self.company_id and self.company_id.partner_id
                 customer_po_ref_id = order.customer_po_ref
-                vendor_id_str = customer_po_ref_id and customer_po_ref_id.vendor_id or ''
+                vendor_id_str = customer_po_ref_id and customer_po_ref_id.vendor_id or sftp_conf.sender_id or ''
                 vendor_ref_str = customer_po_ref_id and customer_po_ref_id.vendor_ref or ''
-                vendor_reference = "\nN1^VN^{vendor_ref_str}^92^{vendor_id_str}~".format(vendor_ref_str=vendor_ref_str, vendor_id_str=vendor_id_str) if vendor_ref_str and vendor_id_str else ''
+                vendor_reference = "\nN1^VN^{vendor_ref_str}^92^{vendor_id_str}~".format(vendor_ref_str=vendor_ref_str, vendor_id_str=vendor_id_str)# if vendor_ref_str and vendor_id_str else ''
                 head = HEAD.format(
                     # add1=self.partner_id and self.partner_id.street or '',
                     add2=self.partner_id and self.partner_id.street or '',
