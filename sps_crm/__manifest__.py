@@ -12,7 +12,8 @@
         'crm',
         'purchase',
         'vendor_offer',
-        'account'
+        'account',
+        'sh_activities_management'
     ],
     'data': [
         'security/ir.model.access.csv',

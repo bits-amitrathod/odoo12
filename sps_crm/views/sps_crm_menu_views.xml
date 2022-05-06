@@ -33,8 +33,9 @@
         id="crm_lead_menu_my_activities"
         name="My Activities"
         parent="crm_menu_purchase"
-        action="sales_team.crm_team_salesteams_pipelines_act"
+        action="sh_activities_management.sh_action_my_activities"
         sequence="4"/>
+
     <menuitem
         id="vendors_menu"
         name="Vendors"
@@ -70,5 +71,14 @@
         parent="menu_crm_config_purchase"
         action="sps_crm.crm_purchase_lost_reason_action1"
         sequence="6"/>
+
+    <!-- Change Action of Existing Sale My Activity Menu-->
+    <menuitem
+        id="crm.crm_lead_menu_my_activities"
+        name="My Activities"
+        parent="crm.crm_menu_sales"
+        action="sh_activities_management.sh_action_my_activities"
+        sequence="2"/>
+
 
 </odoo>
