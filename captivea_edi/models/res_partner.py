@@ -19,6 +19,19 @@ class ResPartner(models.Model):
     x_storeid = fields.Char("Store ID")
     x_vendorid = fields.Char("Vendor ID")
     vendor_name = fields.Char('Vendor Name')
+    on_hold_readonly = fields.Boolean('On Hold')
+    facility_tpcd = fields.Selection(string='Facility Type',
+                                     selection=[('health_sys', 'Health System'),
+                                                ('hospital', 'Hospital'),
+                                                ('surgery_cen', 'Surgery Center'),
+                                                ('pur_alli', 'Purchasing Alliance'),
+                                                ('charity', 'Charity'),
+                                                ('broker', 'Broker'),
+                                                ('veterinarian', 'Veterinarian'),
+                                                ('closed', 'Non-Surgery/Closed'),
+                                                ('wholesale', 'Wholesale'),
+                                                ('national_acc', 'National Account Target')],
+                                     tracking=True)
 
     @api.model
     def create(self, vals_list):

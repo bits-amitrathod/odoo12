@@ -83,6 +83,10 @@ class SaleOrder(models.Model):
     order_of = fields.Selection([('true', 'Truecommerce'), ('ghx', 'GHX')])
     x_hdr_ref1 = fields.Char('Order Ref')
     x_hdr_ref2 = fields.Char('Total Amount')
+    original_team_id = fields.Many2one(
+        'crm.team', 'First Sales Team',
+        tracking=True, check_company=True,  # Unrequired company
+        domain="['|', ('company_id', '=', False), ('company_id', '=', company_id)]")    
 
     def write(self, vals):
         res = super(SaleOrder, self).write(vals)
