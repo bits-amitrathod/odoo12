@@ -1,7 +1,7 @@
 import ast
 import datetime
 
-from odoo import api, fields, models, _
+from odoo import api, fields, models, exceptions, _
 from odoo.tools.safe_eval import safe_eval
 from odoo import api, fields, models, tools, SUPERUSER_ID
 import base64
@@ -308,3 +308,42 @@ class Lead(models.Model):
             except Exception as exc:
                 _logger.error('Unable to connect to SMTP Server : %r', exc)
                 response = {'message': 'Unable to connect to SMTP Server'}
+
+class MailActivity1(models.Model):
+    """ Inherited Mail Acitvity to add custom View for Purchase Oppo"""
+    _inherit = 'mail.activity'
+
+    def action_view_activity(self):
+        self.ensure_one()
+        view_id_purchase = self.env.ref(
+            'sps_crm.crm_lead_view_form_purchase').id
+
+        try:
+            model = self.env[self.res_model].browse(
+                self.res_id).check_access_rule('read')
+
+            if self.res_model == "crm.lead":
+                res = self.env['crm.lead'].sudo().search([('id', '=', self.res_id)], limit=1)
+                if res.type == 'purchase_opportunity':
+                    return {
+                        'name': 'Origin Activity',
+                        'view_mode': 'form',
+                        'res_model': self.res_model,
+                        'views': [(view_id_purchase, 'form')],
+                        'res_id': self.res_id,
+                        'type': 'ir.actions.act_window',
+                        'target': 'current',
+                    }
+
+            return{
+                'name': 'Origin Activity',
+                'res_model': self.res_model,
+                'res_id': self.res_id,
+                'view_mode': 'form',
+                'type': 'ir.actions.act_window',
+                'target': 'current',
+            }
+        except exceptions.AccessError:
+            raise exceptions.UserError(
+                _('Assigned user %s has no access to the document and is not able to handle this activity.') %
+                self.env.user.display_name)
