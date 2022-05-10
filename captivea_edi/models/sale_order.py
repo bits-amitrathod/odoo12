@@ -263,16 +263,18 @@ class SaleOrder(models.Model):
                     order_line = ''
                     line_qty = sale_line.product_850_qty
                     line_qty = int(line_qty) if (line_qty - int(line_qty)) == 0 else line_qty
-                    po_line_qty = sale_line.po_log_line_id.quantity if sale_line.po_log_line_id else (sale_line.product_uom_qty)
+                    po_line_qty = sale_line.po_log_line_id.quantity if sale_line.po_log_line_id else (sale_line.product_uom_qty + sale_line.product_850_qty)
                     po_line_qty = int(po_line_qty) if (po_line_qty - int(po_line_qty)) == 0 else po_line_qty
                     if row.sale_line_id.product_uom_qty > 0:
+                        so_line_qty = sale_line.product_uom_qty
+                        so_line_qty = int(so_line_qty) if (so_line_qty - int(so_line_qty)) == 0 else so_line_qty
                         accept_line = "\nACK^{ack_code}^{product_uom_qty}^{uom}{ack_remaining_line}".format(
                             ack_remaining_line='~' if sale_line.ack_code in ['IR',
                                                                                'R2',
                                                                                'R3',
                                                                                'R4'] else f"^068^{commitment_date_with_cc}^^VC^{vendor_part_number}~",
                             uom=row.uom or '',
-                            product_uom_qty=line_qty,
+                            product_uom_qty=so_line_qty,
                             ack_code=sale_line.ack_code
                         )
                         order_line += accept_line
