@@ -80,5 +80,8 @@
         action="sh_activities_management.sh_action_my_activities"
         sequence="2"/>
 
+    <menuitem name="Activity Dashboard" id="sh_activities_management.sh_activity_dashboard" parent="crm.crm_menu_root" sequence="1" groups="sh_activities_management.group_activity_user,sh_activities_management.group_activity_supervisor,sh_activities_management.group_activity_manager" />
+
+
 
 </odoo>
