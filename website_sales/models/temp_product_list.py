@@ -205,20 +205,28 @@ class TempProductList(models.Model):
             _logger.info('- update_quote_my_report_json_list  partner_product_list  : %s', partner_product_list)
 
     def get_product_list(self, partner_id):
-        _logger.info('In get_product_list -  partner_id : %s', str(partner_id))
+        _logger.info('update_quote_my_report_json_list In get_product_list -  partner_id : %s', str(partner_id))
         try:
             if partner_id and partner_id is not None and len(self.product_list) > 0:
                 parent_id = self.get_parent(partner_id)
-                _logger.info('In get_product_list - parent_id : %s', str(parent_id))
+                _logger.info('update_quote_my_report_json_list In get_product_list - parent_id : %s', str(parent_id))
+                _logger.info('update_quote_my_report_json_list In get_product_list - elf.product_list[parent_id] : %s',
+                             self.product_list[parent_id])
+                _logger.info('update_quote_my_report_json_list In get_product_list - '
+                             'self.product_list[parent_id].items() : %s', self.product_list[parent_id].items())
                 if parent_id is not None and len(self.product_list[parent_id]) > 0 and self.product_list[parent_id].items():
-                    _logger.info('In get_product_list - product_list : %s', self.product_list[parent_id])
+                    _logger.info('update_quote_my_report_json_list In get_product_list - product_list : %s', self.product_list[parent_id])
                     product_list_sorted = sorted(self.product_list[parent_id].items(),
                                             key=lambda x: (x[1]['product_brand_name'] if 'product_brand_name' in x[1] else "Test",
                                                             x[1]['product_sku'] if 'product_sku' in x[1] else "Test"))
+                    _logger.info('update_quote_my_report_json_list In get_product_list - product_list_sorted : %s',
+                                 product_list_sorted)
                     return self.product_list[parent_id], product_list_sorted
                 else:
+                    _logger.info('update_quote_my_report_json_list In get_product_list  -- else 212')
                     return [], []
             else:
+                _logger.info('update_quote_my_report_json_list In get_product_list  -- else 215')
                 return [], []
         except Exception as e:
             _logger.error(e)
