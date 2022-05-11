@@ -273,25 +273,25 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
 
     @http.route(['/add/product/cart'], type='http', auth="public", methods=['POST'], website=True, csrf=False)
     def add_product_in_cart(self):
-        _logger.info('In add_product_in_cart')
+        _logger.info('update_quote_my_report_json_list In add_product_in_cart')
         user = request.env['res.users'].search([('id', '=', request.session.uid)])
         try:
             product_list, product_list_sorted = request.env['quotation.product.list'].sudo().get_product_list(user.partner_id.id)
-            _logger.info('Length of product list : %s', str(len(product_list)))
+            _logger.info('update_quote_my_report_json_list Length of product list : %s', str(len(product_list)))
 
             if len(product_list) > 0:
                 for product_id in product_list:
                     if product_list.get(product_id)['quantity'] > 0 and product_list.get(product_id)['select']:
-                        _logger.info('Product added to cart : %s', str(product_list.get(product_id)['product'].id))
-                        _logger.info('Product quantity to cart : %s', str(product_list.get(product_id)['quantity']))
+                        _logger.info('update_quote_my_report_json_list Product added to cart : %s', str(product_list.get(product_id)['product'].id))
+                        _logger.info('update_quote_my_report_json_list Product quantity to cart : %s', str(product_list.get(product_id)['quantity']))
                         self.cart_update_custom(product_list.get(product_id)['product'].id,
                                             product_list.get(product_id)['quantity'])
-                        _logger.info('Above Product Added to cart')
+                        _logger.info('update_quote_my_report_json_list Above Product Added to cart')
                 return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)
             else:
                 return request.redirect("/shop/cart?flag=True&partner=%s" % user.partner_id.id)
         except Exception as e:
-            _logger.info('While adding product in cart exception occurred')
+            _logger.info('update_quote_my_report_json_list While adding product in cart exception occurred')
             _logger.error(e)
 
     def cart_update_custom(self, product_id, add_qty, set_qty=0, **kw):

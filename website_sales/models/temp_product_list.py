@@ -173,16 +173,28 @@ class TempProductList(models.Model):
                     partner_product_list.get(product_id)['select'] = select
 
     def update_quantity_from_list(self, partner_id, product_id, set_qty, select):
+        _logger.info('- update_quote_my_report_json_list  update_quantity_from_list')
         parent_partner_id = self.get_parent(partner_id)
+        _logger.info('- update_quote_my_report_json_list  partner_id  : %s', partner_id)
+        _logger.info('- update_quote_my_report_json_list  parent_partner_id  : %s', parent_partner_id)
         partner_product_list = self.product_list.get(parent_partner_id)
+        _logger.info('- update_quote_my_report_json_list  partner_product_list  : %s', partner_product_list)
         if partner_product_list:
+            _logger.info('- update_quote_my_report_json_list')
+            _logger.info('- update_quote_my_report_json_list  partner_product_list.keys()  : %s', partner_product_list.keys())
+            _logger.info('- update_quote_my_report_json_list  product_id  : %s', product_id)
+            _logger.info('- update_quote_my_report_json_list  set_qty  : %s', set_qty)
+            _logger.info('- update_quote_my_report_json_list  select  : %s', select)
             if product_id is not None and product_id in partner_product_list.keys() and set_qty is not None:
                 partner_product_list.get(product_id)['quantity'] = set_qty
+                _logger.info('- update_quote_my_report_json_list  set_qty  done')
             if product_id is not None and product_id in partner_product_list.keys() and select is not None:
                 partner_product_list.get(product_id)['select'] = select
+                _logger.info('- update_quote_my_report_json_list  select  done')
             elif product_id is None and select is not None:
                 for product_id in partner_product_list:
                     partner_product_list.get(product_id)['select'] = select
+            _logger.info('- update_quote_my_report_json_list  partner_product_list  : %s', partner_product_list)
 
     def get_product_list(self, partner_id):
         _logger.info('In get_product_list -  partner_id : %s', str(partner_id))
