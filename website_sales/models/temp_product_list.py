@@ -177,6 +177,7 @@ class TempProductList(models.Model):
         parent_partner_id = self.get_parent(partner_id)
         _logger.info('- update_quote_my_report_json_list  partner_id  : %s', partner_id)
         _logger.info('- update_quote_my_report_json_list  parent_partner_id  : %s', parent_partner_id)
+        _logger.info('- update_quote_my_report_json_list  self.product_list  : %s', self.product_list)
         partner_product_list = self.product_list.get(parent_partner_id)
         _logger.info('- update_quote_my_report_json_list  partner_product_list  : %s', partner_product_list)
         if partner_product_list:
