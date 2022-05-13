@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="view_tree_poack_log_lines" model="ir.ui.view">
+        <field name="name">view.tree.poack.log.lines</field>
+        <field name="model">setu.poack.export.log.line</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="accounting_id"/>
+                <field name="po_number"/>
+                <field name="product_template_id"/>
+                <field name="price_unit"/>
+                <field name="product_uom_qty"/>
+                <field name="product_uom"/>
+                <field name="po_date"/>
+                <field name="company_id"/>
+                <field name="commitment_date"/>
+                <field name="city"/>
+                <field name="state"/>
+                <field name="country"/>
+                <field name="x_edi_status"/>
+                <field name="x_edi_po_line_number"/>
+                <field name="qty"/>
+                <field name="uom"/>
+            </tree>
+        </field>
+    </record>
+</odoo>
