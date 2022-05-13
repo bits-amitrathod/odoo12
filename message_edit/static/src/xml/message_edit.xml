@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-inherit="mail.Message" t-inherit-mode="extension" t-name="Message Edit Icon">
+        <xpath expr="//div[hasclass('o_Message_sidebarCommands')]" position="before">
+            <span class="m_edit_sidebar" t-if="message and (message.editableSubtype or message.message_type != 'notification')">
+                <i class="fa fa-edit"
+                   t-att-class="{
+                        'o-mobile': env.messaging.device.isMobile,
+                        'm_edit_already_changed': message.messageEditChanged,
+                    }" 
+                   t-on-click="_onMessageEdit"
+                 > </i>
+            </span>           
+        </xpath>
+        <xpath expr="//div[hasclass('o_Message_date') and hasclass('o_Message_sidebarItem')]" position="attributes">
+            <attribute name="style">display: none;</attribute>
+        </xpath>
+        <xpath expr="//div[hasclass('o_Message_headerCommands')]" position="before">
+            <span class="m_edit_sidebar" t-if="message and (message.editableSubtype or message.message_type != 'notification')">
+                <i class="fa fa-edit"
+                   t-att-class="{
+                        'o-mobile': env.messaging.device.isMobile,
+                        'm_edit_already_changed': message.messageEditChanged,
+                    }" 
+                   t-on-click="_onMessageEdit"
+                 > </i>
+            </span>                      
+        </xpath>
+    </t>
+
+</templates>

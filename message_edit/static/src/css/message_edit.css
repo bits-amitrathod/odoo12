@@ -1,0 +1,9 @@
+span.m_edit_sidebar {
+    margin-left: 0.4rem;
+    margin-right: 0.4rem;
+    cursor: pointer;
+    color: #ced4da;
+}
+i.m_edit_already_changed {
+    color: #dc3545;
+}
