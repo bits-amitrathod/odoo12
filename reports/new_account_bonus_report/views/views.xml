@@ -18,6 +18,8 @@
                     <field name="sale_order_id" optional="show"/>
                     <field name="invoice_date" widget="date" optional="show"/>
                     <field name="amount_total" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                    <field name="amount_total_thirteen" widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+
                     <field name="months" optional="show"/>
                     <field name="invoice_status" optional="show"/>
                     <field name="invoice_state" optional="show"/>
