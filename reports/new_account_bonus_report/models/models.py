@@ -52,7 +52,7 @@ class NewAccountBonusReport(models.Model):
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')
         end_date_13 = self.env.context.get('end_date_13')
-        end_date_13_12months = end_date_13 + datetime.timedelta(days=365)
+        end_date_13_12months = self.env.context.get('end_date_13_12months')
         business_development_id = self.env.context.get('business_development')
         key_account_id = self.env.context.get('key_account')
 
