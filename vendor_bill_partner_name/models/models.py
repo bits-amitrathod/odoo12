@@ -275,14 +275,10 @@ class AccountMoveVendorBill(models.Model):
         for obj in res_partner:
             if obj.is_parent:
                 for child_id in obj.child_ids:
-                    print("1")
-                    print(child_id)
+                    if child_id.type == "other":
+                        data.partner_id = child_id.id
             else:
                 for child_id in obj.parent_id.child_ids:
-                    print("2")
                     if child_id.type == "other":
-                        print(child_id)
                         data.partner_id = child_id.id
-        # for vals in vals_list:
-        #     move = self.env['account.move'].browse(vals['move_id'])
         return data
