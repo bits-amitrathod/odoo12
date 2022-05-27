@@ -263,3 +263,22 @@ class hide_state_code(models.Model):
         for record in self:
             result.append((record.id, "{}".format(record.name)))
         return result
+
+
+class AccountMoveVendorBill(models.Model):
+    _inherit = "account.move"
+
+    def create(self, vals_list):
+
+        data = super(AccountMoveVendorBill, self).create(vals_list)
+        res_partner = data.partner_id
+        for obj in res_partner:
+            if obj.is_parent:
+                for child_id in obj.child_ids:
+                    if child_id.type == "other":
+                        data.partner_id = child_id.id
+            else:
+                for child_id in obj.parent_id.child_ids:
+                    if child_id.type == "other":
+                        data.partner_id = child_id.id
+        return data
