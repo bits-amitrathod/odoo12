@@ -265,20 +265,20 @@ class hide_state_code(models.Model):
         return result
 
 
-# class AccountMoveVendorBill(models.Model):
-#     _inherit = "account.move"
-#
-#     def create(self, vals_list):
-#         data = super(AccountMoveVendorBill, self).create(vals_list)
-#         if self.env.context.get('create_bill'):
-#             res_partner = data.partner_id
-#             for obj in res_partner:
-#                 if obj.is_parent:
-#                     for child_id in obj.child_ids:
-#                         if child_id.type == "other":
-#                             data.partner_id = child_id.id
-#                 else:
-#                     for child_id in obj.parent_id.child_ids:
-#                         if child_id.type == "other":
-#                             data.partner_id = child_id.id
-#         return data
+class AccountMoveVendorBill(models.Model):
+    _inherit = "account.move"
+
+    def create(self, vals_list):
+        data = super(AccountMoveVendorBill, self).create(vals_list)
+        if self.env.context.get('create_bill'):
+            res_partner = data.partner_id
+            for obj in res_partner:
+                if obj.is_parent:
+                    for child_id in obj.child_ids:
+                        if child_id.type == "other":
+                            data.partner_id = child_id.id
+                else:
+                    for child_id in obj.parent_id.child_ids:
+                        if child_id.type == "other":
+                            data.partner_id = child_id.id
+        return data
