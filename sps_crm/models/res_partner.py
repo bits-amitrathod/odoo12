@@ -102,80 +102,26 @@ class externalfiels(models.Model):
         partner_id = self.ids[0]
         partner_link = self.env['partner.link.tracker']
         link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
-        if link_partner_record:
-            # update field's value
-            link_partner_record.update({
-                'purchase':self.purchase,
-                'edomechanicals': self.edomechanicals,
-                'orthopedic': self.orthopedic,
-                'suture': self.suture,
-                'gynecological': self.gynecological,
-                'uology': self.uology,
-                'edoscopy': self.edoscopy,
-                'ent': self.ent,
-                'woundcare': self.woundcare,
-                'bariatric': self.bariatric,
-                'generalnotes': self.generalnotes,
-                'facilityERP': self.facilityERP,
-                'description': self.description,
-                'captis': self.captis,
-                'illucient': self.illucient,
-                'capstone_health_aliance': self.capstone_health_aliance,
-                'salina_contract': self.salina_contract,
-                'mha': self.mha,
-                'veteran_affairs': self.veteran_affairs,
-                'partners_co_operative': self.partners_co_operative,
-                'magnet_group': self.magnet_group,
-                'fsasc': self.fsasc,
-                'uspi': self.uspi,
-                'surgery_partners': self.surgery_partners,
-                'intalere_contract': self.intalere_contract,
-                'premier': self.premier,
-                'email_opt_out': self.email_opt_out,
-                'facility_type':self.facility_type,
-                'time_zone': self.time_zone,
-                'bed_size': self.bed_size,
-                'purchase_history_date':self.purchase_history_date,
-            })
-        else:
-            # Create new record/ Entry
-            partner_link.create({
-                'partner_id': partner_id,
-                'purchase': self.purchase,
-                'edomechanicals': self.edomechanicals,
-                'orthopedic': self.orthopedic,
-                'suture': self.suture,
-                'gynecological': self.gynecological,
-                'uology': self.uology,
-                'edoscopy': self.edoscopy,
-                'ent': self.ent,
-                'woundcare': self.woundcare,
-                'bariatric': self.bariatric,
-                'generalnotes': self.generalnotes,
-                'facilityERP': self.facilityERP,
-                'description': self.description,
-                'captis': self.captis,
-                'illucient': self.illucient,
-                'capstone_health_aliance': self.capstone_health_aliance,
-                'salina_contract': self.salina_contract,
-                'mha': self.mha,
-                'veteran_affairs': self.veteran_affairs,
-                'partners_co_operative': self.partners_co_operative,
-                'magnet_group': self.magnet_group,
-                'fsasc': self.fsasc,
-                'uspi': self.uspi,
-                'surgery_partners': self.surgery_partners,
-                'intalere_contract': self.intalere_contract,
-                'premier': self.premier,
-                'email_opt_out': self.email_opt_out,
-                'facility_type': self.facility_type,
-                'time_zone': self.time_zone,
-                'bed_size': self.bed_size,
-                'purchase_history_date': self.purchase_history_date,
-            })
-
-
-
+        vals = {
+            'partner_id': partner_id,'purchase': self.purchase,
+            'edomechanicals': self.edomechanicals,'orthopedic': self.orthopedic,
+            'suture': self.suture,'gynecological': self.gynecological,
+            'uology': self.uology,'edoscopy': self.edoscopy,
+            'ent': self.ent,'woundcare': self.woundcare,
+            'bariatric': self.bariatric,'generalnotes': self.generalnotes,
+            'facilityERP': self.facilityERP,'description': self.description,
+            'captis': self.captis,'illucient': self.illucient,
+            'capstone_health_aliance': self.capstone_health_aliance,
+            'salina_contract': self.salina_contract,'mha': self.mha,
+            'veteran_affairs': self.veteran_affairs,'partners_co_operative': self.partners_co_operative,
+            'magnet_group': self.magnet_group,'fsasc': self.fsasc,
+            'uspi': self.uspi,'surgery_partners': self.surgery_partners,
+            'intalere_contract': self.intalere_contract,'premier': self.premier,
+            'email_opt_out': self.email_opt_out,'facility_type': self.facility_type,
+            'time_zone': self.time_zone,'bed_size': self.bed_size,
+            'purchase_history_date': self.purchase_history_date,
+        }
+        link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
 
 class PartnerLinkTracker(models.Model):
