@@ -23,10 +23,16 @@ class InventoryExe(models.Model):
 
     @api.onchange('lot_id_po')
     def _onchange_lot_id_po(self):
+        _logger.info("check_barcode_date _onchange_lot_id_po")
         self.lot_id = self.lot_id_po
+
+    # @api.onchange('qty_done')
+    # def _onchange_qty_done(self):
+    #     _logger.info("check_barcode_date qty_done")
 
     @api.onchange('lot_use_date')
     def _onchange_lot_use_date(self):
+        _logger.info("check_barcode_date _onchange_lot_use_date")
         if self.lot_id.id and self.lot_use_date:
             values = {}
             values = self._get_updated_date(self.lot_use_date, values)
@@ -34,6 +40,7 @@ class InventoryExe(models.Model):
 
     @api.onchange('expiration_date')
     def _onchange_lot_use_date2(self):
+        _logger.info("check_barcode_date _onchange_lot_use_date2")
         if self.lot_id_po.id and self.expiration_date:
             values = {}
             values = self._get_updated_date(self.expiration_date, values)
@@ -51,6 +58,16 @@ class InventoryExe(models.Model):
         vals.update({'use_date': str(lot_use_date), 'alert_date': str(alert_date), 'expiration_date': str(lot_use_date),'removal_date': str(lot_use_date)})
 
         return vals
+
+    def write(self, vals):
+        _logger.info("check_barcode_date write")
+        record = super(InventoryExe, self).write(vals)
+        if self.env.context.get('picking_type_code') and self.env.context.get('picking_type_code') == 'incoming':
+            if self.lot_id.id and self.expiration_date:
+                values = {}
+                values = self._get_updated_date(self.expiration_date, values)
+                self.env['stock.production.lot'].search([('id', '=', self.lot_id.id)]).write(values)
+        return record
 
     @api.onchange('lot_name', 'lot_id','lot_expired_date')
     def _onchange_serial_number(self):
