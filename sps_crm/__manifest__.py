@@ -25,6 +25,7 @@
         'views/sps_crm_menu_views.xml',
         'views/email_template.xml',
         'views/mail_activity.xml',
+        'views/customer_view.xml',
 
     ],
     'demo': [

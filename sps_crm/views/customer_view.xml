@@ -1,0 +1,160 @@
+<odoo>
+    <data>
+       <record id="view_form_external_field1" model="ir.ui.view">
+            <field name="name">External Fields</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
+                    <page name="externalfields" string="Details"
+                          attrs="{'invisible':['|', '|', ('is_parent', '==', False), ('customer_rank', '==', 0), ('is_parent_assigned', '==', False)]}">
+<!--                            <field name="partner_id"/>-->
+                        <group>
+                            <group>
+                            <field name="gpo"/>
+                            <field name="purchase"/>
+                            <field name="mesh"/>
+                            <field name="edomechanicals"/>
+                            <field name="orthopedic"/>
+                            <field name="facilityERP"/>
+                            <field name="description"/>
+                            <field name="suture" />
+                            <field name="gynecological"/>
+                            <field name="uology"/>
+                            <field name="edoscopy"/>
+                            <field name="woundcare"/>
+                            <field name="bariatric"/>
+                            <field name="generalnotes"/>
+                            </group>
+                            <group>
+                            <field name="captis"/>
+                            <field name="illucient"/>
+                            <field name="capstone_health_aliance"/>
+                            <field name="salina_contract"/>
+                            <field name="mha"/>
+                            <field name="veteran_affairs"/>
+                            <field name="partners_co_operative"/>
+                            <field name="magnet_group" />
+                            <field name="fsasc"/>
+                            <field name="uspi"/>
+                            <field name="surgery_partners"/>
+                            <field name="intalere_contract"/>
+                            <field name="premier"/>
+                            <field name="email_opt_out"/>
+                            <field name="time_zone"/>
+                            <field name="facility_type"/>
+                            <field name="bed_size"/>
+                            <field name="purchase_history_date"/>
+
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_form_external_field_form1" model="ir.ui.view">
+            <field name="name">external.fields.form</field>
+            <field name="model">partner.link.tracker</field>
+            <field name="arch" type="xml">
+                  <form string="Optional Fields" >
+                      <group>
+                                    <group>
+                                        <field name="partner_id"/>
+                                        <field name="gpo"/>
+                                        <field name="purchase"/>
+                                        <field name="mesh"/>
+                                        <field name="edomechanicals"/>
+                                        <field name="orthopedic"/>
+                                        <field name="facilityERP"/>
+                                        <field name="description"/>
+                                        <field name="suture" />
+                                        <field name="gynecological"/>
+                                        <field name="uology"/>
+                                        <field name="edoscopy"/>
+                                        <field name="woundcare"/>
+                                        <field name="bariatric"/>
+                                        <field name="generalnotes"/>
+                                        <field name="time_zone"/>
+                                        <field name="facility_type"/>
+                                        <field name="bed_size"/>
+                                        <field name="purchase_history_date"/>
+                                    </group>
+                                    <group>
+                                       <field name="captis"/>
+                                        <field name="illucient"/>
+                                        <field name="capstone_health_aliance"/>
+                                        <field name="salina_contract"/>
+                                        <field name="mha"/>
+                                        <field name="veteran_affairs"/>
+                                        <field name="partners_co_operative"/>
+                                        <field name="magnet_group" />
+                                        <field name="fsasc"/>
+                                        <field name="uspi"/>
+                                        <field name="surgery_partners"/>
+                                        <field name="intalere_contract"/>
+                                        <field name="premier"/>
+                                        <field name="email_opt_out"/>
+                                    </group>
+                      </group>
+                  </form>
+            </field>
+        </record>
+        <record id="view_form_external_field_tree1" model="ir.ui.view">
+            <field name="name">external.fields.tree</field>
+            <field name="model">partner.link.tracker</field>
+            <field name="arch" type="xml">
+                  <tree string="Optional Fields" create="true" edit="false" >
+
+                                        <field name="partner_id"/>
+                                        <field name="gpo"/>
+                                        <field name="purchase"/>
+                                        <field name="mesh"/>
+                                        <field name="edomechanicals"/>
+                                        <field name="orthopedic"/>
+                                        <field name="facilityERP"/>
+                                        <field name="description"/>
+                                        <field name="suture" />
+                                        <field name="gynecological"/>
+                                        <field name="uology"/>
+                                        <field name="edoscopy"/>
+                                        <field name="woundcare"/>
+                                        <field name="bariatric"/>
+                                        <field name="generalnotes"/>
+                                       <field name="captis"/>
+                                        <field name="illucient"/>
+                                        <field name="capstone_health_aliance"/>
+                                        <field name="salina_contract"/>
+                                        <field name="mha"/>
+                                        <field name="veteran_affairs"/>
+                                        <field name="partners_co_operative"/>
+                                        <field name="magnet_group" />
+                                        <field name="fsasc"/>
+                                        <field name="uspi"/>
+                                        <field name="surgery_partners"/>
+                                        <field name="intalere_contract"/>
+                                        <field name="premier"/>
+                                        <field name="email_opt_out"/>
+                                        <field name="time_zone"/>
+                                        <field name="facility_type"/>
+                                        <field name="bed_size"/>
+                                        <field name="purchase_history_date"/>
+                  </tree>
+            </field>
+        </record>
+
+        <record id="customer_extra_fields_action1" model="ir.actions.act_window">
+            <field name="name">Details Fields</field>
+            <field name="res_model">partner.link.tracker</field>
+            <field name="view_mode">tree,form</field>
+       </record>
+
+        <menuitem
+        id="menu_crm_extra_fields1"
+        name="Details"
+        parent="menu_crm_config_purchase"
+        action="sps_crm.customer_extra_fields_action1"
+        sequence="6"/>
+ </data>
+</odoo>
+

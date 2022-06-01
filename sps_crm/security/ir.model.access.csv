@@ -10,3 +10,6 @@ access_purchase_crm_tag_manager,crm.purchase.tag,model_crm_purchase_tag,sales_te
 access_purchase_crm_tag_salesman,crm.purchase.tag,model_crm_purchase_tag,sales_team.group_sale_salesman,1,0,0,0
 access_purchase_crm_tag_user,crm.purchase.tag,model_crm_purchase_tag,base.group_user,1,0,0,0
 
+access_customer_crm_tag_manager,partner.link.tracker,model_partner_link_tracker,sales_team.group_sale_manager,1,1,1,1
+access_customer_crm_tag_salesman,partner.link.tracker,model_partner_link_tracker,sales_team.group_sale_salesman,1,0,0,0
+access_customer_crm_tag_user,partner.link.tracker,model_partner_link_tracker,base.group_user,1,0,0,0
