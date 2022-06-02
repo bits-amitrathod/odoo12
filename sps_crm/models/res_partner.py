@@ -6,7 +6,13 @@ _logger = logging.getLogger(__name__)
 class externalfiels(models.Model):
     _inherit = "res.partner"
 
-    link_code_ids = fields.Many2one(comodel_name='partner.link.tracker', relation='partner_id', string='Details Fields', index=True, ondelete='cascade')
+    # def pro_search(self, operator, value):
+    #     if operator == '=':
+    #         operator = '='
+    #         name = self.env['partner.link.tracker'].search([('purchase', operator, value)], limit=None)
+    #     return [(self.gpo, operator, value)]
+
+    # link_code_ids = fields.Many2one(comodel_name='partner.link.tracker', relation='partner_id', string='Details Fields', index=True, ondelete='cascade')
     gpo = fields.Char(string="GPO", store=False, compute="_compute_details_field")
     purchase = fields.Char("Purchasing", store=False)
     mesh = fields.Char("Mesh", store=False)
