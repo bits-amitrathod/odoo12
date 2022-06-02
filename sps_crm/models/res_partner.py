@@ -6,15 +6,21 @@ _logger = logging.getLogger(__name__)
 class externalfiels(models.Model):
     _inherit = "res.partner"
 
-    # def pro_search(self, operator, value):
-    #     if operator == '=':
-    #         operator = '='
-    #         name = self.env['partner.link.tracker'].search([('purchase', operator, value)], limit=None)
-    #     return [(self.gpo, operator, value)]
+    def pro_search_for_gpo(self, operator, value):
+        if operator == '=':
+            operator = '='
+            name = self.env['partner.link.tracker'].search([('gpo', operator, value)], limit=None)
+            return [('id', 'in', [a.partner_id.id for a in name])]
+
+    def pro_search_for_purchase(self, operator, value):
+        if operator == '=':
+            operator = '='
+            name = self.env['partner.link.tracker'].search([('purchase', operator, value)], limit=None)
+            return [('id', 'in', [a.partner_id.id for a in name])]
 
     # link_code_ids = fields.Many2one(comodel_name='partner.link.tracker', relation='partner_id', string='Details Fields', index=True, ondelete='cascade')
-    gpo = fields.Char(string="GPO", store=False, compute="_compute_details_field")
-    purchase = fields.Char("Purchasing", store=False)
+    gpo = fields.Char(string="GPO", store=False, compute="_compute_details_field", search='pro_search_for_gpo')
+    purchase = fields.Char("Purchasing", store=False, search='pro_search_for_purchase')
     mesh = fields.Char("Mesh", store=False)
     edomechanicals = fields.Char("Endomechanicals", store=False)
     orthopedic = fields.Char("Orthopedic", store=False)
