@@ -1,4 +1,5 @@
 from odoo import api,fields, models, tools
+from odoo.osv import expression
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -7,54 +8,134 @@ class externalfiels(models.Model):
     _inherit = "res.partner"
 
     def pro_search_for_gpo(self, operator, value):
-        if operator == '=':
-            operator = '='
-            name = self.env['partner.link.tracker'].search([('gpo', operator, value)], limit=None)
-            return [('id', 'in', [a.partner_id.id for a in name])]
+        return self.generic_char_search(operator, value, 'gpo')
 
     def pro_search_for_purchase(self, operator, value):
-        if operator == '=':
-            operator = '='
-            name = self.env['partner.link.tracker'].search([('purchase', operator, value)], limit=None)
-            return [('id', 'in', [a.partner_id.id for a in name])]
+        return self.generic_char_search(operator, value, 'purchase')
 
     def pro_search_for_mesh(self, operator, value):
-        if operator == '=':
-            operator = '='
-            name = self.env['partner.link.tracker'].search([('mesh', operator, value)], limit=None)
-            return [('id', 'in', [a.partner_id.id for a in name])]
+        return self.generic_char_search(operator, value, 'mesh')
+
+    def pro_search_for_edomechanicals(self, operator, value):
+        return self.generic_char_search(operator, value, 'edomechanicals')
+
+    def pro_search_for_orthopedic(self, operator, value):
+        return self.generic_char_search(operator, value, 'orthopedic')
+
+    def pro_search_for_suture(self, operator, value):
+        return self.generic_char_search(operator, value, 'suture')
+
+    def pro_search_for_gynecological(self, operator, value):
+        return self.generic_char_search(operator, value, 'gynecological')
+
+    def pro_search_for_uology(self, operator, value):
+        return self.generic_char_search(operator, value, 'uology')
+
+    def pro_search_for_edoscopy(self, operator, value):
+        return self.generic_char_search(operator, value, 'edoscopy')
+
+    def pro_search_for_ent(self, operator, value):
+        return self.generic_char_search(operator, value, 'ent')
+
+    def pro_search_for_woundcare(self, operator, value):
+        return self.generic_char_search(operator, value, 'woundcare')
+
+    def pro_search_for_bariatric(self, operator, value):
+        return self.generic_char_search(operator, value, 'bariatric')
+
+    def pro_search_for_generalnotes(self, operator, value):
+        return self.generic_char_search(operator, value, 'generalnotes')
+
+    def pro_search_for_facilityERP(self, operator, value):
+        return self.generic_char_search(operator, value, 'facilityERP')
+
+    def pro_search_for_description(self, operator, value):
+        return self.generic_char_search(operator, value, 'description')
+
+    def pro_search_for_captis(self, operator, value):
+        return self.generic_char_search(operator, value, 'captis')
+
+    def pro_search_for_illucient(self, operator, value):
+        return self.generic_char_search(operator, value, 'illucient')
+
+    def pro_search_for_capstone_health_aliance(self, operator, value):
+        return self.generic_char_search(operator, value, 'capstone_health_aliance')
+
+    def pro_search_for_salina_contract(self, operator, value):
+        return self.generic_char_search(operator, value, 'salina_contract')
+
+    def pro_search_for_mha(self, operator, value):
+        return self.generic_char_search(operator, value, 'mha')
+
+    def pro_search_for_veteran_affairs(self, operator, value):
+        return self.generic_char_search(operator, value, 'veteran_affairs')
+
+    def pro_search_for_partners_co_operative(self, operator, value):
+        return self.generic_char_search(operator, value, 'partners_co_operative')
+
+    def pro_search_for_magnet_group(self, operator, value):
+        return self.generic_char_search(operator, value, 'magnet_group')
+
+    def pro_search_for_fsasc(self, operator, value):
+        return self.generic_char_search(operator, value, 'fsasc')
+
+    def pro_search_for_uspi(self, operator, value):
+        return self.generic_char_search(operator, value, 'uspi')
+
+    def pro_search_for_surgery_partners(self, operator, value):
+        return self.generic_char_search(operator, value, 'surgery_partners')
+
+    def pro_search_for_intalere_contract(self, operator, value):
+        return self.generic_char_search(operator, value, 'intalere_contract')
+
+    def pro_search_for_premier(self, operator, value):
+        return self.generic_char_search(operator, value, 'premier')
+
+    def pro_search_for_email_opt_out(self, operator, value):
+        return self.generic_char_search(operator, value, 'email_opt_out')
+
+
+
+    def generic_char_search(self, operator, value, field):
+        partner_link = self.env['partner.link.tracker']
+        if operator in ['=', '!=', 'like', 'ilike', 'not ilike', 'not like']:
+            record = partner_link.search([(field, operator, value)], limit=None)
+            return [('id', 'in', [a.partner_id.id for a in record])]
+        else:
+            return expression.FALSE_DOMAIN
+
 
     # link_code_ids = fields.Many2one(comodel_name='partner.link.tracker', relation='partner_id', string='Details Fields', index=True, ondelete='cascade')
     gpo = fields.Char(string="GPO", store=False, compute="_compute_details_field", search='pro_search_for_gpo')
     purchase = fields.Char("Purchasing", store=False, search='pro_search_for_purchase')
     mesh = fields.Char("Mesh", store=False, search='pro_search_for_mesh')
-    edomechanicals = fields.Char("Endomechanicals", store=False)
-    orthopedic = fields.Char("Orthopedic", store=False)
-    suture = fields.Char("Suture", store=False)
-    gynecological = fields.Char("Gynecological",store=False)
-    uology = fields.Char("Urology", store=False)
-    edoscopy = fields.Char("GI/Endoscopy", store=False)
-    ent = fields.Char("ENT", store=False)
-    woundcare = fields.Char("Wound Care", store=False)
-    bariatric = fields.Char("Bariatric", store=False)
-    generalnotes = fields.Char("General Notes", store=False)
-    facilityERP = fields.Char("Facility ERP", store=False)
-    description = fields.Char("Description", store=False)
+    edomechanicals = fields.Char("Endomechanicals", store=False, search='pro_search_for_edomechanicals')
+    orthopedic = fields.Char("Orthopedic", store=False, search='pro_search_for_orthopedic')
+    suture = fields.Char("Suture", store=False, search='pro_search_for_suture')
+    gynecological = fields.Char("Gynecological",store=False, search='pro_search_for_gynecological')
+    uology = fields.Char("Urology", store=False, search='pro_search_for_uology')
+    edoscopy = fields.Char("GI/Endoscopy", store=False, search='pro_search_for_edoscopy')
+    ent = fields.Char("ENT", store=False, search='pro_search_for_ent')
+    woundcare = fields.Char("Wound Care", store=False, search='pro_search_for_woundcare')
+    bariatric = fields.Char("Bariatric", store=False, search='pro_search_for_bariatric')
+    generalnotes = fields.Char("General Notes", store=False, search='pro_search_for_generalnotes')
+    facilityERP = fields.Char("Facility ERP", store=False, search='pro_search_for_facilityERP')
+    description = fields.Char("Description", store=False, search='pro_search_for_description')
 
-    captis = fields.Boolean("Captis 2.0 EIS", default=False, store=False)
-    illucient = fields.Boolean("Illucient", default=False, store=False)
-    capstone_health_aliance = fields.Boolean("Capstone Health Alliance #CAP-RB-013", default=False, store=False)
-    salina_contract = fields.Boolean("Salina Contract", default=False, store=False)
-    mha = fields.Boolean("MHA", default=False, store=False)
-    veteran_affairs = fields.Boolean("Veteran Affairs", default=False, store=False)
-    partners_co_operative = fields.Boolean("Partners Cooperative Inc.", default=False, store=False)
-    magnet_group = fields.Boolean("MAGNET Group", default=False, store=False)
-    fsasc = fields.Boolean("FSASC", default=False, store=False)
-    uspi = fields.Boolean("USPI", default=False, store=False)
-    surgery_partners = fields.Boolean("Surgery Partners", default=False, store=False)
-    intalere_contract = fields.Boolean("Intalere Contract #: DH10128", default=False, store=False)
-    premier = fields.Boolean("Premier (GPO)", default=False, store=False)
-    email_opt_out = fields.Boolean("Email Opt Out", default=False, store=False)
+    captis = fields.Boolean("Captis 2.0 EIS", default=False, store=False, search='pro_search_for_captis')
+    illucient = fields.Boolean("Illucient", default=False, store=False, search='pro_search_for_illucient')
+    capstone_health_aliance = fields.Boolean("Capstone Health Alliance #CAP-RB-013", default=False, store=False, search='pro_search_for_capstone_health_aliance')
+    salina_contract = fields.Boolean("Salina Contract", default=False, store=False, search='pro_search_for_salina_contract')
+    mha = fields.Boolean("MHA", default=False, store=False, search='pro_search_for_mha')
+    veteran_affairs = fields.Boolean("Veteran Affairs", default=False, store=False, search='pro_search_for_veteran_affairs')
+    partners_co_operative = fields.Boolean("Partners Cooperative Inc.", default=False, store=False, search='pro_search_for_partners_co_operative')
+    magnet_group = fields.Boolean("MAGNET Group", default=False, store=False, search='pro_search_for_magnet_group')
+    fsasc = fields.Boolean("FSASC", default=False, store=False, search='pro_search_for_fsasc')
+    uspi = fields.Boolean("USPI", default=False, store=False, search='pro_search_for_uspi')
+    surgery_partners = fields.Boolean("Surgery Partners", default=False, store=False, search='pro_search_for_surgery_partners')
+    intalere_contract = fields.Boolean("Intalere Contract #: DH10128", default=False, store=False, search='pro_search_for_intalere_contract')
+    premier = fields.Boolean("Premier (GPO)", default=False, store=False, search='pro_search_for_premier')
+    email_opt_out = fields.Boolean("Email Opt Out", default=False, store=False, search='pro_search_for_email_opt_out')
 
     time_zone = fields.Selection([
         ('est', 'EST'),
@@ -115,7 +196,7 @@ class externalfiels(models.Model):
             else:
                 record.gpo =''
 
-    @api.onchange('gpo','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
+    @api.onchange('gpo','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
     def _onchange_fields_save(self):
         partner_id = self.ids[0]
         partner_link = self.env['partner.link.tracker']
@@ -137,7 +218,7 @@ class externalfiels(models.Model):
             'intalere_contract': self.intalere_contract,'premier': self.premier,
             'email_opt_out': self.email_opt_out,'facility_type': self.facility_type,
             'time_zone': self.time_zone,'bed_size': self.bed_size,
-            'purchase_history_date': self.purchase_history_date,
+            'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
         }
         link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
