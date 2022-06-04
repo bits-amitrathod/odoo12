@@ -314,6 +314,14 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 'expedited_shipping': value
             });
         });
+
+        $("#po_submit").click(function(ev) {
+          var $button = $(ev.currentTarget).closest('[type="submit"]');
+          var $form = $(ev.currentTarget).closest('form');
+          $button.attr('disabled', true);
+          $form.submit();
+        });
+
     });
 
 
