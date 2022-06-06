@@ -149,12 +149,12 @@
             <field name="view_mode">tree,form</field>
        </record>
 
-        <menuitem
+        <!--<menuitem
         id="menu_crm_extra_fields1"
         name="Details"
         parent="menu_crm_config_purchase"
         action="sps_crm.customer_extra_fields_action1"
-        sequence="6"/>
+        sequence="6"/>-->
  </data>
 </odoo>
 
