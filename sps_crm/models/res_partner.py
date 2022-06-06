@@ -198,29 +198,30 @@ class externalfiels(models.Model):
 
     @api.onchange('gpo','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
     def _onchange_fields_save(self):
-        partner_id = self.ids[0]
-        partner_link = self.env['partner.link.tracker']
-        link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
-        vals = {
-            'partner_id': partner_id,'purchase': self.purchase,
-            'edomechanicals': self.edomechanicals,'orthopedic': self.orthopedic,
-            'suture': self.suture,'gynecological': self.gynecological,
-            'uology': self.uology,'edoscopy': self.edoscopy,
-            'ent': self.ent,'woundcare': self.woundcare,
-            'bariatric': self.bariatric,'generalnotes': self.generalnotes,
-            'facilityERP': self.facilityERP,'description': self.description,
-            'captis': self.captis,'illucient': self.illucient,
-            'capstone_health_aliance': self.capstone_health_aliance,
-            'salina_contract': self.salina_contract,'mha': self.mha,
-            'veteran_affairs': self.veteran_affairs,'partners_co_operative': self.partners_co_operative,
-            'magnet_group': self.magnet_group,'fsasc': self.fsasc,
-            'uspi': self.uspi,'surgery_partners': self.surgery_partners,
-            'intalere_contract': self.intalere_contract,'premier': self.premier,
-            'email_opt_out': self.email_opt_out,'facility_type': self.facility_type,
-            'time_zone': self.time_zone,'bed_size': self.bed_size,
-            'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
-        }
-        link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+        if len(self.ids):
+            partner_id = self.ids[0]
+            partner_link = self.env['partner.link.tracker']
+            link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
+            vals = {
+                'partner_id': partner_id,'purchase': self.purchase,
+                'edomechanicals': self.edomechanicals,'orthopedic': self.orthopedic,
+                'suture': self.suture,'gynecological': self.gynecological,
+                'uology': self.uology,'edoscopy': self.edoscopy,
+                'ent': self.ent,'woundcare': self.woundcare,
+                'bariatric': self.bariatric,'generalnotes': self.generalnotes,
+                'facilityERP': self.facilityERP,'description': self.description,
+                'captis': self.captis,'illucient': self.illucient,
+                'capstone_health_aliance': self.capstone_health_aliance,
+                'salina_contract': self.salina_contract,'mha': self.mha,
+                'veteran_affairs': self.veteran_affairs,'partners_co_operative': self.partners_co_operative,
+                'magnet_group': self.magnet_group,'fsasc': self.fsasc,
+                'uspi': self.uspi,'surgery_partners': self.surgery_partners,
+                'intalere_contract': self.intalere_contract,'premier': self.premier,
+                'email_opt_out': self.email_opt_out,'facility_type': self.facility_type,
+                'time_zone': self.time_zone,'bed_size': self.bed_size,
+                'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
+            }
+            link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
 
 class PartnerLinkTracker(models.Model):
