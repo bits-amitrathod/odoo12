@@ -25,6 +25,12 @@
                             <field name="woundcare"/>
                             <field name="bariatric"/>
                             <field name="generalnotes"/>
+                            <field name="ent"/>
+                            <field name="ordering_day"/>
+                            <field name="fiscal_year_end"/>
+                            <field name="last_modify"/>
+                            <field name="top_subspecialties"/>
+
                             </group>
                             <group>
                             <field name="captis"/>
@@ -79,6 +85,11 @@
                                         <field name="facility_type"/>
                                         <field name="bed_size"/>
                                         <field name="purchase_history_date"/>
+                                        <field name="ent"/>
+                                        <field name="ordering_day"/>
+                                        <field name="fiscal_year_end"/>
+                                        <field name="last_modify"/>
+                                        <field name="top_subspecialties"/>
                                     </group>
                                     <group>
                                        <field name="captis"/>

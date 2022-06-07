@@ -94,11 +94,32 @@ class externalfiels(models.Model):
     def pro_search_for_email_opt_out(self, operator, value):
         return self.generic_char_search(operator, value, 'email_opt_out')
 
+    def pro_search_for_ordering_day(self, operator, value):
+        return self.generic_char_search(operator, value, 'ordering_day')
+
+    def pro_search_for_fiscal_year_end(self, operator, value):
+        return self.generic_char_search(operator, value, 'fiscal_year_end')
+
+    def pro_search_for_time_zone(self, operator, value):
+        return self.generic_char_search(operator, value, 'time_zone')
+
+    def pro_search_for_facility_type(self, operator, value):
+        return self.generic_char_search(operator, value, 'facility_type')
+
+    def pro_search_for_bed_size(self, operator, value):
+        return self.generic_char_search(operator, value, 'bed_size')
+
+    def pro_search_for_purchase_history_date(self, operator, value):
+        return self.generic_char_search(operator, value, 'purchase_history_date')
+
+    def pro_search_for_top_subspecialties(self, operator, value):
+        return self.generic_char_search(operator, value, 'top_subspecialties')
+
 
 
     def generic_char_search(self, operator, value, field):
         partner_link = self.env['partner.link.tracker']
-        if operator in ['=', '!=', 'like', 'ilike', 'not ilike', 'not like']:
+        if operator in ['=', '!=', 'like', 'ilike', 'not ilike', 'not like','>=','<=','<','>']:
             record = partner_link.search([(field, operator, value)], limit=None)
             return [('id', 'in', [a.partner_id.id for a in record])]
         else:
@@ -137,13 +158,33 @@ class externalfiels(models.Model):
     premier = fields.Boolean("Premier (GPO)", default=False, store=False, search='pro_search_for_premier')
     email_opt_out = fields.Boolean("Email Opt Out", default=False, store=False, search='pro_search_for_email_opt_out')
 
+    ordering_day = fields.Selection([
+        ('monday', 'Monday'),
+        ('tuesday', 'Tuesday'),
+        ('wednesday', 'Wednesday'),
+        ('thursday', 'Thursday'),
+        ('friday', 'Friday')], string='Ordering Day',store=False, search='pro_search_for_ordering_day')
+    fiscal_year_end = fields.Selection([
+        ('jan', 'January'),
+        ('feb', 'February'),
+        ('mar', 'March'),
+        ('apr', 'April'),
+        ('may', 'May'),
+        ('jun', 'June'),
+        ('jul', 'July'),
+        ('aug', 'August'),
+        ('sep', 'September'),
+        ('oct', 'October'),
+        ('nov', 'November'),
+        ('dec', 'December')], string='Fiscal Year End', store=False, search='pro_search_for_fiscal_year_end')
+    last_modify = fields.Many2one(comodel_name='res.partner', String='Last Modified By', store=False)
     time_zone = fields.Selection([
         ('est', 'EST'),
         ('cst', 'CST'),
         ('mst', 'MST'),
         ('pst', 'PST'),
         ('ast', 'AST'),
-        ('hast', 'HAST')], string='Time Zone', store=False)
+        ('hast', 'HAST')], string='Time Zone', store=False, search='pro_search_for_time_zone')
     facility_type = fields.Selection([
         ('health_system_hospital', 'Health System Hospital'),
         ('surgery_center', 'Surgery Center'),
@@ -152,9 +193,24 @@ class externalfiels(models.Model):
         ('broker', 'Broker'),
         ('veterinarian', 'Veterinarian'),
         ('non_surgery', 'Non-Surgery/Closed'),
-        ('national account_target', 'National Account Target')], string='Facility Type', store=False)
-    bed_size = fields.Integer(default=0, string="Bed Size", store=False)
-    purchase_history_date = fields.Date(string="Last Purchase History", store=False)
+        ('national account_target', 'National Account Target')], string='Facility Type', store=False, search='pro_search_for_facility_type')
+    bed_size = fields.Integer(default=0, string="Bed Size", store=False, search='pro_search_for_bed_size')
+    purchase_history_date = fields.Date(string="Last Purchase History", store=False, search='pro_search_for_purchase_history_date')
+
+    top_subspecialties = fields.Selection([
+        ('endoscopy', 'Endoscopy'),
+        ('ent', 'ENT'),
+        ('eyes', 'Eyes'),
+        ('general_surgery', 'General Surgery'),
+        ('gyn', 'GYN'),
+        ('orthopedic', 'Orthopedic'),
+        ('pain', 'Pain'),
+        ('plastic_surgery', 'Plastic Surgery'),
+        ('urology', 'Urology'),
+        ('podiatry', 'Podiatry'),
+        ('bariatrics', 'Bariatrics'),
+        ('wound_care', 'Wound Care')], string='Top Subspecialties', store=False, search='pro_search_for_top_subspecialties')
+
 
     def _compute_details_field(self):
         for record in self:
@@ -193,10 +249,14 @@ class externalfiels(models.Model):
                 record.facility_type = partner_link.facility_type
                 record.bed_size = partner_link.bed_size
                 record.purchase_history_date = partner_link.purchase_history_date
+                record.ordering_day = partner_link.ordering_day
+                record.fiscal_year_end = partner_link.fiscal_year_end
+                record.last_modify = partner_link.last_modify
+                record.top_subspecialties = partner_link.top_subspecialties
             else:
                 record.gpo =''
 
-    @api.onchange('gpo','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
+    @api.onchange('gpo','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -220,6 +280,9 @@ class externalfiels(models.Model):
                 'email_opt_out': self.email_opt_out,'facility_type': self.facility_type,
                 'time_zone': self.time_zone,'bed_size': self.bed_size,
                 'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
+                'ordering_day': self.ordering_day, 'fiscal_year_end': self.fiscal_year_end,
+                'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties
+
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
@@ -282,3 +345,39 @@ class PartnerLinkTracker(models.Model):
         ('national account_target', 'National Account Target')],string='Facility Type')
     bed_size = fields.Integer(default=0, string="Bed Size")
     purchase_history_date = fields.Date(string="Last Purchase History")
+    ordering_day = fields.Selection([
+        ('monday', 'Monday'),
+        ('tuesday', 'Tuesday'),
+        ('wednesday', 'Wednesday'),
+        ('thursday', 'Thursday'),
+        ('friday', 'Friday')],string='Ordering Day')
+
+    fiscal_year_end = fields.Selection([
+        ('jan', 'January'),
+        ('feb', 'February'),
+        ('mar', 'March'),
+        ('apr', 'April'),
+        ('may', 'May'),
+        ('jun', 'June'),
+        ('jul', 'July'),
+        ('aug', 'August'),
+        ('sep', 'September'),
+        ('oct', 'October'),
+        ('nov', 'November'),
+        ('dec', 'December')],string='Fiscal Year End')
+
+    last_modify = fields.Many2one(comodel_name='res.partner', String='Last Modified By')
+
+    top_subspecialties = fields.Selection([
+        ('endoscopy', 'Endoscopy'),
+        ('ent', 'ENT'),
+        ('eyes', 'Eyes'),
+        ('general_surgery', 'General Surgery'),
+        ('gyn', 'GYN'),
+        ('orthopedic', 'Orthopedic'),
+        ('pain', 'Pain'),
+        ('plastic_surgery', 'Plastic Surgery'),
+        ('urology', 'Urology'),
+        ('podiatry', 'Podiatry'),
+        ('bariatrics', 'Bariatrics'),
+        ('wound_care', 'Wound Care')],string='Top Subspecialties')
