@@ -178,6 +178,7 @@ class externalfiels(models.Model):
         ('nov', 'November'),
         ('dec', 'December')], string='Fiscal Year End', store=False, search='pro_search_for_fiscal_year_end')
     last_modify = fields.Many2one(comodel_name='res.partner', String='Last Modified By', store=False)
+    created_by = fields.Many2one(comodel_name='res.partner', String='Created By', store=False)
     time_zone = fields.Selection([
         ('est', 'EST'),
         ('cst', 'CST'),
@@ -186,7 +187,8 @@ class externalfiels(models.Model):
         ('ast', 'AST'),
         ('hast', 'HAST')], string='Time Zone', store=False, search='pro_search_for_time_zone')
     facility_type = fields.Selection([
-        ('health_system_hospital', 'Health System Hospital'),
+        ('health_system', 'Health System'),
+        ('hospital', 'Hospital')
         ('surgery_center', 'Surgery Center'),
         ('purchasing_alliance', 'Purchasing Alliance'),
         ('charity', 'Charity'),
@@ -253,10 +255,11 @@ class externalfiels(models.Model):
                 record.fiscal_year_end = partner_link.fiscal_year_end
                 record.last_modify = partner_link.last_modify
                 record.top_subspecialties = partner_link.top_subspecialties
+                record.created_by = partner_link.created_by
             else:
                 record.gpo =''
 
-    @api.onchange('gpo','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
+    @api.onchange('gpo','created_by','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -281,7 +284,8 @@ class externalfiels(models.Model):
                 'time_zone': self.time_zone,'bed_size': self.bed_size,
                 'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
                 'ordering_day': self.ordering_day, 'fiscal_year_end': self.fiscal_year_end,
-                'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties
+                'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties,
+                'created_by': self.created_by
 
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
@@ -335,7 +339,8 @@ class PartnerLinkTracker(models.Model):
         ('ast', 'AST'),
         ('hast', 'HAST')], string='Time Zone')
     facility_type = fields.Selection([
-        ('health_system_hospital', 'Health System Hospital'),
+        ('health_system', 'Health System'),
+        ('hospital','Hospital')
         ('surgery_center', 'Surgery Center'),
         ('purchasing_alliance', 'Purchasing Alliance'),
         ('charity', 'Charity'),
@@ -367,6 +372,7 @@ class PartnerLinkTracker(models.Model):
         ('dec', 'December')],string='Fiscal Year End')
 
     last_modify = fields.Many2one(comodel_name='res.partner', String='Last Modified By')
+    created_by = fields.Many2one(comodel_name='res.partner', String='Created By')
 
     top_subspecialties = fields.Selection([
         ('endoscopy', 'Endoscopy'),
