@@ -189,7 +189,7 @@ class externalfiels(models.Model):
     facility_type = fields.Selection([
         ('health_system', 'Health System'),
         ('hospital', 'Hospital')
-        ('surgery_center', 'Surgery Center'),
+        ('surgery_center_hospital', 'Surgery Center'),
         ('purchasing_alliance', 'Purchasing Alliance'),
         ('charity', 'Charity'),
         ('broker', 'Broker'),
@@ -341,7 +341,7 @@ class PartnerLinkTracker(models.Model):
     facility_type = fields.Selection([
         ('health_system', 'Health System'),
         ('hospital','Hospital')
-        ('surgery_center', 'Surgery Center'),
+        ('surgery_center_hospital', 'Surgery Center'),
         ('purchasing_alliance', 'Purchasing Alliance'),
         ('charity', 'Charity'),
         ('broker', 'Broker'),
