@@ -188,8 +188,8 @@ class externalfiels(models.Model):
         ('hast', 'HAST')], string='Time Zone', store=False, search='pro_search_for_time_zone')
     facility_type = fields.Selection([
         ('health_system', 'Health System'),
-        ('hospital', 'Hospital')
-        ('surgery_center_hospital', 'Surgery Center'),
+        ('hospital', 'Hospital'),
+        ('surgery_center', 'Surgery Center'),
         ('purchasing_alliance', 'Purchasing Alliance'),
         ('charity', 'Charity'),
         ('broker', 'Broker'),
@@ -340,8 +340,8 @@ class PartnerLinkTracker(models.Model):
         ('hast', 'HAST')], string='Time Zone')
     facility_type = fields.Selection([
         ('health_system', 'Health System'),
-        ('hospital','Hospital')
-        ('surgery_center_hospital', 'Surgery Center'),
+        ('hospital','Hospital'),
+        ('surgery_center', 'Surgery Center'),
         ('purchasing_alliance', 'Purchasing Alliance'),
         ('charity', 'Charity'),
         ('broker', 'Broker'),
