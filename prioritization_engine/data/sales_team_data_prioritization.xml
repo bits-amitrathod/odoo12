@@ -24,8 +24,15 @@
         </record>-->
 
         <record id="rapid_quote_website_sales" model="crm.team">
-            <field name="name">Rapid Quote</field>
+            <field name="name">Rapid Order</field>
             <field name="team_type" eval="'rapid_quote'"/>
+            <field name="company_id" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="edi_sales" model="crm.team">
+            <field name="name">GHX</field>
+            <field name="team_type" eval="'ghx'"/>
             <field name="company_id" eval="False"/>
             <field name="active" eval="True"/>
         </record>
