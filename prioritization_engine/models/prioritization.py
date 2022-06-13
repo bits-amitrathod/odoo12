@@ -487,7 +487,8 @@ class SalesChannelPrioritization(models.Model):
     _inherit = "crm.team"
 
     team_type = fields.Selection(selection=[('engine', 'Prioritization'), ('sales', 'Sales'), ('website', 'Website'),
-                                  ('my_in_stock_report', 'My In-Stock Report'), ('rapid_quote', 'Rapid Quote')],
+                                            ('my_in_stock_report', 'My In-Stock Report'),
+                                            ('rapid_quote', 'Rapid Order'),('ghx', 'GHX')],
                                  string='Channel Type', default='sales',
                                  required=True, tracking=True,
                                  help="The type of this channel, it will define the resources this channel uses.")
