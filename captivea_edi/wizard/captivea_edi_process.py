@@ -54,7 +54,7 @@ ASN_FIELDS = ['TRANSACTION TYPE', 'ACCOUNTING ID', 'SHIPMENT ID', 'SCAC',
 
 class CaptiveaEdiProcess(models.TransientModel):
     _name = 'captivea.ediprocess'
-    _description = 'EDI manual handler model'
+    _description = 'EDI Manual Handler Model'
 
     sftp_instance = fields.Many2one('setu.sftp', 'Instance', domain=[('instance_active', '=', True)])
     active = fields.Boolean('Active?', default=True)
@@ -667,6 +667,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                             x_hdr_ref5 = False
                             vendor_id = False
                             vendor_ref = False
+                            customer_number = False
                             for row in lines:  # Processing file begins here.
                                 row_count += 1
                                 fields = [field.strip() for field in row.replace('~', '').split('^')]
@@ -688,6 +689,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                                     elif fields[0] == 'REF' and fields[1] == 'OQ':
                                         x_hdr_ref1 = fields[2]
                                     elif fields[0] == 'N1' and fields[1] == 'ST':
+                                        customer_number = fields[4]
                                         store_num = fields[4]
                                         x_hdr_ref3 = fields[4]
                                     elif fields[0] == 'N1' and fields[1] == 'BT':
@@ -695,8 +697,12 @@ class CaptiveaEdiProcess(models.TransientModel):
                                     elif fields[0] == 'N1' and fields[1] == 'SN':
                                         x_hdr_ref5 = fields[4]
                                     elif fields[0] == 'N1' and fields[1] == 'VN':
-                                        vendor_id = fields[4]
-                                        vendor_ref = fields[2]
+                                        if len(fields) == 3:
+                                            vendor_id = receiver_id
+                                            vendor_ref = fields[2]
+                                        else:
+                                            vendor_id = fields[4]
+                                            vendor_ref = fields[2]
                                     elif fields[0] == 'AMT' and len(fields) > 3 and fields[1] == '1':
                                         x_hdr_ref2 = fields[3]
                                     elif fields[0] == 'IEA':
@@ -748,7 +754,8 @@ class CaptiveaEdiProcess(models.TransientModel):
                             })
                             log_ids |= log_id
                             if po_lines and accounting_id and sender_id and receiver_id and store_num and po_number and file_status:
-                                STATE = self._validate_gxh_file(po_lines, accounting_id, sender_id, receiver_id,
+                                STATE = self._validate_gxh_file(po_lines, accounting_id, customer_number, sender_id,
+                                                                receiver_id,
                                                                 sftp_conf,
                                                                 store_num)
                             else:
@@ -779,6 +786,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                                             'x_hdr_ref1': x_hdr_ref1,
                                             'x_hdr_ref2': x_hdr_ref2,
                                             'accounting_id': accounting_id,
+                                            'customer_number': customer_number,
                                             'po_number': po_number,
                                             'po_date': po_date,
                                             'store_number': store_num,
@@ -861,11 +869,15 @@ class CaptiveaEdiProcess(models.TransientModel):
             return partner
         return 'No partner found for this accounting_id'
 
-    def _validate_gxh_file(self, po_lines, accounting_id, sender_id, receiver_id, sftp_conf, store_num):
+    def _validate_gxh_file(self, po_lines, accounting_id,
+                           customer_number, sender_id,
+                           receiver_id, sftp_conf,
+                           store_num):
         if not (sender_id == sftp_conf.sender_id_850 and receiver_id == sftp_conf.receiver_id_850):
             return 'Sender ID or Receiver ID is invalid.'
-        partner_id = self.env['res.partner'].search(
-            [('x_edi_accounting_id', '=', accounting_id)])
+        partner_id = self.env['res.partner'].sudo().search(
+            [('x_edi_accounting_id', '=', accounting_id),
+             ('edi_vendor_number', '=', customer_number)])
 
         if len(partner_id) > 1:
             partner_id = partner_id[0].commercial_partner_id

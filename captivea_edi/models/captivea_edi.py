@@ -116,6 +116,7 @@ class CaptiveaEdiDocumentLog(models.Model):
     x_lin_ref4 = fields.Char('Line Ref 4')
     x_lin_ref5 = fields.Char('Line Ref 5')
     has_exceptions = fields.Boolean("Has Exceptions?")
+    customer_number = fields.Char()
 
     def _get_shipping_partner(self, new_record, partner):
         verify = False
@@ -321,7 +322,8 @@ class CaptiveaEdiDocumentLog(models.Model):
                 limit=1)
             if not order:
                 partner = self.env['res.partner'].sudo().search(
-                    [('x_edi_accounting_id', '=', log_line.accounting_id), ('parent_id', '=', False)], limit=1)
+                    [('x_edi_accounting_id', '=', log_line.accounting_id),
+                     ('edi_vendor_number', '=', log_line.customer_number), ('parent_id', '=', False)], limit=1)
                 if partner:
                     shipping_partner = self.env['res.partner'].sudo().search(
                         [('x_edi_store_number', '=', log_line.store_number)], limit=1)
