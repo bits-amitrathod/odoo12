@@ -347,6 +347,7 @@ class PartnerLinkTracker(models.Model):
         ('broker', 'Broker'),
         ('veterinarian', 'Veterinarian'),
         ('non_surgery', 'Non-Surgery/Closed'),
+        ('wholesale','Wholesale'),
         ('national account_target', 'National Account Target')],string='Facility Type')
     bed_size = fields.Integer(default=0, string="Bed Size")
     purchase_history_date = fields.Date(string="Last Purchase History")
