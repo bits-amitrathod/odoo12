@@ -200,7 +200,7 @@ class MailMailLimitCheck(models.Model):
                 mail.write({'state': 'exception', 'failure_reason': failure_reason})
                 mail._postprocess_sent_message(success_pids=success_pids, failure_reason=failure_reason, failure_type='UNKNOWN')
 
-                if e.args and e.args[1] and '552' in e.args[1]:
+                if e.args and e.args[1] and 'Mail' in e.args[1]:
                     outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
                     if not outgoing_server_list:
                         outgoing_server_set_active = self.env['ir.mail_server'].search([('active', '=', False)],
