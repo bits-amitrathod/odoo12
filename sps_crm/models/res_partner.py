@@ -127,7 +127,7 @@ class externalfiels(models.Model):
 
 
     # link_code_ids = fields.Many2one(comodel_name='partner.link.tracker', relation='partner_id', string='Details Fields', index=True, ondelete='cascade')
-    gpo = fields.Char(string="GPO", store=False, compute="_compute_details_field", search='pro_search_for_gpo')
+    gpo = fields.Char(string="GPO", store=False, compute="_compute_details_field", search='pro_search_for_gpo', readonly=False)
     purchase = fields.Char("Purchasing", store=False, search='pro_search_for_purchase')
     mesh = fields.Char("Mesh", store=False, search='pro_search_for_mesh')
     edomechanicals = fields.Char("Endomechanicals", store=False, search='pro_search_for_edomechanicals')
@@ -285,11 +285,10 @@ class externalfiels(models.Model):
                 'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
                 'ordering_day': self.ordering_day, 'fiscal_year_end': self.fiscal_year_end,
                 'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties,
-                'created_by': self.created_by
+                'created_by': self.created_by, 'gpo': self.gpo
 
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
-
 
 class PartnerLinkTracker(models.Model):
     _name = "partner.link.tracker"
