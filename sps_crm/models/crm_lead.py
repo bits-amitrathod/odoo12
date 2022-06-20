@@ -309,6 +309,17 @@ class Lead(models.Model):
                 _logger.error('Unable to connect to SMTP Server : %r', exc)
                 response = {'message': 'Unable to connect to SMTP Server'}
 
+    @api.depends('partner_id.phone')
+    def _compute_phone(self):
+        for lead in self:
+            if lead.partner_id.phone and lead._get_partner_phone_update():
+                lead.phone = lead.partner_id.phone
+                lead.property_supplier_payment_term_id = lead.partner_id.property_supplier_payment_term_id
+                # lead.payment_type = lead.partner_id.payment_type
+                lead.contract = lead.partner_id.contract
+                # lead.competitors = lead.partner_id.competitors
+                lead.facility_tpcd = lead.partner_id.facility_tpcd
+
 class MailActivity1(models.Model):
     """ Inherited Mail Acitvity to add custom View for Purchase Oppo"""
     _inherit = 'mail.activity'
