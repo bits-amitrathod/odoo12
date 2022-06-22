@@ -9,6 +9,7 @@
         id="crm_menu_purchase"
         name="Acquisitions"
         parent="crm.crm_menu_root"
+        groups="purchase.group_purchase_user,purchase.group_purchase_manager"
         sequence="3"/>
 
     <menuitem
