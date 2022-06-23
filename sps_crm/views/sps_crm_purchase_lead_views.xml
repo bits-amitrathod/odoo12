@@ -68,6 +68,8 @@
                             <field name="recurring_plan" class="oe_inline" placeholder="E.g. Monthly"
                                    attrs="{'required': [('recurring_revenue', '!=', 0)]}" options="{'no_create': True, 'no_open': True}"/>
                         </div>
+
+                        <field name="opportunity_type" invisible="1"/>
                         <field name="appraisal_no" invisible="1"/>
                         <field name="company_currency" invisible="1"/>
                         <field name="property_supplier_payment_term_id" invisible="1"/>
@@ -208,6 +210,7 @@
                     <field name="probability" optional="hide"/>
                     <field name="tag_purchase_ids" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}"/>
                     <field name="referred" invisible="1"/>
+                    <field name="opportunity_type" optional="hide"/>
                     <field name="message_needaction" invisible="1"/>
                 </tree>
             </field>
@@ -436,6 +439,7 @@
                             <group name="payment_priority0" attrs="{'invisible': [('type', '=', 'lead')]}">
                                 <field name="property_supplier_payment_term_id"/>
                                 <field name="appraisal_no"/>
+                                <field name="opportunity_type"/>
                                 <field name="product_list_doc" widget="many2many_binary"/>
                             </group>
                             <group name="lead_priority" attrs="{'invisible': [('type', '=', 'purchase_opportunity')]}">
@@ -449,6 +453,7 @@
                                 <field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>
                                 <field name="competitors" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Competitors..."/>
                                 <field name="po_ref"/>
+
                             </group>
 
                             <group name="opportunity_info" attrs="{'invisible': [('type', '=', 'lead')]}">

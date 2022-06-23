@@ -19,6 +19,7 @@
         'security/ir.model.access.csv',
 
         'views/sps_crm_purchase_lead_views.xml',
+        'views/sps_crm_sales_oppo_views.xml',
         'views/sps_crm_purchase_lost_reason_views.xml',
         'views/sps_crm_purchase_tag_views.xml',
         'views/sps_crm_stage_views.xml',

@@ -75,6 +75,16 @@ class Lead(models.Model):
                                                 ('wholesale', 'Wholesale'),
                                                 ('national_acc', 'National Account Target')])
 
+    opportunity_type = fields.Selection(string='Opportunity Type',
+                                     selection=[('product_acq', 'Product Acquisition'),
+                                                ('eq_acq', 'EQ Acquisition'),
+                                                ('wholesale_acq', 'Wholesale Acquisition'),
+                                                ('product_sale', 'Product Sale'),
+                                                ('eq_sale', 'EQ Sale'),
+                                                ('eq_repair', 'EQ Repair'),
+                                                ('national_act_cont', 'National Account Contract'),
+                                                ('ka_expansion', 'KA Expansion')])
+
     @api.onchange('appraisal_no')
     def _default_appraisal_no1(self):
         for lead in self:
