@@ -7,6 +7,26 @@ _logger = logging.getLogger(__name__)
 class externalfiels(models.Model):
     _inherit = "res.partner"
 
+    acq_opportunity_count = fields.Integer("ACQ Opportunity", compute='_compute_acq_opportunity_count')
+
+    def _compute_acq_opportunity_count(self):
+        # retrieve all children partners and prefetch 'parent_id' on them
+        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+        all_partners.read(['parent_id'])
+
+        opportunity_data = self.env['crm.lead'].read_group(
+            domain=[('partner_id', 'in', all_partners.ids)],
+            fields=['partner_id'], groupby=['partner_id']
+        )
+
+        self.acq_opportunity_count = 0
+        for group in opportunity_data:
+            partner = self.browse(group['partner_id'][0])
+            while partner:
+                if partner in self:
+                    partner.acq_opportunity_count += group['partner_id_count']
+                partner = partner.parent_id
+
     def pro_search_for_gpo(self, operator, value):
         return self.generic_char_search(operator, value, 'gpo')
 
@@ -289,6 +309,17 @@ class externalfiels(models.Model):
 
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+
+    def action_view_acq_opportunity(self):
+        '''
+        This function returns an action that displays the opportunities from partner.
+        '''
+        action = self.env['ir.actions.act_window']._for_xml_id('sps_crm.crm_purchase_lead_action_pipeline')
+        if self.is_company:
+            action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id)]
+        else:
+            action['domain'] = [('partner_id.id', '=', self.id)]
+        return action
 
 class PartnerLinkTracker(models.Model):
     _name = "partner.link.tracker"
