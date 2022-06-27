@@ -13,3 +13,8 @@ access_purchase_crm_tag_user,crm.purchase.tag,model_crm_purchase_tag,base.group_
 access_customer_crm_tag_manager,partner.link.tracker,model_partner_link_tracker,sales_team.group_sale_manager,1,1,1,1
 access_customer_crm_tag_salesman,partner.link.tracker,model_partner_link_tracker,sales_team.group_sale_salesman,1,0,0,0
 access_customer_crm_tag_user,partner.link.tracker,model_partner_link_tracker,base.group_user,1,0,0,0
+
+access_competitors_tag_manager,competitors.tag,model_competitors_tag,sales_team.group_sale_manager,1,1,1,1
+access_competitors_tag_salesman,competitors.tag,model_competitors_tag,sales_team.group_sale_salesman,1,0,0,0
+access_competitors_tag_user,competitors.tag,model_competitors_tag,base.group_user,1,0,0,0
+

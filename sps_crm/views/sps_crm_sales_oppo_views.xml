@@ -11,26 +11,4 @@
         </field>
     </record>
 
-     <!-- Add contextual button on partner form view -->
-        <record id="view_partners_form_crm2" model="ir.ui.view">
-            <field name="name">view.res.partner.form.crm.inherited1</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form"/>
-            <field eval="1" name="priority"/>
-            <!--<field name="groups_id" eval="[(4, ref('purchase.group_purchase_user')),(4,ref(purchase.group_purchase_manager))]"/>-->
-            <field name="arch" type="xml">
-                <data>
-                    <div name="button_box" position="inside">
-                        <button class="oe_stat_button o_res_partner_tip_opp" type="object"
-                            name="action_view_acq_opportunity"
-                            icon="fa-star"
-                            context="{'default_partner_id': active_id}">
-                            <field string="ACQ Opportunities" name="acq_opportunity_count" widget="statinfo"/>
-                        </button>
-
-                    </div>
-                </data>
-            </field>
-        </record>
-
 </odoo>

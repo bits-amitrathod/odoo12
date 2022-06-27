@@ -51,7 +51,7 @@ class Lead(models.Model):
     # contract_ids = fields.One2many('account.analytic.account', 'partner_id', string='Contracts', readonly=True)
     payment_type = fields.Selection([('cash', 'Cash'), ('credit', 'Credit'), ('cashcredit', 'Cash/Credit')], string='Payment Type')
     contract = fields.Many2many('contract.contract', string="Contract")
-    competitors = fields.Many2many('res.partner.category', string="Competitors")
+    competitors = fields.Many2many('competitors.tag', string="Competitors")
     po_ref = fields.Many2one('purchase.order', string="PO#")
 
     product_list_doc = fields.Many2many('ir.attachment', string='Upload File', attachment=True)
@@ -84,6 +84,18 @@ class Lead(models.Model):
                                                 ('eq_repair', 'EQ Repair'),
                                                 ('national_act_cont', 'National Account Contract'),
                                                 ('ka_expansion', 'KA Expansion')])
+
+    new_customer = fields.Boolean("New Customer", default=False)
+    arrival_date = fields.Date(string="Arrival Date")
+    reason_list = fields.Selection(string='Reason for Lis',
+                                        selection=[('conversion', 'Conversion'),
+                                                   ('departure', 'Dr. Departure'),
+                                                   ('inventory_level', 'Inventory/PAR Levels'),
+                                                   ('short_dates', 'Short Dates'),
+                                                   ('stopped_procedure', 'Stopped Procedure'),
+                                                   ('facility_closure', 'Facility Closure'),
+                                                   ('other', 'Other')])
+
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no1(self):
@@ -183,7 +195,8 @@ class Lead(models.Model):
         # self.payment_type = self.partner_id.payment_type
         self.contract = self.partner_id.contract
         self.facility_tpcd = self.partner_id.facility_tpcd
-        self.competitors = self.partner_id.category_id
+        self.competitors = self.env['res.partner'].search([('id', '=', self.partner_id.id)],limit=1).competitors_id
+    #     self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)],limit=1).competitors_id
 
     def action_purchase_set_won(self):
         """ Won semantic: probability = 100 (active untouched) """
@@ -327,7 +340,7 @@ class Lead(models.Model):
                 lead.property_supplier_payment_term_id = lead.partner_id.property_supplier_payment_term_id
                 # lead.payment_type = lead.partner_id.payment_type
                 lead.contract = lead.partner_id.contract
-                # lead.competitors = lead.partner_id.competitors
+                lead.competitors = lead.partner_id.competitors_id
                 lead.facility_tpcd = lead.partner_id.facility_tpcd
 
 class MailActivity1(models.Model):

@@ -233,6 +233,10 @@ class externalfiels(models.Model):
         ('bariatrics', 'Bariatrics'),
         ('wound_care', 'Wound Care')], string='Top Subspecialties', store=False, search='pro_search_for_top_subspecialties')
 
+    acq_account = fields.Boolean("ACQ Accoun", default=False, store=False)
+    sales_account = fields.Boolean("Sales Account", default=False, store=False)
+    competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False)
+
 
     def _compute_details_field(self):
         for record in self:
@@ -276,10 +280,13 @@ class externalfiels(models.Model):
                 record.last_modify = partner_link.last_modify
                 record.top_subspecialties = partner_link.top_subspecialties
                 record.created_by = partner_link.created_by
+                record.acq_account = partner_link.acq_account
+                record.sales_account = partner_link.sales_account
+                record.competitors_id = partner_link.competitors_id
             else:
                 record.gpo =''
 
-    @api.onchange('gpo','created_by','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
+    @api.onchange('gpo','acq_account','sales_account','competitors_id','created_by','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -305,11 +312,14 @@ class externalfiels(models.Model):
                 'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
                 'ordering_day': self.ordering_day, 'fiscal_year_end': self.fiscal_year_end,
                 'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties,
-                'created_by': self.created_by, 'gpo': self.gpo
+                'created_by': self.created_by, 'gpo': self.gpo,
+                'acq_account': self.acq_account, 'sales_account': self.sales_account,
+                'competitors_id': self.competitors_id,
 
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
+    # THis method used to handle ACQ Oppo Button on Click
     def action_view_acq_opportunity(self):
         '''
         This function returns an action that displays the opportunities from partner.
@@ -418,3 +428,7 @@ class PartnerLinkTracker(models.Model):
         ('podiatry', 'Podiatry'),
         ('bariatrics', 'Bariatrics'),
         ('wound_care', 'Wound Care')],string='Top Subspecialties')
+
+    acq_account = fields.Boolean("ACQ Accoun", default=False)
+    sales_account = fields.Boolean("Sales Account", default=False)
+    competitors_id = fields.Many2many('competitors.tag', string='Competitors')

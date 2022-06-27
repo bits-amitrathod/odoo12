@@ -52,11 +52,19 @@
                             <field name="facility_type"/>
                             <field name="bed_size"/>
                             <field name="purchase_history_date"/>
+                            <field name="acq_account"/>
+                            <field name="sales_account"/>
+                            <field name="competitors_id" widget="many2many_tags"/>
 
                             </group>
                         </group>
                     </page>
                 </xpath>
+               <!-- <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="acq_account"/>
+                    <field name="sales_account"/>
+                    <field name="competitors_id" widget="many2many_tags"/>
+            </xpath>-->
             </field>
         </record>
 
@@ -108,6 +116,9 @@
                                         <field name="intalere_contract"/>
                                         <field name="premier"/>
                                         <field name="email_opt_out"/>
+                                        <field name="acq_account"/>
+                                        <field name="sales_account"/>
+                                        <field name="competitors_id" widget="many2many_tags"/>
                                     </group>
                       </group>
                   </form>
@@ -158,6 +169,9 @@
                                         <field name="last_modify"/>
                                         <field name="created_by"/>
                                         <field name="top_subspecialties"/>
+                                        <field name="acq_account"/>
+                                        <field name="sales_account"/>
+                                        <field name="competitors_id"/>
                   </tree>
             </field>
         </record>
@@ -167,6 +181,28 @@
             <field name="res_model">partner.link.tracker</field>
             <field name="view_mode">tree,form</field>
        </record>
+
+        <!-- Add contextual button on partner form view -->
+        <record id="view_partners_form_crm2" model="ir.ui.view">
+            <field name="name">view.res.partner.form.crm.inherited1</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field eval="1" name="priority"/>
+            <!--<field name="groups_id" eval="[(4, ref('purchase.group_purchase_user')),(4,ref(purchase.group_purchase_manager))]"/>-->
+            <field name="arch" type="xml">
+                <data>
+                    <div name="button_box" position="inside">
+                        <button class="oe_stat_button o_res_partner_tip_opp" type="object"
+                            name="action_view_acq_opportunity"
+                            icon="fa-star"
+                            context="{'default_partner_id': active_id}">
+                            <field string="ACQ Opportunities" name="acq_opportunity_count" widget="statinfo"/>
+                        </button>
+
+                    </div>
+                </data>
+            </field>
+        </record>
 
         <menuitem
         id="menu_crm_extra_fields1"
