@@ -63,6 +63,7 @@
                             <field name="expected_revenue" class="oe_inline mr-5" widget="monetary" options="{'currency_field': 'company_currency'}"/>
                             <field name="priority" class="oe_inline" nolabel="1" widget="priority"/>
                         </div>
+                        <field name="acq_priority" string="Priority"/>
                         <div class="o_row">
                             <field name="recurring_revenue" class="oe_inline pr-4" widget="monetary" options="{'currency_field': 'company_currency'}"/>
                             <field name="recurring_plan" class="oe_inline" placeholder="E.g. Monthly"
@@ -215,6 +216,7 @@
                     <field name="new_customer" optional="hide"/>
                     <field name="arrival_date" optional="hide"/>
                     <field name="reason_list" optional="hide"/>
+                    <field name="acq_priority" optional="hide"/>
                 </tree>
             </field>
         </record>
@@ -430,6 +432,7 @@
                             <group attrs="{'invisible': [('type', '=', 'lead')]}">
                                 <field name="date_deadline"/>
                                 <field name="priority" widget="priority"/>
+                                <field name="acq_priority"/>
                                 <field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                             </group>
                             <group invisible="1">

@@ -96,6 +96,13 @@ class Lead(models.Model):
                                                    ('facility_closure', 'Facility Closure'),
                                                    ('other', 'Other')])
 
+    acq_priority = fields.Selection(string='Priority',
+                                   selection=[('p1', 'P1'),
+                                              ('p2_single_code', 'P2 Single Code'),
+                                              ('p2_contract', 'P2 Contract'),
+                                              ('p2', 'P2'),
+                                              ('p3', 'P3')])
+
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no1(self):
