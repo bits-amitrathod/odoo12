@@ -236,6 +236,7 @@ class externalfiels(models.Model):
     acq_account = fields.Boolean("ACQ Accoun", default=False, store=False)
     sales_account = fields.Boolean("Sales Account", default=False, store=False)
     competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False)
+    status_id = fields.Many2many('status.tag', string='Status', store=False)
 
 
     def _compute_details_field(self):
@@ -283,10 +284,11 @@ class externalfiels(models.Model):
                 record.acq_account = partner_link.acq_account
                 record.sales_account = partner_link.sales_account
                 record.competitors_id = partner_link.competitors_id
+                record.status_id = partner_link.status_id
             else:
                 record.gpo =''
 
-    @api.onchange('gpo','acq_account','sales_account','competitors_id','created_by','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
+    @api.onchange('gpo','status_id','acq_account','sales_account','competitors_id','created_by','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -314,7 +316,7 @@ class externalfiels(models.Model):
                 'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties,
                 'created_by': self.created_by, 'gpo': self.gpo,
                 'acq_account': self.acq_account, 'sales_account': self.sales_account,
-                'competitors_id': self.competitors_id,
+                'competitors_id': self.competitors_id, 'status_id':self.status_id
 
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
@@ -432,3 +434,4 @@ class PartnerLinkTracker(models.Model):
     acq_account = fields.Boolean("ACQ Accoun", default=False)
     sales_account = fields.Boolean("Sales Account", default=False)
     competitors_id = fields.Many2many('competitors.tag', string='Competitors')
+    status_id = fields.Many2many('status.tag', string='Status')

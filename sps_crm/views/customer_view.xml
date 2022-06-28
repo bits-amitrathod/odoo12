@@ -55,7 +55,7 @@
                             <field name="acq_account"/>
                             <field name="sales_account"/>
                             <field name="competitors_id" widget="many2many_tags"/>
-
+                            <field name="status_id" widget="many2many_tags"/>
                             </group>
                         </group>
                     </page>
@@ -119,6 +119,7 @@
                                         <field name="acq_account"/>
                                         <field name="sales_account"/>
                                         <field name="competitors_id" widget="many2many_tags"/>
+                                        <field name="status_id" widget="many2many_tags"/>
                                     </group>
                       </group>
                   </form>
@@ -172,6 +173,7 @@
                                         <field name="acq_account"/>
                                         <field name="sales_account"/>
                                         <field name="competitors_id"/>
+                                        <field name="status_id"/>
                   </tree>
             </field>
         </record>
