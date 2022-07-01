@@ -87,7 +87,7 @@ class Lead(models.Model):
 
     new_customer = fields.Boolean("New Customer", default=False)
     arrival_date = fields.Date(string="Arrival Date")
-    reason_list = fields.Selection(string='Reason for Lis',
+    reason_list = fields.Selection(string='Reason for List',
                                         selection=[('conversion', 'Conversion'),
                                                    ('departure', 'Dr. Departure'),
                                                    ('inventory_level', 'Inventory/PAR Levels'),
