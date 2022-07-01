@@ -246,7 +246,7 @@ class externalfiels(models.Model):
         ('bariatrics', 'Bariatrics'),
         ('wound_care', 'Wound Care')], string='Top Subspecialties', store=False, search='pro_search_for_top_subspecialties')
 
-    acq_account = fields.Boolean("ACQ Accoun", default=False, store=False, search='pro_search_for_acq_account')
+    acq_account = fields.Boolean("ACQ Account", default=False, store=False, search='pro_search_for_acq_account')
     sales_account = fields.Boolean("Sales Account", default=False, store=False, search='pro_search_for_sales_account')
     competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False, search='pro_search_for_competitors_id')
     status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id')
