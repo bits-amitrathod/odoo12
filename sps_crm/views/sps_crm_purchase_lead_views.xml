@@ -58,10 +58,10 @@
                         <field name="name" placeholder="e.g. Product Pricing" />
                         <field name="email_from" string="Email" />
                         <field name="phone" string="Phone" />
-                        <label for="expected_revenue"/>
+                        <label for="expected_revenue" string ="Expected Retail"/>
                         <div class="o_row">
-                            <field name="expected_revenue" class="oe_inline mr-5" widget="monetary" options="{'currency_field': 'company_currency'}"/>
-                            <field name="priority" class="oe_inline" nolabel="1" widget="priority"/>
+                            <field name="expected_revenue"  class="oe_inline mr-5" widget="monetary" options="{'currency_field': 'company_currency'}"/>
+                            <!--<field name="priority" class="oe_inline" nolabel="1" widget="priority"/>-->
                         </div>
                         <field name="acq_priority" string="Priority"/>
                         <div class="o_row">
@@ -109,7 +109,7 @@
                     archivable="false" sample="1">
                     <field name="purchase_stage_id" options='{"group_by_tooltip": {"requirements": "Description"}}'/>
                     <field name="color"/>
-                    <field name="priority"/>
+                    <!--<field name="priority"/>-->
                     <field name="expected_revenue"/>
                     <field name="kanban_state"/>
                     <field name="activity_date_deadline"/>
@@ -158,7 +158,7 @@
                                     </div>
                                     <div class="o_kanban_record_bottom">
                                         <div class="oe_kanban_bottom_left">
-                                            <field name="priority" widget="priority" groups="base.group_user"/>
+                                            <!--<field name="priority" widget="priority" groups="base.group_user"/>-->
                                             <field name="activity_ids" widget="kanban_activity"/>
                                         </div>
                                         <div class="oe_kanban_bottom_right">
@@ -194,7 +194,7 @@
                     <field name="country_id" optional="hide"/>
                     <field name="user_id" widget="many2one_avatar_user" optional="show" domain="[('share', '=', False)]"/>
                     <field name="team_id" optional="show"/>
-                    <field name="priority" optional="hide"/>
+                    <!--<field name="priority" optional="hide"/>-->
                     <field name="activity_ids" widget="list_activity"/>
                     <field name="activity_user_id" optional="hide" string="Activity by" widget="many2one_avatar_user"/>
                     <field name="activity_date_deadline_my" string="My Deadline" widget="remaining_days" options="{'allow_order': '1'}"/>
@@ -431,7 +431,7 @@
                             </group>
                             <group attrs="{'invisible': [('type', '=', 'lead')]}">
                                 <field name="date_deadline"/>
-                                <field name="priority" widget="priority"/>
+                                <!--<field name="priority" widget="priority"/>-->
                                 <field name="acq_priority"/>
                                 <field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                             </group>
