@@ -329,7 +329,7 @@ class externalfiels(models.Model):
                 'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties,
                 'created_by': self.created_by, 'gpo': self.gpo,
                 'acq_account': self.acq_account, 'sales_account': self.sales_account,
-                'competitors_id': self.competitors_id, 'status_id':self.status_id
+                'competitors_id': self.competitors_id.ids, 'status_id': self.status_id.ids
 
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
