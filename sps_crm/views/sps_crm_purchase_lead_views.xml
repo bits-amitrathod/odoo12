@@ -457,8 +457,8 @@
                             <group name="payment_priority" attrs="{'invisible': [('type', '=', 'lead')]}">
                                 <field name="payment_type"/>
                                 <field name="facility_tpcd"/>
-                                <field name="contract" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Contracts..."/>
-                                <field name="competitors" widget="many2many_tags" options="{'no_create_edit': True}" placeholder="Competitors..."/>
+                                <field name="contract" widget="many2many_tags"  placeholder="Contracts..."/>
+                                <field name="competitors" widget="many2many_tags"  placeholder="Competitors..."/>
                                 <field name="po_ref"/>
                                 <field name="arrival_date"/>
                                 <field name="reason_list"/>

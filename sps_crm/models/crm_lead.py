@@ -198,11 +198,13 @@ class Lead(models.Model):
     def _compute_contact_values(self):
         """ compute the new values when partner_id has changed """
         _logger.error(" Compute method Called ........")
+        obj = self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)], limit=1).competitors_id
+        self.competitors = obj.ids if obj else obj
         self.property_supplier_payment_term_id = self.partner_id.property_supplier_payment_term_id.id
         # self.payment_type = self.partner_id.payment_type
         self.contract = self.partner_id.contract
         self.facility_tpcd = self.partner_id.facility_tpcd
-        self.competitors = self.env['res.partner'].search([('id', '=', self.partner_id.id)],limit=1).competitors_id
+
     #     self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)],limit=1).competitors_id
 
     def action_purchase_set_won(self):

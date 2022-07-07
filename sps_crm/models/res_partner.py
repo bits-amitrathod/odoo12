@@ -172,9 +172,9 @@ class externalfiels(models.Model):
     ent = fields.Char("ENT", store=False, search='pro_search_for_ent')
     woundcare = fields.Char("Wound Care", store=False, search='pro_search_for_woundcare')
     bariatric = fields.Char("Bariatric", store=False, search='pro_search_for_bariatric')
-    generalnotes = fields.Char("General Notes", store=False, search='pro_search_for_generalnotes')
+    generalnotes = fields.Text("General Notes", store=False, search='pro_search_for_generalnotes')
     facilityERP = fields.Char("Facility ERP", store=False, search='pro_search_for_facilityERP')
-    description = fields.Char("Description", store=False, search='pro_search_for_description')
+    description = fields.Text("Description", store=False, search='pro_search_for_description')
 
     captis = fields.Boolean("Captis 2.0 EIS", default=False, store=False, search='pro_search_for_captis')
     illucient = fields.Boolean("Illucient", default=False, store=False, search='pro_search_for_illucient')
@@ -367,9 +367,9 @@ class PartnerLinkTracker(models.Model):
     ent = fields.Char("ENT")
     woundcare = fields.Char("Wound Care")
     bariatric = fields.Char("Bariatric")
-    generalnotes = fields.Char("General Notes")
+    generalnotes = fields.Text("General Notes")
     facilityERP = fields.Char("Facility ERP")
-    description = fields.Char("Description")
+    description = fields.Text("Description")
 
     captis = fields.Boolean("Captis 2.0 EIS", default=False)
     illucient = fields.Boolean("Illucient", default=False)
