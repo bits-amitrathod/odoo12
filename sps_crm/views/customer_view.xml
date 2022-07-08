@@ -26,11 +26,11 @@
                             <field name="bariatric"/>
                             <field name="generalnotes"/>
                             <field name="ent"/>
-                            <field name="ordering_day"/>
+                            <field name="ordering_day" widget="many2many_tags"/>
                             <field name="fiscal_year_end"/>
                             <field name="last_modify"/>
                             <field name="created_by"/>
-                            <field name="top_subspecialties"/>
+                            <field name="top_subspecialties"  widget="many2many_tags"/>
 
                             </group>
                             <group>
@@ -96,11 +96,11 @@
                                         <field name="bed_size"/>
                                         <field name="purchase_history_date"/>
                                         <field name="ent"/>
-                                        <field name="ordering_day"/>
+                                        <field name="ordering_day" widget="many2many_tags"/>
                                         <field name="fiscal_year_end"/>
                                         <field name="last_modify"/>
                                         <field name="created_by"/>
-                                        <field name="top_subspecialties"/>
+                                        <field name="top_subspecialties"  widget="many2many_tags"/>
                                     </group>
                                     <group>
                                        <field name="captis"/>
