@@ -115,7 +115,7 @@ class externalfiels(models.Model):
         return self.generic_char_search(operator, value, 'email_opt_out')
 
     def pro_search_for_ordering_day(self, operator, value):
-        return self.generic_char_search(operator, value, 'ordering_day')
+        return self.generic_char_search(operator, value, 'ordering_day1')
 
     def pro_search_for_fiscal_year_end(self, operator, value):
         return self.generic_char_search(operator, value, 'fiscal_year_end')
@@ -133,7 +133,7 @@ class externalfiels(models.Model):
         return self.generic_char_search(operator, value, 'purchase_history_date')
 
     def pro_search_for_top_subspecialties(self, operator, value):
-        return self.generic_char_search(operator, value, 'top_subspecialties')
+        return self.generic_char_search(operator, value, 'top_subspecialties1')
 
     def pro_search_for_acq_account(self, operator, value):
         return self.generic_char_search(operator, value, 'acq_account')
@@ -190,7 +190,7 @@ class externalfiels(models.Model):
     intalere_contract = fields.Boolean("Intalere Contract #: DH10128", default=False, store=False, search='pro_search_for_intalere_contract')
     premier = fields.Boolean("Premier (GPO)", default=False, store=False, search='pro_search_for_premier')
     email_opt_out = fields.Boolean("Email Opt Out", default=False, store=False, search='pro_search_for_email_opt_out')
-    ordering_day = fields.Many2many('day.tag', string='Ordering Day',store=False, search='pro_search_for_ordering_day')
+    ordering_day1 = fields.Many2many('day.tag', string='Ordering Day',store=False, search='pro_search_for_ordering_day')
     fiscal_year_end = fields.Selection([
         ('jan', 'January'),
         ('feb', 'February'),
@@ -226,7 +226,7 @@ class externalfiels(models.Model):
     bed_size = fields.Integer(default=0, string="Bed Size", store=False, search='pro_search_for_bed_size')
     purchase_history_date = fields.Date(string="Last Purchase History", store=False, search='pro_search_for_purchase_history_date')
 
-    top_subspecialties = top_subspecialties = fields.Many2many('specialties.tag', string='Top Subspecialties', store=False, search='pro_search_for_top_subspecialties')
+    top_subspecialties1 = fields.Many2many('specialties.tag', string='Top Subspecialties', store=False, search='pro_search_for_top_subspecialties')
 
     acq_account = fields.Boolean("ACQ Account", default=False, store=False, search='pro_search_for_acq_account')
     sales_account = fields.Boolean("Sales Account", default=False, store=False, search='pro_search_for_sales_account')
@@ -271,10 +271,10 @@ class externalfiels(models.Model):
                 record.facility_type = partner_link.facility_type
                 record.bed_size = partner_link.bed_size
                 record.purchase_history_date = partner_link.purchase_history_date
-                record.ordering_day = partner_link.ordering_day
+                record.ordering_day1 = partner_link.ordering_day1
                 record.fiscal_year_end = partner_link.fiscal_year_end
                 record.last_modify = partner_link.last_modify
-                record.top_subspecialties = partner_link.top_subspecialties
+                record.top_subspecialties1 = partner_link.top_subspecialties1
                 record.created_by = partner_link.created_by
                 record.acq_account = partner_link.acq_account
                 record.sales_account = partner_link.sales_account
@@ -283,7 +283,7 @@ class externalfiels(models.Model):
             else:
                 record.gpo =''
 
-    @api.onchange('gpo','status_id','acq_account','sales_account','competitors_id','created_by','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
+    @api.onchange('gpo','status_id','acq_account','sales_account','competitors_id','created_by','top_subspecialties1','last_modify','fiscal_year_end','purchase_history_date','ordering_day1','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -307,8 +307,8 @@ class externalfiels(models.Model):
                 'email_opt_out': self.email_opt_out,'facility_type': self.facility_type,
                 'time_zone': self.time_zone,'bed_size': self.bed_size,
                 'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
-                'ordering_day': self.ordering_day.ids, 'fiscal_year_end': self.fiscal_year_end,
-                'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties.ids,
+                'ordering_day1': self.ordering_day1.ids, 'fiscal_year_end': self.fiscal_year_end,
+                'last_modify': self.last_modify, 'top_subspecialties1': self.top_subspecialties1.ids,
                 'created_by': self.created_by, 'gpo': self.gpo,
                 'acq_account': self.acq_account, 'sales_account': self.sales_account,
                 'competitors_id': self.competitors_id.ids, 'status_id': self.status_id.ids
@@ -388,7 +388,7 @@ class PartnerLinkTracker(models.Model):
         ('national account_target', 'National Account Target')],string='Facility Type')
     bed_size = fields.Integer(default=0, string="Bed Size")
     purchase_history_date = fields.Date(string="Last Purchase History")
-    ordering_day = fields.Many2many('day.tag',string='Ordering Day')
+    ordering_day1 = fields.Many2many('day.tag',string='Ordering Day')
 
     fiscal_year_end = fields.Selection([
         ('jan', 'January'),
@@ -407,7 +407,7 @@ class PartnerLinkTracker(models.Model):
     last_modify = fields.Many2one(comodel_name='res.partner', String='Last Modified By')
     created_by = fields.Many2one(comodel_name='res.partner', String='Created By')
 
-    top_subspecialties = fields.Many2many('specialties.tag', string='Top Subspecialties')
+    top_subspecialties1 = fields.Many2many('specialties.tag', string='Top Subspecialties')
     acq_account = fields.Boolean("ACQ Accoun", default=False)
     sales_account = fields.Boolean("Sales Account", default=False)
     competitors_id = fields.Many2many('competitors.tag', string='Competitors')
