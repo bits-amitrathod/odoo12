@@ -86,7 +86,7 @@ class Lead(models.Model):
                                                 ('ka_expansion', 'KA Expansion')])
 
     new_customer = fields.Boolean("New Customer", default=False)
-    arrival_date = fields.Date(string="Arrival Date")
+    arrival_date = fields.Datetime(string="Arrival Date")
     reason_list = fields.Selection(string='Reason for List',
                                         selection=[('conversion', 'Conversion'),
                                                    ('departure', 'Dr. Departure'),
@@ -348,8 +348,10 @@ class Lead(models.Model):
                 lead.phone = lead.partner_id.phone
                 lead.property_supplier_payment_term_id = lead.partner_id.property_supplier_payment_term_id
                 # lead.payment_type = lead.partner_id.payment_type
+                obj = self.env['partner.link.tracker'].search([('partner_id', '=', lead.partner_id.id)],
+                                                           limit=1).competitors_id
                 lead.contract = lead.partner_id.contract
-                lead.competitors = lead.partner_id.competitors_id
+                lead.competitors = obj
                 lead.facility_tpcd = lead.partner_id.facility_tpcd
 
 class MailActivity1(models.Model):
