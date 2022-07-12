@@ -224,7 +224,7 @@ class externalfiels(models.Model):
         ('non_surgery', 'Non-Surgery/Closed'),
         ('national account_target', 'National Account Target')], string='Facility Type', store=False, search='pro_search_for_facility_type')
     bed_size = fields.Integer(default=0, string="Bed Size", store=False, search='pro_search_for_bed_size')
-    purchase_history_date = fields.Date(string="Last Purchase History", store=False, search='pro_search_for_purchase_history_date')
+    purchase_history_date = fields.Datetime(string="Last Purchase History", store=False, search='pro_search_for_purchase_history_date')
 
     top_subspecialties1 = fields.Many2many('specialties.tag', string='Top Subspecialties', store=False, search='pro_search_for_top_subspecialties')
 
@@ -387,7 +387,7 @@ class PartnerLinkTracker(models.Model):
         ('wholesale','Wholesale'),
         ('national account_target', 'National Account Target')],string='Facility Type')
     bed_size = fields.Integer(default=0, string="Bed Size")
-    purchase_history_date = fields.Date(string="Last Purchase History")
+    purchase_history_date = fields.Datetime(string="Last Purchase History")
     ordering_day1 = fields.Many2many('day.tag',string='Ordering Day')
 
     fiscal_year_end = fields.Selection([
