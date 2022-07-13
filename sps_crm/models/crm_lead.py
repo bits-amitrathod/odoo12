@@ -121,6 +121,10 @@ class Lead(models.Model):
                 if 0 != self._cr.fetchone()[0]:
                     raise ValidationError(_('Appraisal No# Already Exist'))
 
+    @api.onchange('po_ref')
+    def _default_ref_po(self):
+        self.arrival_date = self.po_ref.arrival_date_grp if self.po_ref else self.arrival_date
+
     # Need To More Dev
     @api.constrains('product_list_doc')
     def _check_docs_ids_mimetype(self):
@@ -353,6 +357,7 @@ class Lead(models.Model):
                 lead.contract = lead.partner_id.contract
                 lead.competitors = obj
                 lead.facility_tpcd = lead.partner_id.facility_tpcd
+                # lead.arrival_date = lead.po_ref.arrival_date_grp if lead.po_ref else lead.arrival_date
 
 class MailActivity1(models.Model):
     """ Inherited Mail Acitvity to add custom View for Purchase Oppo"""
