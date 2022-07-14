@@ -334,9 +334,10 @@ class Lead(models.Model):
             values = {'attachment_ids':self.product_list_doc,
                           'model': None, 'res_id': False}
             local_context = {'rep': self.partner_id.acq_manager.name, 'unq_ac': self.partner_id.saleforce_ac,
-                             'facility_type': self.facility_tpcd, 'contracts': self.contract,
+                             'facility_type':  dict(self._fields['facility_tpcd'].selection).get(self.facility_tpcd), 'contracts': self.contract,
                              'history': '', 'competitors':  self.competitors,
-                             'payment_type': self.payment_type, 'payment_terms': self.property_supplier_payment_term_id.name,
+                             'payment_type': self.payment_type, 'acq_priority': dict(self._fields['acq_priority'].selection).get(self.acq_priority),
+                             'payment_terms': self.property_supplier_payment_term_id.name,
                              'additional_notes': 'Notes'}
             try:
                 sent_email_template= template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
