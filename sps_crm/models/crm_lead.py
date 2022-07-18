@@ -75,18 +75,20 @@ class Lead(models.Model):
                                                 ('wholesale', 'Wholesale'),
                                                 ('national_acc', 'National Account Target')])
 
-    opportunity_type = fields.Selection(string='Opportunity Type',
+    opportunity_type = fields.Selection(string='Opportunity Type Acq',
                                      selection=[('product_acq', 'Product Acquisition'),
                                                 ('eq_acq', 'EQ Acquisition'),
-                                                ('wholesale_acq', 'Wholesale Acquisition'),
-                                                ('product_sale', 'Product Sale'),
-                                                ('eq_sale', 'EQ Sale'),
-                                                ('eq_repair', 'EQ Repair'),
-                                                ('national_act_cont', 'National Account Contract'),
-                                                ('ka_expansion', 'KA Expansion')])
+                                                ('wholesale_acq', 'Wholesale Acquisition')])
+
+    opportunity_type_sales = fields.Selection(string='Opportunity Type Sales',
+                                        selection=[('product_sale', 'Product Sale'),
+                                                   ('eq_sale', 'EQ Sale'),
+                                                   ('eq_repair', 'EQ Repair'),
+                                                   ('national_act_cont', 'National Account Contract'),
+                                                   ('ka_expansion', 'KA Expansion')])
 
     new_customer = fields.Boolean("New Customer", default=False)
-    arrival_date = fields.Date(string="Arrival Date")
+    arrival_date = fields.Datetime(string="Arrival Date")
     reason_list = fields.Selection(string='Reason for List',
                                         selection=[('conversion', 'Conversion'),
                                                    ('departure', 'Dr. Departure'),
@@ -120,6 +122,10 @@ class Lead(models.Model):
                 self.env.cr.execute(query_str, [lead.appraisal_no])
                 if 0 != self._cr.fetchone()[0]:
                     raise ValidationError(_('Appraisal No# Already Exist'))
+
+    @api.onchange('po_ref')
+    def _default_ref_po(self):
+        self.arrival_date = self.po_ref.arrival_date_grp if self.po_ref else self.arrival_date
 
     # Need To More Dev
     @api.constrains('product_list_doc')
@@ -198,11 +204,13 @@ class Lead(models.Model):
     def _compute_contact_values(self):
         """ compute the new values when partner_id has changed """
         _logger.error(" Compute method Called ........")
+        obj = self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)], limit=1).competitors_id
+        self.competitors = obj.ids if obj else obj
         self.property_supplier_payment_term_id = self.partner_id.property_supplier_payment_term_id.id
         # self.payment_type = self.partner_id.payment_type
         self.contract = self.partner_id.contract
         self.facility_tpcd = self.partner_id.facility_tpcd
-        self.competitors = self.env['res.partner'].search([('id', '=', self.partner_id.id)],limit=1).competitors_id
+
     #     self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)],limit=1).competitors_id
 
     def action_purchase_set_won(self):
@@ -328,9 +336,10 @@ class Lead(models.Model):
             values = {'attachment_ids':self.product_list_doc,
                           'model': None, 'res_id': False}
             local_context = {'rep': self.partner_id.acq_manager.name, 'unq_ac': self.partner_id.saleforce_ac,
-                             'facility_type': self.facility_tpcd, 'contracts': self.contract,
+                             'facility_type':  dict(self._fields['facility_tpcd'].selection).get(self.facility_tpcd), 'contracts': self.contract,
                              'history': '', 'competitors':  self.competitors,
-                             'payment_type': self.payment_type, 'payment_terms': self.property_supplier_payment_term_id.name,
+                             'payment_type': self.payment_type, 'acq_priority': dict(self._fields['acq_priority'].selection).get(self.acq_priority),
+                             'payment_terms': self.property_supplier_payment_term_id.name,
                              'additional_notes': 'Notes'}
             try:
                 sent_email_template= template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
@@ -346,9 +355,12 @@ class Lead(models.Model):
                 lead.phone = lead.partner_id.phone
                 lead.property_supplier_payment_term_id = lead.partner_id.property_supplier_payment_term_id
                 # lead.payment_type = lead.partner_id.payment_type
+                obj = self.env['partner.link.tracker'].search([('partner_id', '=', lead.partner_id.id)],
+                                                           limit=1).competitors_id
                 lead.contract = lead.partner_id.contract
-                lead.competitors = lead.partner_id.competitors_id
+                lead.competitors = obj
                 lead.facility_tpcd = lead.partner_id.facility_tpcd
+                # lead.arrival_date = lead.po_ref.arrival_date_grp if lead.po_ref else lead.arrival_date
 
 class MailActivity1(models.Model):
     """ Inherited Mail Acitvity to add custom View for Purchase Oppo"""

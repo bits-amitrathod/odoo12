@@ -25,11 +25,19 @@
                 %endif
 
                 %if ctx.get('contracts') :
-                <p> Contracts/Affiliation:   ${ctx['contracts']} <br/> </p>
+                    <p> Contracts/Affiliation:
+                    % for con in ctx.get('contracts'):
+                          ${con.name},
+                    %endfor
+                    </br> </p>
                 %endif
 
                 %if ctx.get('history') :
                 <p> History:${ctx['history']} <br/> </p>
+                %endif
+
+                %if ctx.get('acq_priority') :
+                <p> Priority: ${ctx['acq_priority']} <br/> </p>
                 %endif
 
                 %if ctx.get('competitors') :

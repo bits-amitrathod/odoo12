@@ -27,3 +27,12 @@ account_hierarchy_report_manager,account.hierarchy.report,model_account_hierarch
 
 popup_account_hierarchy_report_user,popup.account.hierarchy.report,model_popup_account_hierarchy_report,,1,0,0,0
 popup_account_hierarchy_report_manager,popup.account.hierarchy.report,model_popup_account_hierarchy_report,,1,1,1,1
+
+access_specialties_tag_manager,specialties.tag,model_specialties_tag,sales_team.group_sale_manager,1,1,1,1
+access_specialties_tag_salesman,specialties.tag,model_specialties_tag,sales_team.group_sale_salesman,1,0,0,0
+access_specialties_tag_user,specialties.tag,model_specialties_tag,base.group_user,1,0,0,0
+
+access_day_tag_manager,day.tag,model_day_tag,sales_team.group_sale_manager,1,1,1,1
+access_day_tag_salesman,day.tag,model_day_tag,sales_team.group_sale_salesman,1,0,0,0
+access_day_tag_user,day.tag,model_day_tag,base.group_user,1,0,0,0
+
