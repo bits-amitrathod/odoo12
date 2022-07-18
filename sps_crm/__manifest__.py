@@ -27,6 +27,7 @@
         'views/email_template.xml',
         'views/mail_activity.xml',
         'views/customer_view.xml',
+        'views/sps_crm_account_hierarchy_views.xml',
 
     ],
     'demo': [

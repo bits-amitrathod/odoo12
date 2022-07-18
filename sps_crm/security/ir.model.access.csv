@@ -22,3 +22,8 @@ access_status_tag_manager,status.tag,model_status_tag,sales_team.group_sale_mana
 access_status_tag_salesman,status.tag,model_status_tag,sales_team.group_sale_salesman,1,0,0,0
 access_status_tag_user,status.tag,model_status_tag,base.group_user,1,0,0,0
 
+account_hierarchy_report_user,account.hierarchy.report,model_account_hierarchy_report,,1,0,0,0
+account_hierarchy_report_manager,account.hierarchy.report,model_account_hierarchy_report,,1,1,1,1
+
+popup_account_hierarchy_report_user,popup.account.hierarchy.report,model_popup_account_hierarchy_report,,1,0,0,0
+popup_account_hierarchy_report_manager,popup.account.hierarchy.report,model_popup_account_hierarchy_report,,1,1,1,1

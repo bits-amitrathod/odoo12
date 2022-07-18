@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<odoo>
+
+       <!-- Tree view -->
+        <record model="ir.ui.view" id="account_hierarchy_report_list_view">
+              <field name="name">account.hierarchy.report.view.list</field>
+              <field name="model">account.hierarchy.report</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false">
+                 <!--   <field name="customer" optional="show"/>-->
+                       <field name="child_customer" optional="show"/>
+                </tree>
+              </field>
+        </record>
+
+        <!-- Tree view ends here -->
+
+        <!-- Form view-->
+        <record id="account_hierarchy_report_form_view" model="ir.ui.view">
+          <field name="name">account.hierarchy.report.form</field>
+          <field name="model">account.hierarchy.report</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+              <form create="false" edit="false" delete="false">
+                  <sheet>
+                      <group>
+                            <group>
+                                <field name="customer"/>
+                            </group>
+                            <group>
+
+                            </group>
+                      </group>
+                  </sheet>
+              </form>
+          </field>
+        </record>
+
+        <!-- Form view ends here -->
+
+
+        <!-- Popup code -->
+        <record id="account_hierarchy_report_popup_view" model="ir.ui.view">
+            <field name="name">Account Hierarchy Report</field>
+            <field name="model">popup.account.hierarchy.report</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <span> Click on View Report to show the hierarchy of Accounts </span>
+
+                        </group>
+                    </group>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                           <field name="start_date" invisible="1"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Popup code ends here-->
+
+
+        <!-- Action code -->
+        <record id="action_account_hierarchy_report" model="ir.actions.act_window">
+            <field name="name">Account Hierarchy Report</field>
+            <field name="res_model">popup.account.hierarchy.report</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account_hierarchy_report_popup_view"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+
+        <!-- Action code ends here -->
+
+
+
+        <!-- Menus declaration -->
+      <menuitem
+        id="crm_menu_account_hierarchy"
+        name="Account Hierarchy"
+        action="action_account_hierarchy_report"
+        parent="crm.crm_menu_root"
+        sequence="6"/>
+
+
+
+        <!-- Menus declaration ends here -->
+</odoo>

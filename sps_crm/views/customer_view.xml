@@ -56,6 +56,7 @@
                             <field name="sales_account"/>
                             <field name="competitors_id" widget="many2many_tags"/>
                             <field name="status_id" widget="many2many_tags"/>
+                            <field name="acc_cust_parent"/>
                             </group>
                         </group>
                     </page>

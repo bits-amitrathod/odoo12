@@ -250,6 +250,8 @@ class externalfiels(models.Model):
     sales_account = fields.Boolean("Sales Account", default=False, store=False, search='pro_search_for_sales_account')
     competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False, search='pro_search_for_competitors_id')
     status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id')
+    acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False,
+                                      domain=[('is_company', '=', True)])
 
 
     def _compute_details_field(self):
@@ -298,10 +300,11 @@ class externalfiels(models.Model):
                 record.sales_account = partner_link.sales_account
                 record.competitors_id = partner_link.competitors_id
                 record.status_id = partner_link.status_id
+                record.acc_cust_parent = partner_link.acc_cust_parent
             else:
                 record.gpo =''
 
-    @api.onchange('gpo','status_id','acq_account','sales_account','competitors_id','created_by','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
+    @api.onchange('gpo','acc_cust_parent','status_id','acq_account','sales_account','competitors_id','created_by','top_subspecialties','last_modify','fiscal_year_end','purchase_history_date','ordering_day','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -329,7 +332,8 @@ class externalfiels(models.Model):
                 'last_modify': self.last_modify, 'top_subspecialties': self.top_subspecialties,
                 'created_by': self.created_by, 'gpo': self.gpo,
                 'acq_account': self.acq_account, 'sales_account': self.sales_account,
-                'competitors_id': self.competitors_id.ids, 'status_id': self.status_id.ids
+                'competitors_id': self.competitors_id.ids, 'status_id': self.status_id.ids,
+                'acc_cust_parent': self.acc_cust_parent.id
 
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
@@ -448,3 +452,4 @@ class PartnerLinkTracker(models.Model):
     sales_account = fields.Boolean("Sales Account", default=False)
     competitors_id = fields.Many2many('competitors.tag', string='Competitors')
     status_id = fields.Many2many('status.tag', string='Status')
+    acc_cust_parent = fields.Many2one('res.partner', string='Parent Account',domain=[('is_company', '=', True)])
