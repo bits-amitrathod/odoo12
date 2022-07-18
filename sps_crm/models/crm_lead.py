@@ -75,15 +75,17 @@ class Lead(models.Model):
                                                 ('wholesale', 'Wholesale'),
                                                 ('national_acc', 'National Account Target')])
 
-    opportunity_type = fields.Selection(string='Opportunity Type',
+    opportunity_type = fields.Selection(string='Opportunity Type Acq',
                                      selection=[('product_acq', 'Product Acquisition'),
                                                 ('eq_acq', 'EQ Acquisition'),
-                                                ('wholesale_acq', 'Wholesale Acquisition'),
-                                                ('product_sale', 'Product Sale'),
-                                                ('eq_sale', 'EQ Sale'),
-                                                ('eq_repair', 'EQ Repair'),
-                                                ('national_act_cont', 'National Account Contract'),
-                                                ('ka_expansion', 'KA Expansion')])
+                                                ('wholesale_acq', 'Wholesale Acquisition')])
+
+    opportunity_type_sales = fields.Selection(string='Opportunity Type Sales',
+                                        selection=[('product_sale', 'Product Sale'),
+                                                   ('eq_sale', 'EQ Sale'),
+                                                   ('eq_repair', 'EQ Repair'),
+                                                   ('national_act_cont', 'National Account Contract'),
+                                                   ('ka_expansion', 'KA Expansion')])
 
     new_customer = fields.Boolean("New Customer", default=False)
     arrival_date = fields.Datetime(string="Arrival Date")
