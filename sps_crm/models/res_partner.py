@@ -347,9 +347,20 @@ class externalfiels(models.Model):
         '''
         action = self.env['ir.actions.act_window']._for_xml_id('sps_crm.crm_purchase_lead_action_pipeline')
         if self.is_company:
-            action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id)]
+            action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
         else:
-            action['domain'] = [('partner_id.id', '=', self.id)]
+            action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
+        return action
+
+    def action_view_opportunity(self):
+        '''
+        This function returns an action that displays the opportunities from partner.
+        '''
+        action = self.env['ir.actions.act_window']._for_xml_id('crm.crm_lead_opportunities')
+        if self.is_company:
+            action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id), ('type', '=', 'opportunity')]
+        else:
+            action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'opportunity')]
         return action
 
 class PartnerLinkTracker(models.Model):
