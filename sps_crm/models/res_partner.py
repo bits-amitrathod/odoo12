@@ -15,7 +15,7 @@ class externalfiels(models.Model):
         all_partners.read(['parent_id'])
 
         opportunity_data = self.env['crm.lead'].read_group(
-            domain=[('partner_id', 'in', all_partners.ids)],
+            domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'purchase_opportunity')],
             fields=['partner_id'], groupby=['partner_id']
         )
 
@@ -26,6 +26,25 @@ class externalfiels(models.Model):
                 if partner in self:
                     partner.acq_opportunity_count += group['partner_id_count']
                 partner = partner.parent_id
+
+    def _compute_opportunity_count(self):
+        # retrieve all children partners and prefetch 'parent_id' on them
+        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+        all_partners.read(['parent_id'])
+
+        opportunity_data = self.env['crm.lead'].read_group(
+            domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'opportunity')],
+            fields=['partner_id'], groupby=['partner_id']
+        )
+
+        self.opportunity_count = 0
+        for group in opportunity_data:
+            partner = self.browse(group['partner_id'][0])
+            while partner:
+                if partner in self:
+                    partner.opportunity_count += group['partner_id_count']
+                partner = partner.parent_id
+
 
     def pro_search_for_gpo(self, operator, value):
         return self.generic_char_search(operator, value, 'gpo')
