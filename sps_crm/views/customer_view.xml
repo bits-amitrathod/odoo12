@@ -11,6 +11,7 @@
 <!--                            <field name="partner_id"/>-->
                         <group>
                             <group>
+                            <field name="acc_cust_parent"/>
                             <field name="gpo"/>
                             <field name="purchase"/>
                             <field name="mesh"/>
@@ -57,9 +58,17 @@
                             <field name="competitors_id" widget="many2many_tags"/>
                             <!--<field name="type"/>-->
                             <field name="status_id" widget="many2many_tags"  attrs="{'invisible': [('type','!=', 'contact')]}"/>
-                            <field name="acc_cust_parent"/>
+
 
                             </group>
+                        </group>
+                    </page>
+                    <page name="activitynotesfields" string="Activity Notes"
+                          attrs="{'invisible':['|', '|', ('is_parent', '==', False), ('customer_rank', '==', 0), ('is_parent_assigned', '==', False)]}">
+
+                        <group>
+                                   <field name="sales_activity_notes"/>
+                                   <field name="acq_activity_notes"/>
                         </group>
                     </page>
                 </xpath>

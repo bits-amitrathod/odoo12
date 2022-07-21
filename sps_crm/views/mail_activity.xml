@@ -10,6 +10,17 @@
             </field>
         </field>
     </record>
+        <record id="sh_mail_activity_view_form_custom" model="ir.ui.view">
+        <field name="name">sh.mail.activity.view.form.add</field>
+        <field name="model">mail.activity</field>
+        <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form" />
+        <field name="arch" type="xml">
+            <field name="note" position="after">
+                 <field name="sales_activity_notes" String ="Sales Activity Notes"/>
+                 <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
+            </field>
+        </field>
+    </record>
  </data>
 </odoo>
 

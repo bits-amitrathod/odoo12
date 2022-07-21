@@ -9,3 +9,4 @@ from . import res_partner
 from . import res_partner_competitors_tag
 from . import account_hierachy_popup
 from . import account_hierarchy_model
+from . import mail_activity

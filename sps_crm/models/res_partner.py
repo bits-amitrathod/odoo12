@@ -235,6 +235,8 @@ class externalfiels(models.Model):
     status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id')
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False,
                                       domain=[('is_company', '=', True)])
+    sales_activity_notes = fields.Html("Sales Activity Notes", store=False)
+    acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False)
 
 
     def _compute_details_field(self):
@@ -284,10 +286,18 @@ class externalfiels(models.Model):
                 record.competitors_id = partner_link.competitors_id
                 record.status_id = partner_link.status_id
                 record.acc_cust_parent = partner_link.acc_cust_parent
+                record.sales_activity_notes = partner_link.sales_activity_notes
+                record.acq_activity_notes = partner_link.acq_activity_notes
             else:
                 record.gpo =''
 
-    @api.onchange('gpo','acc_cust_parent','status_id','acq_account','sales_account','competitors_id','created_by','top_subspecialties1','last_modify','fiscal_year_end','purchase_history_date','ordering_day1','mesh','purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic','suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes','facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract','mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners','intalere_contract','premier','email_opt_out')
+    @api.onchange('gpo','acc_cust_parent','status_id','acq_account','sales_account','competitors_id','created_by',
+                  'top_subspecialties1','last_modify','fiscal_year_end','purchase_history_date','ordering_day1','mesh'
+        ,'purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic',
+                  'suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes',
+                  'facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract',
+                  'mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners',
+                  'intalere_contract','premier','email_opt_out','acq_activity_notes','sales_activity_notes')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -316,7 +326,9 @@ class externalfiels(models.Model):
                 'created_by': self.created_by, 'gpo': self.gpo,
                 'acq_account': self.acq_account, 'sales_account': self.sales_account,
                 'competitors_id': self.competitors_id.ids, 'status_id': self.status_id.ids,
-                'acc_cust_parent': self.acc_cust_parent.id
+                'acc_cust_parent': self.acc_cust_parent.id,
+                'sales_activity_notes': self.sales_activity_notes,
+                'acq_activity_notes': self.acq_activity_notes
 
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
@@ -418,3 +430,5 @@ class PartnerLinkTracker(models.Model):
     competitors_id = fields.Many2many('competitors.tag', string='Competitors')
     status_id = fields.Many2many('status.tag', string='Status')
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account',domain=[('is_company', '=', True)])
+    sales_activity_notes = fields.Html("Sales Activity Notes")
+    acq_activity_notes = fields.Html("Acquisition Activity Notes")
