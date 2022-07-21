@@ -15,7 +15,7 @@ class externalfiels(models.Model):
         all_partners.read(['parent_id'])
 
         opportunity_data = self.env['crm.lead'].read_group(
-            domain=[('partner_id', 'in', all_partners.ids)],
+            domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'purchase_opportunity')],
             fields=['partner_id'], groupby=['partner_id']
         )
 
@@ -26,6 +26,25 @@ class externalfiels(models.Model):
                 if partner in self:
                     partner.acq_opportunity_count += group['partner_id_count']
                 partner = partner.parent_id
+
+    def _compute_opportunity_count(self):
+        # retrieve all children partners and prefetch 'parent_id' on them
+        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+        all_partners.read(['parent_id'])
+
+        opportunity_data = self.env['crm.lead'].read_group(
+            domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'opportunity')],
+            fields=['partner_id'], groupby=['partner_id']
+        )
+
+        self.opportunity_count = 0
+        for group in opportunity_data:
+            partner = self.browse(group['partner_id'][0])
+            while partner:
+                if partner in self:
+                    partner.opportunity_count += group['partner_id_count']
+                partner = partner.parent_id
+
 
     def pro_search_for_gpo(self, operator, value):
         return self.generic_char_search(operator, value, 'gpo')
@@ -232,7 +251,7 @@ class externalfiels(models.Model):
     acq_account = fields.Boolean("ACQ Account", default=False, store=False, search='pro_search_for_acq_account')
     sales_account = fields.Boolean("Sales Account", default=False, store=False, search='pro_search_for_sales_account')
     competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False, search='pro_search_for_competitors_id')
-    status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id')
+    status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id', compute="_compute_details_status_field", readonly=False)
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False,
                                       domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False)
@@ -333,6 +352,24 @@ class externalfiels(models.Model):
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
+    def _compute_details_status_field(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.status_id = partner_link.status_id
+            else:
+                record.status_id = record.status_id
+
+    @api.onchange('status_id')
+    def _onchange_fields_status_save(self):
+        if len(self.ids):
+            partner_id = self.ids[0]
+            partner_link = self.env['partner.link.tracker']
+            link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
+            vals = {'status_id': self.status_id.ids
+            }
+            link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+
     # THis method used to handle ACQ Oppo Button on Click
     def action_view_acq_opportunity(self):
         '''
@@ -340,9 +377,20 @@ class externalfiels(models.Model):
         '''
         action = self.env['ir.actions.act_window']._for_xml_id('sps_crm.crm_purchase_lead_action_pipeline')
         if self.is_company:
-            action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id)]
+            action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
         else:
-            action['domain'] = [('partner_id.id', '=', self.id)]
+            action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
+        return action
+
+    def action_view_opportunity(self):
+        '''
+        This function returns an action that displays the opportunities from partner.
+        '''
+        action = self.env['ir.actions.act_window']._for_xml_id('crm.crm_lead_opportunities')
+        if self.is_company:
+            action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id), ('type', '=', 'opportunity')]
+        else:
+            action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'opportunity')]
         return action
 
 class PartnerLinkTracker(models.Model):
