@@ -56,18 +56,30 @@
                             <field name="sales_account"/>
                             <field name="competitors_id" widget="many2many_tags"/>
                             <!--<field name="type"/>-->
-                            <field name="status_id" widget="many2many_tags"  attrs="{'invisible': [('type','!=', 'contact')]}"/>
+                            <field name="status_id" widget="many2many_tags"
+                            attrs="{'invisible': ['|', '&amp;', ('is_company','=', True),('parent_id', '=', False),('company_name', '!=', False),('company_name', '!=', '')]}"/>
                             <field name="acc_cust_parent"/>
 
                             </group>
                         </group>
                     </page>
                 </xpath>
-               <!-- <xpath expr="//field[@name='category_id']" position="after">
-                    <field name="acq_account"/>
-                    <field name="sales_account"/>
-                    <field name="competitors_id" widget="many2many_tags"/>
-            </xpath>-->
+                <xpath expr="//field[@name='category_id']" position="after">
+                    <field name="status_id" widget="many2many_tags"
+                    attrs="{'invisible': ['|', '&amp;', ('is_company','=', True),('parent_id', '=', False),('company_name', '!=', False),('company_name', '!=', '')]}"
+                    />
+            </xpath>
+            <xpath expr="/form/sheet/notebook/page[@name='contact_addresses']/field/form/sheet/group/group[1]" position="inside">
+                    <field name="status_id" widget="many2many_tags"/>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_kanban_details')][last()]" position="inside">
+                    <field name="status_id" widget="many2many_tags"/>
+<!--                    <div t-if="record.status_id">
+                        <li t-foreach="record.status_id" t-as="item">
+                            <t t-esc="item.name"/>
+                        </li>
+                    </div>-->
+            </xpath>
             </field>
         </record>
 

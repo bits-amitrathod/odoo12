@@ -251,7 +251,7 @@ class externalfiels(models.Model):
     acq_account = fields.Boolean("ACQ Account", default=False, store=False, search='pro_search_for_acq_account')
     sales_account = fields.Boolean("Sales Account", default=False, store=False, search='pro_search_for_sales_account')
     competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False, search='pro_search_for_competitors_id')
-    status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id')
+    status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id', compute="_compute_details_status_field", readonly=False)
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False,
                                       domain=[('is_company', '=', True)])
 
@@ -337,6 +337,24 @@ class externalfiels(models.Model):
                 'competitors_id': self.competitors_id.ids, 'status_id': self.status_id.ids,
                 'acc_cust_parent': self.acc_cust_parent.id
 
+            }
+            link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+
+    def _compute_details_status_field(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.status_id = partner_link.status_id
+            else:
+                record.status_id = record.status_id
+
+    @api.onchange('status_id')
+    def _onchange_fields_status_save(self):
+        if len(self.ids):
+            partner_id = self.ids[0]
+            partner_link = self.env['partner.link.tracker']
+            link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
+            vals = {'status_id': self.status_id.ids
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
