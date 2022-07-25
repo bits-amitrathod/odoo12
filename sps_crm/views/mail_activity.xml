@@ -16,8 +16,10 @@
         <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form" />
         <field name="arch" type="xml">
             <field name="note" position="after">
+                <group>
                  <field name="sales_activity_notes" String ="Sales Activity Notes"/>
                  <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
+                </group>
             </field>
         </field>
     </record>
@@ -28,6 +30,7 @@
         <field name="arch" type="xml">
             <field name="reference" position="after">
                  <field name="activity_priority" ></field>
+                 <field name="related_partner_activity" ></field>
             </field>
         </field>
     </record>
