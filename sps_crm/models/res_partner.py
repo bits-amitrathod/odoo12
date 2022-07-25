@@ -382,6 +382,17 @@ class externalfiels(models.Model):
             action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
         return action
 
+    def action_view_account_hierarchy(self):
+        '''
+        This function returns an action that displays the opportunities from partner.
+        '''
+        action = self.env['ir.actions.act_window']._for_xml_id('sps_crm.action_account_hierarchy_report')
+        # if self.is_company:
+        #     action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
+        # else:
+        #     action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
+        return action
+
     def action_view_opportunity(self):
         '''
         This function returns an action that displays the opportunities from partner.

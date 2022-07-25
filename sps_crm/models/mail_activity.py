@@ -10,6 +10,11 @@ class MailActivityNotesCustom(models.Model):
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, compute="_compute_act_note_field",
                                      readonly=False)
 
+    activity_priority = fields.Selection([
+        ('high', 'High'),
+        ('medium', 'Medium'),
+        ('low', 'Low')], string='Priority', store=True)
+
     def _compute_act_note_field(self):
         for record in self:
             if record.res_model == 'res.partner':
