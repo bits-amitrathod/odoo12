@@ -317,16 +317,17 @@ class AccountMove(models.Model):
                 invoice_date = str(self.invoice_date).replace('-', '')
                 invoice_name_split = self.name.split('/')
                 company_address = self.company_id and self.company_id.partner_id
+                cmp_inv_add_id = self.company_id and self.company_id.x_studio_invoice_partner
                 customer_po_ref_id = order.customer_po_ref
                 vendor_id_str = customer_po_ref_id and customer_po_ref_id.vendor_id or sftp_conf.sender_id or ''
                 vendor_ref_str = customer_po_ref_id and customer_po_ref_id.vendor_ref or sftp_conf.company_name or ''
                 vendor_reference = "\nN1^VN^{vendor_ref_str}^92^{vendor_id_str}~".format(vendor_ref_str=vendor_ref_str, vendor_id_str=vendor_id_str)# if vendor_ref_str and vendor_id_str else ''
                 head = HEAD.format(
                     # add1=self.partner_id and self.partner_id.street or '',
-                    add2=self.partner_id and self.partner_id.street or '',
-                    city=self.partner_id and self.partner_id.city or '',
-                    state=self.partner_id and self.partner_id.state_id and self.partner_id.state_id.code or '',
-                    zip=self.partner_id and self.partner_id.zip,
+                    add2=cmp_inv_add_id and cmp_inv_add_id.street or '',
+                    city=cmp_inv_add_id and cmp_inv_add_id.city or '',
+                    state=cmp_inv_add_id and cmp_inv_add_id.state_id and cmp_inv_add_id.state_id.code or '',
+                    zip=cmp_inv_add_id and cmp_inv_add_id.zip,
                     sender_id_with_space=sftp_conf.sender_id and sftp_conf.sender_id.ljust(15) or '',
                     sender_id=sftp_conf.sender_id or '',
                     receiver_id=sftp_conf.receiver_id and sftp_conf.receiver_id.ljust(15) or '',
