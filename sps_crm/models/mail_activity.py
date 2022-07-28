@@ -36,7 +36,7 @@ class MailActivityNotesCustom(models.Model):
                     partner_link.sales_activity_notes = record.sales_activity_notes
                     partner_link.acq_activity_notes = record.acq_activity_notes
                 else:
-                    self.env['partner.link.tracker'].create({'partner_id': record.related_partner_activity,
+                    self.env['partner.link.tracker'].create({'partner_id': record.related_partner_activity.id,
                                                              'sales_activity_notes': record.sales_activity_notes,
                                                              'acq_activity_notes': record.acq_activity_notes })
 
