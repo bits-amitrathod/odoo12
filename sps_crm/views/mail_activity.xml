@@ -15,11 +15,24 @@
         <field name="model">mail.activity</field>
         <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form" />
         <field name="arch" type="xml">
-            <field name="note" position="after">
-                <group>
-                 <field name="sales_activity_notes" String ="Sales Activity Notes"/>
-                 <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
-                </group>
+            <field name="note" position="replace">
+                <notebook>
+                     <page name="actnotes" string="Notes">
+                 <group>
+                   <field name="note" placeholder="Log a note..." />
+                 </group>
+                     </page>
+                 <page name="salesactnotes" string="Sales Notes">
+                 <group>
+                  <field name="sales_activity_notes" String ="Sales Activity Notes"/>
+                 </group>
+                 </page>
+                <page name="acqactnotes" string="Acquisition Notes">
+                 <group>
+                   <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
+                 </group>
+                 </page>
+                </notebook>
             </field>
         </field>
     </record>
@@ -43,6 +56,16 @@
                 <field name="activity_priority"  />
             </field>
         </field>
+    </record>
+    <record id="sh_mail_activity_type_view_form_inherit" model="ir.ui.view">
+            <field name="name">sh.mail.activity.inherit</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="mail.mail_activity_view_form_popup" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                   <field name="activity_priority"  />
+                </xpath>
+            </field>
     </record>
 
 
