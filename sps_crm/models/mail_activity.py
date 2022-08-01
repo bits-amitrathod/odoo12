@@ -36,7 +36,7 @@ class MailActivityNotesCustom(models.Model):
                if not model.model.startswith('ir.')]
         return res
 
-    @api.depends('acq_activity_notes', 'sales_activity_notes')
+
     def _compute_act_note_field(self):
         for record in self:
             # record.res_model = 'res.partner'
