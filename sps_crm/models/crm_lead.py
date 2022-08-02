@@ -61,7 +61,7 @@ class Lead(models.Model):
         'crm.purchase.lost.reason', string='Lost Reason',
         index=True, ondelete='restrict')
 
-    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no1", readonly=False, store=True)
+    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no", readonly=False, store=True)
 
     facility_tpcd = fields.Selection(string='Facility Type',
                                      selection=[('health_sys', 'Health System'),
@@ -107,7 +107,7 @@ class Lead(models.Model):
 
 
     @api.onchange('appraisal_no')
-    def _default_appraisal_no1(self):
+    def _default_appraisal_no(self):
         for lead in self:
             if (lead.appraisal_no == False):
                 while True:
@@ -360,6 +360,7 @@ class Lead(models.Model):
                 lead.contract = lead.partner_id.contract
                 lead.competitors = obj
                 lead.facility_tpcd = lead.partner_id.facility_tpcd
+                lead._default_appraisal_no()
                 # lead.arrival_date = lead.po_ref.arrival_date_grp if lead.po_ref else lead.arrival_date
 
 class MailActivity1(models.Model):
