@@ -223,7 +223,7 @@ class externalfiels(models.Model):
         ('oct', 'October'),
         ('nov', 'November'),
         ('dec', 'December')], string='Fiscal Year End', store=False, search='pro_search_for_fiscal_year_end')
-    last_modify = fields.Many2one(comodel_name='res.partner', String='Last Modified By', store=False)
+    last_modify_by = fields.Many2one(comodel_name='res.partner', String='Last Modified By', store=False)
     created_by = fields.Many2one(comodel_name='res.partner', String='Created By', store=False)
     time_zone = fields.Selection([
         ('est', 'EST'),
@@ -298,7 +298,7 @@ class externalfiels(models.Model):
                 record.purchase_history_date = partner_link.purchase_history_date
                 record.ordering_day1 = partner_link.ordering_day1
                 record.fiscal_year_end = partner_link.fiscal_year_end
-                record.last_modify = partner_link.last_modify
+                record.last_modify_by = partner_link.last_modify_by
                 record.top_subspecialties1 = partner_link.top_subspecialties1
                 record.created_by = partner_link.created_by
                 record.acq_account = partner_link.acq_account
@@ -312,7 +312,7 @@ class externalfiels(models.Model):
                 record.gpo =''
 
     @api.onchange('gpo','acc_cust_parent','status_id','acq_account','sales_account','competitors_id','created_by',
-                  'top_subspecialties1','last_modify','fiscal_year_end','purchase_history_date','ordering_day1','mesh'
+                  'top_subspecialties1','last_modify_by','fiscal_year_end','purchase_history_date','ordering_day1','mesh'
         ,'purchase_history_date','bed_size','facility_type','time_zone','purchase','edomechanicals','orthopedic',
                   'suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes',
                   'facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract',
@@ -342,7 +342,7 @@ class externalfiels(models.Model):
                 'time_zone': self.time_zone,'bed_size': self.bed_size,
                 'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
                 'ordering_day1': self.ordering_day1.ids, 'fiscal_year_end': self.fiscal_year_end,
-                'last_modify': self.last_modify, 'top_subspecialties1': self.top_subspecialties1.ids,
+                'last_modify_by': self.last_modify_by, 'top_subspecialties1': self.top_subspecialties1.ids,
                 'created_by': self.created_by, 'gpo': self.gpo,
                 'acq_account': self.acq_account, 'sales_account': self.sales_account,
                 'competitors_id': self.competitors_id.ids, 'status_id': self.status_id.ids,
@@ -482,7 +482,7 @@ class PartnerLinkTracker(models.Model):
         ('nov', 'November'),
         ('dec', 'December')],string='Fiscal Year End')
 
-    last_modify = fields.Many2one(comodel_name='res.partner', String='Last Modified By')
+    last_modify_by = fields.Many2one(comodel_name='res.partner', String='Last Modified By')
     created_by = fields.Many2one(comodel_name='res.partner', String='Created By')
 
     top_subspecialties1 = fields.Many2many('specialties.tag', string='Top Subspecialties')

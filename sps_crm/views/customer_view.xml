@@ -29,7 +29,7 @@
                             <field name="ent"/>
                             <field name="ordering_day1" widget="many2many_tags"/>
                             <field name="fiscal_year_end"/>
-                            <field name="last_modify"/>
+                            <field name="last_modify_by"/>
                             <field name="created_by"/>
                             <field name="top_subspecialties1"  widget="many2many_tags"/>
 
@@ -122,7 +122,7 @@
                                         <field name="ent"/>
                                         <field name="ordering_day1" widget="many2many_tags"/>
                                         <field name="fiscal_year_end"/>
-                                        <field name="last_modify"/>
+                                        <field name="last_modify_by"/>
                                         <field name="created_by"/>
                                         <field name="top_subspecialties1"  widget="many2many_tags"/>
                                     </group>
@@ -192,7 +192,7 @@
                                         <field name="ent"/>
                                         <field name="ordering_day1"/>
                                         <field name="fiscal_year_end"/>
-                                        <field name="last_modify"/>
+                                        <field name="last_modify_by"/>
                                         <field name="created_by"/>
                                         <field name="top_subspecialties1"/>
                                         <field name="acq_account"/>
