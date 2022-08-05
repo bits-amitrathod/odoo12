@@ -733,8 +733,11 @@ class CaptiveaEdiProcess(models.TransientModel):
                                                     'unit_price': float(fields[4])
                                                 })
                                             if len(fields) > 7:
+                                                product_seg = 7
+                                                if fields[6] != 'VC':
+                                                    product_seg = 9
                                                 po_lines[fields[1]].update({
-                                                    'vendor_part': fields[7]
+                                                    'vendor_part': fields[product_seg]
                                                 })
                                             if len(fields) > 9:
                                                 po_lines[fields[1]].update({
