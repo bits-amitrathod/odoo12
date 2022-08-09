@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <menuitem
+        id="crm.crm_menu_root"
+        name="CRM"
+        web_icon="crm,static/description/icon.png"
+        groups="sales_team.group_sale_salesman,sales_team.group_sale_manager,purchase.group_purchase_user,purchase.group_purchase_manager"
+        sequence="6"/>
+    <!-- Top menu item -->
+
+    <!-- PURCHASE (MAIN USER MENU) -->
+    <menuitem
+        id="crm_menu_purchase"
+        name="Acquisitions"
+        parent="crm.crm_menu_root"
+        groups="purchase.group_purchase_user,purchase.group_purchase_manager"
+        sequence="3"/>
+
+    <menuitem
+        id="menu_crm_purchase_opportunities"
+        name="My Pipeline"
+        action="sps_crm.action_your_purchase_pipeline"
+        parent="crm_menu_purchase"
+        sequence="1"/>
+    <menuitem
+        id="my_vendor_offers_menu"
+        name="My Vendor Offers"
+        parent="crm_menu_purchase"
+        action="vendor_offer.action_window"
+        sequence="2"/>
+    <menuitem
+        id="purchase_order_menu"
+        name="My Purchase Orders"
+        parent="crm_menu_purchase"
+        action="vendor_offer.purchase_form_action_vendor"
+        sequence="3"/>
+    <menuitem
+        id="crm_lead_menu_my_activities"
+        name="My Activities"
+        parent="crm_menu_purchase"
+        action="sh_activities_management.sh_action_my_activities"
+        sequence="4"/>
+
+    <menuitem
+        id="vendors_menu"
+        name="Vendors"
+        parent="crm_menu_purchase"
+        action="account.res_partner_action_supplier"
+        sequence="5"/>
+
+    <!-- CONFIGURATION -->
+
+    <menuitem
+        id="crm.crm_menu_config"
+        name="Configuration"
+        parent="crm.crm_menu_root"
+        sequence="25" groups="sales_team.group_sale_manager,purchase.group_purchase_manager"/>
+
+    <menuitem
+        id="menu_crm_config_purchase"
+        name="Acquisition Pipeline"
+        parent="crm.crm_menu_config"
+        groups="purchase.group_purchase_manager"
+        sequence="16"/>
+
+    <menuitem
+        id="menu_crm_purchase_stage_act1"
+        name="Stages"
+        parent="menu_crm_config_purchase"
+        action="sps_crm.crm_purchase_stage_action"
+        sequence="0"
+        />
+
+    <menuitem
+        id="menu_crm_purchase_tag1"
+        name="Tags"
+        parent="menu_crm_config_purchase"
+        action="sps_crm.crm_purchase_tag_action"
+        sequence="1"/>
+
+    <menuitem
+        id="menu_crm_lost_reason_purchase1"
+        name="Lost Reasons"
+        parent="menu_crm_config_purchase"
+        action="sps_crm.crm_purchase_lost_reason_action1"
+        sequence="6"/>
+
+    <!-- Change Action of Existing Sale My Activity Menu-->
+    <menuitem
+        id="crm.crm_lead_menu_my_activities"
+        name="My Activities"
+        parent="crm.crm_menu_sales"
+        action="sh_activities_management.sh_action_my_activities"
+        sequence="2"/>
+
+    <menuitem name="Activity Dashboard" id="sh_activities_management.sh_activity_dashboard" parent="crm.crm_menu_root" sequence="1" groups="sh_activities_management.group_activity_user,sh_activities_management.group_activity_supervisor,sh_activities_management.group_activity_manager" />
+
+
+
+</odoo>

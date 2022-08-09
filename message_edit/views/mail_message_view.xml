@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mail_message_edit_view_form" model="ir.ui.view">
+        <field name="name">mail.message.edit</field>
+        <field name="model">mail.message</field>
+        <field name="priority">10000</field>
+        <field name="arch" type="xml">
+            <form string="Message">
+                <group>
+                    <field name="author_id" readonly="1"/>
+                    <field name="create_uid" invisible="1" readonly="1"/>
+                    <field name="email_from" readonly="1"/>
+                    <field name="date" readonly="1"/>
+                    <field name="partner_ids" widget="many2many_tags" readonly="1"/>
+                    <field name="write_date" readonly="1"/>
+                    <field name="changed" readonly="1"/>
+                </group>
+                <notebook>
+                    <page string="Message">
+                        <h1>
+                            <field name="subject" readonly="1"/>
+                        </h1>
+                        <field name="body"/>
+                        <field name="attachment_ids" widget="many2many_binary" readonly="0"/>
+                    </page>
+                    <page string="History">
+                        <field name="history_ids" readonly="1">
+                            <tree>
+                                <field name="update_date"/>
+                                <field name="name"/>
+                                <field name="body"/>
+                            </tree>
+                            <form>
+                                <sheet>
+                                    <group>
+                                        <field name="update_date"/>
+                                        <field name="name"/>
+                                        <field name="body"/>
+                                    </group>
+                                </sheet>
+                            </form>
+                        </field>
+                    </page>
+                </notebook>
+                <footer>
+                    <button name="action_edit_message_thread"
+                            type="object"
+                            string="Save"
+                            class="oe_highlight"
+                    />
+                    or
+                    <button name="cancel"
+                            string="Cancel"
+                            special="cancel"
+                            class="oe_link"
+                    />
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

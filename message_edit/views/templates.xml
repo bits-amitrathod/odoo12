@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="assets_backend" name="message_edit_assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link type="text/css" rel='stylesheet' href='/message_edit/static/src/css/message_edit.css'/>
+            <script type="text/javascript" src="/message_edit/static/src/components/message/message.js"></script>
+            <script type="text/javascript" src="/message_edit/static/src/models/message/message.js"></script>
+        </xpath>
+    </template>
+
+</odoo>
