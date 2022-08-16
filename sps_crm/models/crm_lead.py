@@ -402,10 +402,10 @@ class MailActivity1(models.Model):
                 _('Assigned user %s has no access to the document and is not able to handle this activity.') %
                 self.env.user.display_name)
 
-    @api.depends('date_deadline')
-    def _compute_state(self):
-        for record in self.filtered(lambda activity: activity.date_deadline):
-            tz = record.user_id.sudo().tz
-            date_deadline = record.date_deadline
-            record.state = self._compute_state_from_date(date_deadline, tz)
-            record.sh_state = record.state
+    # @api.depends('date_deadline')
+    # def _compute_state(self):
+    #     for record in self.filtered(lambda activity: activity.date_deadline):
+    #         tz = record.user_id.sudo().tz
+    #         date_deadline = record.date_deadline
+    #         record.state = self._compute_state_from_date(date_deadline, tz)
+    #         record.sh_state = record.state
