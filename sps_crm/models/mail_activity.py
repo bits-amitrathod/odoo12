@@ -72,6 +72,28 @@ class MailActivityNotesCustom(models.Model):
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
 
+    # Overwritten because Client Does Not want Pop Up
+    def action_done(self):
+        self.state = 'done'
+        self.active = False
+        self.activity_done = True
+        self.date_done = fields.Date.today()
+        self.feedback = ''
+        self._compute_state()
+        messages = self.env['mail.message']
+        record = self.env[self.res_model].sudo().browse(self.res_id)
+        record.sudo().message_post_with_view(
+            'mail.message_activity_done',
+            values={
+                'activity': self,
+                'feedback': '',
+                'display_assignee': self.user_id != self.env.user
+            },
+            subtype_id=self.env['ir.model.data'].xmlid_to_res_id('mail.mt_activities'),
+            mail_activity_type_id=self.activity_type_id.id,
+        )
+        messages |= record.sudo().message_ids[0]
+
     # @api.model
     # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
     #     res = super(MailActivityNotesCustom, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar,
