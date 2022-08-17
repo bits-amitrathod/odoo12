@@ -68,6 +68,32 @@
             </field>
     </record>
 
+        <record id="mail_activity_view_form_popup1" model="ir.ui.view">
+            <field name="name">mail.activity.view.form.popup</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
+            <field name="arch" type="xml">
+                <field name="note" position="replace">
+                    <notebook>
+                         <page name="actnotes" string="Notes">
+                     <group>
+                       <field name="note" placeholder="Log a note..." />
+                     </group>
+                         </page>
+                        <page name="salesactnotes" string="Sales Notes">
+                     <group>
+                      <field name="sales_activity_notes" String ="Sales Activity Notes"/>
+                     </group>
+                     </page>
+                    <page name="acqactnotes" string="Acquisition Notes">
+                     <group>
+                       <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
+                     </group>
+                     </page>
+                    </notebook>
+                </field>
+            </field>
+    </record>
 
  </data>
 </odoo>
