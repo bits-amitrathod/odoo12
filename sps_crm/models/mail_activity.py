@@ -72,6 +72,17 @@ class MailActivityNotesCustom(models.Model):
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
 
+    # Overwritten because Client Does Not want Notes overridden
+    @api.onchange('activity_type_id')
+    def _onchange_activity_type_id(self):
+        if self.activity_type_id:
+            if self.activity_type_id.summary:
+                self.summary = self.activity_type_id.summary
+            self.date_deadline = self._calculate_date_deadline(self.activity_type_id)
+            self.user_id = self.activity_type_id.default_user_id or self.env.user
+            # if self.activity_type_id.default_description:
+            #     self.note = self.activity_type_id.default_description
+
     # Overwritten because Client Does Not want Pop Up
     def action_done(self):
         self.state = 'done'
