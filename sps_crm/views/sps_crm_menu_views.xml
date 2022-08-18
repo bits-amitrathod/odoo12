@@ -43,12 +43,29 @@
         action="sh_activities_management.sh_action_my_activities"
         sequence="4"/>
 
+    <menuitem id="sh_menu_activity_dashboard"
+              name="Dashboard"
+              action="sh_activities_management.sh_action_activity_dashboard"
+              parent="crm_menu_purchase" sequence="5" />
+
     <menuitem
         id="vendors_menu"
         name="Vendors"
         parent="crm_menu_purchase"
         action="account.res_partner_action_supplier"
-        sequence="5"/>
+        sequence="6"/>
+
+    <menuitem id="menu_procurement_management_appraisal_tracker"
+              name="Appraisal Tracker"
+              parent="crm_menu_purchase"
+              action="appraisal_tracker.action_window" sequence="7"/>
+
+    <menuitem id="dashboard"
+              name="Documents"
+              parent="crm_menu_purchase"
+              action="documents.document_action"
+              sequence="8"/>
+
 
     <!-- CONFIGURATION -->
 
@@ -96,6 +113,11 @@
         sequence="2"/>
 
     <menuitem name="Activity Dashboard" id="sh_activities_management.sh_activity_dashboard" parent="crm.crm_menu_root" sequence="1" groups="sh_activities_management.group_activity_user,sh_activities_management.group_activity_supervisor,sh_activities_management.group_activity_manager" />
+
+    <menuitem id="sh_menu_activity_dashboard_sale"
+              name="Dashboard"
+              action="sh_activities_management.sh_action_activity_dashboard"
+              parent="crm.crm_menu_sales" sequence="3" />
 
 
 
