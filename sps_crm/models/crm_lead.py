@@ -363,6 +363,12 @@ class Lead(models.Model):
                 lead._default_appraisal_no()
                 # lead.arrival_date = lead.po_ref.arrival_date_grp if lead.po_ref else lead.arrival_date
 
+    @api.depends('partner_id')
+    def _compute_name(self):
+        for lead in self:
+            if lead.partner_id and lead.partner_id.name:
+                lead.name = _("%s's opportunity") % lead.partner_id.name
+
 class MailActivity1(models.Model):
     """ Inherited Mail Acitvity to add custom View for Purchase Oppo"""
     _inherit = 'mail.activity'
