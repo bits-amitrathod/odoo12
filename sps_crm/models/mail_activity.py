@@ -51,12 +51,23 @@ class MailActivityNotesCustom(models.Model):
     @api.onchange('acq_activity_notes', 'sales_activity_notes')
     def onchange_notes_fields(self):
         for record in self:
+            popup_context = self.env.context.get('default_res_model')
+            if popup_context == 'res.partner':
+                record.related_partner_activity = self.env['res.partner'].search([('id', '=', record.res_id)], limit=1)
             if record.related_partner_activity:
                 partner_link = self.env['partner.link.tracker'].search([('partner_id', '=',
                                                                          record.related_partner_activity.id)], limit=1)
                 if partner_link:
-                    partner_link.sales_activity_notes = record.sales_activity_notes
-                    partner_link.acq_activity_notes = record.acq_activity_notes
+                    if popup_context == 'res.partner':
+                        if record.sales_activity_notes and record.acq_activity_notes:
+                            partner_link.sales_activity_notes = record.sales_activity_notes
+                            partner_link.acq_activity_notes = record.acq_activity_notes
+                        else:
+                            record.sales_activity_notes = partner_link.sales_activity_notes
+                            record.acq_activity_notes = partner_link.acq_activity_notes
+                    else:
+                        partner_link.sales_activity_notes = record.sales_activity_notes
+                        partner_link.acq_activity_notes = record.acq_activity_notes
                 else:
                     self.env['partner.link.tracker'].create({'partner_id': record.related_partner_activity.id,
                                                              'sales_activity_notes': record.sales_activity_notes,
