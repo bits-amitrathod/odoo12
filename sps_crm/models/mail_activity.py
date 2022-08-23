@@ -20,6 +20,10 @@ class MailActivityNotesCustom(models.Model):
     reference = fields.Reference(string='Related Document',
                                  selection='_reference_models', default='res.partner,1')
 
+    email = fields.Char(related="related_partner_activity.email", readonly=True, store=False)
+    phone = fields.Char(related="related_partner_activity.phone", readonly=True, store=False)
+    mobile = fields.Char(related="related_partner_activity.mobile", readonly=True, store=False)
+
     def write(self, vals):
         res = super().write(vals)
         return res

@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <field name="user_id" position="after">
                 <field name="sh_state" invisible="1" />
+
             </field>
         </field>
     </record>
@@ -44,6 +45,10 @@
             <field name="reference" position="after">
                  <field name="activity_priority" ></field>
                  <field name="related_partner_activity" ></field>
+                <field name="email" ></field>
+                <field name="phone" ></field>
+                <field name="mobile" ></field>
+
             </field>
         </field>
     </record>
@@ -54,6 +59,10 @@
         <field name="arch" type="xml">
             <field name="date_done" position="after">
                 <field name="activity_priority"  />
+                <field name="email" optional="hide" />
+                <field name="phone"  optional="hide" />
+                <field name="mobile"  optional="hide" />
+
             </field>
         </field>
     </record>
