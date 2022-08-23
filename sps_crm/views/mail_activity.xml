@@ -58,7 +58,7 @@
         <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree" />
         <field name="arch" type="xml">
             <field name="date_done" position="after">
-                <field name="activity_priority"  />
+                <field name="activity_priority"/>
                 <field name="email" optional="hide"/>
                 <field name="phone"  optional="hide"/>
                 <field name="mobile"  optional="hide"/>
