@@ -48,6 +48,14 @@ class MailActivityNotesCustom(models.Model):
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
 
+    @api.model
+    def create(self, val):
+        record = super(MailActivityNotesCustom, self).create(val)
+        popup_context = self.env.context.get('default_res_model')
+        if popup_context == 'res.partner':
+            record.reference = record.related_partner_activity
+        return record
+
     @api.onchange('acq_activity_notes', 'sales_activity_notes')
     def onchange_notes_fields(self):
         for record in self:
