@@ -67,11 +67,14 @@ class MailActivityNotesCustom(models.Model):
                                                                          record.related_partner_activity.id)], limit=1)
                 if partner_link:
                     if popup_context == 'res.partner':
-                        if record.sales_activity_notes and record.acq_activity_notes:
+                        if record.sales_activity_notes :
                             partner_link.sales_activity_notes = record.sales_activity_notes
-                            partner_link.acq_activity_notes = record.acq_activity_notes
                         else:
                             record.sales_activity_notes = partner_link.sales_activity_notes
+
+                        if record.acq_activity_notes:
+                            partner_link.acq_activity_notes = record.acq_activity_notes
+                        else:
                             record.acq_activity_notes = partner_link.acq_activity_notes
                     else:
                         partner_link.sales_activity_notes = record.sales_activity_notes
