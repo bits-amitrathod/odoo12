@@ -96,8 +96,8 @@ class MailActivityNotesCustom(models.Model):
     def onchange_contact(self):
         for record in self:
             if record.related_partner_activity:
-                record.res_name = record.related_partner_activity.name
-                record.res_id = record.related_partner_activity.id
+                # record.res_name = record.related_partner_activity.name
+                # record.res_id = record.related_partner_activity.id
                 partner_link = self.env['partner.link.tracker'].search([('partner_id', '=',
                                                                          record.related_partner_activity.id)], limit=1)
                 if partner_link:
