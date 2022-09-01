@@ -9,6 +9,10 @@
                 <field name="sh_state" invisible="1" />
 
             </field>
+             <field name="state" position="replace">
+                <field name="state" string="Status" />
+
+            </field>
         </field>
     </record>
         <record id="sh_mail_activity_view_form_custom" model="ir.ui.view">
