@@ -5,6 +5,9 @@
         <field name="model">mail.activity</field>
         <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree" />
         <field name="arch" type="xml">
+              <field name="summary" position="replace">
+                    <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
+                </field>
             <field name="user_id" position="after">
                 <field name="sh_state" invisible="1" />
 
@@ -17,6 +20,9 @@
             <field name="model">mail.activity</field>
             <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form" />
             <field name="arch" type="xml">
+                  <field name="summary" position="replace">
+                    <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
+                </field>
             <field name="note" position="replace">
                 <notebook>
                     <page name="salesactnotes" string="Sales Notes">
