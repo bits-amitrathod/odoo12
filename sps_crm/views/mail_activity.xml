@@ -5,6 +5,9 @@
         <field name="model">mail.activity</field>
         <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree" />
         <field name="arch" type="xml">
+              <field name="summary" position="replace">
+                    <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
+                </field>
             <field name="user_id" position="after">
                 <field name="sh_state" invisible="1" />
 
@@ -15,32 +18,36 @@
             </field>
         </field>
     </record>
+        <!-- Create Activity Using My Activity Page -->
         <record id="sh_mail_activity_view_form_custom" model="ir.ui.view">
-        <field name="name">sh.mail.activity.view.form.add</field>
-        <field name="model">mail.activity</field>
-        <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form" />
-        <field name="arch" type="xml">
+            <field name="name">sh.mail.activity.view.form.add</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form" />
+            <field name="arch" type="xml">
+                  <field name="summary" position="replace">
+                    <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
+                </field>
             <field name="note" position="replace">
                 <notebook>
-                     <page name="actnotes" string="Notes">
-                 <group>
-                   <field name="note" placeholder="Log a note..." />
-                 </group>
-                     </page>
-                 <page name="salesactnotes" string="Sales Notes">
+                    <page name="salesactnotes" string="Sales Notes">
                  <group>
                   <field name="sales_activity_notes" String ="Sales Activity Notes"/>
                  </group>
                  </page>
-                <page name="acqactnotes" string="Acquisition Notes">
+                    <page name="acqactnotes" string="Acquisition Notes">
                  <group>
                    <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
                  </group>
                  </page>
+                    <page name="actnotes" string="Notes">
+                         <group>
+                           <field name="note" placeholder="Log a note..." />
+                         </group>
+                     </page>
                 </notebook>
             </field>
         </field>
-    </record>
+        </record>
          <record id="sh_mail_activity_view_form_custom2" model="ir.ui.view">
         <field name="name">sh.mail.activity.view.form.add.priority</field>
         <field name="model">mail.activity</field>
@@ -70,7 +77,10 @@
             </field>
         </field>
     </record>
-    <record id="sh_mail_activity_type_view_form_inherit" model="ir.ui.view">
+
+        <!-- Activity Popup View on customer page,
+        both popup views are same, Customer page- Schedule Activity popup and My Activity-Edit popup  -->
+        <record id="sh_mail_activity_type_view_form_inherit" model="ir.ui.view">
             <field name="name">sh.mail.activity.inherit</field>
             <field name="model">mail.activity</field>
             <field name="inherit_id" ref="mail.mail_activity_view_form_popup" />
@@ -79,6 +89,18 @@
                    <field name="activity_priority"  />
                    <field name="related_partner_activity" ></field>
                 </xpath>
+                <field name="supervisor_id" position="replace">
+                    <field name="supervisor_id" invisible="1"/>
+                </field>
+                <field name="company_id" position="replace">
+                    <field name="company_id" invisible="1"/>
+                </field>
+                <field name="sh_activity_tags" position="replace">
+                    <field name="sh_activity_tags" invisible="1"/>
+                </field>
+                <field name="summary" position="replace">
+                    <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
+                </field>
             </field>
     </record>
 
@@ -89,21 +111,21 @@
             <field name="arch" type="xml">
                 <field name="note" position="replace">
                     <notebook>
-                         <page name="actnotes" string="Notes">
-                     <group>
-                       <field name="note" placeholder="Log a note..." />
-                     </group>
-                         </page>
                         <page name="salesactnotes" string="Sales Notes">
                      <group>
                       <field name="sales_activity_notes" String ="Sales Activity Notes"/>
                      </group>
                      </page>
-                    <page name="acqactnotes" string="Acquisition Notes">
+                        <page name="acqactnotes" string="Acquisition Notes">
                      <group>
                        <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
                      </group>
                      </page>
+                        <page name="actnotes" string="Notes">
+                         <group>
+                           <field name="note" placeholder="Log a note..." />
+                         </group>
+                        </page>
                     </notebook>
                 </field>
             </field>
