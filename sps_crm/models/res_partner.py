@@ -6,7 +6,7 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-class externalfiels(models.Model):
+class Partner(models.Model):
     _inherit = "res.partner"
 
     acq_opportunity_count = fields.Integer("ACQ Opportunity", compute='_compute_acq_opportunity_count')
