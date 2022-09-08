@@ -326,10 +326,28 @@ class Lead(models.Model):
 
         #  Used to Send Email (Attached Doc)
         #  Right Place to Send Email bcz of All uploaded file Operation Completed before this step
-        if 'product_list_doc' in vals:
-            self.action_send_mail()
+        # if 'product_list_doc' in vals:
+        #     self.action_send_mail()
 
         return write_result
+
+    def action_email_files_opp(self):
+        self.action_send_mail()
+        action ={}
+        if self.product_list_doc:
+            form_view_id = self.env.ref('sps_crm.opp_email_sent_popup').id
+            action = {
+                'type': 'ir.actions.act_window',
+                'views': [(form_view_id, 'form')],
+                'view_mode': 'tree,form',
+                'name': _('Email Sent'),
+                'res_model': 'crm.lead',
+                'res_id': self.id,
+                'domain': [('id', '=', self.id)],
+                'target': 'new'
+            }
+
+        return action
 
     #  Here Write the Code Of email Send
     def action_send_mail(self):

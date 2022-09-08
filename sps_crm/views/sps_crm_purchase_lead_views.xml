@@ -452,6 +452,7 @@
                                 <field name="opportunity_type"/>
                                 <field name="new_customer"/>
                                 <field name="product_list_doc" widget="many2many_binary"/>
+                                <button name="action_email_files_opp" string="Send Email" type="object" class="btn-primary"/>
                             </group>
                             <group name="lead_priority" attrs="{'invisible': [('type', '=', 'purchase_opportunity')]}">
                                 <field name="priority" widget="priority"/>
@@ -720,5 +721,20 @@
         <!--<record id="menu_crm_purchase_opportunities" model="ir.ui.menu">
             <field name="action" ref="sps_crm.action_your_purchase_pipeline"/>
         </record>-->
+
+    <record id="opp_email_sent_popup" model="ir.ui.view">
+            <field name="name">lead.crm.popup</field>
+            <field name="model">crm.lead</field>
+            <field name="arch" type="xml">
+                <form string="Email Sent">
+                    <group>
+                        <span>Email Sent To Appraisal Team </span>
+                    </group>
+                    <footer>
+                        <button string="Back" class="btn-primary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
 </odoo>
