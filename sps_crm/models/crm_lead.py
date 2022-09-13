@@ -43,6 +43,8 @@ class Lead(models.Model):
         'crm.purchase.tag', string='Tags',
         help="Classify and analyze your lead/opportunity categories like: Training, Service")
 
+    oppr_category_id = fields.Many2many('res.partner.category', string='Tags')
+
     property_supplier_payment_term_id = fields.Many2one('account.payment.term', company_dependent=True,
         string='Vendor Payment Terms',
         domain="[('company_id', 'in', [current_company_id, False])]",
@@ -210,6 +212,7 @@ class Lead(models.Model):
         # self.payment_type = self.partner_id.payment_type
         self.contract = self.partner_id.contract
         self.facility_tpcd = self.partner_id.facility_tpcd
+        self.oppr_category_id = self.partner_id.category_id
 
     #     self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)],limit=1).competitors_id
 
@@ -323,24 +326,46 @@ class Lead(models.Model):
 
         #  Used to Send Email (Attached Doc)
         #  Right Place to Send Email bcz of All uploaded file Operation Completed before this step
-        if 'product_list_doc' in vals:
-            self.action_send_mail()
+        # if 'product_list_doc' in vals:
+        #     self.action_send_mail()
 
         return write_result
+
+    def action_email_files_opp(self):
+        self.action_send_mail()
+        action ={}
+        if self.product_list_doc:
+            form_view_id = self.env.ref('sps_crm.opp_email_sent_popup').id
+            action = {
+                'type': 'ir.actions.act_window',
+                'views': [(form_view_id, 'form')],
+                'view_mode': 'tree,form',
+                'name': _('Email Sent'),
+                'res_model': 'crm.lead',
+                'res_id': self.id,
+                'domain': [('id', '=', self.id)],
+                'target': 'new'
+            }
+
+        return action
 
     #  Here Write the Code Of email Send
     def action_send_mail(self):
         _logger.info(" Email Sending  ........")
         template = self.env.ref('sps_crm.email_to_crm').sudo()
         if self.product_list_doc:
-            values = {'attachment_ids':self.product_list_doc,
-                          'model': None, 'res_id': False}
+            acq_pri = dict(self._fields['acq_priority'].selection).get(self.acq_priority)
+            if acq_pri is None:
+                acq_pri = ''
+            values = {'attachment_ids': self.product_list_doc,
+                      'subject': acq_pri+ ' Please Appraise ' + self.partner_id.name,
+                      'model': None, 'res_id': False}
             local_context = {'rep': self.partner_id.acq_manager.name, 'unq_ac': self.partner_id.saleforce_ac,
                              'facility_type':  dict(self._fields['facility_tpcd'].selection).get(self.facility_tpcd), 'contracts': self.contract,
                              'history': '', 'competitors':  self.competitors,
                              'payment_type': self.payment_type, 'acq_priority': dict(self._fields['acq_priority'].selection).get(self.acq_priority),
                              'payment_terms': self.property_supplier_payment_term_id.name,
-                             'additional_notes': 'Notes'}
+                             'additional_notes': self.description}
             try:
                 sent_email_template= template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
                 self.env['mail.mail'].sudo().browse(sent_email_template).write(values)

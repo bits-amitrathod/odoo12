@@ -154,7 +154,9 @@
                                         <span t-if="record.partner_id.value" t-esc="record.partner_id.value"></span>
                                     </div>
                                     <div>
-                                        <field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                      <!--  <field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>-->
+                                        <field name="oppr_category_id" widget="many2many_tags" options="{'color_field': 'color'}"/>
+
                                     </div>
                                     <div class="o_kanban_record_bottom">
                                         <div class="oe_kanban_bottom_left">
@@ -209,7 +211,8 @@
                     <field name="purchase_stage_id" optional="show" decoration-bf="1"/>
                     <field name="active" invisible="1"/>
                     <field name="probability" optional="hide"/>
-                    <field name="tag_purchase_ids" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                   <!-- <field name="tag_purchase_ids" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}"/>-->
+                    <field name="oppr_category_id" optional="hide" widget="many2many_tags" options="{'color_field': 'color'}"/>
                     <field name="referred" invisible="1"/>
                     <field name="opportunity_type" optional="hide"/>
                     <field name="message_needaction" invisible="1"/>
@@ -433,7 +436,8 @@
                                 <field name="date_deadline"/>
                                 <!--<field name="priority" widget="priority"/>-->
                                 <field name="acq_priority"/>
-                                <field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                <!--<field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>-->
+                                 <field name="oppr_category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                             </group>
                             <group invisible="1">
                                 <field name="user_id" domain="[('share', '=', False)]"
@@ -448,10 +452,12 @@
                                 <field name="opportunity_type"/>
                                 <field name="new_customer"/>
                                 <field name="product_list_doc" widget="many2many_binary"/>
+                                <button name="action_email_files_opp" string="Send Email" type="object" class="btn-primary"/>
                             </group>
                             <group name="lead_priority" attrs="{'invisible': [('type', '=', 'purchase_opportunity')]}">
                                 <field name="priority" widget="priority"/>
-                                <field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                                <!--<field name="tag_purchase_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>-->
+                                 <field name="oppr_category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
                             </group>
                             <!-- ADD NEW FIELD HERE REGARDING AQU -->
                             <group name="payment_priority" attrs="{'invisible': [('type', '=', 'lead')]}">
@@ -715,5 +721,20 @@
         <!--<record id="menu_crm_purchase_opportunities" model="ir.ui.menu">
             <field name="action" ref="sps_crm.action_your_purchase_pipeline"/>
         </record>-->
+
+    <record id="opp_email_sent_popup" model="ir.ui.view">
+            <field name="name">lead.crm.popup</field>
+            <field name="model">crm.lead</field>
+            <field name="arch" type="xml">
+                <form string="Email Sent">
+                    <group>
+                        <span>Email Sent To Appraisal Team </span>
+                    </group>
+                    <footer>
+                        <button string="Back" class="btn-primary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
 </odoo>
