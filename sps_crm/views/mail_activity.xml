@@ -131,6 +131,17 @@
             </field>
     </record>
 
+        <record id="sh_mail_activity_view_tree_popup12" model="ir.ui.view">
+        <field name="name">sh.mail.activity.view.popup.tree.popup</field>
+        <field name="model">mail.activity</field>
+        <field name="arch" type="xml">
+            <tree string="Activities" create="false">
+                <field name="state" />
+            </tree>
+
+        </field>
+        </record>
+
  </data>
 </odoo>
 
