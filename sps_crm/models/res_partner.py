@@ -459,6 +459,7 @@ class Partner(models.Model):
 
         act_list = self.env['mail.activity'].search([('res_id', '=', self.id),('active','in',[True,False])])
         view_id = self.env.ref('sps_crm.sh_mail_activity_view_tree_popup12').id
+        form_view_id = self.env.ref('sh_activities_management.sh_mail_activity_view_form').id
         return {
             'name': "Activity List",
             'type': 'ir.actions.act_window',
@@ -467,7 +468,7 @@ class Partner(models.Model):
             'domain': [('id', 'in', act_list.ids), ('active', 'in', [True, False])],
             'res_model': 'mail.activity',
             'target': 'new',
-            'views': [[view_id, 'tree']]
+            'views': [(view_id, 'tree'), (form_view_id, 'form')]
         }
 
     def action_view_opportunity(self):
