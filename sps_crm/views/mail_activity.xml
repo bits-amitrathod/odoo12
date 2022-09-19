@@ -149,6 +149,7 @@
                 <field name="activity_priority"/>
                 <field name="active" invisible="1"/>
 
+                <button type="object" string="View" name="action_view_activity" class="btn btn-primary" icon="fa-eye" />
                 <button type="object" string="Edit" name="action_edit_activity" class="btn btn-primary" icon="fa-pencil" attrs="{'invisible':[('active','=',False)]}"/>
             	<button type="object" string="Origin" name="action_view_activity" class="btn btn-primary" icon="fa-history"/>
             </tree>

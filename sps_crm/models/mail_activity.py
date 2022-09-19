@@ -138,10 +138,24 @@ class MailActivityNotesCustom(models.Model):
         )
         messages |= record.sudo().message_ids[0]
 
+    def action_view_activity(self):
+        self.ensure_one()
+        view_id = self.env.ref(
+            'sh_activities_management.sh_mail_activity_view_form').id
+        return {
+            'name': _('Schedule an Activity'),
+            'view_mode': 'form',
+            'res_model': 'mail.activity',
+            'views': [(view_id, 'form')],
+            'res_id': self.id,
+            'type': 'ir.actions.act_window'
+        }
+
     # @api.model
     # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
     #     res = super(MailActivityNotesCustom, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar,
     #                                                submenu=submenu)
     #     res.res_model = 'res.partner'
     #     return res
+
 
