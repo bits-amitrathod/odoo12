@@ -457,7 +457,7 @@ class Partner(models.Model):
 
     def action_view_activity_list_popup(self):
 
-        act_list = self.env['mail.activity'].search([('res_id', '=', self.id),('active','in',[True,False])])
+        act_list = self.env['mail.activity'].search([('res_id', '=', self.id), ('active', 'in', [True, False])])
         view_id = self.env.ref('sps_crm.sh_mail_activity_view_tree_popup12').id
         form_view_id = self.env.ref('sh_activities_management.sh_mail_activity_view_form').id
         return {

@@ -247,7 +247,7 @@
                         </button>
                         <button class="oe_stat_button o_res_partner_tip_opp" type="object"
                             name="action_view_activity_list_popup"
-                            icon="fa-star"
+                            icon="fa-clock-o"
                             context="{'default_partner_id': active_id}">
                         <span>Activity List </span>
                         </button>
