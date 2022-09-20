@@ -51,7 +51,7 @@
                             <field name="premier"/>
                             <field name="email_opt_out"/>
                             <field name="time_zone"/>
-                            <field name="facility_type"/>
+<!--                            <field name="facility_type"/>-->
                             <field name="bed_size"/>
                             <field name="purchase_history_date"/>
                             <field name="acq_account"/>
@@ -116,7 +116,7 @@
                                         <field name="bariatric"/>
                                         <field name="generalnotes"/>
                                         <field name="time_zone"/>
-                                        <field name="facility_type"/>
+<!--                                        <field name="facility_type"/>-->
                                         <field name="bed_size"/>
                                         <field name="purchase_history_date"/>
                                         <field name="ent"/>
@@ -186,7 +186,7 @@
                                         <field name="premier"/>
                                         <field name="email_opt_out"/>
                                         <field name="time_zone"/>
-                                        <field name="facility_type"/>
+<!--                                        <field name="facility_type"/>-->
                                         <field name="bed_size"/>
                                         <field name="purchase_history_date"/>
                                         <field name="ent"/>
