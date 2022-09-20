@@ -87,6 +87,7 @@
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='user_id']" position="after">
                    <field name="activity_priority"  />
+                    <field name="reference"></field>
                    <field name="related_partner_activity" ></field>
                 </xpath>
                 <field name="supervisor_id" position="replace">
