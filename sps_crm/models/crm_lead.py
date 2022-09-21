@@ -206,13 +206,14 @@ class Lead(models.Model):
     def _compute_contact_values(self):
         """ compute the new values when partner_id has changed """
         _logger.error(" Compute method Called ........")
-        obj = self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)], limit=1).competitors_id
-        self.competitors = obj.ids if obj else obj
-        self.property_supplier_payment_term_id = self.partner_id.property_supplier_payment_term_id.id
-        # self.payment_type = self.partner_id.payment_type
-        self.contract = self.partner_id.contract
-        self.facility_tpcd = self.partner_id.facility_tpcd
-        self.oppr_category_id = self.partner_id.category_id
+        if self.partner_id.id:
+            obj = self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)], limit=1).competitors_id
+            self.competitors = obj.ids if obj else obj
+            self.property_supplier_payment_term_id = self.partner_id.property_supplier_payment_term_id.id
+            # self.payment_type = self.partner_id.payment_type
+            self.contract = self.partner_id.contract
+            self.facility_tpcd = self.partner_id.facility_tpcd
+            self.oppr_category_id = self.partner_id.category_id
 
     #     self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)],limit=1).competitors_id
 
@@ -378,15 +379,16 @@ class Lead(models.Model):
         for lead in self:
             if lead.partner_id.phone and lead._get_partner_phone_update():
                 lead.phone = lead.partner_id.phone
-                lead.property_supplier_payment_term_id = lead.partner_id.property_supplier_payment_term_id
-                # lead.payment_type = lead.partner_id.payment_type
-                obj = self.env['partner.link.tracker'].search([('partner_id', '=', lead.partner_id.id)],
-                                                           limit=1).competitors_id
-                lead.contract = lead.partner_id.contract
-                lead.competitors = obj
-                lead.facility_tpcd = lead.partner_id.facility_tpcd
-                if (lead.appraisal_no == False):
-                    lead._default_appraisal_no()
+            lead.property_supplier_payment_term_id = lead.partner_id.property_supplier_payment_term_id
+            # lead.payment_type = lead.partner_id.payment_type
+            obj = self.env['partner.link.tracker'].search([('partner_id', '=', lead.partner_id.id)],
+                                                       limit=1).competitors_id
+            lead.contract = lead.partner_id.contract
+            lead.competitors = obj
+            lead.facility_tpcd = lead.partner_id.facility_tpcd
+            lead.oppr_category_id = lead.partner_id.category_id
+            if (lead.appraisal_no == False):
+                lead._default_appraisal_no()
                 # lead.arrival_date = lead.po_ref.arrival_date_grp if lead.po_ref else lead.arrival_date
 
     @api.depends('partner_id')
