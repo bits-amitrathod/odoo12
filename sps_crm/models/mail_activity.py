@@ -26,9 +26,9 @@ class MailActivityNotesCustom(models.Model):
 
     date_done = fields.Date("Completed Date", index=True, readonly=False)
 
-    def write(self, vals):
-        res = super().write(vals)
-        return res
+    # def write(self, vals):
+    #     res = super().write(vals)
+    #     return res
 
     @api.model
     def _reference_models(self):
