@@ -58,6 +58,8 @@ class MailActivityNotesCustom(models.Model):
 
     @api.model
     def create(self, val):
+        if val['res_model_id'] == False:
+            val['res_model_id'] = self.env['ir.model'].sudo().search([('model', '=', 'res.partner')], limit=1).id
         record = super(MailActivityNotesCustom, self).create(val)
         popup_context = self.env.context.get('default_res_model')
         popup_model_id = self.env.context.get('default_res_id')
