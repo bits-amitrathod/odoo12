@@ -24,9 +24,11 @@ class MailActivityNotesCustom(models.Model):
     phone = fields.Char(related="related_partner_activity.phone", readonly=True, store=False)
     mobile = fields.Char(related="related_partner_activity.mobile", readonly=True, store=False)
 
-    def write(self, vals):
-        res = super().write(vals)
-        return res
+    date_done = fields.Date("Completed Date", index=True, readonly=False)
+
+    # def write(self, vals):
+    #     res = super().write(vals)
+    #     return res
 
     @api.model
     def _reference_models(self):
@@ -159,5 +161,72 @@ class MailActivityNotesCustom(models.Model):
     #                                                submenu=submenu)
     #     res.res_model = 'res.partner'
     #     return res
+
+    @api.model
+    def create(self, values):
+        # activity = super(MailActivityNotesCustom, self).create(values)
+        activity = super(models.Model, self).create(values)
+        need_sudo = False
+        try:  # in multicompany, reading the partner might break
+            partner_id = activity.user_id.partner_id.id
+        except exceptions.AccessError:
+            need_sudo = True
+            partner_id = activity.user_id.sudo().partner_id.id
+
+        # send a notification to assigned user; in case of manually done activity also check
+        # target has rights on document otherwise we prevent its creation. Automated activities
+        # are checked since they are integrated into business flows that should not crash.
+        if activity.user_id != self.env.user:
+            if not activity.automated:
+                activity._check_access_assignation()
+            # if not self.env.context.get('mail_activity_quick_update', False):
+            #     if need_sudo:
+            #         activity.sudo().action_notify()
+            #     else:
+            #         activity.action_notify()
+
+        self.env[activity.res_model].browse(activity.res_id).message_subscribe(partner_ids=[partner_id])
+        if activity.date_deadline <= fields.Date.today():
+            self.env['bus.bus'].sendone(
+                (self._cr.dbname, 'res.partner', activity.user_id.partner_id.id),
+                {'type': 'activity_updated', 'activity_created': True})
+        return activity
+
+    def write(self, values):
+        if values.get('user_id'):
+            user_changes = self.filtered(lambda activity: activity.user_id.id != values.get('user_id'))
+            pre_responsibles = user_changes.mapped('user_id.partner_id')
+        # res = super(MailActivityNotesCustom, self).write(values)
+        res = super(models.Model, self).write(values)
+
+        # if values.get('user_id'):
+        #     if values['user_id'] != self.env.uid:
+        #         to_check = user_changes.filtered(lambda act: not act.automated)
+        #         to_check._check_access_assignation()
+        #         if not self.env.context.get('mail_activity_quick_update', False):
+        #             user_changes.action_notify()
+        #     for activity in user_changes:
+        #         self.env[activity.res_model].browse(activity.res_id).message_subscribe(
+        #             partner_ids=[activity.user_id.partner_id.id])
+        #         if activity.date_deadline <= fields.Date.today():
+        #             self.env['bus.bus'].sendone(
+        #                 (self._cr.dbname, 'res.partner', activity.user_id.partner_id.id),
+        #                 {'type': 'activity_updated', 'activity_created': True})
+        #     for activity in user_changes:
+        #         if activity.date_deadline <= fields.Date.today():
+        #             for partner in pre_responsibles:
+        #                 self.env['bus.bus'].sendone(
+        #                     (self._cr.dbname, 'res.partner', partner.id),
+        #                     {'type': 'activity_updated', 'activity_deleted': True})
+        return res
+
+    def unlink(self):
+        pass
+        # for activity in self:
+        #     if activity.date_deadline <= fields.Date.today():
+        #         self.env['bus.bus'].sendone(
+        #             (self._cr.dbname, 'res.partner', activity.user_id.partner_id.id),
+        #             {'type': 'activity_updated', 'activity_deleted': True})
+        # return super(MailActivityNotesCustom, self).unlink()
 
 
