@@ -75,6 +75,9 @@ class MailActivityNotesCustom(models.Model):
             popup_context = self.env.context.get('default_res_model')
             # if popup_context == 'res.partner' and record.related_partner_activity.id is False:
             #     record.related_partner_activity = self.env['res.partner'].search([('id', '=', record.res_id)], limit=1)
+            if record.reference is None:
+                if record.res_id:
+                    record.reference = 'res.partner,'+str(record.res_id)+''
             if record.related_partner_activity:
                 partner_link = self.env['partner.link.tracker'].search([('partner_id', '=',
                                                                          record.related_partner_activity.id)], limit=1)
