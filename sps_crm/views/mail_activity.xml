@@ -69,9 +69,9 @@
         <field name="model">mail.activity</field>
         <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree" />
         <field name="arch" type="xml">
-             <field name="res_name" position="after">
-                 <field name="related_partner_activity" string="Contact"></field>
-             </field>
+<!--             <field name="res_name" position="after">-->
+<!--                 <field name="related_partner_activity" string="Contact"></field>-->
+<!--             </field>-->
             <field name="date_done" position="after">
                 <field name="activity_priority"/>
                 <field name="email" optional="hide"/>
