@@ -354,25 +354,29 @@ class Lead(models.Model):
     def action_send_mail(self):
         _logger.info(" Email Sending  ........")
         template = self.env.ref('sps_crm.email_to_crm').sudo()
+        acq_pri = dict(self._fields['acq_priority'].selection).get(self.acq_priority)
+        if acq_pri is None:
+            acq_pri = ''
         if self.product_list_doc:
-            acq_pri = dict(self._fields['acq_priority'].selection).get(self.acq_priority)
-            if acq_pri is None:
-                acq_pri = ''
             values = {'attachment_ids': self.product_list_doc,
                       'subject': acq_pri+ ' Please Appraise ' + self.partner_id.name,
                       'model': None, 'res_id': False}
-            local_context = {'rep': self.partner_id.acq_manager.name, 'unq_ac': self.partner_id.saleforce_ac,
-                             'facility_type':  dict(self._fields['facility_tpcd'].selection).get(self.facility_tpcd), 'contracts': self.contract,
-                             'history': '', 'competitors':  self.competitors,
-                             'payment_type': self.payment_type, 'acq_priority': dict(self._fields['acq_priority'].selection).get(self.acq_priority),
-                             'payment_terms': self.property_supplier_payment_term_id.name,
-                             'additional_notes': self.description}
-            try:
-                sent_email_template= template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
-                self.env['mail.mail'].sudo().browse(sent_email_template).write(values)
-            except Exception as exc:
-                _logger.error('Unable to connect to SMTP Server : %r', exc)
-                response = {'message': 'Unable to connect to SMTP Server'}
+        else:
+            values = {'subject': acq_pri + ' Please Appraise ' + self.partner_id.name,
+                      'model': None, 'res_id': False}
+
+        local_context = {'rep': self.partner_id.acq_manager.name, 'unq_ac': self.partner_id.saleforce_ac,
+                         'facility_type':  dict(self._fields['facility_tpcd'].selection).get(self.facility_tpcd), 'contracts': self.contract,
+                         'history': '', 'competitors':  self.competitors,
+                         'payment_type': self.payment_type, 'acq_priority': dict(self._fields['acq_priority'].selection).get(self.acq_priority),
+                         'payment_terms': self.property_supplier_payment_term_id.name,
+                         'additional_notes': self.description}
+        try:
+            sent_email_template= template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
+            self.env['mail.mail'].sudo().browse(sent_email_template).write(values)
+        except Exception as exc:
+            _logger.error('Unable to connect to SMTP Server : %r', exc)
+            response = {'message': 'Unable to connect to SMTP Server'}
 
     @api.depends('partner_id.phone')
     def _compute_phone(self):
