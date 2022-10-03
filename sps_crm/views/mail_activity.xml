@@ -169,7 +169,7 @@
             <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="after">
-                    <button attrs="{'invisible': ['|',('force_next', '=', True),('state', '=', 'done')]}" string="Done &amp; Duplicate" name="action_done_duplicate_act" type="object" class="btn-secondary" context="{'active_ids': self}" />
+                    <button attrs="{'invisible': ['|',('force_next', '=', True),('state', '=', 'done')]}" string="Done &amp; Duplicate" name="action_done_duplicate_act" type="object" class="btn-secondary"  />
                 </xpath>
             </field>
         </record>
