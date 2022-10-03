@@ -234,4 +234,45 @@ class MailActivityNotesCustom(models.Model):
     #     #             {'type': 'activity_updated', 'activity_deleted': True})
     #     # return super(MailActivityNotesCustom, self).unlink()
 
+    def action_done_duplicate_act(self):
+        for activity_id in self:
+            copy_of_activity = self.copy()
+
+            activity_id.state = 'done'
+            activity_id.active = False
+            activity_id.date_done = fields.Date.today()
+            activity_id.feedback = self.feedback
+            activity_id.activity_done = True
+            activity_id._compute_state()
+            messages = self.env['mail.message']
+            record = self.env[activity_id.res_model].sudo().browse(activity_id.res_id)
+            record.sudo().message_post_with_view(
+                'mail.message_activity_done',
+                values={
+                    'activity': activity_id,
+                    'feedback': self.feedback,
+                    'display_assignee': activity_id.user_id != self.env.user
+                },
+                subtype_id=self.env['ir.model.data'].xmlid_to_res_id('mail.mt_activities'),
+                mail_activity_type_id=activity_id.activity_type_id.id,
+            )
+            messages |= record.sudo().message_ids[0]
+
+            view_id = self.env.ref(
+                'sh_activities_management.sh_mail_activity_view_form').id
+            if copy_of_activity:
+                context = dict(self.env.context)
+                context['form_view_initial_mode'] = 'edit'
+                return {
+                    'type': 'ir.actions.act_window',
+                    'view_mode': 'form',
+                    'res_model': 'mail.activity',
+                    'res_id': copy_of_activity.id,
+                    'views': [(view_id, 'form')],
+                    'context': context,
+                }
+
+
+
+
 
