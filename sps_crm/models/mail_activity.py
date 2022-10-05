@@ -1,4 +1,5 @@
 from odoo import models, fields, api, modules, exceptions, _
+from odoo.tools.misc import clean_context
 
 
 class MailActivityNotesCustom(models.Model):
@@ -271,6 +272,29 @@ class MailActivityNotesCustom(models.Model):
                     'views': [(view_id, 'form')],
                     'context': context,
                 }
+
+    def action_done_duplicate_act_popup(self, feedback=False):
+        ctx = dict(
+            clean_context(self.env.context),
+            default_previous_activity_type_id=self.activity_type_id.id,
+            activity_previous_deadline=self.date_deadline,
+            default_res_id=self.res_id,
+            default_res_model=self.res_model,
+        )
+        copy_of_activity = self.copy()
+        messages, next_activities = self._action_done(feedback=feedback)  # will unlink activity, dont access self after that
+        # if next_activities:
+        #     return False
+        return {
+            'name': _('Schedule an Activity'),
+            'context': ctx,
+            'view_mode': 'form',
+            'res_model': 'mail.activity',
+            'res_id': copy_of_activity.id,
+            'views': [(False, 'form')],
+            'type': 'ir.actions.act_window',
+            'target': 'new',
+        }
 
 
 
