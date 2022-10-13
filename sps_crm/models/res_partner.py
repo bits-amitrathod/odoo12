@@ -455,6 +455,17 @@ class Partner(models.Model):
         #     action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
         return action
 
+    def action_self_hierarchy_popup(self):
+        '''
+                This function returns an action that displays the opportunities from partner.
+                '''
+        action = self.env['ir.actions.act_window']._for_xml_id('sps_crm.action_account_hierarchy_report_self')
+        # if self.is_company:
+        #     action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
+        # else:
+        #     action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
+        return action
+
     def action_view_activity_list_popup(self):
 
         act_list = self.env['mail.activity'].search([('res_id', '=', self.id), ('active', 'in', [True, False])])

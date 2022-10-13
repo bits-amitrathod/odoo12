@@ -63,6 +63,22 @@
 
         <!-- Popup code ends here-->
 
+    <!-- Popup code -->
+        <record id="account_hierarchy_report_popup_view_self" model="ir.ui.view">
+            <field name="name">Hierarchy</field>
+            <field name="model">popup.account.hierarchy.report</field>
+            <field name="arch" type="xml">
+                <form>
+                            <field name="account_hierarchy_html" string=" "></field>
+                    <footer>
+
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Popup code ends here-->
+
 
         <!-- Action code -->
         <record id="action_account_hierarchy_report" model="ir.actions.act_window">
@@ -76,6 +92,16 @@
 
         <!-- Action code ends here -->
 
+      <!-- Action code -->
+        <record id="action_account_hierarchy_report_self" model="ir.actions.act_window">
+            <field name="name">Hierarchy</field>
+            <field name="res_model">popup.account.hierarchy.report</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="account_hierarchy_report_popup_view_self"/>
+            <field name="target">new</field>
+            <field name="context">{'valuation': True}</field>
+        </record>
+      <!-- Action code ends here -->
 
 
         <!-- Menus declaration -->

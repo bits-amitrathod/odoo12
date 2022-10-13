@@ -15,6 +15,8 @@ class AccountHierarchyReport(models.TransientModel):
     key_account = fields.Many2one('res.users', string="Key Account", index=True,
                                   domain="['|', ('active', '=', True), ('active', '=', False)]")
 
+    account_hierarchy_html = fields.Html(compute='_compute_account_hierarchy_html')
+
     # @api.multi
     def open_table(self):
         start_date = self.string_to_date(str(self.start_date))
@@ -43,3 +45,74 @@ class AccountHierarchyReport(models.TransientModel):
     @staticmethod
     def string_to_date(date_string):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
+
+    @api.onchange('account_hierarchy_html')
+    def _compute_account_hierarchy_html(self):
+
+        current_partner = self.env.context.get('default_partner_id')
+        loop_partner = current_partner
+        parent = True
+        highest_parent = current_partner
+        if current_partner:
+            while parent:
+                parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', loop_partner)]
+                                                                         , limit=1)
+                if parent_partner.acc_cust_parent.id is False:
+                    parent = False
+                else:
+                    loop_partner = parent_partner.acc_cust_parent.id
+
+        if parent_partner:
+            highest_parent = parent_partner
+
+        query = ''' 
+            WITH RECURSIVE tree_view AS (
+                SELECT 
+                     partner_link_tracker.acc_cust_parent,
+                     partner_link_tracker.partner_id,
+                     res_partner.name,
+                     0 AS level,
+                     CAST(partner_link_tracker.id AS varchar(50)) AS order_sequence
+                FROM partner_link_tracker join res_partner on res_partner.id = partner_link_tracker.partner_id
+                and partner_link_tracker.acc_cust_parent IS NULL and 
+                partner_link_tracker.partner_id = ''' + str(highest_parent.partner_id.id) + '''
+
+            UNION ALL
+
+                SELECT
+                     parent.acc_cust_parent,
+                     parent.partner_id,
+                     res_partner.name,
+                     level + 1 AS level,
+                     CAST(order_sequence || '_' || CAST(parent.partner_id AS VARCHAR (50)) AS VARCHAR(50)) AS order_sequence
+                FROM partner_link_tracker parent  join res_partner on res_partner.id = parent.partner_id
+                JOIN tree_view tv
+                  ON parent.acc_cust_parent = tv.partner_id 
+            )
+
+            SELECT
+               RIGHT('- - - - - --> ',level*6) || name
+                 AS parent_child_tree , partner_id
+            FROM tree_view
+            ORDER BY order_sequence;
+            '''
+        self.env.cr.execute(query)
+        new_list = self.env.cr.dictfetchall()
+        url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        # http://localhost:8070/web#id=47182&model=res.partner&view_type=form&cids=1&menu_id=519
+        data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
+                   "style='table-layout: fixed;'><tbody>"
+        for list_data in new_list:
+            if list_data['partner_id'] == current_partner:
+
+                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+                                      "<b> " \
+                           + list_data['parent_child_tree'] + "</b></td></tr>"
+            else:
+                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+                           + list_data['parent_child_tree'] + "</td></tr>"
+
+        data_val = data_val + '</tbody></table>'
+        self.account_hierarchy_html = data_val
