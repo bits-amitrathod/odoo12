@@ -63,7 +63,7 @@ class AccountHierarchyReport(models.TransientModel):
                     loop_partner = parent_partner.acc_cust_parent.id
 
         if parent_partner:
-            highest_parent = parent_partner
+            highest_parent = parent_partner.partner_id.id
 
         query = ''' 
             WITH RECURSIVE tree_view AS (
@@ -75,7 +75,7 @@ class AccountHierarchyReport(models.TransientModel):
                      CAST(partner_link_tracker.id AS varchar(50)) AS order_sequence
                 FROM partner_link_tracker join res_partner on res_partner.id = partner_link_tracker.partner_id
                 and partner_link_tracker.acc_cust_parent IS NULL and 
-                partner_link_tracker.partner_id = ''' + str(highest_parent.partner_id.id) + '''
+                partner_link_tracker.partner_id = ''' + str(highest_parent) + '''
 
             UNION ALL
 
