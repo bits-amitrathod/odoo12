@@ -97,7 +97,7 @@ class AccountHierarchyReport(models.TransientModel):
             )
 
             SELECT
-               RIGHT('------------------------------------------> ',level*40) || name
+               RIGHT('------------------------------------------> ',level*6) || name
                  AS parent_child_tree , partner_id
             FROM tree_view
             ORDER BY order_sequence;
@@ -109,16 +109,16 @@ class AccountHierarchyReport(models.TransientModel):
         data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
                    "style='table-layout: fixed;'><tbody>"
         for list_data in new_list:
-            if list_data['partner_id'] == current_partner:
-
-                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-                                      "<b> " \
-                           + list_data['parent_child_tree'] + "</b></td></tr>"
-            else:
-                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-                           + list_data['parent_child_tree'] + "</td></tr>"
+            # if list_data['partner_id'] == current_partner:
+            #
+            #     data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+            #                           " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+            #                           "<b> " \
+            #                + list_data['parent_child_tree'] + "</b></td></tr>"
+            # else:
+            data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+                                  " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+                       + list_data['parent_child_tree'] + "</td></tr>"
 
         data_val = data_val + '</tbody></table>'
         self.account_hierarchy_html = data_val
