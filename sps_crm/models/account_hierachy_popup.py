@@ -57,6 +57,12 @@ class AccountHierarchyReport(models.TransientModel):
             while parent:
                 parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', loop_partner)]
                                                                          , limit=1)
+                # if parent_partner.partner_id.id is False:
+                #     res_model = 'partner.link.tracker'
+                #     vals_list = {'partner_id': loop_partner}
+                #
+                #     parent_partner = self.env[res_model].create(vals_list)
+
                 if parent_partner.acc_cust_parent.id is False:
                     parent = False
                 else:
@@ -91,7 +97,7 @@ class AccountHierarchyReport(models.TransientModel):
             )
 
             SELECT
-               RIGHT('- - - - - --> ',level*6) || name
+               RIGHT('------------------------------------------> ',level*40) || name
                  AS parent_child_tree , partner_id
             FROM tree_view
             ORDER BY order_sequence;
