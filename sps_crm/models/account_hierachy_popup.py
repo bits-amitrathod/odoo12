@@ -49,7 +49,19 @@ class AccountHierarchyReport(models.TransientModel):
     @api.onchange('account_hierarchy_html')
     def _compute_account_hierarchy_html(self):
 
+        partner = 0
         current_partner = self.env.context.get('default_partner_id')
+        partner = current_partner
+        current_partner_record = self.env['partner.link.tracker'].search([('partner_id', '=', current_partner)],limit=1)
+        if current_partner_record.acc_cust_parent.id:
+            partner = current_partner_record.acc_cust_parent.id
+
+        parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
+        if parent_partner.partner_id.id is False:
+            res_model = 'partner.link.tracker'
+            vals_list = {'partner_id': partner}
+            parent_partner = self.env[res_model].create(vals_list)
+
         data_val = ''
 
         query = '''
@@ -61,7 +73,7 @@ class AccountHierarchyReport(models.TransientModel):
                      0 AS level,
                      CAST(partner_link_tracker.id AS varchar(50)) AS order_sequence
                 FROM partner_link_tracker join res_partner on res_partner.id = partner_link_tracker.partner_id
-                and partner_link_tracker.partner_id = ''' + str(current_partner) + '''
+                and partner_link_tracker.partner_id = ''' + str(partner) + '''
 
             UNION ALL
 
