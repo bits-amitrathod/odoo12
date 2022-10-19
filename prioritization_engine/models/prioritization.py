@@ -90,9 +90,19 @@ class Customer(models.Model):
             partner.parent_saleforce_ac=partner.parent_id.saleforce_ac if partner.parent_id else partner.saleforce_ac
 
     def write(self, vals):
-        self.copy_parent_date(vals)
+        ne_list = ['purchase', 'mesh', 'edomechanicals','orthopedic','suture', 'gynecological', 'uology', 'edoscopy',
+                   'ent', 'woundcare', 'generalnotes', 'bariatric', 'facilityERP', 'description', 'captis', 'illucient',
+                   'capstone_health_aliance', 'salina_contract', 'mha', 'veteran_affairs', 'partners_co_operative',
+                   'magnet_group', 'fsasc', 'uspi', 'surgery_partners', 'premier', 'email_opt_out', 'intalere_contract',
+                   'time_zone', 'facility_type', 'bed_size', 'purchase_history_date', 'ordering_day1',
+                   'fiscal_year_end', 'last_modify_by', 'top_subspecialties1', 'created_by', 'acq_account',
+                   'sales_account', 'competitors_id', 'status_id', 'acc_cust_parent', 'sales_activity_notes',
+                   'acq_activity_notes', 'description']
+        if not (len(vals) == 1 and (any(f in vals for f in ne_list))):
+            self.copy_parent_date(vals)
         res = super(Customer, self).write(vals)
-        self.copy_parent_date(vals)
+        if not (len(vals) == 1 and (any(f in vals for f in ne_list))):
+            self.copy_parent_date(vals)
         return res
 
     def copy_parent_date(self, vals):
