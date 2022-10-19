@@ -56,11 +56,19 @@ class AccountHierarchyReport(models.TransientModel):
         if current_partner_record.acc_cust_parent.id:
             partner = current_partner_record.acc_cust_parent.id
 
+        res_model = 'partner.link.tracker'
         parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
         if parent_partner.partner_id.id is False:
-            res_model = 'partner.link.tracker'
             vals_list = {'partner_id': partner}
             parent_partner = self.env[res_model].create(vals_list)
+
+        if parent_partner.acc_cust_parent.id:
+            partner = parent_partner.acc_cust_parent.id
+
+        grand_parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
+        if grand_parent_partner.partner_id.id is False:
+            vals_list1 = {'partner_id': partner}
+            parent_partner = self.env[res_model].create(vals_list1)
 
         data_val = ''
 
