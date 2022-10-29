@@ -1,6 +1,9 @@
 from odoo import api, fields, models,_
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class AccountHierarchyReport(models.TransientModel):
@@ -51,6 +54,7 @@ class AccountHierarchyReport(models.TransientModel):
 
         partner = 0
         data_val = ''
+        _logger.info('--------- _compute_account_hierarchy_html  In Account hierarchy code ')
         current_partner = self.env.context.get('default_partner_id')
         partner = current_partner
         current_partner_record = self.env['partner.link.tracker'].search([('partner_id', '=', current_partner)],limit=1)
