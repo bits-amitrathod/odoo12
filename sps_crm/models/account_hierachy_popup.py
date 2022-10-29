@@ -51,69 +51,69 @@ class AccountHierarchyReport(models.TransientModel):
 
         partner = 0
         data_val = ''
-        # current_partner = self.env.context.get('default_partner_id')
-        # partner = current_partner
-        # current_partner_record = self.env['partner.link.tracker'].search([('partner_id', '=', current_partner)],limit=1)
-        # if current_partner_record.acc_cust_parent.id:
-        #     partner = current_partner_record.acc_cust_parent.id
-        #
-        # res_model = 'partner.link.tracker'
-        # parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
-        # if parent_partner.partner_id.id is False:
-        #     vals_list = {'partner_id': partner}
-        #     parent_partner = self.env[res_model].create(vals_list)
-        #
-        # if parent_partner.acc_cust_parent.id:
-        #     partner = parent_partner.acc_cust_parent.id
-        #
-        # grand_parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
-        # if grand_parent_partner.partner_id.id is False:
-        #     vals_list1 = {'partner_id': partner}
-        #     parent_partner = self.env[res_model].create(vals_list1)
-        #
-        # data_val = ''
-        #
-        # query = '''
-        #     WITH RECURSIVE tree_view AS (
-        #         SELECT
-        #              partner_link_tracker.acc_cust_parent,
-        #              partner_link_tracker.partner_id,
-        #              res_partner.name,
-        #              0 AS level,
-        #              CAST(partner_link_tracker.id AS varchar(50)) AS order_sequence
-        #         FROM partner_link_tracker join res_partner on res_partner.id = partner_link_tracker.partner_id
-        #         and partner_link_tracker.partner_id = ''' + str(partner) + '''
-        #
-        #     UNION ALL
-        #
-        #         SELECT
-        #              parent.acc_cust_parent,
-        #              parent.partner_id,
-        #              res_partner.name,
-        #              level + 1 AS level,
-        #              CAST(order_sequence || '_' || CAST(parent.partner_id AS VARCHAR (50)) AS VARCHAR(50)) AS order_sequence
-        #         FROM partner_link_tracker parent  join res_partner on res_partner.id = parent.partner_id
-        #         JOIN tree_view tv
-        #           ON parent.acc_cust_parent = tv.partner_id and level < 10
-        #     )
-        #
-        #     SELECT
-        #        RIGHT('------------------------------------------> ',level*6) || name
-        #          AS parent_child_tree , partner_id
-        #     FROM tree_view
-        #     ORDER BY order_sequence;
-        #     '''
-        # self.env.cr.execute(query)
-        # new_list = self.env.cr.dictfetchall()
-        # url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        # # http://localhost:8070/web#id=47182&model=res.partner&view_type=form&cids=1&menu_id=519
-        # data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
-        #            "style='table-layout: fixed;'><tbody>"
-        # for list_data in new_list:
-        #     data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-        #                           " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>   " \
-        #                           " <a style='color:black !important;' target='_blank' href=' "+url+'/web#id='+str(list_data['partner_id'])+"&model=res.partner&view_type=form&menu_id=519'>  " \
-        #                + list_data['parent_child_tree'] + "</a></td></tr>"
-        #
-        # data_val = data_val + '</tbody></table>'
+        current_partner = self.env.context.get('default_partner_id')
+        partner = current_partner
+        current_partner_record = self.env['partner.link.tracker'].search([('partner_id', '=', current_partner)],limit=1)
+        if current_partner_record.acc_cust_parent.id:
+            partner = current_partner_record.acc_cust_parent.id
+
+        res_model = 'partner.link.tracker'
+        parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
+        if parent_partner.partner_id.id is False:
+            vals_list = {'partner_id': partner}
+            parent_partner = self.env[res_model].create(vals_list)
+
+        if parent_partner.acc_cust_parent.id:
+            partner = parent_partner.acc_cust_parent.id
+
+        grand_parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
+        if grand_parent_partner.partner_id.id is False:
+            vals_list1 = {'partner_id': partner}
+            parent_partner = self.env[res_model].create(vals_list1)
+
+        data_val = ''
+
+        query = '''
+            WITH RECURSIVE tree_view AS (
+                SELECT
+                     partner_link_tracker.acc_cust_parent,
+                     partner_link_tracker.partner_id,
+                     res_partner.name,
+                     0 AS level,
+                     CAST(partner_link_tracker.id AS varchar(50)) AS order_sequence
+                FROM partner_link_tracker join res_partner on res_partner.id = partner_link_tracker.partner_id
+                and partner_link_tracker.partner_id = ''' + str(partner) + '''
+
+            UNION ALL
+
+                SELECT
+                     parent.acc_cust_parent,
+                     parent.partner_id,
+                     res_partner.name,
+                     level + 1 AS level,
+                     CAST(order_sequence || '_' || CAST(parent.partner_id AS VARCHAR (50)) AS VARCHAR(50)) AS order_sequence
+                FROM partner_link_tracker parent  join res_partner on res_partner.id = parent.partner_id
+                JOIN tree_view tv
+                  ON parent.acc_cust_parent = tv.partner_id and level < 10
+            )
+
+            SELECT
+               RIGHT('------------------------------------------> ',level*6) || name
+                 AS parent_child_tree , partner_id
+            FROM tree_view
+            ORDER BY order_sequence;
+            '''
+        self.env.cr.execute(query)
+        new_list = self.env.cr.dictfetchall()
+        url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        # http://localhost:8070/web#id=47182&model=res.partner&view_type=form&cids=1&menu_id=519
+        data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
+                   "style='table-layout: fixed;'><tbody>"
+        for list_data in new_list:
+            data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+                                  " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>   " \
+                                  " <a style='color:black !important;' target='_blank' href=' "+url+'/web#id='+str(list_data['partner_id'])+"&model=res.partner&view_type=form&menu_id=519'>  " \
+                       + list_data['parent_child_tree'] + "</a></td></tr>"
+
+        data_val = data_val + '</tbody></table>'
         self.account_hierarchy_html = data_val
