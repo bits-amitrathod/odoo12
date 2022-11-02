@@ -98,13 +98,13 @@ class AccountHierarchyReport(models.TransientModel):
         data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
                    "style='table-layout: fixed;'><tbody>"
         for x, list_data in enumerate(final_data):
-            # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-            #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-            #                       "<a style='color:black !important;' target='_blank' href=' "+url+'/web#id='+str(list_all_id_names[final_data_name[x]])+"&model=res.partner&view_type=form&menu_id=519'>   " \
-            #                       " " + list_data + "</a></td></tr>"
             data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
                                   " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-                                  "" + list_data + "</td></tr>"
+                                  "<a style='color:black !important;' target='_blank' href=' "+url+'/web#id='+str(list_all_id_names[final_data_name[x]])+"&model=res.partner&view_type=form&menu_id=519'>   " \
+                                  " " + list_data + "</a></td></tr>"
+            # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+            #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+            #                       "" + list_data + "</td></tr>"
 
         data_val = data_val + '</tbody></table>'
         # self.account_hierarchy_html = data_val
