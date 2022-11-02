@@ -168,6 +168,9 @@ class Partner(models.Model):
     def pro_search_for_status_id(self, operator, value):
         return self.generic_char_search(operator, value, 'status_id')
 
+    def pro_search_for_parent_account(self, operator, value):
+        return self.generic_char_search(operator, value, 'acc_cust_parent')
+
     #  SaleForce_ac Custom Search Imp (Many One Search)
     @api.model
     def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
@@ -315,7 +318,7 @@ class Partner(models.Model):
     competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False, search='pro_search_for_competitors_id')
     status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id', compute="_compute_details_status_field", readonly=False)
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False,
-                                      domain=[('is_company', '=', True)])
+                                      search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False)
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False)
 
