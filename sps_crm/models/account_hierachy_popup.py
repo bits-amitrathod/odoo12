@@ -1,6 +1,9 @@
 from odoo import api, fields, models,_
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+import logging
+
+_logger = logging.getLogger(__name__)
 
 
 class AccountHierarchyReport(models.TransientModel):
@@ -15,7 +18,7 @@ class AccountHierarchyReport(models.TransientModel):
     key_account = fields.Many2one('res.users', string="Key Account", index=True,
                                   domain="['|', ('active', '=', True), ('active', '=', False)]")
 
-    account_hierarchy_html = fields.Html(compute='_compute_account_hierarchy_html')
+    account_hierarchy_html = fields.Html(store=False, readonly=True)
 
     # @api.multi
     def open_table(self):
@@ -46,74 +49,84 @@ class AccountHierarchyReport(models.TransientModel):
     def string_to_date(date_string):
         return datetime.datetime.strptime(date_string, DEFAULT_SERVER_DATE_FORMAT).date()
 
-    @api.onchange('account_hierarchy_html')
     def _compute_account_hierarchy_html(self):
 
         partner = 0
         data_val = ''
-        # current_partner = self.env.context.get('default_partner_id')
-        # partner = current_partner
-        # current_partner_record = self.env['partner.link.tracker'].search([('partner_id', '=', current_partner)],limit=1)
-        # if current_partner_record.acc_cust_parent.id:
-        #     partner = current_partner_record.acc_cust_parent.id
-        #
-        # res_model = 'partner.link.tracker'
-        # parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
-        # if parent_partner.partner_id.id is False:
-        #     vals_list = {'partner_id': partner}
-        #     parent_partner = self.env[res_model].create(vals_list)
-        #
-        # if parent_partner.acc_cust_parent.id:
-        #     partner = parent_partner.acc_cust_parent.id
-        #
-        # grand_parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
-        # if grand_parent_partner.partner_id.id is False:
-        #     vals_list1 = {'partner_id': partner}
-        #     parent_partner = self.env[res_model].create(vals_list1)
-        #
-        # data_val = ''
-        #
-        # query = '''
-        #     WITH RECURSIVE tree_view AS (
-        #         SELECT
-        #              partner_link_tracker.acc_cust_parent,
-        #              partner_link_tracker.partner_id,
-        #              res_partner.name,
-        #              0 AS level,
-        #              CAST(partner_link_tracker.id AS varchar(50)) AS order_sequence
-        #         FROM partner_link_tracker join res_partner on res_partner.id = partner_link_tracker.partner_id
-        #         and partner_link_tracker.partner_id = ''' + str(partner) + '''
-        #
-        #     UNION ALL
-        #
-        #         SELECT
-        #              parent.acc_cust_parent,
-        #              parent.partner_id,
-        #              res_partner.name,
-        #              level + 1 AS level,
-        #              CAST(order_sequence || '_' || CAST(parent.partner_id AS VARCHAR (50)) AS VARCHAR(50)) AS order_sequence
-        #         FROM partner_link_tracker parent  join res_partner on res_partner.id = parent.partner_id
-        #         JOIN tree_view tv
-        #           ON parent.acc_cust_parent = tv.partner_id and level < 10
-        #     )
-        #
-        #     SELECT
-        #        RIGHT('------------------------------------------> ',level*6) || name
-        #          AS parent_child_tree , partner_id
-        #     FROM tree_view
-        #     ORDER BY order_sequence;
-        #     '''
-        # self.env.cr.execute(query)
-        # new_list = self.env.cr.dictfetchall()
-        # url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        # # http://localhost:8070/web#id=47182&model=res.partner&view_type=form&cids=1&menu_id=519
-        # data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
-        #            "style='table-layout: fixed;'><tbody>"
-        # for list_data in new_list:
-        #     data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-        #                           " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>   " \
-        #                           " <a style='color:black !important;' target='_blank' href=' "+url+'/web#id='+str(list_data['partner_id'])+"&model=res.partner&view_type=form&menu_id=519'>  " \
-        #                + list_data['parent_child_tree'] + "</a></td></tr>"
-        #
-        # data_val = data_val + '</tbody></table>'
-        self.account_hierarchy_html = data_val
+        _logger.info('--------- _compute_account_hierarchy_html  In Account hierarchy code ')
+
+        current_partner = self.env.context.get('default_partner_id')
+        current_partner_record = self.env['partner.link.tracker'].search([('partner_id', '=', current_partner)],
+                                                                         limit=1)
+        res_model = 'partner.link.tracker'
+        partner = current_partner
+
+        if current_partner_record.partner_id.id is False:
+            vals_list = {'partner_id': partner}
+            parent_partner = self.env[res_model].create(vals_list)
+
+        if current_partner_record.acc_cust_parent.id:
+            partner = current_partner_record.acc_cust_parent.id
+
+        parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
+        if parent_partner.partner_id.id is False:
+            vals_list = {'partner_id': partner}
+            parent_partner = self.env[res_model].create(vals_list)
+
+        if parent_partner.acc_cust_parent.id:
+            partner = parent_partner.acc_cust_parent.id
+
+        grand_parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
+        if grand_parent_partner.partner_id.id is False:
+            vals_list1 = {'partner_id': partner}
+            parent_partner = self.env[res_model].create(vals_list1)
+
+        list_all = {}  # Graph is a dictionary to hold our child-parent relationships.
+        list_all_id_names = {}
+        partner_tracker_list = self.env['partner.link.tracker'].search([])
+        for tracker in partner_tracker_list:
+            list_all.setdefault(tracker.acc_cust_parent.name, []).append(tracker.partner_id.name)
+            list_all_id_names.setdefault(tracker.partner_id.name, tracker.partner_id.id)
+
+        final_data = []
+        final_data_name = []
+        level = 0
+        final_data, final_data_name = self.set_data(grand_parent_partner.partner_id.name, list_all, level, final_data,
+                                                    final_data_name)
+
+        url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
+                   "style='table-layout: fixed;'><tbody>"
+        for x, list_data in enumerate(final_data):
+            data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+                                  " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+                                  "<a style='color:black !important;' target='_blank' href=' "+url+'/web#id='+str(list_all_id_names[final_data_name[x]])+"&model=res.partner&view_type=form&menu_id=519'>   " \
+                                  " " + list_data + "</a></td></tr>"
+            # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+            #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+            #                       "" + list_data + "</td></tr>"
+
+        data_val = data_val + '</tbody></table>'
+        # self.account_hierarchy_html = data_val
+        return data_val
+
+    def set_data(self, child, list_all, level, final_data, final_data_name):
+        final_data.append(child)
+        final_data_name.append(child)
+        level = level + 1
+        if child in list_all and level <= 9:
+            child_list = list_all[child]
+            for child in child_list:
+                self.recursive_hir(child, list_all, level, final_data, final_data_name)
+
+        return final_data, final_data_name
+
+    def recursive_hir(self, child, list_all, level, final_data, final_data_name):
+        data_dash = '------ ' * level + '>'
+        final_data.append(data_dash + ' ' + child)
+        final_data_name.append(child)
+        level = level + 1
+        if child in list_all and level <= 9:
+            child_list = list_all[child]
+            for child in child_list:
+                self.recursive_hir(child, list_all, level, final_data, final_data_name)

@@ -464,6 +464,8 @@ class Partner(models.Model):
         #     action['domain'] = [('partner_id.commercial_partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
         # else:
         #     action['domain'] = [('partner_id.id', '=', self.id), ('type', '=', 'purchase_opportunity')]
+        context = {'default_account_hierarchy_html': self.env['popup.account.hierarchy.report'].sudo()._compute_account_hierarchy_html()}
+        action['context'] = context
         return action
 
     def action_view_activity_list_popup(self):
