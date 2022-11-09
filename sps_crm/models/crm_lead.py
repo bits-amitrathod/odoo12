@@ -87,7 +87,8 @@ class Lead(models.Model):
                                                    ('eq_sale', 'EQ Sale'),
                                                    ('eq_repair', 'EQ Repair'),
                                                    ('national_act_cont', 'National Account Contract'),
-                                                   ('ka_expansion', 'KA Expansion')])
+                                                   ('ka_expansion', 'KA Expansion'),
+                                                   ('channel_usage', 'Channel Usage')])
 
     new_customer = fields.Boolean("New Customer", default=False)
     arrival_date = fields.Datetime(string="Arrival Date")
@@ -205,7 +206,7 @@ class Lead(models.Model):
     @api.onchange('partner_id')
     def _compute_contact_values(self):
         """ compute the new values when partner_id has changed """
-        _logger.error(" Compute method Called ........")
+        _logger.info(" Compute method Called ........")
         if self.partner_id.id:
             obj = self.env['partner.link.tracker'].search([('partner_id', '=', self.partner_id.id)], limit=1).competitors_id
             self.competitors = obj.ids if obj else obj
