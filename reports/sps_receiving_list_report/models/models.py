@@ -35,3 +35,29 @@ class SpsReceivingList(models.Model):
                     # 'carrier_info': purchase_order_id.carrier_info,
                     # 'date_order': purchase_order_id.date_order,
                 })
+
+class receivingList(models.Model):
+    _inherit = "stock.picking"
+
+    def do_sps_receiving_list(self):
+        print("Ok.........")
+        # return self.env['sps_receive_popup.view.model'].open_table()
+        # action = self.env["ir.actions.actions"]._for_xml_id("sps_receiving_list_report.action_sps_receive_list")
+        # tree_view_id = self.env.ref('sps_receiving_list_report.form_list_sps').id
+        # form_view_id = self.env.ref('sps_receiving_list_report.sps_receving_list_form').id
+        # stock_location_id = self.env['stock.location'].search([('name', '=', 'Stock')]).ids
+        # print("Stock location id", stock_location_id)
+        # action = {
+        #     'type': 'ir.actions.act_window',
+        #     'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+        #     'view_mode': 'tree',
+        #     # 'name': _('SPS Receiving List'),
+        #     'res_model': 'stock.move.line',
+        #     'domain': [('state', '=', 'done'), ('location_dest_id.id', '=', stock_location_id)],
+        #     'context': {"search_default_product_group": 1},
+        #     # 'target': 'main'
+        # }
+        # action['domain'].append(('move_id.purchase_line_id.order_id', 'in', [9992]))
+
+        return self.env.ref('sps_receiving_list_report.action_sps_receiving_list_report_pdf').report_action(self.move_line_ids)
+        # return action

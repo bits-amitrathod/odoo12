@@ -20,8 +20,13 @@
 
     'data': [
         'security/ir.model.access.csv',
+        'views/stock_barcode_templates.xml',
         'views/views.xml',
         'reports/sps_receiving_list.xml'
+    ],
+    'qweb': [
+        'views/qweb_templates.xml',
+
     ],
     'installable': True,
     'auto_install': False,

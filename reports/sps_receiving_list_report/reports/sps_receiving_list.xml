@@ -1,5 +1,13 @@
 <odoo>
 
+    <report id="action_sps_receiving_list_report_pdf"
+            string="SPS Receiving List"
+            model="stock.move.line"
+            report_type="qweb-pdf"
+            file="sps_receiving_list_report.adjustment_report"
+            name="sps_receiving_list_report.adjustment_report"
+    />
+
     <report id="action_sps_receiving_list_report"
             string="SPS Receiving List"
             model="stock.move.line"
@@ -7,6 +15,7 @@
             file="sps_receiving_list_report.adjustment_report"
             name="sps_receiving_list_report.adjustment_report"
     />
+
 
     <report id="action_sps_receiving_list_report1"
             string="SPS Receiving List"
@@ -306,6 +315,4 @@
             </t>
         </t>
     </template>
-
-
 </odoo>
