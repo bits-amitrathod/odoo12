@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-extend="stock_barcode_settings_widget">
+        <t t-jquery=".o_barcode_settings" t-operation="prepend">
+            <button t-if="widget.model == 'stock.picking'" class="btn-lg btn btn-dark text-uppercase o_print_receiving_list">SPS Receiving List</button>
+        </t>
+    </t>
+
+</templates>
