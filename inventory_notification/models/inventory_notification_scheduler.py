@@ -34,8 +34,8 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_outgoing_server_scheduler(self):
         current_time = datetime.now().time()
         _logger.info("process_outgoing_server_scheduler called  %s ..",current_time)
-        start_time = datetime.strptime('14:00:03', '%H:%M:%S').time()
-        end_time = datetime.strptime('17:10:03', '%H:%M:%S').time()
+        start_time = datetime.strptime('11:00:00', '%H:%M:%S').time()
+        end_time = datetime.strptime('11:10:00', '%H:%M:%S').time()
         if (current_time > start_time) and (current_time < end_time):
             _logger.info("process_outgoing_server_scheduler if")
             # outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
