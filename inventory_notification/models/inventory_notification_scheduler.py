@@ -466,8 +466,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <p style="text-align: left;">412-434-0214</p>
                                     </td>
                                     <td style="width: 154px; height: 78px;">
-                                    <p><strong>Chelsea Owen</strong></p>
-                                    <p>412-564-1281&nbsp;</p>
+                                    <p><strong>Maddie Cotter</strong></p>
+                                    <p>412-240-4049&nbsp;</p>
+                                    </td>
+                                    <td style="width: 154px; height: 78px;">
+                                    <p><strong>Shannon Parker</strong></p>
+                                    <p>412-564-9011&nbsp;</p>
                                     </td>
                                     <td style="width: 157px; height: 78px;">
                                     <p style="text-align: left;"><strong>Phil Kemp</strong></p>
