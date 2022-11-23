@@ -198,7 +198,7 @@
         <field name="name">Email Notification: Product Purchase Details</field>
         <field name="model_id" ref="website_sale.model_sale_order"/>
         <field name="email_to">${object.user_id.login}</field>
-        <field name="email_cc">${('amitrathod@benchmarkit.solutions' if object.user_id.login=='info@surgicalproductsolutions.com' else 'info@surgicalproductsolutions.com, amitrathod@benchmarkit.solutions' | safe)}</field>
+        <field name="email_cc">${('info@surgicalproductsolutions.com' | safe)}</field>
         <field name="subject">Please find the sales order that was placed online at shopsps.com from ${object.partner_id.name}.</field>
         <field name="body_html">
             <![CDATA[
