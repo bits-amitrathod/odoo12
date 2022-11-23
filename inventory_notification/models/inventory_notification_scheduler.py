@@ -30,6 +30,26 @@ class InventoryNotificationScheduler(models.TransientModel):
     all_email = "sps@surgicalproductsolutions.com"
     appraisal_email = "appraisal@surgicalproductsolutions.com"
 
+    @api.model
+    def process_outgoing_server_scheduler(self):
+        current_time = datetime.now().time()
+        print("process_outgoing_server_scheduler  %s" % current_time)
+        start_time = datetime.strptime('14:00:03', '%H:%M:%S').time()
+        end_time = datetime.strptime('17:10:03', '%H:%M:%S').time()
+        if (current_time > start_time) and (current_time < end_time):
+            print("process_outgoing_server_scheduler if ")
+            # outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
+            # if not outgoing_server_list:
+            #     outgoing_server_set_active = self.env['ir.mail_server'].search([('active', '=', False)],
+            #                                                                    order="id desc", limit=1)
+            #     if outgoing_server_set_active:
+            #         outgoing_server_set_active.active = True
+        else:
+            print("process_outgoing_server_scheduler else")
+            outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
+            if outgoing_server_list:
+                outgoing_server_list.active = False
+
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
         self.process_notification_scheduler()
