@@ -296,7 +296,16 @@ class MailActivityNotesCustom(models.Model):
             'target': 'new',
         }
 
+    def write(self, vals):
+        if self:
+            for rec in self:
+                if 'sh_user_ids' in vals :
+                    if 'res_id' in vals and vals['res_id'] == 0:
+                        del vals['res_id']
 
+                    if 'related_partner_activity' in vals and not vals['related_partner_activity']:
+                        del vals['related_partner_activity']
+        return super(MailActivityNotesCustom, self).write(vals)
 
 
 
