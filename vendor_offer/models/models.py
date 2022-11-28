@@ -411,6 +411,8 @@ class VendorOffer(models.Model):
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
                     per_val = per_val+10
                     credit_amount_untaxed = product_retail * (per_val/100)
+                    # Extra 3% Amount Added in Credit Amount
+                    credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
                 order.update({
@@ -465,6 +467,7 @@ class VendorOffer(models.Model):
                         per_val = round((amount_untaxed / product_retail) * 100, 2)
                         per_val = per_val + 10
                         credit_amount_untaxed = product_retail * (per_val / 100)
+                        credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                         credit_amount_total = credit_amount_untaxed + amount_tax
                     order.update({
                         'amount_tax': amount_tax,
