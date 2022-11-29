@@ -18,6 +18,7 @@
     # always loaded
     'data': [
         'views/sale_view.xml',
+        'views/mail_data.xml',
     ],
     'installable': True,
     'application': True,
