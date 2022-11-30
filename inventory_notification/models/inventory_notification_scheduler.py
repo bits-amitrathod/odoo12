@@ -41,7 +41,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         start_time = datetime.strptime('04:00:00', '%H:%M:%S').time()
         end_time = datetime.strptime('12:00:00', '%H:%M:%S').time()
         url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        if url and (('localhost' not in url) and ('localhost' not in url) and ('localhost' not in url)):
+        if url and (('bits' not in url) and ('localhost' not in url) and ('staging' not in url)):
             if (current_time > start_time) and (current_time < end_time):
                 _logger.info("process_outgoing_server_scheduler if on")
                 outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
