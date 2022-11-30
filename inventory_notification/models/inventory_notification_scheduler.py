@@ -33,22 +33,28 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     def process_outgoing_server_scheduler(self):
         current_time = datetime.now().time()
-        _logger.info("process_outgoing_server_scheduler called  %s ..",current_time)
-        start_time = datetime.strptime('11:00:00', '%H:%M:%S').time()
-        end_time = datetime.strptime('11:10:00', '%H:%M:%S').time()
-        if (current_time > start_time) and (current_time < end_time):
-            _logger.info("process_outgoing_server_scheduler if")
-            # outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
-            # if not outgoing_server_list:
-            #     outgoing_server_set_active = self.env['ir.mail_server'].search([('active', '=', False)],
-            #                                                                    order="id desc", limit=1)
-            #     if outgoing_server_set_active:
-            #         outgoing_server_set_active.active = True
-        else:
-            _logger.info("process_outgoing_server_scheduler else")
-            outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
-            if outgoing_server_list:
-                outgoing_server_list.active = False
+        _logger.info("process_outgoing_server_scheduler called  %s ..", current_time)
+
+        # The outgoing server should be on in between  12 am EST to 6 am EST (Night) and Off after that time
+        # the below time is in UTC and it is 24 hrs clock so UTC time is 5 am to 11 am, In-stock email time UTC 8.30 am
+
+        start_time = datetime.strptime('04:00:00', '%H:%M:%S').time()
+        end_time = datetime.strptime('12:00:00', '%H:%M:%S').time()
+        url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        if url and (('localhost' not in url) and ('localhost' not in url) and ('localhost' not in url)):
+            if (current_time > start_time) and (current_time < end_time):
+                _logger.info("process_outgoing_server_scheduler if on")
+                outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
+                if not outgoing_server_list:
+                    outgoing_server_set_active = self.env['ir.mail_server'].search([('active', '=', False)],
+                                                                                   order="id desc", limit=1)
+                    if outgoing_server_set_active:
+                        outgoing_server_set_active.active = True
+            else:
+                _logger.info("process_outgoing_server_scheduler else off")
+                outgoing_server_list = self.env['ir.mail_server'].search([('active', '=', True)], limit=1)
+                if outgoing_server_list:
+                    outgoing_server_list.active = False
 
     def process_manual_notification_scheduler(self):
         _logger.info("process_manual_notification_scheduler called..")
