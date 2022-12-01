@@ -39,7 +39,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         # the below time is in UTC and it is 24 hrs clock so UTC time is 5 am to 11 am, In-stock email time UTC 8.30 am
 
         start_time = datetime.strptime('04:00:00', '%H:%M:%S').time()
-        end_time = datetime.strptime('12:00:00', '%H:%M:%S').time()
+        end_time = datetime.strptime('10:30:00', '%H:%M:%S').time()
         url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         if url and (('bits' not in url) and ('localhost' not in url) and ('staging' not in url)):
             if (current_time > start_time) and (current_time < end_time):
