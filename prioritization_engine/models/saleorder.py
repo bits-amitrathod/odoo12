@@ -123,7 +123,10 @@ class SaleOrder(models.Model):
             'model_description': self.with_context(lang=lang).type_name,
         }
 
-        if self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.\
+
+        if not self.order_line :
+            ctx['email_from'] = None
+        elif self.order_line[0] and self.order_line[0].customer_request_id and self.order_line[0].customer_request_id.\
                 document_id and self.order_line[0].customer_request_id.document_id.email_from:
             ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
         else:
