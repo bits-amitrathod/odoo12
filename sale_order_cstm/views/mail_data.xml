@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <!-- Template and notification section  Changed According SPS-->
-    <data noupdate="1">
-        <record id="mail_template_sale_confirmation_cstm" model="mail.template">
+    <data>
+        <record id="mail_template_sale_confirmation_cstm1" model="mail.template">
             <field name="name">Sales Order: Confirmation Email</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="subject">${object.company_id.name} ${(object.get_portal_last_transaction().state == 'pending') and 'Pending Order' or 'Order'} (Ref ${object.name or 'n/a' })</field>
