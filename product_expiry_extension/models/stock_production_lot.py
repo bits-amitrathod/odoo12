@@ -65,7 +65,14 @@ class ProductionLot(models.Model):
         return super(ProductionLot, self).create(vals)
 
     def _set_required_vals_to_create_lot(self, vals):
-        vals.update({'use_date': fields.Datetime.add(fields.Datetime.now(), years=50), 'alert_date': False, 'expiration_date': fields.Datetime.add(fields.Datetime.now(), years=50), 'removal_date': False})
+        if 'expiration_date' not in vals:
+            vals.update({'use_date': fields.Datetime.add(fields.Datetime.now(), years=50), 'alert_date': False,
+                         'expiration_date': fields.Datetime.add(fields.Datetime.now(), years=50),
+                         'removal_date': False})
+        else:
+            vals.update({'use_date': vals['expiration_date'], 'alert_date': False,
+                         'expiration_date': vals['expiration_date'],
+                         'removal_date': False})
         return vals
 
     def write(self, vals):
