@@ -41,7 +41,10 @@ class SaleOrderCstm(models.Model):
         if self.partner_id.account_manager_cust:
             user_id_email = self.partner_id.account_manager_cust
         elif self.partner_id.user_id:
-            user_id_email = self.partner_id.user_id
+            if self.partner_id.user_id.name == "National Accounts" and self.partner_id.national_account_rep:
+                user_id_email = self.partner_id.national_account_rep
+            else:
+                user_id_email = self.partner_id.user_id
         elif self.partner_id.national_account_rep:
             user_id_email = self.partner_id.national_account_rep
         else:
