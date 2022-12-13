@@ -70,7 +70,7 @@
                             <t t-set="total_value" t-value="0"/>
                             <tr t-foreach="data" t-as="order" style="page-break-inside: avoid">
                                 <td style="border: 1px solid black;">
-                                    <span t-esc="order.name"/>
+                                    <span t-esc="order.display_name"/>
                                 </td>
                                 <td style="border: 1px solid black;">
                                     <span t-esc="order.month_count"/>

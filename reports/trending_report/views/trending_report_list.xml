@@ -7,7 +7,7 @@
 <!--                <field name="priority">20</field>-->
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" >
-                    <field name="name" string="Customer Name"/>
+                    <field name="display_name" string="Customer Name"/>
                     <field name="user_id" string="Business Development"/>
                     <field name="month_count"/>
                     <field name="month6" widget="monetary" />
@@ -31,7 +31,7 @@
 <!--               <field name="priority">21</field>-->
               <field name="arch" type="xml">
                 <tree create="false" edit="false" delete="false" >
-                    <field name="name" string="Customer Name"/>
+                    <field name="display_name" string="Customer Name"/>
                     <field name="user_id" string="Business Development"/>
                     <field name="month_count"/>
                     <field name="month12" widget="monetary" />
