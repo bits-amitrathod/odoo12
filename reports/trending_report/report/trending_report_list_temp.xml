@@ -20,6 +20,7 @@
                         <t t-set="code_value" t-value="code"/>
                         <thead>
                             <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;text-align: center;">Commercial Entity</th>
                                 <th style="border: 1px solid black;text-align: center;">Customer Name</th>
                                 <th style="border: 1px solid black;text-align: center;">Months Ago First Order</th>
                                 <t t-if="int(code_value) == 12">
@@ -70,7 +71,10 @@
                             <t t-set="total_value" t-value="0"/>
                             <tr t-foreach="data" t-as="order" style="page-break-inside: avoid">
                                 <td style="border: 1px solid black;">
-                                    <span t-esc="order.display_name"/>
+                                    <span t-esc="order.commercial_entity"/>
+                                </td>
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="order.name"/>
                                 </td>
                                 <td style="border: 1px solid black;">
                                     <span t-esc="order.month_count"/>
