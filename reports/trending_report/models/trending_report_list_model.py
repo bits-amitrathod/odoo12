@@ -3,6 +3,7 @@ from docutils.nodes import field
 from odoo import api, fields, models
 from lxml import etree
 from datetime import datetime
+from odoo.osv import expression
 import itertools
 
 
