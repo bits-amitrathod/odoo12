@@ -407,10 +407,14 @@ class VendorOffer(models.Model):
 
                 credit_amount_untaxed = 0
                 credit_amount_total = 0
+                flag = "QPA PLUS" in list(map(lambda x: x.name, self.partner_id.category_id))
                 if product_retail > 0:
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
                     per_val = per_val+10
                     credit_amount_untaxed = product_retail * (per_val/100)
+                    # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
+                    if flag :
+                        credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
                 order.update({
@@ -461,10 +465,14 @@ class VendorOffer(models.Model):
                     billed_offer_untaxed += line.billed_product_offer_price
                     credit_amount_untaxed = 0
                     credit_amount_total = 0
+                    flag = "QPA PLUS" in list(map(lambda x: x.name, self.partner_id.category_id))
                     if product_retail > 0:
                         per_val = round((amount_untaxed / product_retail) * 100, 2)
                         per_val = per_val + 10
                         credit_amount_untaxed = product_retail * (per_val / 100)
+                        # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
+                        if flag:
+                            credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                         credit_amount_total = credit_amount_untaxed + amount_tax
                     order.update({
                         'amount_tax': amount_tax,
