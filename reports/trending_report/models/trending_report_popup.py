@@ -27,8 +27,8 @@ class TrendingReport(models.TransientModel):
             'view_mode': 'tree,form',
             'name': 'Trending Report',
             'res_model': res_model,
-            'context': {'search_default_customer': 1,'s_date': self.start_date},
-            'domain': [],
+            'context': {'search_default_customer': 1,'s_date': self.start_date,},
+            'domain': [('month_total', '>', 0)],
             'search_view_id': self.env.ref('base.view_res_partner_filter').id,
         }
 

@@ -26,11 +26,15 @@ class TrendingReportListView(models.Model):
     month11 = fields.Monetary(currency_field='currency_id', store=False)
     month12 = fields.Monetary(currency_field='currency_id', store=False)
     month_count = fields.Integer('Months Ago First Order', compute='_first_purchase_date', store=False)#'Months Ago First Order'
-    month_total = fields.Integer('Total Purchased Month', compute='_total_purchased_month', store=False)
+    month_total = fields.Integer('Total Purchased Month', compute='_total_purchased_month', search="_search_month_total", store=False)
     trend_val = fields.Char('Trend', store=False,compute='_get_trend_value')
     average_sale = fields.Monetary('Average',compute='_get_average_value', currency_field='currency_id', store=False)
     total_sale = fields.Monetary('Total',compute='_get_total_value', currency_field='currency_id', store=False)
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
+
+    def _search_month_total(self, operator, value):
+        la = self.search(['&', ('customer_rank', '>', 0), ('parent_id', '=', False)]).filtered(lambda x: x.month_total > 0 )
+        return [('id', '=', [x.id for x in la])]
 
     def _compute_commercial_entity(self):
         for customer in self:
