@@ -16,10 +16,21 @@ class TrendingReport(models.TransientModel):
         if(self.env.context['code'] == 12):
             tree_view_id = self.env.ref('trending_report.trending_report_list12').id
             form_view_id = self.env.ref('base.view_partner_form').id
+            end_date = self.start_date - datetime.timedelta(days=366)
         else:
             tree_view_id = self.env.ref('trending_report.trending_report_list6').id
             form_view_id = self.env.ref('base.view_partner_form').id
+            end_date = self.start_date - datetime.timedelta(days=185)
 
+        sale_orders = self.env['sale.order'].\
+            search(
+            [
+                ('state', 'in', ['sale']),
+                ('date_order', '<=', self.start_date),
+                ('date_order', '>=', end_date)
+            ])
+
+        partner_list = sale_orders.partner_id
         res_model = 'res.partner'
         action = {
             'type': 'ir.actions.act_window',
@@ -28,7 +39,7 @@ class TrendingReport(models.TransientModel):
             'name': 'Trending Report',
             'res_model': res_model,
             'context': {'search_default_customer': 1,'s_date': self.start_date,},
-            'domain': [('month_total', '>', 0)],
+            'domain': [('id', 'in', partner_list.ids)],
             'search_view_id': self.env.ref('base.view_res_partner_filter').id,
         }
 
