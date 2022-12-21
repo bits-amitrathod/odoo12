@@ -31,3 +31,24 @@ class SaleOrderAvailability(models.Model):
                 }
                 return {'warning': warning_mess}
         return {}
+
+class SaleOrderCstm(models.Model):
+    _inherit = "sale.order"
+
+    def get_email_so_sendByEmail(self):
+        self.ensure_one()
+        user_id_email = None
+        customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
+        if customer.account_manager_cust:
+            user_id_email = customer.account_manager_cust
+        elif customer.user_id:
+            if customer.user_id.name == "National Accounts" and customer.national_account_rep:
+                user_id_email = customer.national_account_rep
+            else:
+                user_id_email = customer.user_id
+        elif customer.national_account_rep:
+            user_id_email = customer.national_account_rep
+        else:
+            user_id_email = customer.user_id
+
+        return user_id_email
