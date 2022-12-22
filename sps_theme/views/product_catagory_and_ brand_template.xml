@@ -419,7 +419,7 @@
                                     <t t-if="product.actual_quantity &gt; 0">
                                         <div t-attf-class="availability availability_message_#{product_template}">
                                             <t t-esc="product.actual_quantity"/>
-                                            item(s) lefts
+                                            item(s) left
                                         </div>
                                         <t t-if="combination_info['price'] &gt; 0">
                                             <div class="btn-wrapper pb-3">
