@@ -308,4 +308,128 @@ class MailActivityNotesCustom(models.Model):
         return super(MailActivityNotesCustom, self).write(vals)
 
 
+class MailThreadExtendCRM(models.AbstractModel):
+    """ Inherited Mail Acitvity to add custom field"""
+    _inherit = 'mail.thread'
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """ Chatter override :
+            - subscribe uid
+            - subscribe followers of parent
+            - log a creation message
+        """
+        threads = super(MailThreadExtendCRM, self).create(vals_list)
+        return threads
+
+    def write(self, values):
+        # Perform write
+        result = super(MailThreadExtendCRM, self).write(values)
+        return result
+
+    def _message_auto_subscribe(self, updated_values, followers_existing_policy='skip'):
+        """ Handle auto subscription. Auto subscription is done based on two
+        main mechanisms
+
+         * using subtypes parent relationship. For example following a parent record
+           (i.e. project) with subtypes linked to child records (i.e. task). See
+           mail.message.subtype ``_get_auto_subscription_subtypes``;
+         * calling _message_auto_subscribe_notify that returns a list of partner
+           to subscribe, as well as data about the subtypes and notification
+           to send. Base behavior is to subscribe responsible and notify them;
+
+        Adding application-specific auto subscription should be done by overriding
+        ``_message_auto_subscribe_followers``. It should return structured data
+        for new partner to subscribe, with subtypes and eventual notification
+        to perform. See that method for more details.
+
+        :param updated_values: values modifying the record trigerring auto subscription
+        """
+        if not self:
+            return True
+
+        new_partners, new_channels = dict(), dict()
+
+        # return data related to auto subscription based on subtype matching (aka:
+        # default task subtypes or subtypes from project triggering task subtypes)
+        updated_relation = dict()
+        child_ids, def_ids, all_int_ids, parent, relation = self.env['mail.message.subtype']._get_auto_subscription_subtypes(self._name)
+
+        # check effectively modified relation field
+        for res_model, fnames in relation.items():
+            for field in (fname for fname in fnames if updated_values.get(fname)):
+                updated_relation.setdefault(res_model, set()).add(field)
+        udpated_fields = [fname for fnames in updated_relation.values() for fname in fnames if updated_values.get(fname)]
+
+        if udpated_fields:
+            # fetch "parent" subscription data (aka: subtypes on project to propagate on task)
+            doc_data = [(model, [updated_values[fname] for fname in fnames]) for model, fnames in updated_relation.items()]
+            res = self.env['mail.followers']._get_subscription_data(doc_data, None, None, include_pshare=True, include_active=True)
+            for fid, rid, pid, cid, subtype_ids, pshare, active in res:
+                # use project.task_new -> task.new link
+                sids = [parent[sid] for sid in subtype_ids if parent.get(sid)]
+                # add checked subtypes matching model_name
+                sids += [sid for sid in subtype_ids if sid not in parent and sid in child_ids]
+                if pid and active:  # auto subscribe only active partners
+                    if pshare:  # remove internal subtypes for customers
+                        new_partners[pid] = set(sids) - set(all_int_ids)
+                    else:
+                        new_partners[pid] = set(sids)
+                if cid:  # never subscribe channels to internal subtypes
+                    new_channels[cid] = set(sids) - set(all_int_ids)
+
+        notify_data = dict()
+        res = self._message_auto_subscribe_followers(updated_values, def_ids)
+        for pid, sids, template in res:
+            new_partners.setdefault(pid, sids)
+            if template:
+                partner = self.env['res.partner'].browse(pid)
+                lang = partner.lang if partner else None
+                notify_data.setdefault((template, lang), list()).append(pid)
+
+        self.env['mail.followers']._insert_followers(
+            self._name, self.ids,
+            list(new_partners), new_partners,
+            list(new_channels), new_channels,
+            check_existing=True, existing_policy=followers_existing_policy)
+
+        # notify people from auto subscription, for example like assignation
+        for (template, lang), pids in notify_data.items():
+            self.with_context(lang=lang)._message_auto_subscribe_notify(pids, template)
+
+        return True
+
+    def _message_auto_subscribe_notify(self, partner_ids, template):
+        """ Notify new followers, using a template to render the content of the
+        notification message. Notifications pushed are done using the standard
+        notification mechanism in mail.thread. It is either inbox either email
+        depending on the partner state: no user (email, customer), share user
+        (email, customer) or classic user (notification_type)
+
+        :param partner_ids: IDs of partner to notify;
+        :param template: XML ID of template used for the notification;
+        """
+        if not self or self.env.context.get('mail_auto_subscribe_no_notify'):
+            return
+        if not self.env.registry.ready:  # Don't send notification during install
+            return
+
+        view = self.env['ir.ui.view'].browse(self.env['ir.model.data'].xmlid_to_res_id(template))
+
+        for record in self:
+            model_description = self.env['ir.model']._get(record._name).display_name
+            values = {
+                'object': record,
+                'model_description': model_description,
+                'access_link': record._notify_get_action_link('view'),
+            }
+            assignation_msg = view._render(values, engine='ir.qweb', minimal_qcontext=True)
+            assignation_msg = self.env['mail.render.mixin']._replace_local_links(assignation_msg)
+            # record.message_notify(
+            #     subject=_('You have been assigned to %s', record.display_name),
+            #     body=assignation_msg,
+            #     partner_ids=partner_ids,
+            #     record_name=record.display_name,
+            #     email_layout_xmlid='mail.mail_notification_light',
+            #     model_description=model_description,
+            # )
