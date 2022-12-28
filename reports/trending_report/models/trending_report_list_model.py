@@ -1,7 +1,9 @@
+from docutils.nodes import field
 
 from odoo import api, fields, models
 from lxml import etree
 from datetime import datetime
+from odoo.osv import expression
 import itertools
 
 
@@ -29,6 +31,17 @@ class TrendingReportListView(models.Model):
     average_sale = fields.Monetary('Average',compute='_get_average_value', currency_field='currency_id', store=False)
     total_sale = fields.Monetary('Total',compute='_get_total_value', currency_field='currency_id', store=False)
     currency_id = fields.Many2one("res.currency", string="Currency", readonly=True)
+
+    def _search_month_total(self, operator, value):
+        la = self.search(['&', ('customer_rank', '>', 0), ('parent_id', '=', False)]).filtered(lambda x: x.month_total > 0 )
+        return [('id', '=', [x.id for x in la])]
+
+    def _compute_commercial_entity(self):
+        for customer in self:
+            customer.commercial_entity = customer.parent_id.name if customer.parent_id else customer.name
+
+    commercial_entity = fields.Char(string="Commercial Entity", compute='_compute_commercial_entity', store=False)
+
 
     #@api.onchange('')
     def _compute_sales_vals(self):
