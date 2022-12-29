@@ -133,7 +133,7 @@ class Lead(models.Model):
     # Need To More Dev
     @api.constrains('product_list_doc')
     def _check_docs_ids_mimetype(self):
-        required_extensions_list = ['.xlsx', '.pdf', '.docx']
+        required_extensions_list = ['.xlsx', '.pdf', '.docx', '.csv', '.xls']
         for doc in self:
             file_name_list = [d.name for d in doc.product_list_doc]
         extensions_list = [pathlib.Path(f).suffix for f in file_name_list]
