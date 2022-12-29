@@ -17,7 +17,7 @@
         Your order <strong>${object.name}</strong> amounting in <strong>${format_amount(object.amount_total, object.currency_id)}</strong>
         % if object.state == 'sale' or (transaction and transaction.state in ('done', 'authorized')) :
             has been confirmed.<br/>
-            Thank you for your trust!
+            Thank you!
         % elif transaction and transaction.state == 'pending' :
             is pending. It will be confirmed when the payment is received.
             % if object.reference:
