@@ -29,7 +29,8 @@ class CustomerContract(models.Model):
                                                 ('veterinarian', 'Veterinarian'),
                                                 ('closed', 'Non-Surgery/Closed'),
                                                 ('wholesale', 'Wholesale'),
-                                                ('national_acc', 'National Account Target')],
+                                                ('national_acc', 'National Account Target'),
+                                                ('other', 'Other')],
                                      tracking=True)
 
     company_type = fields.Selection(string='Company Type',
