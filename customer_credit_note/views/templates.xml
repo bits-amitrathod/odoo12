@@ -169,12 +169,44 @@
                 <span t-field="o.name"/>
             </h2>
         </xpath>
-        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']" position="inside">
+        <xpath expr="//div[@class='page']/div[@class='row mt-4 mb-4']" position="inside">
             <div class="col-xs-2" t-if="o.preferred_method">
                 <strong>Preferred Invoice Delivery Method:</strong>
                 <p t-field="o.preferred_method"/>
             </div>
         </xpath>
+
+        <xpath expr="//table[@class='table table-sm']/t[2]" position="replace">
+            <t t-if="print_with_payments">
+                <t t-if="o.payment_state != 'invoicing_legacy'">
+                    <t t-set="payments_vals" t-value="o.sudo()._get_reconciled_info_JSON_values()"/>
+                    <t t-foreach="payments_vals" t-as="payment_vals">
+                        <tr>
+                            <td>
+                                 <i class="oe_form_field text-right oe_payment_label">
+                                    <t t-if="payment_vals['journal_name'] == 'Customer Invoices'">
+                                        <i class="oe_form_field text-right oe_payment_label"> Credit </i>
+                                    </t>
+                                    Paid on <t t-esc="payment_vals['date']" t-options='{"widget": "date"}'/>
+                                </i>
+                            </td>
+                            <td class="text-right">
+                                <span t-esc="payment_vals['amount']" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                            </td>
+                        </tr>
+                    </t>
+                    <t t-if="len(payments_vals) > 0">
+                        <tr class="border-black">
+                            <td><strong>Amount Due</strong></td>
+                            <td class="text-right">
+                                <span t-field="o.amount_residual"/>
+                            </td>
+                        </tr>
+                    </t>
+                </t>
+            </t>
+        </xpath>
+
     </template>
 
     </data>
