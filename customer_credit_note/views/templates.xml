@@ -169,7 +169,7 @@
                 <span t-field="o.name"/>
             </h2>
         </xpath>
-        <xpath expr="//div[@class='page']/div[@class='row mt32 mb32']" position="inside">
+        <xpath expr="//div[@class='page']/div[@class='row mt-4 mb-4']" position="inside">
             <div class="col-xs-2" t-if="o.preferred_method">
                 <strong>Preferred Invoice Delivery Method:</strong>
                 <p t-field="o.preferred_method"/>
