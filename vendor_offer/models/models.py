@@ -485,6 +485,11 @@ class VendorOffer(models.Model):
                         'billed_offer_total': billed_offer_untaxed + amount_tax
 
                     })
+                    if order.offer_type and order.offer_type == 'credit':
+                        order.update({
+                            'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                            'amount_total': math.floor(round(credit_amount_total, 2))
+                        })
             else:
                 order.rt_price_subtotal_amt = False;
                 order.rt_price_total_amt = False;
@@ -504,21 +509,23 @@ class VendorOffer(models.Model):
                     rt_price_total += line.rt_price_total
                     product_retail += line.product_retail
                     amount_untaxed += line.price_subtotal
+                    price_total += line.price_total
                     cash_amount_untaxed += line.price_subtotal
                     billed_retail_untaxed += line.billed_product_retail_price
                     billed_offer_untaxed += line.billed_product_offer_price
                     credit_amount_untaxed = 0
                     credit_amount_total = 0
-                    if order.import_type_ven != 'all_field_import':
-                        flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in list(map(lambda x: x.name, self.partner_id.category_id)))
-                        if product_retail > 0:
-                            per_val = round((amount_untaxed / product_retail) * 100, 2)
-                            per_val = per_val + 10
-                            credit_amount_untaxed = product_retail * (per_val / 100)
-                            # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
+
+                    flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in list(map(lambda x: x.name, self.partner_id.category_id)))
+                    if product_retail > 0:
+                        per_val = round((amount_untaxed / product_retail) * 100, 2)
+                        per_val = per_val + 10
+                        credit_amount_untaxed = product_retail * (per_val / 100)
+                        # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
+                        if order.import_type_ven != 'all_field_import':
                             if flag:
                                 credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
-                            credit_amount_total = credit_amount_untaxed + amount_tax
+                        credit_amount_total = credit_amount_untaxed + amount_tax
 
                     order.update({
                         'amount_tax': amount_tax,
