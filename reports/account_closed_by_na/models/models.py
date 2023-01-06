@@ -237,7 +237,7 @@ class AccountClosedByNaExport(models.TransientModel):
     _name = 'report.na.account.closed.export'
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
-                             help="Choose a date to get the Revenue From Accounts Closed In 12 Months By NA at that End date")
+                             help="Choose a date to get the Revenue From Accounts Closed In 18 Months By NA at that End date")
 
     national_account = fields.Many2one('res.users', string='National Account', index=True)
 

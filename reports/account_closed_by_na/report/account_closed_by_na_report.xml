@@ -3,7 +3,7 @@
     <data>
         <report
                 id="action_report_account_closed_by_na"
-                string="Revenue From Accounts Closed In 12 Months By NA"
+                string="Revenue From Accounts Closed In 18 Months By NA"
                 model="report.na.account.closed"
                 report_type="qweb-html"
                 file="account_closed_by_na.na_account_closed_temp_test"
