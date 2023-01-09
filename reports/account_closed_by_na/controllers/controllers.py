@@ -143,9 +143,9 @@ class ExportAccountClosedByNa(http.Controller):
         select_query = select_query + " AND SPS.date_done >= COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) " \
                                       " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(
             start_date) + "' AND SPS.date_done <= (COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) + " \
-                          "INTERVAL '1 year')  "
+                          "INTERVAL '18 month')  "
 
-        if national_account_id:
+        if national_account_id and national_account_id is not None and str(national_account_id) != 'none':
             select_query = select_query + "AND so.national_account = '" + str(national_account_id) + "'"
 
         group_by = """ GROUP BY so.id, SPS.date_done, SOL.currency_id,so.national_account, rp.account_manager_cust,

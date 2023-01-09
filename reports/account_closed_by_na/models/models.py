@@ -96,11 +96,11 @@ class AccountClosedByNa(models.Model):
             select_query = select_query + " AND SPS.date_done >= COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) " \
                                           " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(
                 start_date) + "' AND SPS.date_done <= (COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) + " \
-                              "INTERVAL '1 year')  "
+                              "INTERVAL '18 month')  "
 
             national_account_id = self.env.context.get('national_account')
 
-            if national_account_id:
+            if national_account_id and national_account_id is not None and str(national_account_id) != 'none':
                 select_query = select_query + "AND so.national_account = '" + str(national_account_id) + "'"
 
             group_by = """ GROUP BY so.id, SPS.date_done, SOL.currency_id,so.national_account, rp.account_manager_cust,
@@ -200,11 +200,11 @@ class AccountClosedByNa(models.Model):
                                           " AND SP.state = 'done' AND SP.picking_type_id = 5 AND SO.state NOT IN ('cancel', 'void')))) "
 
             select_query = select_query + " AND SPS.date_done >= COALESCE(RPS.reinstated_date, RPS.create_date) " \
-                                          " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(start_date) + "' AND SPS.date_done <= (COALESCE(RPS.reinstated_date, RPS.create_date) + INTERVAL '1 year')  "
+                                          " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(start_date) + "' AND SPS.date_done <= (COALESCE(RPS.reinstated_date, RPS.create_date) + INTERVAL '18 month')  "
 
             national_account_id = self.env.context.get('national_account')
 
-            if national_account_id:
+            if national_account_id and national_account_id is not None and str(national_account_id) != 'none':
                 select_query = select_query + "AND SOS.national_account = '" + str(national_account_id) + "'"
 
             group_by = """ GROUP BY SOS.id, SPS.date_done, SOL.currency_id """
