@@ -422,7 +422,7 @@ class VendorOffer(models.Model):
 
                 credit_amount_untaxed = 0
                 credit_amount_total = 0
-                flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in list(map(lambda x: x.name, self.partner_id.category_id)))
+                flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in list(map(lambda x: x.name, order.partner_id.category_id)))
 
                 if product_retail > 0:
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
@@ -516,7 +516,7 @@ class VendorOffer(models.Model):
                     credit_amount_untaxed = 0
                     credit_amount_total = 0
 
-                    flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in list(map(lambda x: x.name, self.partner_id.category_id)))
+                    flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in list(map(lambda x: x.name, order.partner_id.category_id)))
                     if product_retail > 0:
                         per_val = round((amount_untaxed / product_retail) * 100, 2)
                         per_val = per_val + 10
