@@ -9,7 +9,7 @@
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
-                                <h4>Revenue From Accounts Closed In 12 Months By NA</h4>
+                                <h4>Revenue From Accounts Closed In 18 Months By NA</h4>
                                 <h4 t-if="date">
                                    Date Range: <span t-esc="date"/>
                                </h4>

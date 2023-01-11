@@ -7,7 +7,7 @@ class NaAccountClosedReportPopup(models.TransientModel):
     _name = 'popup.na.account.closed'
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
-                             help="Choose a date to get the Revenue From Accounts Closed In 12 Months By NA at that End date")
+                             help="Choose a date to get the Revenue From Accounts Closed In 18 Months By NA at that End date")
     national_account = fields.Many2one('res.users', string='National Account', index=True)
 
     delivery_start_date = fields.Date('Revenue Start Date')
@@ -17,7 +17,7 @@ class NaAccountClosedReportPopup(models.TransientModel):
     def open_table(self):
 
         start_date = self.string_to_date(str(self.start_date))
-        end_date = start_date - datetime.timedelta(days=365)
+        end_date = start_date - datetime.timedelta(days=548)
         end_date_from_first = datetime.date(end_date.year, end_date.month, 1)
         start_date = start_date + datetime.timedelta(days=1)
 
@@ -33,7 +33,7 @@ class NaAccountClosedReportPopup(models.TransientModel):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree',
-            'name': 'Revenue From Accounts Closed In 12 Months By NA',
+            'name': 'Revenue From Accounts Closed In 18 Months By NA',
             'res_model': res_model,
             'domain': [],
             'context': {'group_by': group_by_domain}
