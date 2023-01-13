@@ -30,7 +30,7 @@ class NewAccountByMonthByNa(models.Model):
         national_account_id = self.env.context.get('national_account')
 
         # today = datetime.datetime.today()
-        today = fields.date.today()
+        today = start_date if start_date else fields.date.today()
         internal_date = (today - relativedelta(months=24))
 
         if start_date and end_date :
