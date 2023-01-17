@@ -459,18 +459,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                             products[line.product_id.id] = line.product_id
                 subject = "SPS Updated In-Stock Product Report"
                 descrption = "<strong>Good morning " + customr.name + "</strong>" \
-                                                                      "<br/> <br/> Below are items you have previously requested that are currently in stock. " \
-                                                                      "In addition, below is the link to download full product catalog. Please let us know what" \
-                                                                      " ordering needs we can help provide savings on this week! <br/> <a href='https://www.shopsps.com/downloadCatalog'>Click Here to Download SPS Product Catalog </a>" \
-                                                                      """<br/><center>
-                                                                      <br/><br/>
-                                                                      <span style="color: red;font-size: 29px;">*</span>
-                                                                      <span style="color:red;font-size:24px;">Want to place an order? Click Buy Now! </span>
-                                                                      <span style="color: red;font-size: 29px;">*</span>
-                                                                       <br/> 
-                                                                       <br/> 
-                                                                      <a target="_blank" href="/shop/quote_my_report/""" + str(
-                    customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0; " class="o_default_snippet_text">BUY NOW</a>
+                                                                      "<br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. " \
+                                                                      "You will also see two links to either download our" \
+                                                                      "<a href='https://www.shopsps.com/downloadCatalog'>full catalog (Excel) </a> " \
+                                                                      "or go directly to our <a href='https://www.shopsps.com/downloadCatalog'> online portal </a> to place an order." \
+                                                                      "<br/> <a href='https://www.shopsps.com/downloadCatalog'> Download – SPS Product Catalog </a>"\
+                                                                      "<br/><center>" \
+                                                                      "<br/><br/>" \
+                                                                      """<a target="_blank" href="/shop/quote_my_report" """ + str(
+                    customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0; " class="o_default_snippet_text">Place an Order – Online Portal</a>
                                                                         </center><br/><br/>"""
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date',
@@ -523,7 +520,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </table>
                                     <br/>
                                     <div class="text-center" style="text-align: center;">
-                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">BUY NOW</a>
+                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Place an Order – Online Portal</a>
                                     </div>
 
                                     """
