@@ -35,6 +35,7 @@ class Stage(models.Model):
     name = fields.Char('Stage Name', required=True, translate=True)
     sequence = fields.Integer('Sequence', default=1, help="Used to order stages. Lower is better.")
     is_won = fields.Boolean('Is Won Stage?')
+    is_lost = fields.Boolean('Is Lost Stage?')
     requirements = fields.Text('Requirements', help="Enter here the internal requirements for this stage (ex: Offer sent to customer). It will appear as a tooltip over the stage's name.")
     team_id = fields.Many2one('crm.team', string='Sales Team', ondelete='set null',
         help='Specific team that uses this stage. Other teams will not be able to see or use this stage.')

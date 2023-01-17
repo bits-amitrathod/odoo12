@@ -266,6 +266,8 @@ class Lead(models.Model):
         leads_leave_lost = Lead
         won_stage_ids = self.env['crm.stage'].search([('is_won', '=', True)]).ids
         won_purchase_stage_ids = self.env['crm.purchase.stage'].search([('is_won', '=', True)]).ids
+        lost_purchase_stage_ids = self.env['crm.purchase.stage'].search([('is_lost', '=', True)]).ids
+
         for lead in self:
             if 'stage_id' in vals:
                 if vals['stage_id'] in won_stage_ids:
@@ -282,6 +284,9 @@ class Lead(models.Model):
                     leads_reach_won |= lead
                 elif lead.purchase_stage_id.id in won_purchase_stage_ids and lead.active:  # a lead can be lost at won_stage
                     leads_leave_won |= lead
+
+                if vals['purchase_stage_id'] in lost_purchase_stage_ids:
+                    lead.action_set_lost(purchase_lost_reason=1)
 
             if 'active' in vals:
                 if not vals['active'] and lead.active:  # archive lead

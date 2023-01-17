@@ -9,6 +9,7 @@
                 <field name="name"/>
                 <field name="sequence"/>
                 <field name="is_won"/>
+                <field name="is_lost"/>
                 <field name="team_id" invisible="1"/>
             </search>
         </field>
@@ -23,6 +24,7 @@
                 <field name="sequence" widget="handle"/>
                 <field name="name" readonly="1"/>
                 <field name="is_won"/>
+                <field name="is_lost"/>
                 <field name="team_id" invisible="1"/>
             </tree>
         </field>
@@ -46,6 +48,7 @@
                     <group>
                         <group>
                             <field name="is_won"/>
+                            <field name="is_lost"/>
                             <field name="fold"/>
                             <field name="team_id" options='{"no_open": True, "no_create": True}' invisible="1" kanban_view_ref="%(sales_team.crm_team_view_kanban)s"/>
                         </group>
