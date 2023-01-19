@@ -286,7 +286,7 @@ class Lead(models.Model):
                     leads_leave_won |= lead
 
                 if vals['purchase_stage_id'] in lost_purchase_stage_ids:
-                    lead.action_set_lost(purchase_lost_reason=1)
+                    lead.action_set_lost(date_closed=fields.Datetime.now())
 
             if 'active' in vals:
                 if not vals['active'] and lead.active:  # archive lead
