@@ -289,9 +289,10 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         #     partner_id = user.partner_id.id
         # elif partner_id:
         #     partner_id = int(partner_id)
-        if user._is_public():
-            request.session['sale_order_id'] = order_id
-            order.delivery_rating_success = True
+
+        #if user._is_public():
+        request.session['sale_order_id'] = order_id
+        order.delivery_rating_success = True
         partner_id = int(partner_id)
         values.update({
             'partner_id': partner_id,
