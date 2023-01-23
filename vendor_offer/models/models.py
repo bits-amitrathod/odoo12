@@ -513,36 +513,45 @@ class VendorOffer(models.Model):
                     cash_amount_untaxed += line.price_subtotal
                     billed_retail_untaxed += line.billed_product_retail_price
                     billed_offer_untaxed += line.billed_product_offer_price
-                    credit_amount_untaxed = 0
-                    credit_amount_total = 0
 
-                    flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in list(map(lambda x: x.name, order.partner_id.category_id)))
-                    if product_retail > 0:
-                        per_val = round((amount_untaxed / product_retail) * 100, 2)
-                        per_val = per_val + 10
-                        credit_amount_untaxed = product_retail * (per_val / 100)
-                        # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
-                        if order.import_type_ven != 'all_field_import':
-                            if flag:
-                                credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
-                        credit_amount_total = credit_amount_untaxed + amount_tax
+                credit_amount_untaxed = 0
+                credit_amount_total = 0
 
-                    order.update({
-                        'amount_tax': amount_tax,
-                        'amount_untaxed': amount_untaxed,
-                        'amount_total': price_total,
-                        'rt_price_subtotal_amt': product_retail,
-                        'rt_price_tax_amt': rt_price_tax,
-                        'rt_price_total_amt': rt_price_total,
-                        'billed_retail_untaxed': billed_retail_untaxed,
-                        'billed_offer_untaxed': billed_offer_untaxed,
-                        'billed_retail_total': billed_retail_untaxed + amount_tax,
-                        'billed_offer_total': billed_offer_untaxed + amount_tax,
-                        'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                        'credit_amount_total': math.floor(round(credit_amount_total, 2)),
-                        'cash_amount_untaxed': cash_amount_untaxed,
-                        'cash_amount_total': cash_amount_untaxed + amount_tax,
-                    })
+                flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in list(map(lambda x: x.name, order.partner_id.category_id)))
+                if product_retail > 0:
+                    per_val = round((amount_untaxed / product_retail) * 100, 2)
+                    per_val = per_val + 10
+                    credit_amount_untaxed = product_retail * (per_val / 100)
+                    # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
+                    if order.import_type_ven != 'all_field_import':
+                        if flag:
+                            credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
+                    credit_amount_total = credit_amount_untaxed + amount_tax
+
+                order.update({
+                    'amount_tax': amount_tax,
+                    'amount_untaxed': amount_untaxed,
+                    'amount_total': price_total,
+                    'rt_price_subtotal_amt': product_retail,
+                    'rt_price_tax_amt': rt_price_tax,
+                    'rt_price_total_amt': rt_price_total,
+                    'billed_retail_untaxed': billed_retail_untaxed,
+                    'billed_offer_untaxed': billed_offer_untaxed,
+                    'billed_retail_total': billed_retail_untaxed + amount_tax,
+                    'billed_offer_total': billed_offer_untaxed + amount_tax,
+                    'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                    'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                    'cash_amount_untaxed': cash_amount_untaxed,
+                    'cash_amount_total': cash_amount_untaxed + amount_tax,
+                })
+
+                #  The reason a static date is added : It is to do calculation for the records of PO
+                #  which are created  after the solutions  is pushed  to production
+                #  The old PO though they are showing wrong value should not be affected
+                #  This is discussed with client (Bryon) and then implemented in this way .
+                #  Even the old PO are showing wrong credit values CLient have handelled   it in Bills
+
+                if order.create_date.date() >= datetime.datetime.strptime('2023-01-23', "%Y-%m-%d").date():
                     if order.offer_type:
                         if order.offer_type == 'credit':
                             order.update({
