@@ -109,6 +109,8 @@ class Lead(models.Model):
                                               ('p2', 'P2'),
                                               ('p3', 'P3')])
 
+    lost_flag = fields.Boolean("Lost Flag", default=False)
+
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no(self):
@@ -286,7 +288,9 @@ class Lead(models.Model):
                     leads_leave_won |= lead
 
                 if vals['purchase_stage_id'] in lost_purchase_stage_ids:
-                    lead.action_set_lost(date_closed=fields.Datetime.now())
+                    lead.write({'lost_flag': True})
+                else:
+                    lead.write({'lost_flag': False})
 
             if 'active' in vals:
                 if not vals['active'] and lead.active:  # archive lead
