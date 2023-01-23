@@ -437,9 +437,9 @@ class VendorOffer(models.Model):
                     order.update({
                         'max': round(max, 2),
                         'potential_profit_margin': abs(round(potential_profit_margin, 2)),
-                        'amount_untaxed': amount_untaxed,
+
                         'amount_tax': amount_tax,
-                        'amount_total': price_total,
+
                         'rt_price_subtotal_amt': product_retail,
                         'rt_price_tax_amt': rt_price_tax,
                         'rt_price_total_amt': rt_price_total,
@@ -530,8 +530,7 @@ class VendorOffer(models.Model):
 
                 order.update({
                     'amount_tax': amount_tax,
-                    'amount_untaxed': amount_untaxed,
-                    'amount_total': price_total,
+
                     'rt_price_subtotal_amt': product_retail,
                     'rt_price_tax_amt': rt_price_tax,
                     'rt_price_total_amt': rt_price_total,
@@ -557,6 +556,11 @@ class VendorOffer(models.Model):
                             order.update({
                                 'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
                                 'amount_total': math.floor(round(credit_amount_total, 2))
+                            })
+                        else:
+                            order.update({
+                                'amount_untaxed': amount_untaxed,
+                                'amount_total': price_total
                             })
 
     #@api.multi
