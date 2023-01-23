@@ -3,6 +3,8 @@ import datetime
 import math
 from odoo import http, _, fields
 from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from dateutil.relativedelta import relativedelta
+import datetime
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt, DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
@@ -81,6 +83,10 @@ class ExportNewAccountByMonthByBd(http.Controller):
     @serialize_exception
     def download_document_xl(self, start_date, end_date, business_development_id, token=1, debug=1, **kw):
 
+        s_date = self.string_to_date(start_date)
+        today = s_date if s_date else fields.date.today()
+        internal_date = (today - relativedelta(months=24))
+
         select_query = """
                         SELECT 
                             ROW_NUMBER () OVER (ORDER BY RPS.id)    AS id,
@@ -127,7 +133,7 @@ class ExportNewAccountByMonthByBd(http.Controller):
                             public.sale_order SO
                         INNER JOIN 
                             public.stock_picking SP ON SO.id = SP.sale_id AND SP.state = 'done' AND 
-                            SP.picking_type_id = 5 AND SP.date_done <= ' """ + str(start_date) + """ ' 
+                            SP.picking_type_id = 5 AND SP.date_done BETWEEN ' """ + str(internal_date) + """'""" + """ AND ' """ + str(today) + """ ' 
                             WHERE SO.state NOT IN ('cancel', 'void'))) UNION ALL ("""
 
         select_query = select_query + """ 
