@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+
 from odoo import api, fields, models, tools
+from dateutil.relativedelta import relativedelta
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 import logging
-
 _logger = logging.getLogger(__name__)
 
 
@@ -27,6 +28,9 @@ class NewAccountByMonthByBd(models.Model):
         start_date = self.env.context.get('start_date')
         end_date = self.env.context.get('end_date')
         business_development_id = self.env.context.get('business_development')
+
+        today = start_date if start_date else fields.date.today()
+        internal_date = (today - relativedelta(months=24))
 
         if start_date and end_date :
             select_query = """
@@ -66,7 +70,7 @@ class NewAccountByMonthByBd(models.Model):
                     public.sale_order SO
                 INNER JOIN 
                     public.stock_picking SP ON SO.id = SP.sale_id AND SP.state = 'done' AND 
-                    SP.picking_type_id = 5 AND SP.date_done <= ' """ + str(start_date) + """ ' 
+                    SP.picking_type_id = 5 AND SP.date_done  BETWEEN ' """ + str(internal_date) + """'""" + """ AND ' """ + str(today) + """'
                     WHERE SO.state NOT IN ('cancel', 'void'))) UNION ALL ("""
 
             select_query = select_query + """ 
