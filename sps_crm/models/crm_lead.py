@@ -288,9 +288,9 @@ class Lead(models.Model):
                     leads_leave_won |= lead
 
                 if vals['purchase_stage_id'] in lost_purchase_stage_ids:
-                    lead.write({'lost_flag': True})
+                    lead.write({'lost_flag': True, 'date_closed': fields.Datetime.now()})
                 else:
-                    lead.write({'lost_flag': False})
+                    lead.write({'lost_flag': False, 'date_closed': None})
 
             if 'active' in vals:
                 if not vals['active'] and lead.active:  # archive lead
