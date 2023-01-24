@@ -231,6 +231,18 @@
             </field>
         </record>
 
+
+        <record id="view_form_studio_status_field" model="ir.ui.view">
+            <field name="name">Studio Field Add </field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+            <xpath expr="/form/sheet/notebook/page[@name='contact_addresses']/field/kanban/templates/t/div/div[2]/div[5]" position="after">
+                    <field string="Status" name="x_studio_status"/>
+            </xpath>
+            </field>
+        </record>
+
         <record id="view_partners_form_crm_account_hierarchy" model="ir.ui.view">
             <field name="name">view.res.partner.form.crm.inherited1.account.hierarchy</field>
             <field name="model">res.partner</field>
