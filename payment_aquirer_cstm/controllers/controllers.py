@@ -279,21 +279,22 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         else:
             cid = user.company_id.id
 
-        # Check partner
-        # if not user._is_public():
-        #     # NOTE: this means that if the partner was set in the GET param, it gets overwritten here
-        #     # This is something we want, since security rules are based on the partner - assuming the
-        #     # access_token checked out at the start, this should have no impact on the payment itself
-        #     # existing besides making reconciliation possibly more difficult (if the payment partner is
-        #     # not the same as the invoice partner, for example)
-        #     partner_id = user.partner_id.id
-        # elif partner_id:
-        #     partner_id = int(partner_id)
+        #Check partner
+        if not user._is_public():
+            # NOTE: this means that if the partner was set in the GET param, it gets overwritten here
+            # This is something we want, since security rules are based on the partner - assuming the
+            # access_token checked out at the start, this should have no impact on the payment itself
+            # existing besides making reconciliation possibly more difficult (if the payment partner is
+            # not the same as the invoice partner, for example)
+            partner_id = user.partner_id.id
+        elif partner_id:
+            partner_id = int(partner_id)
 
-        #if user._is_public():
-        request.session['sale_order_id'] = order_id
-        order.delivery_rating_success = True
-        partner_id = int(partner_id)
+        if user._is_public():
+            request.session['sale_order_id'] = order_id
+            order.delivery_rating_success = True
+            order.allow_pay_gen_payment_link = True
+            partner_id = int(partner_id)
         values.update({
             'partner_id': partner_id,
             'bootstrap_formatting': True,
