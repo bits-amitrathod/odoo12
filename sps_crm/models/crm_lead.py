@@ -412,6 +412,16 @@ class Lead(models.Model):
             if lead.partner_id and lead.partner_id.name:
                 lead.name = _("%s's opportunity") % lead.partner_id.name
 
+
+     # Method Over writed
+    def action_set_lost(self, **additional_values):
+        """ Lost semantic: probability = 0 or active = False """
+        res = self.action_archive()
+        if additional_values:
+            self.write(dict(additional_values))
+            self.write({'date_closed': fields.Datetime.now()})
+        return res
+
 class MailActivity1(models.Model):
     """ Inherited Mail Acitvity to add custom View for Purchase Oppo"""
     _inherit = 'mail.activity'
