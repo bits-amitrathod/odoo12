@@ -109,6 +109,8 @@ class Lead(models.Model):
                                               ('p2', 'P2'),
                                               ('p3', 'P3')])
 
+    lost_flag = fields.Boolean("Lost Flag", default=False)
+
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no(self):
@@ -266,6 +268,8 @@ class Lead(models.Model):
         leads_leave_lost = Lead
         won_stage_ids = self.env['crm.stage'].search([('is_won', '=', True)]).ids
         won_purchase_stage_ids = self.env['crm.purchase.stage'].search([('is_won', '=', True)]).ids
+        lost_purchase_stage_ids = self.env['crm.purchase.stage'].search([('is_lost', '=', True)]).ids
+
         for lead in self:
             if 'stage_id' in vals:
                 if vals['stage_id'] in won_stage_ids:
@@ -282,6 +286,11 @@ class Lead(models.Model):
                     leads_reach_won |= lead
                 elif lead.purchase_stage_id.id in won_purchase_stage_ids and lead.active:  # a lead can be lost at won_stage
                     leads_leave_won |= lead
+
+                if vals['purchase_stage_id'] in lost_purchase_stage_ids:
+                    lead.write({'lost_flag': True, 'date_closed': fields.Datetime.now()})
+                else:
+                    lead.write({'lost_flag': False, 'date_closed': None})
 
             if 'active' in vals:
                 if not vals['active'] and lead.active:  # archive lead
@@ -402,6 +411,16 @@ class Lead(models.Model):
         for lead in self:
             if lead.partner_id and lead.partner_id.name:
                 lead.name = _("%s's opportunity") % lead.partner_id.name
+
+
+     # Method Over writed
+    def action_set_lost(self, **additional_values):
+        """ Lost semantic: probability = 0 or active = False """
+        res = self.action_archive()
+        if additional_values:
+            self.write(dict(additional_values))
+            self.write({'date_closed': fields.Datetime.now()})
+        return res
 
 class MailActivity1(models.Model):
     """ Inherited Mail Acitvity to add custom View for Purchase Oppo"""

@@ -265,6 +265,7 @@
                             </button>
                         </div>
                         <widget name="web_ribbon" title="Lost" bg_color="bg-danger" attrs="{'invisible': ['|', ('probability', '&gt;', 0), ('active', '=', True)]}"/>
+                        <widget name="web_ribbon" title="Closed" bg_color="bg-danger" attrs="{'invisible': [('lost_flag', '=', False)]}"/>
                         <widget name="web_ribbon" title="Won" attrs="{'invisible': [('probability', '&lt;', 100)]}" />
                         <div class="oe_title">
                             <label for="name" class="oe_edit_only" string="Lead" attrs="{'invisible': [('type', '=', 'opportunity')]}"/>
@@ -378,6 +379,7 @@
                                 <field name="mobile_blacklisted" invisible="1"/>
                                 <field name="email_state" invisible="1"/>
                                 <field name="phone_state" invisible="1"/>
+                                <field name="lost_flag" invisible="1"/>
                                 <label for="email_from" class="oe_inline"/>
                                 <div class="o_row o_row_readonly">
                                     <button name="mail_action_blacklist_remove" class="fa fa-ban text-danger"
