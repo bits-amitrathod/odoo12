@@ -550,7 +550,7 @@ class VendorOffer(models.Model):
                 #  This is discussed with client (Bryon) and then implemented in this way .
                 #  Even the old PO are showing wrong credit values CLient have handelled   it in Bills
 
-                if order.create_date and (order.create_date.date() >= datetime.datetime.strptime('2023-01-23', "%Y-%m-%d").date()):
+                if order.create_date and (order.create_date.date() >= datetime.datetime.strptime('2023-01-27', "%Y-%m-%d").date()):
                     if order.offer_type:
                         if order.offer_type == 'credit':
                             order.update({
