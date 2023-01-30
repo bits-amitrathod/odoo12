@@ -393,12 +393,14 @@ class Lead(models.Model):
             values = {'subject': acq_pri + ' Please Appraise ' + self.partner_id.name,
                       'model': None, 'res_id': False}
 
+        sales_person = self.partner_id.user_id.email_formatted \
+            if self.partner_id.user_id else 'info@surgicalproductsolutions.com'
         local_context = {'rep': self.partner_id.acq_manager.name, 'unq_ac': self.partner_id.saleforce_ac,
                          'facility_type':  dict(self._fields['facility_tpcd'].selection).get(self.facility_tpcd), 'contracts': self.contract,
                          'history': '', 'competitors':  self.competitors,
                          'payment_type': self.payment_type, 'acq_priority': dict(self._fields['acq_priority'].selection).get(self.acq_priority),
                          'payment_terms': self.property_supplier_payment_term_id.name,
-                         'sales_person': self.partner_id.user_id.email_formatted,
+                         'sales_person': sales_person,
                          'internal_notes_description': self.internal_notes_description}
         try:
             sent_email_template= template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
