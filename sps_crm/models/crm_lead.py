@@ -111,6 +111,23 @@ class Lead(models.Model):
 
     lost_flag = fields.Boolean("Lost Flag", default=False)
 
+    internal_notes_description = fields.Html('Internal Notes', compute='_default_notes_update', store=True,
+                                             readonly=False)
+
+    @api.depends('internal_notes_description')
+    @api.onchange('internal_notes_description')
+    def _default_notes_update(self):
+
+        for obj in self:
+            if obj.description and (obj.internal_notes_description is False
+                                    or obj.internal_notes_description == '<p><br></p>'
+                                    or obj.internal_notes_description == '<p><br/></p>'
+                                    or obj.internal_notes_description == '<p>&nbsp;</p>'):
+                obj.internal_notes_description = obj.description
+
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        res = super(Lead, self).fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        return res
 
     @api.onchange('appraisal_no')
     def _default_appraisal_no(self):
@@ -381,7 +398,8 @@ class Lead(models.Model):
                          'history': '', 'competitors':  self.competitors,
                          'payment_type': self.payment_type, 'acq_priority': dict(self._fields['acq_priority'].selection).get(self.acq_priority),
                          'payment_terms': self.property_supplier_payment_term_id.name,
-                         'additional_notes': self.description}
+                         'sales_person': self.partner_id.user_id.email_formatted,
+                         'internal_notes_description': self.internal_notes_description}
         try:
             sent_email_template= template.with_context(local_context).sudo().send_mail(SUPERUSER_ID, raise_exception=True)
             self.env['mail.mail'].sudo().browse(sent_email_template).write(values)
