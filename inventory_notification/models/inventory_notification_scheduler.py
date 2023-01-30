@@ -466,7 +466,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                       "<br/> <a href='https://www.shopsps.com/downloadCatalog'> Download – SPS Product Catalog </a>" \
                                                                       "<br/><center>" \
                                                                       "<br/><br/>" \
-                                                                      "<a target='_blank' href='/shop/quote_my_report/"+ str(customr.id) + "' style='background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0; ' class='o_default_snippet_text'>Place an Order – Online Portal</a>" \
+                                                                      "<a target='_blank' href='/shop/quote_my_report/"+ str(customr.id) + "' style='background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0; ' class='o_default_snippet_text'>Order Online Here</a>" \
                                                                       "</center><br/><br/>"
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date',
@@ -475,9 +475,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                'minExDate',
                                'maxExDate', 'uom_id.name']
                 closing_content = """
-                                    Please reply to this email or contact your Account Manager to hold product or place an order here.
-                                    <br/> Many Thanks,
-                                    <br/> SPS Customer Care <br/>
+                                    Please reply to this email or contact your Account Manager to hold product or place an order. If you would like to place an order on your own please click on the link "Order Online Here".
+                                    <br/> Thank you <br/>
 
                                     <br/>
                                     <table style="height: 96px; width: 601px;" border="0">
@@ -519,7 +518,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </table>
                                     <br/>
                                     <div class="text-center" style="text-align: center;">
-                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Place an Order – Online Portal</a>
+                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#1abc9c; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
                                     </div>
 
                                     """
