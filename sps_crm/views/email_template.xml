@@ -11,7 +11,9 @@
                %endif
                 ]]>
             </field>
+
             <field name="email_to">appraisal@surgicalproductsolutions.com</field>
+            <field name="email_cc">${ctx['cc_email']}</field>
             <field name="subject">CRM Acquisitions Product List received </field>
             <field name="body_html"><![CDATA[
 
