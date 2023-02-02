@@ -34,9 +34,16 @@ class Lead(models.Model):
         default=lambda self: 'lead' if self.env['res.users'].has_group('crm.group_use_lead') else 'opportunity')
 
     purchase_stage_id = fields.Many2one(
-        'crm.purchase.stage', string='Stage', index=True,
+        'crm.purchase.stage', string='ACQ Stage', index=True,
         compute='_compute_purchase_stage_id', readonly=False, store=True,
         copy=False, group_expand='_read_group_purchase_stage_ids', ondelete='restrict',
+        domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")
+
+    # This Is Overwrite For Only string Name Change Purpose
+    stage_id = fields.Many2one(
+        'crm.stage', string='Sales Stage', index=True, tracking=True,
+        compute='_compute_stage_id', readonly=False, store=True,
+        copy=False, group_expand='_read_group_stage_ids', ondelete='restrict',
         domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")
 
     tag_purchase_ids = fields.Many2many(
