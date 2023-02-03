@@ -293,7 +293,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         if user._is_public():
             if order_id:
                 request.session['sale_order_id'] = order_id
-            if order:
+            if order_id and order:
                 order.delivery_rating_success = True
                 order.allow_pay_gen_payment_link = True
             partner_id = int(partner_id)
