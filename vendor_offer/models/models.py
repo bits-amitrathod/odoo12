@@ -322,7 +322,21 @@ class VendorOffer(models.Model):
                 'revision_date': fields.Datetime.now()
             }
         new_po = super(VendorOffer, self).copy(default=default)
-
+        new_po.update({
+            'amount_untaxed': self.amount_untaxed,
+            'amount_total': self.amount_total,
+            'credit_amount_untaxed': math.floor(round(self.credit_amount_untaxed, 2)),
+            'credit_amount_total': math.floor(round(self.credit_amount_total, 2)),
+            'cash_amount_untaxed': self.cash_amount_untaxed,
+            'cash_amount_total': self.cash_amount_untaxed
+        })
+        for line in new_po.order_line:
+            for line1 in self.order_line:
+                if line1.product_id == line.product_id:
+                    line.update({
+                        'price_subtotal': line1.price_subtotal,
+                        'price_total': line1.price_total
+                    })
         return new_po.with_context(vendor_offer_data=True)
 
     @api.onchange('appraisal_no')
@@ -408,7 +422,7 @@ class VendorOffer(models.Model):
                 credit_amount_untaxed = 0
                 credit_amount_total = 0
                 flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in
-                           list(map(lambda x: x.name, self.partner_id.category_id)))
+                           list(map(lambda x: x.name, order.partner_id.category_id)))
 
                 if product_retail > 0:
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
@@ -419,30 +433,62 @@ class VendorOffer(models.Model):
                         credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
-                order.update({
-                    'max': round(max, 2),
-                    'potential_profit_margin': abs(round(potential_profit_margin, 2)),
-                    'amount_untaxed': amount_untaxed,
-                    'amount_tax': amount_tax,
-                    'amount_total': price_total,
-                    'rt_price_subtotal_amt': product_retail,
-                    'rt_price_tax_amt': rt_price_tax,
-                    'rt_price_total_amt': rt_price_total,
-                    'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                    'credit_amount_total': math.floor(round(credit_amount_total, 2)),
-                    'cash_amount_untaxed': cash_amount_untaxed,
-                    'cash_amount_total': cash_amount_untaxed + amount_tax,
-                    'billed_retail_untaxed': billed_retail_untaxed,
-                    'billed_offer_untaxed': billed_offer_untaxed,
-                    'billed_retail_total': billed_retail_untaxed + amount_tax,
-                    'billed_offer_total': billed_offer_untaxed + amount_tax
+                if order.import_type_ven != 'all_field_import':
+                    order.update({
+                        'max': round(max, 2),
+                        'potential_profit_margin': abs(round(potential_profit_margin, 2)),
 
-                })
-                if order.offer_type:
-                    if order.offer_type == 'credit':
+                        'amount_tax': amount_tax,
+
+                        'rt_price_subtotal_amt': product_retail,
+                        'rt_price_tax_amt': rt_price_tax,
+                        'rt_price_total_amt': rt_price_total,
+                        'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                        'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                        'cash_amount_untaxed': cash_amount_untaxed,
+                        'cash_amount_total': cash_amount_untaxed + amount_tax,
+                        'billed_retail_untaxed': billed_retail_untaxed,
+                        'billed_offer_untaxed': billed_offer_untaxed,
+                        'billed_retail_total': billed_retail_untaxed + amount_tax,
+                        'billed_offer_total': billed_offer_untaxed + amount_tax
+
+                    })
+
+                    if order.offer_type and order.offer_type == 'credit':
                         order.update({
-                            'amount_untaxed': credit_amount_untaxed,
-                            'amount_total': credit_amount_total
+                            'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                            'amount_total': math.floor(round(credit_amount_total, 2))
+                        })
+                    else:
+                        order.update({
+                            'amount_untaxed': amount_untaxed,
+                            'amount_total': price_total
+                        })
+
+                else:
+                    order.update({
+                        'max': round(max, 2),
+                        'potential_profit_margin': abs(round(potential_profit_margin, 2)),
+
+                        'amount_tax': amount_tax,
+
+                        'rt_price_subtotal_amt': product_retail,
+                        'rt_price_tax_amt': rt_price_tax,
+                        'rt_price_total_amt': rt_price_total,
+                        'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                        'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                        'cash_amount_untaxed': cash_amount_untaxed,
+                        'cash_amount_total': cash_amount_untaxed + amount_tax,
+                        'billed_retail_untaxed': billed_retail_untaxed,
+                        'billed_offer_untaxed': billed_offer_untaxed,
+                        'billed_retail_total': billed_retail_untaxed + amount_tax,
+                        'billed_offer_total': billed_offer_untaxed + amount_tax
+
+                    })
+                    if order.offer_type and order.offer_type == 'credit':
+                        order.update({
+                            'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                            'amount_total': math.floor(round(credit_amount_total, 2))
                         })
             else:
                 order.rt_price_subtotal_amt = False;
@@ -456,43 +502,68 @@ class VendorOffer(models.Model):
                 rt_price_tax = product_retail = rt_price_total = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
                 cash_amount_untaxed = 0.0
+                # res = super(VendorOffer, self)._amount_all()
                 for line in order.order_line:
                     amount_tax += line.price_tax
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
                     product_retail += line.product_retail
                     amount_untaxed += line.price_subtotal
+                    price_total += line.price_total
                     cash_amount_untaxed += line.price_subtotal
                     billed_retail_untaxed += line.billed_product_retail_price
                     billed_offer_untaxed += line.billed_product_offer_price
-                    credit_amount_untaxed = 0
-                    credit_amount_total = 0
-                    flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in
-                               list(map(lambda x: x.name, self.partner_id.category_id)))
-                    if product_retail > 0:
-                        per_val = round((amount_untaxed / product_retail) * 100, 2)
-                        per_val = per_val + 10
-                        credit_amount_untaxed = product_retail * (per_val / 100)
-                        # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
+
+                credit_amount_untaxed = 0
+                credit_amount_total = 0
+
+                flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in
+                           list(map(lambda x: x.name, order.partner_id.category_id)))
+                if product_retail > 0:
+                    per_val = round((amount_untaxed / product_retail) * 100, 2)
+                    per_val = per_val + 10
+                    credit_amount_untaxed = product_retail * (per_val / 100)
+                    # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
+                    if order.import_type_ven != 'all_field_import':
                         if flag:
                             credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
-                        credit_amount_total = credit_amount_untaxed + amount_tax
-                    order.update({
-                        'amount_tax': amount_tax,
-                        'rt_price_subtotal_amt': product_retail,
-                        'rt_price_tax_amt': rt_price_tax,
-                        'rt_price_total_amt': rt_price_total,
-                        'billed_retail_untaxed': billed_retail_untaxed,
-                        'billed_offer_untaxed': billed_offer_untaxed,
-                        'billed_retail_total': billed_retail_untaxed + amount_tax,
-                        'billed_offer_total': billed_offer_untaxed + amount_tax,
-                        'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                        'credit_amount_total': math.floor(round(credit_amount_total, 2)),
-                        'cash_amount_untaxed': cash_amount_untaxed,
-                        'cash_amount_total': cash_amount_untaxed + amount_tax,
-                    })
+                    credit_amount_total = credit_amount_untaxed + amount_tax
 
-                super(VendorOffer, self)._amount_all()
+                order.update({
+                    'amount_tax': amount_tax,
+
+                    'rt_price_subtotal_amt': product_retail,
+                    'rt_price_tax_amt': rt_price_tax,
+                    'rt_price_total_amt': rt_price_total,
+                    'billed_retail_untaxed': billed_retail_untaxed,
+                    'billed_offer_untaxed': billed_offer_untaxed,
+                    'billed_retail_total': billed_retail_untaxed + amount_tax,
+                    'billed_offer_total': billed_offer_untaxed + amount_tax,
+                    'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                    'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                    'cash_amount_untaxed': cash_amount_untaxed,
+                    'cash_amount_total': cash_amount_untaxed + amount_tax,
+                })
+
+                #  The reason a static date is added : It is to do calculation for the records of PO
+                #  which are created  after the solutions  is pushed  to production
+                #  The old PO though they are showing wrong value should not be affected
+                #  This is discussed with client (Bryon) and then implemented in this way .
+                #  Even the old PO are showing wrong credit values CLient have handelled   it in Bills
+
+                if order.create_date and (
+                        order.create_date.date() >= datetime.datetime.strptime('2023-02-03', "%Y-%m-%d").date()):
+                    if order.offer_type:
+                        if order.offer_type == 'credit':
+                            order.update({
+                                'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                                'amount_total': math.floor(round(credit_amount_total, 2))
+                            })
+                        else:
+                            order.update({
+                                'amount_untaxed': amount_untaxed,
+                                'amount_total': price_total
+                            })
 
     #@api.multi
     def action_send_offer_email(self):
@@ -647,10 +718,10 @@ class VendorOffer(models.Model):
     def action_button_confirm_api_credit(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
 
-
+        self.offer_type = 'credit'
         self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
         self.amount_total = math.floor(round(self.credit_amount_total, 2))
-        self.offer_type = 'credit'
+
         self.button_confirm()
 
         self.write({
@@ -1161,16 +1232,30 @@ class VendorOfferProduct(models.Model):
                 taxes = line.taxes_id.compute_all(float(line.product_offer_price), line.order_id.currency_id,
                                                   line.product_qty, product=line.product_id,
                                                   partner=line.order_id.partner_id)
-                line.update({
-                    'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
-                    'price_subtotal': taxes['total_excluded'],
-                    'price_total': taxes['total_included'],
-                    'price_unit': line.product_offer_price,
+                if line.order_id.import_type_ven != 'all_field_import':
+                    line.update({
+                        'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                        'price_subtotal': taxes['total_excluded'],
+                        'price_total': taxes['total_included'],
+                        'price_unit': line.product_offer_price,
 
-                    'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
-                    'product_retail': taxes1['total_excluded'],
-                    'rt_price_total': taxes1['total_included'],
-                })
+                        'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
+                        'product_retail': taxes1['total_excluded'],
+                        'rt_price_total': taxes1['total_included'],
+                    })
+                else:
+                    line.update({
+                        'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                        'price_subtotal': taxes['total_excluded'],
+                        'price_total': taxes['total_included'],
+                        'price_unit': line.product_offer_price,
+
+                        'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
+                        'product_retail': taxes1['total_excluded'],
+                        'rt_price_total': taxes1['total_included'],
+                    })
+
+
 
             else:
                 taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id,
@@ -1182,7 +1267,7 @@ class VendorOfferProduct(models.Model):
                     'rt_price_total': taxes1['total_included'],
                 })
 
-                super(VendorOfferProduct, self)._compute_amount()
+                # super(VendorOfferProduct, self)._compute_amount()
 
 
 class Multiplier(models.Model):
