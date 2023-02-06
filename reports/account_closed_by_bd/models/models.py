@@ -63,8 +63,8 @@ class AccountClosedByBd(models.Model):
                         FROM public.sale_order sos
                         INNER JOIN 
                             public.account_move aii ON sos.name = aii.invoice_origin
-                        GROUP BY sos.partner_id
-                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ')
+                            and aii.invoice_date > '""" + str(end_date) + """' 
+                        GROUP BY sos.partner_id )
                         
                         UNION
                         
@@ -95,10 +95,10 @@ class AccountClosedByBd(models.Model):
                 WHERE so.invoice_status = 'invoiced'                
                    """
 
-            select_query = select_query + " AND SPS.date_done >= COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) " \
+            select_query = select_query + " AND SPS.date_done >= COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date)" \
                                           " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(
                 start_date) + "' AND SPS.date_done <= (COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) + " \
-                              "INTERVAL '2 year')  "
+                              "INTERVAL '1 year')  "
 
             business_development_id = self.env.context.get('business_development')
 
@@ -202,7 +202,7 @@ class AccountClosedByBd(models.Model):
                                           " AND SP.state = 'done' AND SP.picking_type_id = 5 AND SO.state NOT IN ('cancel', 'void')))) "
 
             select_query = select_query + " AND SPS.date_done >= COALESCE(RPS.reinstated_date, RPS.create_date) " \
-                                          " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(start_date) + "' AND SPS.date_done <= (COALESCE(RPS.reinstated_date, RPS.create_date) + INTERVAL '2 year')  "
+                                          " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(start_date) + "' AND SPS.date_done <= (COALESCE(RPS.reinstated_date, RPS.create_date) + INTERVAL '1 year')  "
 
             business_development_id = self.env.context.get('business_development')
 

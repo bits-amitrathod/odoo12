@@ -109,8 +109,8 @@ class ExportAccountClosedByBd(http.Controller):
                         FROM public.sale_order sos
                         INNER JOIN 
                             public.account_move aii ON sos.name = aii.invoice_origin
+                            and aii.invoice_date > '""" + str(end_date) + """'
                         GROUP BY sos.partner_id
-                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ')
                         
                         UNION
                         
