@@ -99,7 +99,7 @@ class sale_order(models.Model):
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
-    allow_pay_gen_payment_link = fields.Boolean("Allow Pay")
+    #allow_pay_gen_payment_link = fields.Boolean("Allow Pay")
 
     @api.model
     def _get_default_team(self):
