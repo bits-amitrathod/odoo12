@@ -33,7 +33,7 @@ class AccountClosedByBd(models.Model):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
         start_date = self.env.context.get('start_date')
-        end_date = (self.env.context.get('end_date') - relativedelta(months=24))
+        end_date = (self.env.context.get('end_date') - relativedelta(months=12))
         # business_development_id = self.env.context.get('business_development')
         # key_account_id = self.env.context.get('key_account')
 
