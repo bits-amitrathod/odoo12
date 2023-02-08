@@ -35,7 +35,7 @@ class SaleOrderAvailability(models.Model):
 class SaleOrderCstm(models.Model):
     _inherit = "sale.order"
 
-    allow_pay_gen_payment_link = fields.Boolean("Allow Pay")
+    #allow_pay_gen_payment_link = fields.Boolean("Allow Pay")
 
     def get_email_so_sendByEmail(self):
         self.ensure_one()
