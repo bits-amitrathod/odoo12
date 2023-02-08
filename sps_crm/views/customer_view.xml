@@ -25,6 +25,11 @@
                             <field name="edoscopy"/>
                             <field name="woundcare"/>
                             <field name="bariatric"/>
+
+                            </group>
+                            <group>
+<!--   According to Client request we Remove this field's From View                             -->
+                            <field name="acc_cust_parent"/>
                             <field name="generalnotes"/>
                             <field name="ent"/>
                             <field name="ordering_day1" widget="many2many_tags"/>
@@ -33,29 +38,26 @@
                             <field name="created_by"/>
                             <field name="top_subspecialties1"  widget="many2many_tags"/>
 
-                            </group>
-                            <group>
-                            <field name="acc_cust_parent"/>
-                            <field name="captis"/>
-                            <field name="illucient"/>
-                            <field name="capstone_health_aliance"/>
-                            <field name="salina_contract"/>
-                            <field name="mha"/>
-                            <field name="veteran_affairs"/>
-                            <field name="partners_co_operative"/>
-                            <field name="magnet_group" />
-                            <field name="fsasc"/>
-                            <field name="uspi"/>
-                            <field name="surgery_partners"/>
-                            <field name="intalere_contract"/>
-                            <field name="premier"/>
+<!--                            <field name="captis"/>-->
+<!--                            <field name="illucient"/>-->
+<!--                            <field name="capstone_health_aliance"/>-->
+<!--                            <field name="salina_contract"/>-->
+<!--                            <field name="mha"/>-->
+<!--                            <field name="veteran_affairs"/>-->
+<!--                            <field name="partners_co_operative"/>-->
+<!--                            <field name="magnet_group" />-->
+<!--                            <field name="fsasc"/>-->
+<!--                            <field name="uspi"/>-->
+<!--                            <field name="surgery_partners"/>-->
+<!--                            <field name="intalere_contract"/>-->
+<!--                            <field name="premier"/>-->
                             <field name="email_opt_out"/>
                             <field name="time_zone"/>
 <!--                            <field name="facility_type"/>-->
                             <field name="bed_size"/>
                             <field name="purchase_history_date"/>
-                            <field name="acq_account"/>
-                            <field name="sales_account"/>
+<!--                            <field name="acq_account"/>-->
+<!--                            <field name="sales_account"/>-->
                             <field name="competitors_id" widget="many2many_tags"/>
                             <!--<field name="type"/>-->
                             <field name="status_id" widget="many2many_tags"
@@ -127,22 +129,22 @@
                                         <field name="top_subspecialties1"  widget="many2many_tags"/>
                                     </group>
                                     <group>
-                                       <field name="captis"/>
-                                        <field name="illucient"/>
-                                        <field name="capstone_health_aliance"/>
-                                        <field name="salina_contract"/>
-                                        <field name="mha"/>
-                                        <field name="veteran_affairs"/>
-                                        <field name="partners_co_operative"/>
-                                        <field name="magnet_group" />
-                                        <field name="fsasc"/>
-                                        <field name="uspi"/>
-                                        <field name="surgery_partners"/>
-                                        <field name="intalere_contract"/>
-                                        <field name="premier"/>
+<!--                                       <field name="captis"/>-->
+<!--                                        <field name="illucient"/>-->
+<!--                                        <field name="capstone_health_aliance"/>-->
+<!--                                        <field name="salina_contract"/>-->
+<!--                                        <field name="mha"/>-->
+<!--                                        <field name="veteran_affairs"/>-->
+<!--                                        <field name="partners_co_operative"/>-->
+<!--                                        <field name="magnet_group" />-->
+<!--                                        <field name="fsasc"/>-->
+<!--                                        <field name="uspi"/>-->
+<!--                                        <field name="surgery_partners"/>-->
+<!--                                        <field name="intalere_contract"/>-->
+<!--                                        <field name="premier"/>-->
                                         <field name="email_opt_out"/>
-                                        <field name="acq_account"/>
-                                        <field name="sales_account"/>
+<!--                                        <field name="acq_account"/>-->
+<!--                                        <field name="sales_account"/>-->
                                         <field name="competitors_id" widget="many2many_tags"/>
                                         <field name="status_id"  widget="many2many_tags"/>
                                     </group>
@@ -171,19 +173,19 @@
                                         <field name="woundcare"/>
                                         <field name="bariatric"/>
                                         <field name="generalnotes"/>
-                                       <field name="captis"/>
-                                        <field name="illucient"/>
-                                        <field name="capstone_health_aliance"/>
-                                        <field name="salina_contract"/>
-                                        <field name="mha"/>
-                                        <field name="veteran_affairs"/>
-                                        <field name="partners_co_operative"/>
-                                        <field name="magnet_group" />
-                                        <field name="fsasc"/>
-                                        <field name="uspi"/>
-                                        <field name="surgery_partners"/>
-                                        <field name="intalere_contract"/>
-                                        <field name="premier"/>
+<!--                                       <field name="captis"/>-->
+<!--                                        <field name="illucient"/>-->
+<!--                                        <field name="capstone_health_aliance"/>-->
+<!--                                        <field name="salina_contract"/>-->
+<!--                                        <field name="mha"/>-->
+<!--                                        <field name="veteran_affairs"/>-->
+<!--                                        <field name="partners_co_operative"/>-->
+<!--                                        <field name="magnet_group" />-->
+<!--                                        <field name="fsasc"/>-->
+<!--                                        <field name="uspi"/>-->
+<!--                                        <field name="surgery_partners"/>-->
+<!--                                        <field name="intalere_contract"/>-->
+<!--                                        <field name="premier"/>-->
                                         <field name="email_opt_out"/>
                                         <field name="time_zone"/>
 <!--                                        <field name="facility_type"/>-->
@@ -195,8 +197,8 @@
                                         <field name="last_modify_by"/>
                                         <field name="created_by"/>
                                         <field name="top_subspecialties1"/>
-                                        <field name="acq_account"/>
-                                        <field name="sales_account"/>
+<!--                                        <field name="acq_account"/>-->
+<!--                                        <field name="sales_account"/>-->
                                         <field name="competitors_id"/>
                                         <field name="status_id"/>
                   </tree>
