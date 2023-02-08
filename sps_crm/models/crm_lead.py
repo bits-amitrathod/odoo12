@@ -393,8 +393,8 @@ class Lead(models.Model):
             values = {'subject': acq_pri + ' Please Appraise ' + self.partner_id.name,
                       'model': None, 'res_id': False}
 
-        sales_person = self.user_id.email_formatted \
-            if self.user_id else 'info@surgicalproductsolutions.com'
+        sales_person = self.user_id.login.strip() \
+            if self.user_id.login else 'info@surgicalproductsolutions.com'
 
         local_context = {'rep': self.partner_id.acq_manager.name, 'unq_ac': self.partner_id.saleforce_ac,
                          'facility_type':  dict(self._fields['facility_tpcd'].selection).get(self.facility_tpcd), 'contracts': self.contract,
