@@ -1,3 +1,5 @@
+from Tools.scripts.pdeps import inverse
+
 from odoo import api,fields, models, tools
 from odoo.osv import expression
 import re
@@ -317,8 +319,8 @@ class Partner(models.Model):
     sales_account = fields.Boolean("Sales Account", default=False, store=False, search='pro_search_for_sales_account')
     competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False, search='pro_search_for_competitors_id')
     status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id', compute="_compute_details_status_field", readonly=False)
-    acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False,
-                                      search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
+    acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False, compute="_compute_parent_account_field",
+                                    inverse="_inverse_parent_account" , search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False)
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False)
 
@@ -435,7 +437,29 @@ class Partner(models.Model):
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
+    def _compute_parent_account_field(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.acc_cust_parent = partner_link.acc_cust_parent
+            else:
+                record.acc_cust_parent = record.acc_cust_parent
+
     # THis method used to handle ACQ Oppo Button on Click
+
+    @api.onchange('acc_cust_parent')
+    def _onchange_fields_parent_acount_save(self):
+        if len(self.ids):
+            partner_id = self.ids[0]
+            partner_link = self.env['partner.link.tracker']
+            link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
+            vals = {'acc_cust_parent': self.acc_cust_parent.id
+                    }
+            link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+
+    def _inverse_parent_account(self):
+        pass
+
     def action_view_acq_opportunity(self):
         '''
         This function returns an action that displays the opportunities from partner.
