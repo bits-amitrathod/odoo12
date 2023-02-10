@@ -1,5 +1,3 @@
-from Tools.scripts.pdeps import inverse
-
 from odoo import api,fields, models, tools
 from odoo.osv import expression
 import re
