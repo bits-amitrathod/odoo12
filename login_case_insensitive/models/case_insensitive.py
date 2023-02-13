@@ -442,13 +442,18 @@ class CustomerPortal(Controller):
             'error_message': [],
         })
 
-        if post:
+        if post and request.httprequest.method == 'POST':
             error, error_message = self.details_form_validate_new(post)
             values.update({'error': error, 'error_message': error_message})
             values.update(post)
             if not error:
                 values = {key: post[key] for key in self.MANDATORY_BILLING_FIELDS}
                 values.update({key: post[key] for key in self.OPTIONAL_BILLING_FIELDS if key in post})
+                for field in set(['country_id', 'state_id']) & set(values.keys()):
+                    try:
+                        values[field] = int(values[field])
+                    except:
+                        values[field] = False
                 values.update({'zip': values.pop('zipcode', '')})
                 partner.sudo().write(values)
                 if redirect:
