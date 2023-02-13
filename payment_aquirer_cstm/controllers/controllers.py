@@ -99,7 +99,13 @@ class PaymentAquirerCstm(http.Controller):
             #     'new_amount_tax': Monetary.value_to_html(order.amount_tax, {'display_currency': currency}),
             #     'new_amount_total': Monetary.value_to_html(order.amount_total, {'display_currency': currency}),
             # }
-            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}), 'status': order.delivery_rating_success}
+
+            gen_pay = False
+            pay_link = request.env['sale.pay.link.cust'].search([('sale_order_id', '=', order.id)])
+            if pay_link and pay_link.allow_pay_gen_payment_link:
+                gen_pay = True
+
+            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}), 'status': order.delivery_rating_success, 'gen_pay_link': gen_pay}
 
     # def _format_amount(self, amount, currency):
     #     fmt = "%.{0}f".format(currency.decimal_places)
@@ -290,13 +296,20 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         elif partner_id:
             partner_id = int(partner_id)
 
-        if user._is_public():
-            if order_id:
-                request.session['sale_order_id'] = order_id
-            if order_id and order:
-                order.delivery_rating_success = True
-                #order.allow_pay_gen_payment_link = True
+        #if user._is_public():
+        if order_id:
+            request.session['sale_order_id'] = order_id
+        if order_id and order:
+            pay_link = request.env['sale.pay.link.cust'].search([('sale_order_id', '=', order_id)])
+            if pay_link:
+                pay_link.allow_pay_gen_payment_link = True
+            else:
+                log_id = request.env['sale.pay.link.cust'].create({
+                    'sale_order_id': order_id,
+                    'allow_pay_gen_payment_link': True
+                })
             partner_id = int(partner_id)
+
         values.update({
             'partner_id': partner_id,
             'bootstrap_formatting': True,

@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_exclude_product_in_stock_manager,exclude.product.in.stock sale manager,model_exclude_product_in_stock,sales_team.group_sale_manager,1,1,1,1
 access_exclude_product_in_stock_user,exclude.product.in.stock sale user,model_exclude_product_in_stock,sales_team.group_sale_salesman_all_leads,1,1,1,1
+sale_pay_link_cust,sale.pay.link.cust,model_sale_pay_link_cust,,1,1,1,1

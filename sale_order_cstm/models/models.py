@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from odoo import models, fields,api, _
+from odoo import models, api, _
 from odoo.tools.float_utils import float_compare
 
 
@@ -34,8 +34,6 @@ class SaleOrderAvailability(models.Model):
 
 class SaleOrderCstm(models.Model):
     _inherit = "sale.order"
-
-    #allow_pay_gen_payment_link = fields.Boolean("Allow Pay")
 
     def get_email_so_sendByEmail(self):
         self.ensure_one()
