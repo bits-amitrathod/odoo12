@@ -532,7 +532,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                 product_list.remove(excluded_product.product_id)
 
                     if customr.user_id.email:
-                        if customr.user_id.name == "National Accounts" and customr.national_account_rep and customr.account_manager_cust is None:
+                        if customr.user_id.name == "National Accounts" and customr.national_account_rep and not customr.account_manager_cust:
                             email_list_cc.append(customr.national_account_rep.email)
                         else:
                             email_list_cc.append(customr.user_id.email)
