@@ -474,7 +474,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 descrption =  """ 
                 
                 
-                 <strong>Good morning """ + customr.name + """"</strong>
+                 <strong>Good morning """ + customr.name + """</strong>
                                                                       <br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. 
                                                                       You will also see two links to either download our
                                                                       <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'> full catalog (Excel) </a> 
