@@ -1948,6 +1948,12 @@ class VendorPricingList(models.Model):
                            " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
                            "sml.location_dest_id =%s AND" \
                            " sml.product_id =%s"
+            str_query_cm_new = """
+                    select sum(sol.qty_delivered) from sale_order AS so JOIN sale_order_line AS sol ON
+                    so.id = sol.order_id where 
+                    sol.product_id = %s and so.state in ('sale','done')
+                  
+            """
 
             ''' state = sale condition added in all sales amount to match the value of sales amount to 
             clients PPvendorpricing file '''
@@ -1969,8 +1975,10 @@ from  product_product pp
                 sales_all_value = sales_all_value + float(sales_all_val[0])
             line.amount_total_ven_pri = sales_all_value
 
-            self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                                                                         line.id, last_3_months))
+            # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+            #                                                              line.id, last_3_months))
+            self.env.cr.execute(str_query_cm_new + " AND so.date_order>=%s", (line.id, last_3_months))
+
             quant_90 = self.env.cr.fetchone()
             if quant_90[0] is not None:
                 total_90 = total_90 + int(quant_90[0])
@@ -2296,7 +2304,7 @@ class VendorPricingExport(models.TransientModel):
 								
 								"""
 
-        str_query_join = """  
+        str_query_join_old = """  
 
                         LEFT JOIN 
                 ( 
@@ -2362,11 +2370,76 @@ class VendorPricingExport(models.TransientModel):
                          AND      sts.date_done > %s 
                          GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
 
+        str_query_join = """  
+
+                                LEFT JOIN 
+                        ( 
+                                   select sum(sol.qty_delivered) AS qty_done,sol.product_id
+                                   from sale_order AS so JOIN sale_order_line AS sol ON
+                                   so.id = sol.order_id where 
+                                   so.state in ('sale','done')
+                                   and so.date_order >= %s 
+                                  GROUP BY  sol.product_id
+                           ) AS ninty_sales ON pp.id=ninty_sales.product_id LEFT JOIN 
+                        ( 
+                                 SELECT   count(spl.NAME) AS NAME, 
+                                          spl.product_id 
+                                 FROM     stock_production_lot spl 
+                                 WHERE    spl.use_date < %s 
+                                 GROUP BY spl.product_id ) AS exp_evntory ON pp.id=exp_evntory.product_id LEFT JOIN 
+                        ( 
+                                   SELECT     sum(sq.quantity) AS qty_available, 
+                                              spl.product_id 
+                                   FROM       stock_quant sq 
+                                   INNER JOIN stock_production_lot AS spl 
+                                   ON         sq.lot_id = spl.id 
+                                   INNER JOIN stock_location AS sl 
+                                   ON         sq.location_id = sl.id 
+                                   WHERE      sl.usage IN ('internal', 
+                                                           'transit') 
+                                   GROUP BY   spl.product_id ) AS qty_available_count ON pp.id=qty_available_count.product_id LEFT JOIN
+                        ( 
+                                 SELECT   "stock_move"."product_id"       AS "product_id", 
+                                          sum("stock_move"."product_qty") AS "product_qty" 
+                                 FROM     "stock_location"                AS "stock_move__location_dest_id", 
+                                          "stock_location"                AS "stock_move__location_id", 
+                                          "stock_move" 
+                                 WHERE    ( 
+                                                   "stock_move"."location_id" = "stock_move__location_id"."id" 
+                                          AND      "stock_move"."location_dest_id" = "stock_move__location_dest_id"."id")
+                                 AND      (((( 
+                                                                              "stock_move"."state" IN('waiting', 
+                                                                                                      'confirmed', 
+                                                                                                      'assigned', 
+                                                                                                      'partially_available')) )
+                                                   AND      ( 
+                                                                     "stock_move__location_dest_id"."parent_path" :: text LIKE '1/11/%%' ))
+                                          AND      ( 
+                                                            NOT(( 
+                                                                              "stock_move__location_id"."parent_path" :: text LIKE '1/11/%%' )) ))
+                                 AND      ( 
+                                                   "stock_move"."company_id" IS NULL 
+                                          OR       ( 
+                                                            "stock_move"."company_id" IN(""" + str(company.id) + """))) 
+                                 GROUP BY "stock_move"."product_id" ) AS qty_on_order ON pp.id=qty_on_order.product_id LEFT JOIN
+                        ( 
+                                 SELECT   sum(sts.scrap_qty) AS scrap_qty, 
+                                          sts.product_id 
+                                 FROM     stock_scrap sts 
+                                 WHERE    sts.state ='done' 
+                                 AND      sts.date_done < %s 
+                                 AND      sts.date_done > %s 
+                                 GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
+
         start_time = time.time()
         #self.env.cr.execute(sql_fuction)
-        self.env.cr.execute(str_query + str_query_join, (cust_location_id,last_yr, cust_location_id, last_yr,today_date,
-                                                         cust_location_id, last_3_months, today_date,
-                                                         today_date, last_yr))
+        # self.env.cr.execute(str_query + str_query_join, (cust_location_id,last_yr, cust_location_id, last_yr,today_date,
+        #                                                  cust_location_id, last_3_months, today_date,
+        #                                                  today_date, last_yr))
+        self.env.cr.execute(str_query + str_query_join,
+                            (cust_location_id, last_yr, cust_location_id, last_yr, today_date,
+                             last_3_months, today_date,
+                             today_date, last_yr))
 
         new_list = self.env.cr.dictfetchall()
 
