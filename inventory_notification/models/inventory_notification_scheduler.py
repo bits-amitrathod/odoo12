@@ -458,7 +458,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
                             products[line.product_id.id] = line.product_id
                 subject = "SPS Updated In-Stock Product Report"
-                descrption = "<strong>Good morning " + customr.name + "</strong>" \
+                descrption2 = "<strong>Good morning " + customr.name + "</strong>" \
                                                                       "<br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. "\
                                                                       "You will also see two links to either download our" \
                                                                       "<a href='https://www.shopsps.com/downloadCatalog' style='color:#C4262E;'> full catalog (Excel) </a> " \
@@ -466,8 +466,33 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                                       "<br/> <a href='https://www.shopsps.com/downloadCatalog' style='color:#C4262E;'> Download – SPS Product Catalog </a>" \
                                                                       "<br/><center>" \
                                                                       "<br/><br/>" \
-                                                                      "<a target='_blank' href='/shop/quote_my_report/"+ str(customr.id) + "' style='background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0; ' class='o_default_snippet_text'>Order Online Here</a>" \
+                                                                      "<div class='text-center' style='text-align: center;'>" \
+                                                                      "<a target='_blank' href='/shop/quote_my_report/"+str(customr.id)+"'  style='background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;' class='o_default_snippet_text'>Order Online Here</a>" \
+                                                                      "</div>" \
                                                                       "</center><br/><br/>"
+
+                descrption =  """ 
+                
+                
+                 <strong>Good morning """ + customr.name + """,</strong>
+                                                                      <br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. 
+                                                                      You will also see two links to either download our
+                                                                      <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'> full catalog (Excel) </a> 
+                                                                      or go directly to our <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E;"> online portal </a> to place an order.
+                                                                      <br/> <a href="https://www.shopsps.com/downloadCatalog" style="color:#C4262E;"> Download – SPS Product Catalog </a>
+                                                                      <br/><center>
+                                                                      <br/><br/>
+                                                                      <div class="text-center" style="text-align: center;">
+                                                                      <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; 
+												border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px;
+ 									font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
+                                  </div>
+                                  </center><br/><br/>
+                
+                
+                
+                
+                """
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date',
                           'Max Exp. Date', 'Unit Of Measure']
