@@ -1984,21 +1984,29 @@ from  product_product pp
                 total_90 = total_90 + int(quant_90[0])
             line.product_sales_count_90 = total_90
 
-            self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                                                                         line.id, last_month))
+            # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+            #                                                              line.id, last_month))
+
+            self.env.cr.execute(str_query_cm_new + " AND so.date_order>=%s", (line.id, last_month))
+
             quant_m = self.env.cr.fetchone()
             if quant_m[0] is not None:
                 total_m = total_m + int(quant_m[0])
             line.product_sales_count_month = total_m
 
-            self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                                                                         line.id, last_yr))
+            # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+            #                                                              line.id, last_yr))
+
+            self.env.cr.execute(str_query_cm_new + " AND so.date_order>=%s", (line.id, last_yr))
+
             quant_yr = self.env.cr.fetchone()
             if quant_yr[0] is not None:
                 total_yr = total_yr + int(quant_yr[0])
             line.product_sales_count_yrs = total_yr
 
-            self.env.cr.execute(str_query_cm, (cust_location_id, line.id))
+            # self.env.cr.execute(str_query_cm, (cust_location_id, line.id))
+            self.env.cr.execute(str_query_cm_new, [line.id])
+
             quant_all = self.env.cr.fetchone()
             if quant_all[0] is not None:
                 total = total + int(quant_all[0])
@@ -2218,16 +2226,11 @@ class VendorPricingExport(models.TransientModel):
                                   ON pt.tier = tt.id 
                            left join product_brand pb 
                                   ON pt.product_brand_id = pb.id 
-                           left join (SELECT SUM(sml.qty_done) AS qty_done, 
-                                             sml.product_id 
-                                      FROM   sale_order_line AS sol 
-                                             left join stock_picking AS sp 
-                                                    ON sp.sale_id = sol.id 
-                                             left join stock_move_line AS sml 
-                                                    ON sml.picking_id = sp.id 
-                                      WHERE  sml.state = 'done' 
-                                            AND sml.location_dest_id =%s 
-                                      GROUP  BY sml.product_id) AS all_sales 
+                           left join (select sum(sol.qty_delivered) AS qty_done,sol.product_id
+                                   from sale_order AS so JOIN sale_order_line AS sol ON
+                                   so.id = sol.order_id where 
+                                   so.state in ('sale','done') 
+                                  GROUP BY  sol.product_id) AS all_sales 
                                   ON pp.id = all_sales.product_id 
                            left join (SELECT CASE 
                                                WHEN Abs(SUM(sol.qty_delivered * sol.price_reduce)) IS NULL THEN 0 
@@ -2247,18 +2250,12 @@ class VendorPricingExport(models.TransientModel):
                                              AND sp.state IN ('done') 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
-                           left join (SELECT SUM(sml.qty_done) AS qty_done, 
-                                             sml.product_id 
-                                      FROM   sale_order_line AS sol 
-                                             left join stock_picking AS sp 
-                                                    ON sp.sale_id = sol.id 
-                                             left join stock_move_line AS sml 
-                                                    ON sml.picking_id = sp.id 
-                                      WHERE  sml.state = 'done' 
-                                     AND sml.location_dest_id =%s 
-                                             AND sp.date_done >= %s       
-                                            
-                                      GROUP  BY sml.product_id) AS yr_sales 
+                           left join (select sum(sol.qty_delivered) AS qty_done,sol.product_id
+                                   from sale_order AS so JOIN sale_order_line AS sol ON
+                                   so.id = sol.order_id where 
+                                   so.state in ('sale','done')
+                                   and so.date_order >= %s 
+                                  GROUP BY  sol.product_id ) AS yr_sales 
                                   ON pp.id = yr_sales.product_id 
                                   
                              left join(SELECT ppc.id,count(ppc.id) as quotation_count 
@@ -2304,71 +2301,71 @@ class VendorPricingExport(models.TransientModel):
 								
 								"""
 
-        str_query_join_old = """  
-
-                        LEFT JOIN 
-                ( 
-                          SELECT    sum(sml.qty_done) AS qty_done, 
-                                    sml.product_id 
-                          FROM      sale_order_line AS sol 
-                          LEFT JOIN stock_picking   AS sp 
-                          ON        sp.sale_id=sol.id 
-                          LEFT JOIN stock_move_line AS sml 
-                          ON        sml.picking_id=sp.id 
-                          WHERE     sml.state='done' 
-                        AND       sml.location_dest_id =%s 
-                          AND       sp.date_done >= %s 
-                         
-                          GROUP BY  sml.product_id ) AS ninty_sales ON pp.id=ninty_sales.product_id LEFT JOIN 
-                ( 
-                         SELECT   count(spl.NAME) AS NAME, 
-                                  spl.product_id 
-                         FROM     stock_production_lot spl 
-                         WHERE    spl.use_date < %s 
-                         GROUP BY spl.product_id ) AS exp_evntory ON pp.id=exp_evntory.product_id LEFT JOIN 
-                ( 
-                           SELECT     sum(sq.quantity) AS qty_available, 
-                                      spl.product_id 
-                           FROM       stock_quant sq 
-                           INNER JOIN stock_production_lot AS spl 
-                           ON         sq.lot_id = spl.id 
-                           INNER JOIN stock_location AS sl 
-                           ON         sq.location_id = sl.id 
-                           WHERE      sl.usage IN ('internal', 
-                                                   'transit') 
-                           GROUP BY   spl.product_id ) AS qty_available_count ON pp.id=qty_available_count.product_id LEFT JOIN
-                ( 
-                         SELECT   "stock_move"."product_id"       AS "product_id", 
-                                  sum("stock_move"."product_qty") AS "product_qty" 
-                         FROM     "stock_location"                AS "stock_move__location_dest_id", 
-                                  "stock_location"                AS "stock_move__location_id", 
-                                  "stock_move" 
-                         WHERE    ( 
-                                           "stock_move"."location_id" = "stock_move__location_id"."id" 
-                                  AND      "stock_move"."location_dest_id" = "stock_move__location_dest_id"."id")
-                         AND      (((( 
-                                                                      "stock_move"."state" IN('waiting', 
-                                                                                              'confirmed', 
-                                                                                              'assigned', 
-                                                                                              'partially_available')) )
-                                           AND      ( 
-                                                             "stock_move__location_dest_id"."parent_path" :: text LIKE '1/11/%%' ))
-                                  AND      ( 
-                                                    NOT(( 
-                                                                      "stock_move__location_id"."parent_path" :: text LIKE '1/11/%%' )) ))
-                         AND      ( 
-                                           "stock_move"."company_id" IS NULL 
-                                  OR       ( 
-                                                    "stock_move"."company_id" IN(""" + str(company.id) + """))) 
-                         GROUP BY "stock_move"."product_id" ) AS qty_on_order ON pp.id=qty_on_order.product_id LEFT JOIN
-                ( 
-                         SELECT   sum(sts.scrap_qty) AS scrap_qty, 
-                                  sts.product_id 
-                         FROM     stock_scrap sts 
-                         WHERE    sts.state ='done' 
-                         AND      sts.date_done < %s 
-                         AND      sts.date_done > %s 
-                         GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
+        # str_query_join_old = """
+        #
+        #                 LEFT JOIN
+        #         (
+        #                   SELECT    sum(sml.qty_done) AS qty_done,
+        #                             sml.product_id
+        #                   FROM      sale_order_line AS sol
+        #                   LEFT JOIN stock_picking   AS sp
+        #                   ON        sp.sale_id=sol.id
+        #                   LEFT JOIN stock_move_line AS sml
+        #                   ON        sml.picking_id=sp.id
+        #                   WHERE     sml.state='done'
+        #                 AND       sml.location_dest_id =%s
+        #                   AND       sp.date_done >= %s
+        #
+        #                   GROUP BY  sml.product_id ) AS ninty_sales ON pp.id=ninty_sales.product_id LEFT JOIN
+        #         (
+        #                  SELECT   count(spl.NAME) AS NAME,
+        #                           spl.product_id
+        #                  FROM     stock_production_lot spl
+        #                  WHERE    spl.use_date < %s
+        #                  GROUP BY spl.product_id ) AS exp_evntory ON pp.id=exp_evntory.product_id LEFT JOIN
+        #         (
+        #                    SELECT     sum(sq.quantity) AS qty_available,
+        #                               spl.product_id
+        #                    FROM       stock_quant sq
+        #                    INNER JOIN stock_production_lot AS spl
+        #                    ON         sq.lot_id = spl.id
+        #                    INNER JOIN stock_location AS sl
+        #                    ON         sq.location_id = sl.id
+        #                    WHERE      sl.usage IN ('internal',
+        #                                            'transit')
+        #                    GROUP BY   spl.product_id ) AS qty_available_count ON pp.id=qty_available_count.product_id LEFT JOIN
+        #         (
+        #                  SELECT   "stock_move"."product_id"       AS "product_id",
+        #                           sum("stock_move"."product_qty") AS "product_qty"
+        #                  FROM     "stock_location"                AS "stock_move__location_dest_id",
+        #                           "stock_location"                AS "stock_move__location_id",
+        #                           "stock_move"
+        #                  WHERE    (
+        #                                    "stock_move"."location_id" = "stock_move__location_id"."id"
+        #                           AND      "stock_move"."location_dest_id" = "stock_move__location_dest_id"."id")
+        #                  AND      ((((
+        #                                                               "stock_move"."state" IN('waiting',
+        #                                                                                       'confirmed',
+        #                                                                                       'assigned',
+        #                                                                                       'partially_available')) )
+        #                                    AND      (
+        #                                                      "stock_move__location_dest_id"."parent_path" :: text LIKE '1/11/%%' ))
+        #                           AND      (
+        #                                             NOT((
+        #                                                               "stock_move__location_id"."parent_path" :: text LIKE '1/11/%%' )) ))
+        #                  AND      (
+        #                                    "stock_move"."company_id" IS NULL
+        #                           OR       (
+        #                                             "stock_move"."company_id" IN(""" + str(company.id) + """)))
+        #                  GROUP BY "stock_move"."product_id" ) AS qty_on_order ON pp.id=qty_on_order.product_id LEFT JOIN
+        #         (
+        #                  SELECT   sum(sts.scrap_qty) AS scrap_qty,
+        #                           sts.product_id
+        #                  FROM     stock_scrap sts
+        #                  WHERE    sts.state ='done'
+        #                  AND      sts.date_done < %s
+        #                  AND      sts.date_done > %s
+        #                  GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
 
         str_query_join = """  
 
@@ -2437,7 +2434,7 @@ class VendorPricingExport(models.TransientModel):
         #                                                  cust_location_id, last_3_months, today_date,
         #                                                  today_date, last_yr))
         self.env.cr.execute(str_query + str_query_join,
-                            (cust_location_id, last_yr, cust_location_id, last_yr, today_date,
+                            (last_yr, last_yr,today_date,
                              last_3_months, today_date,
                              today_date, last_yr))
 
