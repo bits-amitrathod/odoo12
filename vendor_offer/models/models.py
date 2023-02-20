@@ -1951,7 +1951,7 @@ class VendorPricingList(models.Model):
             str_query_cm_new = """
                     select sum(sol.qty_delivered) from sale_order AS so JOIN sale_order_line AS sol ON
                     so.id = sol.order_id where 
-                    sol.product_id = %s and so.state in ('sale','done')
+                    sol.product_id = %s and sol.state in ('sale','done')
                   
             """
 
@@ -2229,7 +2229,7 @@ class VendorPricingExport(models.TransientModel):
                            left join (select sum(sol.qty_delivered) AS qty_done,sol.product_id
                                    from sale_order AS so JOIN sale_order_line AS sol ON
                                    so.id = sol.order_id where 
-                                   so.state in ('sale','done') 
+                                   sol.state in ('sale','done') 
                                   GROUP BY  sol.product_id) AS all_sales 
                                   ON pp.id = all_sales.product_id 
                            left join (SELECT CASE 
@@ -2253,7 +2253,7 @@ class VendorPricingExport(models.TransientModel):
                            left join (select sum(sol.qty_delivered) AS qty_done,sol.product_id
                                    from sale_order AS so JOIN sale_order_line AS sol ON
                                    so.id = sol.order_id where 
-                                   so.state in ('sale','done')
+                                   sol.state in ('sale','done')
                                    and so.date_order >= %s 
                                   GROUP BY  sol.product_id ) AS yr_sales 
                                   ON pp.id = yr_sales.product_id 
@@ -2374,7 +2374,7 @@ class VendorPricingExport(models.TransientModel):
                                    select sum(sol.qty_delivered) AS qty_done,sol.product_id
                                    from sale_order AS so JOIN sale_order_line AS sol ON
                                    so.id = sol.order_id where 
-                                   so.state in ('sale','done')
+                                   sol.state in ('sale','done')
                                    and so.date_order >= %s 
                                   GROUP BY  sol.product_id
                            ) AS ninty_sales ON pp.id=ninty_sales.product_id LEFT JOIN 
