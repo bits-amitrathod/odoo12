@@ -29,28 +29,29 @@
                     </button>-->
                 </div>
                 <field name="vat" position="after">
+                    <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="saleforce_ac" placeholder="Sale Force A/C."/>
                     <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
                            placeholder="****       e.g. A**2" invisible="1" />
                     <field name="sku_postconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
                            placeholder="****       e.g. *2*B" invisible="1" />
                     <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="parent_saleforce_ac" placeholder="Parent Sale Force A/C." attrs="{'invisible':[('parent_id', '=', False)]}"/>
-                    <field name="saleforce_ac" placeholder="Sale Force A/C."/>
                     <field name="is_share" invisible="1"/>
                     <field name="sale_margine" invisible="1"/>
-                    <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="on_hold" groups="account.group_account_manager" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="on_hold_readonly" groups="!account.group_account_manager" readonly="1"/>
                     <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}" invisible="1"/>
-                    <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <!--<field name="charity"/>-->
+                   <!--<field name="charity"/>-->
                     <field name="is_parent" invisible="1"/>
                 </field>
                 <field name="active_lang_count" position="after">
                     <field name="lang"/>
+                    <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="on_hold" groups="account.group_account_manager" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                      <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+
                     <field name="carrier_info"
                            attrs="{'invisible':[('having_carrier', '==', False)],'readonly':[('is_parent', '==', False)]}"/>
                     <field name="carrier_acc_no"
