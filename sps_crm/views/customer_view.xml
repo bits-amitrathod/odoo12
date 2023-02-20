@@ -79,6 +79,18 @@
                 <field name="vat" position="before">
                     <field name="acc_cust_parent" />
                 </field>
+                <field name="vat" position="after">
+                    <field name="ordering_day1" />
+                    <field name="time_zone" />
+                    <field name="bed_size" />
+                    <field name="gpo" />
+                    <field name="facilityERP"/>
+                    <field name="top_subspecialties1"/>
+                    <field name="competitors_id"/>
+                    <field name="purchase_history_date"/>
+                    <field name="generalnotes"/>
+
+                </field>
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="status_id" widget="many2many_tags"
                     attrs="{'invisible': ['|', '&amp;', ('is_company','=', True),('parent_id', '=', False),('company_name', '!=', False),('company_name', '!=', '')]}"
