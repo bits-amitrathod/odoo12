@@ -76,6 +76,9 @@
                         </group>
                     </page>
                 </xpath>
+                <field name="vat" position="attributes">
+                    <attribute name="groups">account.group_account_manager</attribute>
+                </field>
                 <field name="vat" position="before">
                     <field name="acc_cust_parent" />
                 </field>

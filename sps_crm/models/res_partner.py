@@ -442,6 +442,13 @@ class Partner(models.Model):
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
 
+    def _compute_top_subspecialties1(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.top_subspecialties1 = partner_link.top_subspecialties1
+            else:
+                record.top_subspecialties1 = record.top_subspecialties1.ids
     def _compute_ordering_day(self):
         for record in self:
             partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
