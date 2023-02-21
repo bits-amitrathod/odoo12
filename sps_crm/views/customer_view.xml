@@ -92,7 +92,9 @@
                     <field name="competitors_id"/>
                     <field name="purchase_history_date"/>
                     <field name="generalnotes"/>
-
+                </field>
+                <field name="website" position="after">
+                    <field name="fiscal_year_end" />
                 </field>
                 <xpath expr="//field[@name='category_id']" position="after">
                     <field name="status_id" widget="many2many_tags"

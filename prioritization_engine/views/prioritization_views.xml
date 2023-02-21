@@ -45,7 +45,7 @@
                     <field name="is_parent" invisible="1"/>
                 </field>
                 <field name="active_lang_count" position="after">
-                    <field name="lang"/>
+                    <field name="lang" invisible="1"/>
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                      <field name="on_hold" groups="account.group_account_manager" attrs="{'readonly':[('is_parent', '==', False)]}"/>

@@ -287,7 +287,8 @@ class Partner(models.Model):
         ('sep', 'September'),
         ('oct', 'October'),
         ('nov', 'November'),
-        ('dec', 'December')], string='Fiscal Year End', store=False, search='pro_search_for_fiscal_year_end')
+        ('dec', 'December')], string='Fiscal Year End', compute="compute_fiscal_year_end",
+        store=False, search='pro_search_for_fiscal_year_end', readonly=False )
     last_modify_by = fields.Many2one(comodel_name='res.partner', String='Last Modified By', store=False)
     created_by = fields.Many2one(comodel_name='res.partner', String='Created By', store=False)
     time_zone = fields.Selection([
@@ -441,6 +442,13 @@ class Partner(models.Model):
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
+    def compute_fiscal_year_end(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.fiscal_year_end = partner_link.fiscal_year_end
+            else:
+                record.fiscal_year_end = record.fiscal_year_end
 
     def _compute_top_subspecialties1(self):
         for record in self:
