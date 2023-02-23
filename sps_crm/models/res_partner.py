@@ -255,8 +255,8 @@ class Partner(models.Model):
     ent = fields.Char("ENT", store=False, search='pro_search_for_ent')
     woundcare = fields.Char("Wound Care", store=False, search='pro_search_for_woundcare')
     bariatric = fields.Char("Bariatric", store=False, search='pro_search_for_bariatric')
-    generalnotes = fields.Text("General Notes", store=False, search='pro_search_for_generalnotes')
-    facilityERP = fields.Char("Facility ERP", store=False, search='pro_search_for_facilityERP')
+    generalnotes = fields.Text("General Notes", store=False, compute="_compute_generalnotes", search='pro_search_for_generalnotes', readonly=False)
+    facilityERP = fields.Char("Facility ERP", store=False, compute="_compute_facilityERP", search='pro_search_for_facilityERP', readonly=False)
     description = fields.Text("Description", store=False, search='pro_search_for_description')
 
     captis = fields.Boolean("Captis 2.0 EIS", default=False, store=False, search='pro_search_for_captis')
@@ -273,7 +273,8 @@ class Partner(models.Model):
     intalere_contract = fields.Boolean("Intalere Contract #: DH10128", default=False, store=False, search='pro_search_for_intalere_contract')
     premier = fields.Boolean("Premier (GPO)", default=False, store=False, search='pro_search_for_premier')
     email_opt_out = fields.Boolean("Email Opt Out", default=False, store=False, search='pro_search_for_email_opt_out')
-    ordering_day1 = fields.Many2many('day.tag', string='Ordering Day',store=False, search='pro_search_for_ordering_day')
+    ordering_day1 = fields.Many2many('day.tag', string='Ordering Day',store=False,compute="_compute_ordering_day",
+                                     inverse="_inverse_parent_account", search='pro_search_for_ordering_day')
     fiscal_year_end = fields.Selection([
         ('jan', 'January'),
         ('feb', 'February'),
@@ -286,7 +287,8 @@ class Partner(models.Model):
         ('sep', 'September'),
         ('oct', 'October'),
         ('nov', 'November'),
-        ('dec', 'December')], string='Fiscal Year End', store=False, search='pro_search_for_fiscal_year_end')
+        ('dec', 'December')], string='Fiscal Year End', compute="compute_fiscal_year_end",
+        store=False, search='pro_search_for_fiscal_year_end', readonly=False )
     last_modify_by = fields.Many2one(comodel_name='res.partner', String='Last Modified By', store=False)
     created_by = fields.Many2one(comodel_name='res.partner', String='Created By', store=False)
     time_zone = fields.Selection([
@@ -295,7 +297,8 @@ class Partner(models.Model):
         ('mst', 'MST'),
         ('pst', 'PST'),
         ('ast', 'AST'),
-        ('hast', 'HAST')], string='Time Zone', store=False, search='pro_search_for_time_zone')
+        ('hast', 'HAST')], string='Time Zone', store=False, compute="_compute_time_zone",
+                inverse="_inverse_parent_account", search='pro_search_for_time_zone')
     facility_type = fields.Selection([
         ('health_system', 'Health System'),
         ('hospital', 'Hospital'),
@@ -308,17 +311,21 @@ class Partner(models.Model):
         ('wholesale','Wholesale'),
         ('reseller', 'Reseller'),
         ('national account_target', 'National Account Target')], string='Facility Type', store=False)
-    bed_size = fields.Integer(default=0, string="Bed Size", store=False, search='pro_search_for_bed_size')
-    purchase_history_date = fields.Datetime(string="Last Purchase History", store=False, search='pro_search_for_purchase_history_date')
+    bed_size = fields.Integer(default=0, string="Bed Size", store=False, compute="_compute_bed_size",
+                              inverse="_inverse_parent_account", search='pro_search_for_bed_size')
+    purchase_history_date = fields.Datetime(string="Last Purchase History", compute="_compute_purchase_history_date", store=False,
+                                            search='pro_search_for_purchase_history_date', readonly=False)
 
-    top_subspecialties1 = fields.Many2many('specialties.tag', string='Top Subspecialties', store=False, search='pro_search_for_top_subspecialties')
+    top_subspecialties1 = fields.Many2many('specialties.tag', string='Top Subspecialties', compute="_compute_top_subspecialties1",
+                                           store=False, search='pro_search_for_top_subspecialties', readonly=False )
 
     acq_account = fields.Boolean("ACQ Account", default=False, store=False, search='pro_search_for_acq_account')
     sales_account = fields.Boolean("Sales Account", default=False, store=False, search='pro_search_for_sales_account')
-    competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False, search='pro_search_for_competitors_id')
+    competitors_id = fields.Many2many('competitors.tag', string=' Competitors', store=False, compute="_compute_competitors",
+                                      search='pro_search_for_competitors_id', readonly=False)
     status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id', compute="_compute_details_status_field", readonly=False)
-    acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False,
-                                      search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
+    acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False, compute="_compute_parent_account_field",
+                                    inverse="_inverse_parent_account" , search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False)
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False)
 
@@ -435,7 +442,94 @@ class Partner(models.Model):
             }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
+    def compute_fiscal_year_end(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.fiscal_year_end = partner_link.fiscal_year_end
+            else:
+                record.fiscal_year_end = record.fiscal_year_end
+
+    def _compute_top_subspecialties1(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.top_subspecialties1 = partner_link.top_subspecialties1
+            else:
+                record.top_subspecialties1 = record.top_subspecialties1.ids
+    def _compute_ordering_day(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.ordering_day1 = partner_link.ordering_day1
+            else:
+                record.ordering_day1 = record.ordering_day1.ids
+    def _compute_time_zone(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.time_zone = partner_link.time_zone
+            else:
+                record.time_zone = record.time_zone
+    def _compute_bed_size(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.bed_size = partner_link.bed_size
+            else:
+                record.bed_size = record.bed_size
+    def _compute_facilityERP(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.facilityERP = partner_link.facilityERP
+            else:
+                record.facilityERP = record.facilityERP
+    def _compute_competitors(self):
+        for record in self:
+           partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+           if partner_link:
+               record.competitors_id = partner_link.competitors_id
+           else:
+               record.competitors_id = record.competitors_id.ids
+    def _compute_purchase_history_date(self):
+        for record in self:
+           partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+           if partner_link:
+               record.purchase_history_date = partner_link.purchase_history_date
+           else:
+               record.purchase_history_date = record.purchase_history_date
+
+    def _compute_generalnotes(self):
+        for record in self:
+           partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+           if partner_link:
+               record.generalnotes = partner_link.generalnotes
+           else:
+               record.generalnotes = record.generalnotes
+    def _compute_parent_account_field(self):
+        for record in self:
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.acc_cust_parent = partner_link.acc_cust_parent
+            else:
+                record.acc_cust_parent = record.acc_cust_parent
+
     # THis method used to handle ACQ Oppo Button on Click
+
+    @api.onchange('acc_cust_parent')
+    def _onchange_fields_parent_acount_save(self):
+        if len(self.ids):
+            partner_id = self.ids[0]
+            partner_link = self.env['partner.link.tracker']
+            link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
+            vals = {'acc_cust_parent': self.acc_cust_parent.id
+                    }
+            link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+
+    def _inverse_parent_account(self):
+        pass
+
     def action_view_acq_opportunity(self):
         '''
         This function returns an action that displays the opportunities from partner.

@@ -307,7 +307,7 @@
             <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='misc']/field[@name='ref']" position="after">
                 <field name="barcode"/>
             </xpath>
-            <xpath expr="//field[@name='sale_margine']" position="after">
+            <xpath expr="//field[@name='saleforce_ac']" position="after">
                 <field name="order_quota"/>
                 <field name="revenue_quota"/>
             </xpath>
