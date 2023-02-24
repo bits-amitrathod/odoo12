@@ -106,12 +106,13 @@
                                             </a>
                                         </div>
                                         <input t-attf-id="input_qty_{{product_list.get(product[0])['partn_name']}}"
-                                               type="text" class="js_quantity form-control quantity"
+                                               type="text" class="js_quantity form-control quantity input_qty_1"
+                                               style="color:#cacaca;pointer-events:none;"
                                                t-att-data-product-id="product_list.get(product[0])['product'].id"
                                                t-att-data-partn-name-id="product_list.get(product[0])['partn_name']"
                                                t-att-data-partner-id="product_list.get(product[0])['partner'].id"
                                                t-att-data-available-qty="product_list.get(product[0])['product'].actual_quantity"
-                                               t-att-value="product_list.get(product[0])['quantity']" readonly="True"
+                                               t-att-value="product_list.get(product[0])['quantity']"
                                                />
 
                                         <div class="input-group-append">
