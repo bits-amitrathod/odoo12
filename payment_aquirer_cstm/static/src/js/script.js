@@ -93,10 +93,13 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         console.log('in else blog');
                         $carrierBadge.addClass('o_wsale_delivery_carrier_error');
                         $carrierBadge.text(data['error_message']);
+                        console.log(data['gen_pay_link']);
                         if (data['gen_pay_link'] == true) {
+                        console.log('in gen pay true');
                         $payButton.prop('disabled', false);
                         }
                         else{
+                        console.log('in gen pay false');
                         $payButton.prop('disabled', true);
                         }
 
