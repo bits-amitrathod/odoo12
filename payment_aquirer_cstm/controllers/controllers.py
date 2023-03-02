@@ -101,9 +101,15 @@ class PaymentAquirerCstm(http.Controller):
             # }
 
             gen_pay = False
-            pay_link = request.env['sale.pay.link.cust'].search([('sale_order_id', '=', order.id)])
-            if pay_link and pay_link.allow_pay_gen_payment_link:
-                gen_pay = True
+            if order.id:
+                pay_link = request.env['sale.pay.link.cust'].search([('sale_order_id', '=', order.id)])
+                if pay_link and pay_link.allow_pay_gen_payment_link:
+                    gen_pay = True
+            if order.id is False:
+                invoice_id = request.session.get('payment_link_invoice_id')
+                if invoice_id:
+                    pay_link = request.env['sale.pay.link.cust'].search([('sale_order_id', '=', invoice_id)])
+                    gen_pay = True
 
             return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}), 'status': order.delivery_rating_success, 'gen_pay_link': gen_pay}
 
@@ -309,6 +315,19 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                     'allow_pay_gen_payment_link': True
                 })
             partner_id = int(partner_id)
+
+        if invoice_id and not order_id:
+            pay_link = request.env['sale.pay.link.cust'].search([('invoice_id', '=', invoice_id)])
+            if pay_link:
+                pay_link.allow_pay_gen_payment_link = True
+                request.session['payment_link_invoice_id'] = invoice_id
+            else:
+                log_id = request.env['sale.pay.link.cust'].create({
+                        'invoice_id': invoice_id,
+                        'allow_pay_gen_payment_link': True
+                    })
+                request.session['payment_link_invoice_id'] = invoice_id
+                partner_id = int(partner_id)
 
         values.update({
             'partner_id': partner_id,

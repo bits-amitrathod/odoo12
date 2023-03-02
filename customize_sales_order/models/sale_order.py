@@ -436,3 +436,4 @@ class SalePayLink(models.Model):
 
     allow_pay_gen_payment_link = fields.Boolean("Allow Pay")
     sale_order_id = fields.Integer()
+    invoice_id = fields.Integer()
