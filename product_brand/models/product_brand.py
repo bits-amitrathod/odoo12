@@ -52,3 +52,12 @@ class ProductTemplate(models.Model):
         string='Manufacture',
         help='Select a Manufacture for this product'
     )
+
+    list_price = fields.Float(
+        'Sales Price', default=1.0,
+        digits='Product Price',
+        help="Price at which the product is sold to customers.", tracking=True)
+
+    active = fields.Boolean('Active', default=True,
+                            help="If unchecked, it will allow you to hide the product without removing it.", tracking=True)
+
