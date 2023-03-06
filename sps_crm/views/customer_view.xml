@@ -91,7 +91,7 @@
                     <field name="top_subspecialties1"/>
                     <field name="competitors_id"/>
                     <field name="purchase_history_date"/>
-                    <field name="generalnotes"/>
+                    <field name="generalnotes" class="text-break"/>
                 </field>
                 <field name="website" position="after">
                     <field name="fiscal_year_end" />
