@@ -61,3 +61,10 @@ class ProductTemplate(models.Model):
     active = fields.Boolean('Active', default=True,
                             help="If unchecked, it will allow you to hide the product without removing it.", tracking=True)
 
+
+class WebsitePublishedMixin(models.AbstractModel):
+    _inherit  = "website.published.mixin"
+    _description = 'Website Published Mixin'
+
+    is_published = fields.Boolean('Is Published', copy=False, default=lambda self: self._default_is_published(),
+                                  index=True, tracking=True)
