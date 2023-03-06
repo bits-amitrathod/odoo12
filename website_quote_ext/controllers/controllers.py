@@ -456,3 +456,34 @@ class CustomerPortal(CustomerPortal):
         values['message'] = message
 
         return request.render('sale.sale_order_portal_template', values)
+
+    @http.route(['/my/invoices/<int:invoice_id>'], type='http', auth="public", website=True)
+    def portal_my_invoice_detail(self, invoice_id, access_token=None, report_type=None, download=False, **kw):
+        try:
+            invoice_sudo = self._document_check_access('account.move', invoice_id, access_token)
+        except (AccessError, MissingError):
+            return request.redirect('/my')
+
+        if report_type in ('html', 'pdf', 'text'):
+            return self._show_report(model=invoice_sudo, report_type=report_type, report_ref='account.account_invoices',
+                                     download=download)
+
+        values = self._invoice_get_page_view_values(invoice_sudo, access_token, **kw)
+        acquirers = values.get('acquirers')
+        if acquirers:
+            country_id = values.get('partner_id') and values.get('partner_id')[0].country_id.id
+            values['acq_extra_fees'] = acquirers.get_acquirer_extra_fees(invoice_sudo.amount_residual,
+                                                                         invoice_sudo.currency_id, country_id)
+
+        pay_link = request.env['sale.pay.link.cust'].search([('invoice_id', '=', invoice_id)])
+        if pay_link:
+            pay_link.allow_pay_gen_payment_link = True
+            request.session['payment_link_invoice_id'] = invoice_id
+        else:
+            log_id = request.env['sale.pay.link.cust'].create({
+                'invoice_id': invoice_id,
+                'allow_pay_gen_payment_link': True
+            })
+            request.session['payment_link_invoice_id'] = invoice_id
+
+        return request.render("account.portal_invoice_page", values)
