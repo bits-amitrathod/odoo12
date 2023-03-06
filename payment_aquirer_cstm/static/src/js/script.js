@@ -97,6 +97,10 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         if (data['gen_pay_link'] == true) {
                         console.log('in gen pay true');
                         $payButton.prop('disabled', false);
+                        setTimeout(function(){
+                        $payButton.prop('disabled', false);
+                        console.log("delay done")
+                        },5000);
                         }
                         else{
                         console.log('in gen pay false');
