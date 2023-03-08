@@ -9,6 +9,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
     var session = require('web.session');
     var rpc = require('web.rpc')
     var Widget = require('web.Widget');
+    var Dialog = require('web.Dialog');
     //var framework = require('web.framework');
     require("web.zoomodoo");
     var _t = core._t;
@@ -68,10 +69,12 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             $('[id^=row_checked_]').addClass('row-checked')
             $('[id^=allow_qty_plus_]').css({'pointer-events':'', 'color':'#3d9cca'});
             $('[id^=allow_qty_minus_]').css({'pointer-events':'', 'color':'#3d9cca'});
+            $('[id^=input_qty_]').css({'pointer-events':'', 'color':'#3d9cca'});
         } else {
             $('[id^=row_checked_]').removeClass('row-checked')
             $('[id^=allow_qty_plus_]').css({'pointer-events':'none', 'color':'#cacaca'});
             $('[id^=allow_qty_minus_]').css({'pointer-events':'none', 'color':'#cacaca'});
+            $('[id^=input_qty_]').css({'pointer-events':'none', 'color':'#cacaca'});
         }
 
        /* ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
@@ -113,6 +116,31 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             });*/
         });
 
+        $(engine).on('change', 'input.input_qty_1', function (ev) {
+            console.log('input button');
+            ev.preventDefault();
+            var $link = $(ev.currentTarget);
+            var $input = $link.parent().parent().find("input");
+            var product_id = parseInt($input[0]['attributes']['data-product-id']['value']);
+            var available_qty = parseInt($input[0]['attributes']['data-available-qty']['value']);
+            var partn_name_id = $input[0]['attributes']['data-partn-name-id']['value'];
+            var partner_id = parseInt($input[0]['attributes']['data-partner-id']['value']);
+            var new_qty = parseInt($input.val());
+            console.log(partn_name_id);
+            var ele1 = $link.parent().find("#allow_qty_plus_"+partn_name_id);
+            if (new_qty>=available_qty) {
+               $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
+               console.log('new Entered Qty is greater than available qty');
+//               alert("New Entered Qty is greater than available qty")
+               $('#input_qty_'+partn_name_id).val(available_qty)
+               Dialog.alert(this, "New Entered Qty is greater than available qty");
+
+            }else{
+               $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
+            }
+
+        });
+
         $(engine).on('click', 'input:checkbox', function (ev) {
             console.log('checked one');
             var $link = $(ev.currentTarget);
@@ -132,13 +160,17 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
                     }
                     else{
                     $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
+                    $('#input_qty_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
+
                     }
                     $('#allow_qty_minus_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
+                    $('#input_qty_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
 
                 }else{
                     $('#row_checked_'+partn_name_id).removeClass('row-checked')
                     $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
                     $('#allow_qty_minus_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
+                    $('#input_qty_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
                 }
             }
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from typing import Dict, Any
 from odoo import models, fields, api
+from odoo.tools.translate import _
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -43,3 +44,25 @@ class PporoductTemplate(models.Model):
                                         help="The product will be available in each mentioned e-commerce category. Go to"
                                              "Shop > Customize and enable 'E-commerce categories' to view all e-commerce categories.",
                                         default=_default_public_categ_ids)
+
+class SaleOrder1(models.Model):
+    _inherit = 'sale.order'
+    def _cart_lines_stock_update(self, values, **kwargs):
+        line_id = values.get('line_id')
+        for line in self.order_line:
+            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+                cart_qty = sum(self.order_line.filtered(lambda p: p.product_id.id == line.product_id.id).mapped('product_uom_qty'))
+                if (line_id == line.id) and cart_qty > line.product_id.actual_quantity:
+                    qty = line.product_id.with_context(warehouse=self.warehouse_id.id).actual_quantity - cart_qty
+                    new_val = self._cart_update(line.product_id.id, line.id, qty, 0, **kwargs)
+                    # new_val['quantity'] = line.product_id.actual_quantity
+                    values.update(new_val)
+
+                    # Make sure line still exists, it may have been deleted in super()_cartupdate because qty can be <= 0
+                    if line.exists() and new_val['quantity']:
+                        line.warning_stock = _('You ask for %s products but only %s is available') % (cart_qty, new_val['quantity'])
+                        values['warning'] = line.warning_stock
+                    else:
+                        self.warning_stock = _("Some products became unavailable and your cart has been updated. We're sorry for the inconvenience.")
+                        values['warning'] = self.warning_stock
+        return values

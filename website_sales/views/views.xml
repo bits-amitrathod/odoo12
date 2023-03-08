@@ -158,7 +158,7 @@
         </xpath>
 
         <xpath expr="//input[hasclass('js_quantity')]" position="replace">
-            <input type="text" class="js_quantity form-control quantity" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty" t-att-readonly="True"/>
+            <input type="text" class="js_quantity form-control quantity" t-att-data-line-id="line.id" t-att-data-product-id="line.product_id.id" t-att-value="int(line.product_uom_qty) == line.product_uom_qty and int(line.product_uom_qty) or line.product_uom_qty" t-att-readonly="False"/>
         </xpath>
 
     </template>

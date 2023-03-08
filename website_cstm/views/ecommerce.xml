@@ -576,7 +576,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                         <i class="fa fa-minus"></i>
                     </a>
                     <input type="text" class="form-control quantity" data-min="1" name="add_qty" value="1"
-                           t-att-data-max="product.actual_quantity"  t-att-readonly="True"/>
+                           t-att-data-max="product.actual_quantity"  t-att-readonly="False"/>
                     <a t-attf-href="#" class="mb8 input-group-addon float_left js_add_cart_json">
                         <i class="fa fa-plus"></i>
                     </a>
