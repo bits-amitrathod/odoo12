@@ -40,20 +40,20 @@
                     % set products = ctx.get('products', [])
                     <div style="margin:auto;width:100%;background-color: #f6f6f6;  padding-left: 60px;">
                         <!--<img src="/web/image/res.company/${user.company_id.id}/logo"-->
-                        <img src="/website_cstm/static/src/img/logo.png"
+                        <img src="/sps_theme/static/src/images/logo.png"
                              style="height: auto; width: 80px; margin-top:30px;" alt="${user.company_id.name}"/>
                         <br/>
                         <br/>
-                        <p>Would you like to complete your purchase?</p>
+                        <p>Your item is back in stock! Click on the product below to complete your purchase.</p>
 
                         <table width="100%">
                          % for product in products:
                             <tr>
                                     <td style="width:50px;padding-top: 16px;">
                                         <!--<img src="/web/image/product.product/${object.product_variant_id.id}/image"-->
-                                        <img src="/website_cstm/static/src/img/product-image.jpg"
+                                        <!--<img src="/website_cstm/static/src/img/product-image.jpg"
                                              height="50px"
-                                             width="50px"></img>
+                                             width="50px"></img>-->
                                     </td>
                                     <td valign="top">
                                         <a href="/shop/product/${product.product_tmpl_id.id}" target="_blank">
@@ -83,8 +83,8 @@
             <field name="model_id" ref="model_sps_theme_product_instock_notify"/>
             <field name="state">code</field>
             <field name="code">model.send_email_product_instock()</field>
-            <field name='interval_number'>4</field>
-            <field name='interval_type'>hours</field>
+            <field name='interval_number'>15</field>
+            <field name='interval_type'>minutes</field>
             <field name="numbercall">-1</field>
         </record>
 
