@@ -60,9 +60,8 @@ class AccountClosedByNa(models.Model):
                             DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                         FROM public.sale_order sos
                         INNER JOIN 
-                            public.account_move aii ON sos.name = aii.invoice_origin
-                        GROUP BY sos.partner_id
-                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ')
+                            public.account_move aii ON sos.name = aii.invoice_origin and aii.invoice_date > '""" + str(end_date) + """ '
+                        GROUP BY sos.partner_id )
 
                         UNION
 
