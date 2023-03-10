@@ -93,8 +93,20 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         console.log('in else blog');
                         $carrierBadge.addClass('o_wsale_delivery_carrier_error');
                         $carrierBadge.text(data['error_message']);
-
+                        console.log(data['gen_pay_link']);
+                        if (data['gen_pay_link'] == true) {
+                        console.log('in gen pay true');
+                        $payButton.prop('disabled', false);
+                        setTimeout(function(){
+                        $payButton.prop('disabled', false);
+                        console.log("delay done")
+                        },5000);
+                        }
+                        else{
+                        console.log('in gen pay false');
                         $payButton.prop('disabled', true);
+                        }
+
                         var disabledReasons = $payButton.data('disabled_reasons') || {};
                         disabledReasons.carrier_selection = true;
                         $payButton.data('disabled_reasons', disabledReasons);

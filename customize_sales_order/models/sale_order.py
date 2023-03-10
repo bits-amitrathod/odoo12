@@ -99,6 +99,16 @@ class sale_order(models.Model):
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
+    #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
+
+    # @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
+    # @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
+    # def get_pay_button_activate(self):
+    #     for obj in self:
+    #         if 0:
+    #             obj.allow_pay_gen_payment_link = False
+    #         else:
+    #             obj.allow_pay_gen_payment_link = True
 
     @api.model
     def _get_default_team(self):
@@ -419,3 +429,11 @@ class ResUsers(models.Model):
                 user.partner_id.write({'property_payment_term_id': account_payment_term.id,
                                        'property_supplier_payment_term_id': account_payment_term.id})
         return users
+
+
+class SalePayLink(models.Model):
+    _name = "sale.pay.link.cust"
+
+    allow_pay_gen_payment_link = fields.Boolean("Allow Pay")
+    sale_order_id = fields.Integer()
+    invoice_id = fields.Integer()
