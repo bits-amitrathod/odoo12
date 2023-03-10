@@ -122,8 +122,8 @@ class AccountHierarchyReport(models.TransientModel):
         return final_data, final_data_name
 
     def recursive_hir(self, child, list_all, level, final_data, final_data_name):
-        data_dash = '------ ' * level + '>'
-        final_data.append(data_dash + ' ' + child)
+        data_dash = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' * level + '&nbsp;'
+        final_data.append(data_dash + '&nbsp;' + child)
         final_data_name.append(child)
         level = level + 1
         if child in list_all and level <= 9:
