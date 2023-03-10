@@ -52,3 +52,19 @@ class ProductTemplate(models.Model):
         string='Manufacture',
         help='Select a Manufacture for this product'
     )
+
+    list_price = fields.Float(
+        'Sales Price', default=1.0,
+        digits='Product Price',
+        help="Price at which the product is sold to customers.", tracking=True)
+
+    active = fields.Boolean('Active', default=True,
+                            help="If unchecked, it will allow you to hide the product without removing it.", tracking=True)
+
+
+class WebsitePublishedMixin(models.AbstractModel):
+    _inherit  = "website.published.mixin"
+    _description = 'Website Published Mixin'
+
+    is_published = fields.Boolean('Is Published', copy=False, default=lambda self: self._default_is_published(),
+                                  index=True, tracking=True)

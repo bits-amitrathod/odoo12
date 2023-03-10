@@ -140,7 +140,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         payload = responce.qcontext
 
         productMaxMinDates = {}
-        if (payload['product'].actual_quantity) > 0:
+        if (payload['product'].actual_quantity) > 0 and payload['product'].product_variant_id.id:
             query_result = self.fetch_lot_expirydates(payload['product'].product_variant_id.id)
             productMaxMinDates[payload['product'].product_variant_id.id] = {
                 "min": fields.Datetime.from_string(query_result['min']),
