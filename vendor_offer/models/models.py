@@ -490,6 +490,11 @@ class VendorOffer(models.Model):
                             'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
                             'amount_total': math.floor(round(credit_amount_total, 2))
                         })
+                    else:
+                        order.update({
+                            'amount_untaxed': cash_amount_untaxed,
+                            'amount_total': cash_amount_untaxed + amount_tax
+                        })
             else:
                 order.rt_price_subtotal_amt = False;
                 order.rt_price_total_amt = False;
