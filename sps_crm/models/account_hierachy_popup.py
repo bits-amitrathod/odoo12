@@ -51,6 +51,8 @@ class AccountHierarchyReport(models.TransientModel):
 
     def _compute_account_hierarchy_html(self):
 
+        flag = True
+        current_partner_name = ""
         partner = 0
         data_val = ''
         _logger.info('--------- _compute_account_hierarchy_html  In Account hierarchy code ')
@@ -58,8 +60,11 @@ class AccountHierarchyReport(models.TransientModel):
         current_partner = self.env.context.get('default_partner_id')
         current_partner_record = self.env['partner.link.tracker'].search([('partner_id', '=', current_partner)],
                                                                          limit=1)
+        current_partner_name = current_partner_record.partner_id.name
         res_model = 'partner.link.tracker'
         partner = current_partner
+
+
 
         if current_partner_record.partner_id.id is False:
             vals_list = {'partner_id': partner}
@@ -98,10 +103,20 @@ class AccountHierarchyReport(models.TransientModel):
         data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
                    "style='table-layout: fixed;'><tbody>"
         for x, list_data in enumerate(final_data):
-            data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-                                  " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-                                  "<a style='color:black !important;' target='_blank' href=' "+url+'/web#id='+str(list_all_id_names[final_data_name[x]])+"&model=res.partner&view_type=form&menu_id=519'>   " \
-                                  " " + list_data + "</a></td></tr>"
+            p = list_data.lstrip('&nbps; ')
+            if p == current_partner_name and flag:
+                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+                                      "<b><a style='color:blue !important;' target='_blank' href=' " + url + '/web#id=' + str(
+                    list_all_id_names[final_data_name[x]]) + "&model=res.partner&view_type=form&menu_id=519'>   " \
+                                                             " " + list_data + "</a></b></td></tr>"
+                flag = False
+            else:
+                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
+                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
+                                      "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
+                    list_all_id_names[final_data_name[x]]) + "&model=res.partner&view_type=form&menu_id=519'>   " \
+                                                             " " + list_data + "</a></td></tr>"
             # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
             #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
             #                       "" + list_data + "</td></tr>"
