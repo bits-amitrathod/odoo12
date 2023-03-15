@@ -104,19 +104,23 @@ class AccountHierarchyReport(models.TransientModel):
                    "style='table-layout: fixed;'><tbody>"
         for x, list_data in enumerate(final_data):
             p = list_data.lstrip('&nbps; ')
+            customer = self.env['res.partner'].sudo().search([('name', '=', p)], limit=1)
+            l = ["<span style='color: black;font-size: smaller;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
+            s1 =(str('' if not l else (*l,))).replace('"', ' ')
+        
             if p == current_partner_name and flag:
                 data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<b><a style='color:blue !important;' target='_blank' href=' " + url + '/web#id=' + str(
                     list_all_id_names[final_data_name[x]]) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + "</a></b></td></tr>"
+                                                             " " + list_data + "</a> </b>"+ s1 + "</td></tr>"
                 flag = False
             else:
                 data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
                     list_all_id_names[final_data_name[x]]) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + "</a></td></tr>"
+                                                             " " + list_data + " </a>"+ s1 +"</td></tr>"
             # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
             #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
             #                       "" + list_data + "</td></tr>"
