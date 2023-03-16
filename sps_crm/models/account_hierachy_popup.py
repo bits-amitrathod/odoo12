@@ -105,8 +105,8 @@ class AccountHierarchyReport(models.TransientModel):
         for x, list_data in enumerate(final_data):
             p = list_data.lstrip('&nbps; ')
             customer = self.env['res.partner'].sudo().search([('name', '=', p)], limit=1)
-            l = ["<span style='color: black;font-size: smaller;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
-            s1 =(str('' if not l else (*l,))).replace('"', ' ')
+            l = ["<span style='color: #C4262E;font-size: smaller;background-color: #F7CD1F;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
+            s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
         
             if p == current_partner_name and flag:
                 data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
