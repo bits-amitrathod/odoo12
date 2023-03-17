@@ -57,46 +57,22 @@ class AccountHierarchyReport(models.TransientModel):
         data_val = ''
         _logger.info('--------- _compute_account_hierarchy_html  In Account hierarchy code ')
 
-        current_partner = self.env.context.get('default_partner_id')
-        current_partner_record = self.env['partner.link.tracker'].search([('partner_id', '=', current_partner)],
-                                                                         limit=1)
-        current_partner_name = current_partner_record.partner_id.name
-        res_model = 'partner.link.tracker'
-        partner = current_partner
-
-
-
-        if current_partner_record.partner_id.id is False:
-            vals_list = {'partner_id': partner}
-            parent_partner = self.env[res_model].create(vals_list)
-
-        if current_partner_record.acc_cust_parent.id:
-            partner = current_partner_record.acc_cust_parent.id
-
-        parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
-        if parent_partner.partner_id.id is False:
-            vals_list = {'partner_id': partner}
-            parent_partner = self.env[res_model].create(vals_list)
-
-        if parent_partner.acc_cust_parent.id:
-            partner = parent_partner.acc_cust_parent.id
-
-        grand_parent_partner = self.env['partner.link.tracker'].search([('partner_id', '=', partner)], limit=1)
-        if grand_parent_partner.partner_id.id is False:
-            vals_list1 = {'partner_id': partner}
-            parent_partner = self.env[res_model].create(vals_list1)
-
+        current_partner_record = self.env['res.partner'].browse(int(self.env.context.get('default_partner_id')))
+        parent_parent = current_partner_record.acc_cust_parent if current_partner_record.acc_cust_parent else current_partner_record
+        grand_parent = parent_parent.acc_cust_parent if parent_parent.acc_cust_parent else parent_parent
         list_all = {}  # Graph is a dictionary to hold our child-parent relationships.
         list_all_id_names = {}
         partner_tracker_list = self.env['partner.link.tracker'].search([])
+
         for tracker in partner_tracker_list:
-            list_all.setdefault(tracker.acc_cust_parent.name, []).append(tracker.partner_id.name)
-            list_all_id_names.setdefault(tracker.partner_id.name, tracker.partner_id.id)
+            # list_all set customer parent id as key and list of child ids
+            list_all.setdefault(tracker.acc_cust_parent.id, []).append(tracker.partner_id)
+            list_all_id_names.setdefault(tracker.partner_id.id, tracker.partner_id.name)
 
         final_data = []
         final_data_name = []
         level = 0
-        final_data, final_data_name = self.set_data(grand_parent_partner.partner_id.name, list_all, level, final_data,
+        final_data, final_data_name = self.set_data(grand_parent, list_all, level, final_data,
                                                     final_data_name)
 
         url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
@@ -104,22 +80,22 @@ class AccountHierarchyReport(models.TransientModel):
                    "style='table-layout: fixed;'><tbody>"
         for x, list_data in enumerate(final_data):
             # p = list_data.lstrip('&nbps; ')
-            customer = self.env['res.partner'].sudo().search([('id', '=', list_all_id_names[final_data_name[x]])], limit=1)
+            customer = self.env['res.partner'].sudo().search([('id', '=', final_data_name[x].id)], limit=1)
             l = ["<span style='color: #C4262E;font-size: smaller;background-color: #F7CD1F;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
             s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
-        
-            if customer.id == current_partner and flag:
+
+            if customer.id == current_partner_record.id and flag:
                 data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<b><a style='color:blue !important;' target='_blank' href=' " + url + '/web#id=' + str(
-                    list_all_id_names[final_data_name[x]]) + "&model=res.partner&view_type=form&menu_id=519'>   " \
+                    final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
                                                              " " + list_data + "</a> </b>"+ s1 + "</td></tr>"
                 flag = False
             else:
                 data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
-                    list_all_id_names[final_data_name[x]]) + "&model=res.partner&view_type=form&menu_id=519'>   " \
+                    final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
                                                              " " + list_data + " </a>"+ s1 +"</td></tr>"
             # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
             #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
@@ -129,25 +105,27 @@ class AccountHierarchyReport(models.TransientModel):
         # self.account_hierarchy_html = data_val
         return data_val
 
-    def set_data(self, child, list_all, level, final_data, final_data_name):
-        final_data.append(child)
-        final_data_name.append(child)
+    def set_data(self, partner, list_all, level, final_data, final_data_name):
+        # final_data.append(partner.name + '*' + str(partner.id) + '*')
+        final_data.append(partner.name)
+        final_data_name.append(partner)
         level = level + 1
-        if child in list_all and level <= 9:
-            child_list = list_all[child]
-            for child in child_list:
-                self.recursive_hir(child, list_all, level, final_data, final_data_name)
+        if partner.id in list_all and level <= 9:
+            partner_child_list = list_all[partner.id]
+            for prt in partner_child_list:
+                self.recursive_hir(prt, list_all, level, final_data, final_data_name)
 
         return final_data, final_data_name
 
-    def recursive_hir(self, child, list_all, level, final_data, final_data_name):
+    def recursive_hir(self, partner, list_all, level, final_data, final_data_name):
         data_dash = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' * level + '&nbsp;'
-        final_data.append(data_dash + '&nbsp;' + child)
+        # final_data.append(data_dash + '&nbsp;' + partner.name + '*' + str(partner.id) + '*')
+        final_data.append(data_dash + '&nbsp;' + partner.name)
         # data_dash = '------ ' * level + '>'
         # final_data.append(data_dash + ' ' + child)
-        final_data_name.append(child)
+        final_data_name.append(partner)
         level = level + 1
-        if child in list_all and level <= 9:
-            child_list = list_all[child]
-            for child in child_list:
-                self.recursive_hir(child, list_all, level, final_data, final_data_name)
+        if partner.id in list_all and level <= 9:
+            partner_child_list = list_all[partner.id]
+            for prt in partner_child_list:
+                self.recursive_hir(prt, list_all, level, final_data, final_data_name)
