@@ -55,11 +55,24 @@ class AccountHierarchyReport(models.TransientModel):
         current_partner_name = ""
         partner = 0
         data_val = ''
+        res_model = 'partner.link.tracker'
         _logger.info('--------- _compute_account_hierarchy_html  In Account hierarchy code ')
 
         current_partner_record = self.env['res.partner'].browse(int(self.env.context.get('default_partner_id')))
+        if current_partner_record.id is False:
+            vals_list = {'partner_id': current_partner_record.id}
+            self.env[res_model].create(vals_list)
+
         parent_parent = current_partner_record.acc_cust_parent if current_partner_record.acc_cust_parent else current_partner_record
+        if current_partner_record.acc_cust_parent.id is False:
+            vals_list = {'partner_id': parent_parent.id}
+            self.env[res_model].create(vals_list)
+
         grand_parent = parent_parent.acc_cust_parent if parent_parent.acc_cust_parent else parent_parent
+        if parent_parent.acc_cust_parent.id is False:
+            vals_list = {'partner_id': grand_parent.id}
+            self.env[res_model].create(vals_list)
+
         list_all = {}  # Graph is a dictionary to hold our child-parent relationships.
         list_all_id_names = {}
         partner_tracker_list = self.env['partner.link.tracker'].search([])
@@ -81,7 +94,7 @@ class AccountHierarchyReport(models.TransientModel):
         for x, list_data in enumerate(final_data):
             # p = list_data.lstrip('&nbps; ')
             customer = self.env['res.partner'].sudo().search([('id', '=', final_data_name[x].id)], limit=1)
-            l = ["<span style='color: #C4262E;font-size: smaller;background-color: #F7CD1F;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
+            l = ["<span style='color: #C4262E;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
             s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
 
             if customer.id == current_partner_record.id and flag:
