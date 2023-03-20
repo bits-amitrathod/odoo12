@@ -94,7 +94,15 @@ class AccountHierarchyReport(models.TransientModel):
         for x, list_data in enumerate(final_data):
             # p = list_data.lstrip('&nbps; ')
             customer = self.env['res.partner'].sudo().search([('id', '=', final_data_name[x].id)], limit=1)
-            l = ["<span style='color: #C4262E;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
+            l= []
+            for a in customer.category_id:
+                if a.name in ['Sales Account', 'ACQ Account']:
+                    if a.name =="Sales Account":
+                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:green;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>")
+                    elif a.name =="ACQ Account":
+                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>")
+
+            # l = ["<span style='color: #C4262E;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
             s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
 
             if customer.id == current_partner_record.id and flag:
