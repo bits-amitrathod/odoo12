@@ -217,6 +217,25 @@ class Partner(models.Model):
         else:
             return expression.FALSE_DOMAIN
 
+    def pro_search_for_name(self, operator, value):
+        records = rec = self.env['res.partner'].browse(self.env['res.partner'].search([]).ids)
+        name_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', '')]
+        list = []
+        if operator in ['ilike']:
+            for record in records:
+                name = record.name
+                if name:
+                    for char, replacement in name_replacements:
+                        if char in name:
+                            name = name.replace(char, replacement)
+                        if char in value:
+                            value = value.replace(char, replacement)
+                    if name == value:
+                        list.append(record.id)
+            return [('id', 'in', list)]
+        else:
+            return expression.FALSE_DOMAIN
+
 
     #  SaleForce_ac Custom Search Imp (Many One Search)
     @api.model
@@ -375,7 +394,8 @@ class Partner(models.Model):
                                     inverse="_inverse_parent_account" , search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False, search="pro_search_for_sales_activity_notes")
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, search="pro_search_for_acq_activity_notes")
-    phone_search = fields.Char('Phone_cust', store=False, search="pro_search_for_phone")
+    phone_search = fields.Char('Phone Cust', store=False, search="pro_search_for_phone")
+    name_search = fields.Char('Name Cust', store=False, search="pro_search_for_name")
 
 
     def _compute_details_field(self):
