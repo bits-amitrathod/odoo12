@@ -95,6 +95,8 @@ class AccountHierarchyReport(models.TransientModel):
                                                     final_data_name)
 
         url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        _logger.info('--------- _compute_account_hierarchy_html  url ')
+        _logger.info('--------- _compute_account_hierarchy_html %s', url)
         data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
                    "style='table-layout: fixed;'><tbody>"
         for x, list_data in enumerate(final_data):
