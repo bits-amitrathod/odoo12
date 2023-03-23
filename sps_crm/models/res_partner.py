@@ -178,7 +178,45 @@ class Partner(models.Model):
         return self.generic_char_search(operator, value, 'acq_activity_notes')
 
     def pro_search_for_phone(self, operator, value):
-        return self.generic_char_search(operator, value, 'phone')
+        records = self.env['res.partner'].search([])
+        m_val = value
+        d_val = value
+        phone_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', '')]
+        mobile_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', '')]
+        list = []
+        if operator in ['ilike']:
+            for record in records:
+                phone = record.phone
+                mobile = record.mobile
+                direct_line = record.x_studio_direct_line
+                if phone:
+                    for char, replacement in phone_replacements:
+                        if char in phone:
+                            phone = phone.replace(char, replacement)
+                        if char in value:
+                            value = value.replace(char, replacement)
+                    if phone == value:
+                        list.append(record.id)
+                if mobile:
+                    for char, replacement in mobile_replacements:
+                        if char in mobile:
+                            mobile = mobile.replace(char, replacement)
+                        if char in value:
+                            m_val = m_val.replace(char, replacement)
+                    if mobile == m_val:
+                        list.append(record.id)
+                if direct_line:
+                    for char, replacement in mobile_replacements:
+                        if char in direct_line:
+                            direct_line = direct_line.replace(char, replacement)
+                        if char in value:
+                            d_val = d_val.replace(char, replacement)
+                    if direct_line == d_val:
+                        list.append(record.id)
+            return [('id', 'in', list)]
+        else:
+            return expression.FALSE_DOMAIN
+
 
     #  SaleForce_ac Custom Search Imp (Many One Search)
     @api.model
@@ -337,7 +375,7 @@ class Partner(models.Model):
                                     inverse="_inverse_parent_account" , search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False, search="pro_search_for_sales_activity_notes")
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, search="pro_search_for_acq_activity_notes")
-    phone = fields.Char(tracking=2, search="pro_search_for_phone")
+    phone_search = fields.Char('Phone_cust', store=False, search="pro_search_for_phone")
 
 
     def _compute_details_field(self):
