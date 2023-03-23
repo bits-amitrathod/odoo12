@@ -178,7 +178,7 @@ class Partner(models.Model):
         return self.generic_char_search(operator, value, 'acq_activity_notes')
 
     def pro_search_for_phone(self, operator, value):
-        records = self.env['res.partner'].search([])
+        records = rec = self.env['res.partner'].browse(self.env['res.partner'].search([]).ids)
         m_val = value
         d_val = value
         phone_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', '')]
@@ -201,7 +201,7 @@ class Partner(models.Model):
                     for char, replacement in mobile_replacements:
                         if char in mobile:
                             mobile = mobile.replace(char, replacement)
-                        if char in value:
+                        if char in m_val:
                             m_val = m_val.replace(char, replacement)
                     if mobile == m_val:
                         list.append(record.id)
@@ -209,7 +209,7 @@ class Partner(models.Model):
                     for char, replacement in mobile_replacements:
                         if char in direct_line:
                             direct_line = direct_line.replace(char, replacement)
-                        if char in value:
+                        if char in d_val:
                             d_val = d_val.replace(char, replacement)
                     if direct_line == d_val:
                         list.append(record.id)
