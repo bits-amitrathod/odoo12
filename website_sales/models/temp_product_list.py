@@ -332,8 +332,6 @@ class TempProductList(models.Model):
     def get_product_list(self, partner_id):
         _logger.info('update_quote_my_report_json_list In get_product_list -  partner_id : %s', str(partner_id))
         try:
-            if partner_id and partner_id is not None and len(self.product_list) == 0:
-                self.init_table()
             if partner_id and partner_id is not None and len(self.product_list) > 0:
                 parent_id = self.get_parent(partner_id)
                 _logger.info('update_quote_my_report_json_list In get_product_list - parent_id : %s', str(parent_id))
