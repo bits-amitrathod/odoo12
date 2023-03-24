@@ -221,6 +221,9 @@ class Partner(models.Model):
         records = rec = self.env['res.partner'].browse(self.env['res.partner'].search([]).ids)
         name_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', '')]
         list = []
+        if operator in ['=', '!=', 'like', 'ilike', 'not ilike', 'not like','>=','<=','<','>']:
+            reco = self.env['res.partner'].search([('name', operator, value)], limit=None)
+            list = [a.id for a in reco]
         if operator in ['ilike']:
             for record in records:
                 name = record.name
@@ -395,7 +398,7 @@ class Partner(models.Model):
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False, search="pro_search_for_sales_activity_notes")
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, search="pro_search_for_acq_activity_notes")
     phone_search = fields.Char('Phone Cust', store=False, search="pro_search_for_phone")
-    name_search = fields.Char('Name Cust', store=False, search="pro_search_for_name")
+    name_search_cust = fields.Char('Name Cust', store=False, search="pro_search_for_name")
 
 
     def _compute_details_field(self):
