@@ -425,7 +425,7 @@ class Partner(models.Model):
 
             # This Code For Checking circular Hierachy
             if partner_id == self.acc_cust_parent.id:
-                raise ValidationError(_(" you can't Assign self Account as parent Account"))
+                raise ValidationError(_(" You can't Assign self Account as Parent Account"))
             else:
                 partner_tracker_list = self.env['partner.link.tracker'].search([])
                 list_all = {}
@@ -440,19 +440,20 @@ class Partner(models.Model):
     def parent_checking_process(self,list_all,current_partner,parent_parent):
         level = 0
         childs = []
-        if current_partner in list_all:
-            childs[level] = list_all[current_partner]
-            if parent_parent in childs[level]:
+        if current_partner in list_all.keys():
+            childs = list_all[current_partner]
+            if parent_parent in childs:
                 return True
             else:
-                return self.check_recursive_child(list_all, childs[level], parent_parent, level)
+                return self.check_recursive_child(list_all, childs, parent_parent, level)
         else:
             return False
 
     def check_recursive_child(self, list_all, child_list, parent_parent, level):
         if level < 9:
             for child in child_list:
-               return True if parent_parent in list_all[child] else self.check_recursive_child(list_all,list_all[child],parent_parent, level+1 )
+                if child in list_all.keys():
+                    return True if parent_parent in list_all[child] else self.check_recursive_child(list_all,list_all[child],parent_parent, level+1 )
 
     def _compute_details_status_field(self):
         for record in self:
