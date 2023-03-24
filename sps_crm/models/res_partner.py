@@ -1,9 +1,9 @@
-from odoo import api,fields, models, tools
+from odoo import api,fields, models, tools, _
 from odoo.osv import expression
 import re
 from odoo.osv.expression import get_unaccent_wrapper
+from odoo.exceptions import ValidationError
 import logging
-
 _logger = logging.getLogger(__name__)
 
 class Partner(models.Model):
@@ -422,7 +422,37 @@ class Partner(models.Model):
                 'acq_activity_notes': self.acq_activity_notes
 
             }
+
+            # This Code For Checking circular Hierachy
+            if partner_id == self.acc_cust_parent.id:
+                raise ValidationError(_(" you can't Assign self Account as parent Account"))
+            else:
+                partner_tracker_list = self.env['partner.link.tracker'].search([])
+                list_all = {}
+                for tracker in partner_tracker_list:
+                    # list_all set customer parent id as key and list of child ids
+                    list_all.setdefault(tracker.acc_cust_parent.id, []).append(tracker.partner_id)
+                if self.acc_cust_parent:
+                    flag = self.parent_checking_process(list_all, partner_id,  self.acc_cust_parent.id)
+
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+
+    def parent_checking_process(self,list_all,current_partner,parent_parent):
+        level = 0
+        childs = []
+        if current_partner in list_all:
+            childs[level] = list_all[current_partner]
+            if parent_parent in childs[level]:
+                return True
+            else:
+                return self.check_recursive_child(list_all, childs[level], parent_parent, level)
+        else:
+            return False
+
+    def check_recursive_child(self, list_all, child_list, parent_parent, level):
+        if level < 9:
+            for child in child_list:
+               return True if parent_parent in list_all[child] else self.check_recursive_child(list_all,list_all[child],parent_parent, level+1 )
 
     def _compute_details_status_field(self):
         for record in self:
