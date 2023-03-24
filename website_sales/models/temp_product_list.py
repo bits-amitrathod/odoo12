@@ -159,7 +159,7 @@ class TempProductList(models.Model):
     def set_empty_product_list(self, partner_id=None):
         #self.product_list.clear()
         temp_list = {}
-        partner_id = self.env.context.get('quote_my_report_partner_id')
+        #partner_id = self.env.context.get('quote_my_report_partner_id')
         if partner_id and partner_id is not None:
             #partner = self.env['res.partner'].search([('id', '=', partner_id), ])
             #parent_partner_id = partner.id
@@ -308,8 +308,8 @@ class TempProductList(models.Model):
         _logger.info('- update_quote_my_report_json_list  partner_id  : %s', partner_id)
         _logger.info('- update_quote_my_report_json_list  parent_partner_id  : %s', parent_partner_id)
         _logger.info('- update_quote_my_report_json_list  self.product_list  : %s', self.product_list)
-        if parent_partner_id and parent_partner_id is not None and len(self.product_list) == 0:
-            self.set_empty_product_list(parent_partner_id)
+        if partner_id and partner_id is not None and len(self.product_list) == 0:
+            self.set_empty_product_list(partner_id)
         partner_product_list = self.product_list.get(parent_partner_id)
         _logger.info('- update_quote_my_report_json_list  partner_product_list  : %s', partner_product_list)
         if partner_product_list:
