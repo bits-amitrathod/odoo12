@@ -195,7 +195,7 @@ class Partner(models.Model):
                             phone = phone.replace(char, replacement)
                         if char in value:
                             value = value.replace(char, replacement)
-                    if phone == value:
+                    if phone == value or value in phone:
                         list.append(record.id)
                 if mobile:
                     for char, replacement in mobile_replacements:
@@ -203,7 +203,7 @@ class Partner(models.Model):
                             mobile = mobile.replace(char, replacement)
                         if char in m_val:
                             m_val = m_val.replace(char, replacement)
-                    if mobile == m_val:
+                    if mobile == m_val or m_val in mobile :
                         list.append(record.id)
                 if direct_line:
                     for char, replacement in mobile_replacements:
@@ -211,7 +211,7 @@ class Partner(models.Model):
                             direct_line = direct_line.replace(char, replacement)
                         if char in d_val:
                             d_val = d_val.replace(char, replacement)
-                    if direct_line == d_val:
+                    if direct_line == d_val or d_val in direct_line :
                         list.append(record.id)
             return [('id', 'in', list)]
         else:
