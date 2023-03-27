@@ -426,7 +426,7 @@ class Partner(models.Model):
 
             # This Code For Checking circular Hierachy
             if partner_id == self.acc_cust_parent.id:
-                raise ValidationError(_(" You can't Assign self Account as Parent Account"))
+                raise ValidationError(_("An account cannot be set as its own parent"))
             else:
                 partner_tracker_list = self.env['partner.link.tracker'].search([])
                 list_all = {}
@@ -437,7 +437,7 @@ class Partner(models.Model):
                     flag = self.parent_checking_process(list_all, partner_id,  self.acc_cust_parent.id)
 
                 if flag:
-                    raise ValidationError(_(" You can't Assign self Account as Parent Account"))
+                    raise ValidationError(_("An account cannot be set as its own parent"))
                 else:
                     link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
