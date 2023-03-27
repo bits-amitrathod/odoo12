@@ -428,11 +428,11 @@ class Partner(models.Model):
             if partner_id == self.acc_cust_parent.id:
                 raise ValidationError(_("An account cannot be set as its own parent"))
             else:
-                partner_tracker_list = self.env['partner.link.tracker'].search([])
+                partner_tracker_list = self.env['partner.link.tracker'].search([('acc_cust_parent', '!=', False)])
                 list_all = {}
                 for tracker in partner_tracker_list:
                     # list_all set customer parent id as key and list of child ids
-                    list_all.setdefault(tracker.acc_cust_parent.id, []).append(tracker.partner_id.id)
+                    list_all.setdefault(tracker.partner_id.id, []).append(tracker.acc_cust_parent.id)
                 if self.acc_cust_parent:
                     flag = self.parent_checking_process(list_all, partner_id,  self.acc_cust_parent.id)
 
