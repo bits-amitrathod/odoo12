@@ -392,6 +392,7 @@ class Partner(models.Model):
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
+            flag = False
             partner_link = self.env['partner.link.tracker']
             link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
             vals = {
@@ -431,29 +432,31 @@ class Partner(models.Model):
                 list_all = {}
                 for tracker in partner_tracker_list:
                     # list_all set customer parent id as key and list of child ids
-                    list_all.setdefault(tracker.acc_cust_parent.id, []).append(tracker.partner_id)
+                    list_all.setdefault(tracker.acc_cust_parent.id, []).append(tracker.partner_id.id)
                 if self.acc_cust_parent:
                     flag = self.parent_checking_process(list_all, partner_id,  self.acc_cust_parent.id)
 
-            link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+                if flag:
+                    raise ValidationError(_(" You can't Assign self Account as Parent Account"))
+                else:
+                    link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
-    def parent_checking_process(self,list_all,current_partner,parent_parent):
+    def parent_checking_process(self, list_all, current_partner, parent_parent):
         level = 0
-        childs = []
-        if current_partner in list_all.keys():
-            childs = list_all[current_partner]
-            if parent_parent in childs:
+        if parent_parent in list_all.keys():
+            childs = list_all[parent_parent]
+            if current_partner in childs:
                 return True
             else:
-                return self.check_recursive_child(list_all, childs, parent_parent, level)
+                return self.check_recursive_child(list_all, childs, current_partner, level)
         else:
             return False
 
-    def check_recursive_child(self, list_all, child_list, parent_parent, level):
+    def check_recursive_child(self, list_all, child_list, current_partner, level):
         if level < 9:
             for child in child_list:
                 if child in list_all.keys():
-                    return True if parent_parent in list_all[child] else self.check_recursive_child(list_all,list_all[child],parent_parent, level+1 )
+                    return True if current_partner in list_all[child] else self.check_recursive_child(list_all,list_all[child],current_partner, level+1 )
 
     def _compute_details_status_field(self):
         for record in self:
