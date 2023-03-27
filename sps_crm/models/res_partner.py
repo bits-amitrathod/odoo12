@@ -219,7 +219,7 @@ class Partner(models.Model):
 
     def pro_search_for_name(self, operator, value):
         records = rec = self.env['res.partner'].browse(self.env['res.partner'].search([]).ids)
-        name_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', '')]
+        name_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', ''), ('"', ''), ('.', ''), ('*', ''), ('/', ''), ('\'', '')]
         list = []
         if operator in ['=', '!=', 'like', 'ilike', 'not ilike', 'not like','>=','<=','<','>']:
             reco = self.env['res.partner'].search([('name', operator, value)], limit=None)
@@ -233,7 +233,7 @@ class Partner(models.Model):
                             name = name.replace(char, replacement)
                         if char in value:
                             value = value.replace(char, replacement)
-                    if name == value:
+                    if name.lower() == value.lower() or value.lower() in name.lower():
                         list.append(record.id)
             return [('id', 'in', list)]
         else:
