@@ -115,6 +115,20 @@
             </field>
         </record>
 
+        <record id="view_res_partner_filter_inherit1" model="ir.ui.view">
+            <field name="name">res.partner.select</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="/search/field[@name='name']" position="replace">
+                   <field name="name_search_cust" string="Name"/>
+               </xpath>
+                <xpath expr="/search/field[@name='phone']" position="replace">
+                    <field name="phone_search" string="Phone"/>
+                </xpath>
+            </field>
+       </record>
+
         <record id="view_form_external_field_form1" model="ir.ui.view">
             <field name="name">external.fields.form</field>
             <field name="model">partner.link.tracker</field>
