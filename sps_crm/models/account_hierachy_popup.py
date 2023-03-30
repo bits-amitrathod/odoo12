@@ -98,9 +98,14 @@ class AccountHierarchyReport(models.TransientModel):
             for a in customer.category_id:
                 if a.name in ['Sales Account', 'ACQ Account']:
                     if a.name =="Sales Account":
-                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:green;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>")
+                        user_name, user_id = self.get_sales_manager(customer)
+                        str1 = user_name.name if user_name else ""
+                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:green;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>"+ str1)
+
                     elif a.name =="ACQ Account":
-                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>")
+                        user_name, user_id = self.get_purchase_manager(customer)
+                        str2 =  user_name.name  if user_name else ""
+                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>"+ str2)
 
             # l = ["<span style='color: #C4262E;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
             s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
@@ -126,6 +131,33 @@ class AccountHierarchyReport(models.TransientModel):
         # self.account_hierarchy_html = data_val
         return data_val
 
+    def get_sales_manager(self, customer):
+        user_name = None
+        user_id = None
+        if customer.account_manager_cust:
+            user_name = customer.account_manager_cust
+            user_id = customer.account_manager_cust.id
+        elif customer.user_id:
+            if customer.user_id.name == "National Accounts" and customer.national_account_rep:
+                user_name = customer.national_account_rep
+                user_id = customer.national_account_rep.id
+            else:
+                user_name = customer.user_id
+                user_id = customer.user_id.id
+        elif customer.national_account_rep:
+            user_name = customer.national_account_rep
+            user_id = customer.national_account_rep.id
+        else:
+            user_name = customer.user_id
+            user_id = customer.user_id.id
+        return user_name, user_id
+    def get_purchase_manager(self, customer):
+        user_name = None
+        user_id = None
+        if customer.acq_manager:
+            user_name = customer.acq_manager
+            user_id = customer.acq_manager.id
+        return user_name, user_id
     def set_data(self, partner, list_all, level, final_data, final_data_name):
         # final_data.append(partner.name + '*' + str(partner.id) + '*')
         final_data.append(partner.name)
