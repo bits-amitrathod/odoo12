@@ -403,7 +403,7 @@ class Lead(models.Model):
         sales_person = self.user_id.login.strip() \
             if self.user_id.login else 'info@surgicalproductsolutions.com'
 
-        email = "equipment@surgicalproductsolutions.com" if self.opportunity_type and self.opportunity_type =="eq_acq" else "testappraisal@surgicalproductsolutions.com"
+        email = "equipment@surgicalproductsolutions.com" if self.opportunity_type and self.opportunity_type =="eq_acq" else "appraisal@surgicalproductsolutions.com"
 
 
         local_context = {'rep': self.partner_id.acq_manager.name, 'unq_ac': self.partner_id.saleforce_ac,
