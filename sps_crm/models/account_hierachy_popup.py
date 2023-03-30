@@ -95,17 +95,15 @@ class AccountHierarchyReport(models.TransientModel):
             # p = list_data.lstrip('&nbps; ')
             customer = self.env['res.partner'].sudo().search([('id', '=', final_data_name[x].id)], limit=1)
             l= []
+            sale_mngr = self.get_sales_manager(customer).name if self.get_sales_manager(customer) else ""
+            purchase_mngr = self.get_purchase_manager(customer).name if self.get_purchase_manager(customer) else ""
+
             for a in customer.category_id:
                 if a.name in ['Sales Account', 'ACQ Account']:
                     if a.name =="Sales Account":
-                        user_name, user_id = self.get_sales_manager(customer)
-                        str1 = user_name.name if user_name else ""
-                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:green;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>"+ str1)
-
+                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:green;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>")
                     elif a.name =="ACQ Account":
-                        user_name, user_id = self.get_purchase_manager(customer)
-                        str2 =  user_name.name  if user_name else ""
-                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>"+ str2)
+                        l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>")
 
             # l = ["<span style='color: #C4262E;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
             s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
@@ -115,14 +113,14 @@ class AccountHierarchyReport(models.TransientModel):
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<b><a style='color:blue !important;' target='_blank' href=' " + url + '/web#id=' + str(
                     final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + "</a> </b>"+ s1 + "</td></tr>"
+                                                             " " + list_data + "</a> </b>"+ s1 +" | " + purchase_mngr + " | " + sale_mngr + "</td></tr>"
                 flag = False
             else:
                 data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
                     final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + " </a>"+ s1 +"</td></tr>"
+                                                             " " + list_data + " </a>"+ s1 + " | " + purchase_mngr + " | " + sale_mngr +"</td></tr>"
             # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
             #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
             #                       "" + list_data + "</td></tr>"
@@ -133,31 +131,21 @@ class AccountHierarchyReport(models.TransientModel):
 
     def get_sales_manager(self, customer):
         user_name = None
-        user_id = None
         if customer.account_manager_cust:
             user_name = customer.account_manager_cust
-            user_id = customer.account_manager_cust.id
         elif customer.user_id:
             if customer.user_id.name == "National Accounts" and customer.national_account_rep:
                 user_name = customer.national_account_rep
-                user_id = customer.national_account_rep.id
             else:
                 user_name = customer.user_id
-                user_id = customer.user_id.id
         elif customer.national_account_rep:
             user_name = customer.national_account_rep
-            user_id = customer.national_account_rep.id
         else:
             user_name = customer.user_id
-            user_id = customer.user_id.id
-        return user_name, user_id
+        return user_name
     def get_purchase_manager(self, customer):
-        user_name = None
-        user_id = None
-        if customer.acq_manager:
-            user_name = customer.acq_manager
-            user_id = customer.acq_manager.id
-        return user_name, user_id
+       return customer.acq_manager if customer.acq_manager else None
+
     def set_data(self, partner, list_all, level, final_data, final_data_name):
         # final_data.append(partner.name + '*' + str(partner.id) + '*')
         final_data.append(partner.name)
