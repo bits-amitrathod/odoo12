@@ -171,6 +171,75 @@ class Partner(models.Model):
     def pro_search_for_parent_account(self, operator, value):
         return self.generic_char_search(operator, value, 'acc_cust_parent')
 
+    def pro_search_for_sales_activity_notes(self, operator, value):
+        return self.generic_char_search(operator, value, 'sales_activity_notes')
+
+    def pro_search_for_acq_activity_notes(self, operator, value):
+        return self.generic_char_search(operator, value, 'acq_activity_notes')
+
+    def pro_search_for_phone(self, operator, value):
+        records = rec = self.env['res.partner'].browse(self.env['res.partner'].search([]).ids)
+        m_val = value
+        d_val = value
+        phone_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', '')]
+        mobile_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', '')]
+        list = []
+        if operator in ['ilike']:
+            for record in records:
+                phone = record.phone
+                mobile = record.mobile
+                direct_line = record.x_studio_direct_line
+                if phone:
+                    for char, replacement in phone_replacements:
+                        if char in phone:
+                            phone = phone.replace(char, replacement)
+                        if char in value:
+                            value = value.replace(char, replacement)
+                    if phone == value or value in phone:
+                        list.append(record.id)
+                if mobile:
+                    for char, replacement in mobile_replacements:
+                        if char in mobile:
+                            mobile = mobile.replace(char, replacement)
+                        if char in m_val:
+                            m_val = m_val.replace(char, replacement)
+                    if mobile == m_val or m_val in mobile :
+                        list.append(record.id)
+                if direct_line:
+                    for char, replacement in mobile_replacements:
+                        if char in direct_line:
+                            direct_line = direct_line.replace(char, replacement)
+                        if char in d_val:
+                            d_val = d_val.replace(char, replacement)
+                    if direct_line == d_val or d_val in direct_line :
+                        list.append(record.id)
+            return [('id', 'in', list)]
+        else:
+            return expression.FALSE_DOMAIN
+
+    def pro_search_for_name(self, operator, value):
+        records = rec = self.env['res.partner'].browse(self.env['res.partner'].search([]).ids)
+        name_replacements = [('+', ''), ('-', ''), (' ', ''),  ('(', ''), (')', ''),  ('_', ''), ('"', ''), ('.', ''), ('*', ''), ('/', ''), ('\'', '')]
+        list = []
+        if operator in ['=', '!=', 'like', 'ilike', 'not ilike', 'not like','>=','<=','<','>']:
+            reco = self.env['res.partner'].search([('name', operator, value)], limit=None)
+            list = [a.id for a in reco]
+        if operator in ['ilike']:
+            for record in records:
+                name = record.name
+                if name:
+                    for char, replacement in name_replacements:
+                        if char in name:
+                            name = name.replace(char, replacement)
+                        if char in value:
+                            value = value.replace(char, replacement)
+                    if name.lower() == value.lower() or value.lower() in name.lower():
+                        list.append(record.id)
+            return [('id', 'in', list)]
+        else:
+            return expression.FALSE_DOMAIN
+
+
     #  SaleForce_ac Custom Search Imp (Many One Search)
     @api.model
     def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
@@ -326,8 +395,10 @@ class Partner(models.Model):
     status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id', compute="_compute_details_status_field", readonly=False)
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False, compute="_compute_parent_account_field",
                                     inverse="_inverse_parent_account" , search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
-    sales_activity_notes = fields.Html("Sales Activity Notes", store=False)
-    acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False)
+    sales_activity_notes = fields.Html("Sales Activity Notes", store=False, search="pro_search_for_sales_activity_notes")
+    acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, search="pro_search_for_acq_activity_notes")
+    phone_search = fields.Char('Phone Cust', store=False, search="pro_search_for_phone")
+    name_search_cust = fields.Char('Name Cust', store=False, search="pro_search_for_name")
 
 
     def _compute_details_field(self):
