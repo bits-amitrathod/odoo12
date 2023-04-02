@@ -97,6 +97,7 @@ class AccountHierarchyReport(models.TransientModel):
             l= []
             sale_mngr = self.get_sales_manager(customer).name if self.get_sales_manager(customer) else ""
             purchase_mngr = self.get_purchase_manager(customer).name if self.get_purchase_manager(customer) else ""
+            state = customer.state_id.name if customer.state_id else ""
 
             for a in customer.category_id:
                 if a.name in ['Sales Account', 'ACQ Account']:
@@ -113,14 +114,14 @@ class AccountHierarchyReport(models.TransientModel):
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<b><a style='color:blue !important;' target='_blank' href=' " + url + '/web#id=' + str(
                     final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + "</a> </b>"+ s1 +" | " + purchase_mngr + " | " + sale_mngr + "</td></tr>"
+                                                             " " + list_data + "</a> </b>"+ s1 + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
                 flag = False
             else:
                 data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
                     final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + " </a>"+ s1 + " | " + purchase_mngr + " | " + sale_mngr +"</td></tr>"
+                                                             " " + list_data + " </a>"+ s1 + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
             # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
             #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
             #                       "" + list_data + "</td></tr>"
