@@ -1,9 +1,9 @@
-from odoo import api,fields, models, tools
+from odoo import api,fields, models, tools, _
 from odoo.osv import expression
 import re
 from odoo.osv.expression import get_unaccent_wrapper
+from odoo.exceptions import ValidationError
 import logging
-
 _logger = logging.getLogger(__name__)
 
 class Partner(models.Model):
@@ -463,6 +463,7 @@ class Partner(models.Model):
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
+            flag = False
             partner_link = self.env['partner.link.tracker']
             link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
             vals = {
@@ -493,7 +494,40 @@ class Partner(models.Model):
                 'acq_activity_notes': self.acq_activity_notes
 
             }
-            link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+
+            # This Code For Checking circular Hierachy
+            if partner_id == self.acc_cust_parent.id:
+                raise ValidationError(_("An account cannot be set as its own parent"))
+            else:
+                partner_tracker_list = self.env['partner.link.tracker'].search([('acc_cust_parent', '!=', False)])
+                list_all = {}
+                for tracker in partner_tracker_list:
+                    # list_all set customer parent id as key and list of child ids
+                    list_all.setdefault(tracker.partner_id.id, []).append(tracker.acc_cust_parent.id)
+                if self.acc_cust_parent:
+                    flag = self.parent_checking_process(list_all, partner_id,  self.acc_cust_parent.id)
+
+                if flag:
+                    raise ValidationError(_("An account cannot be set as its own parent"))
+                else:
+                    link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
+
+    def parent_checking_process(self, list_all, current_partner, parent_parent):
+        level = 0
+        if parent_parent in list_all.keys():
+            childs = list_all[parent_parent]
+            if current_partner in childs:
+                return True
+            else:
+                return self.check_recursive_child(list_all, childs, current_partner, level)
+        else:
+            return False
+
+    def check_recursive_child(self, list_all, child_list, current_partner, level):
+        if level < 9:
+            for child in child_list:
+                if child in list_all.keys():
+                    return True if current_partner in list_all[child] else self.check_recursive_child(list_all,list_all[child],current_partner, level+1 )
 
     def _compute_details_status_field(self):
         for record in self:
