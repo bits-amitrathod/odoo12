@@ -311,6 +311,10 @@ class TempProductList(models.Model):
         if partner_id and partner_id is not None and len(self.product_list) == 0:
             self.set_empty_product_list(partner_id)
         partner_product_list = self.product_list.get(parent_partner_id)
+        if partner_id and partner_id is not None and partner_product_list is None:
+            self.set_empty_product_list(partner_id)
+            partner_product_list = self.product_list.get(parent_partner_id)
+        
         _logger.info('- update_quote_my_report_json_list  partner_product_list  : %s', partner_product_list)
         if partner_product_list:
             _logger.info('- update_quote_my_report_json_list')
