@@ -394,6 +394,7 @@ class Partner(models.Model):
             partner_id = self.ids[0]
             partner_link = self.env['partner.link.tracker']
             link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
+            link_partner_record = link_partner_record if link_partner_record else link_partner_record.create({'partner_id': partner_id})
             vals = {
                 'partner_id': partner_id,'purchase': self.purchase,
                 'edomechanicals': self.edomechanicals,'orthopedic': self.orthopedic,
