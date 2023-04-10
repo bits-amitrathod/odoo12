@@ -109,8 +109,8 @@ class ExportAccountClosedByBd(http.Controller):
                         FROM public.sale_order sos
                         INNER JOIN 
                             public.account_move aii ON sos.name = aii.invoice_origin
+                            and aii.invoice_date > '""" + str(end_date) + """'
                         GROUP BY sos.partner_id
-                        Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ')
                         
                         UNION
                         
@@ -144,7 +144,7 @@ class ExportAccountClosedByBd(http.Controller):
         select_query = select_query + " AND SPS.date_done >= COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) " \
                                       " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(
             start_date) + "' AND SPS.date_done <= (COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) + " \
-                          "INTERVAL '2 year')  "
+                          "INTERVAL '1 year')  "
 
         if business_development_id:
             select_query = select_query + "AND so.user_id = '" + str(business_development_id) + "'"
