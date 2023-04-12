@@ -1,16 +1,6 @@
 function load(){
-      const rows = {
-        len: 101,
-        0: {
-          cells: {
-            0: { text: 'SKU'},
-            1: { text: 'QTY'},
-            2: { text: 'UOM'},
-          },
-
-        }
-      };
-      for (let i = 1; i < 101; i += 1) {
+      const rows = {};
+      for (let i = 0; i < 101; i += 1) {
         rows[i] = {
           cells: {
             1: { text: '1'},
@@ -30,7 +20,24 @@ function load(){
               tip: 'Submit',
               icon: saveIcon,
               onClick: (data, sheet) => {
-              console.log('click save button：', data, sheet)
+              console.log('click save button data: ', data)
+              console.log('click save button Sheet: ', sheet)
+              new_obj = {0:{
+                      cells: {
+                        0: { text: 'SKU'},
+                        1: { text: 'QTY'},
+                        2: { text: 'UOM'},
+                      }}};
+              old_obj = data.rows
+              console.log(typeof(data.rows))
+              Object.entries(old_obj).forEach(([key, value]) => {
+                   console.log(key, value);
+                   console.log(Number(key)+1);
+                   new_obj[Number(key)+1] = value;
+                });
+              data.rows = new_obj
+              console.log('data after process : ', data)
+
               $('#myModal').show();
               $("#myModalClose").click(function () {
                     $('#myModal').hide();
@@ -87,7 +94,7 @@ function load(){
             2: { width: 100 },
           },
           rows,
-        }]).change((cdata));
+        }]).change(data =>{});
 
       setTimeout(() => {
       }, 50000);
