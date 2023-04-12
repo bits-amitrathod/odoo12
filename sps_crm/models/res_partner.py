@@ -466,6 +466,7 @@ class Partner(models.Model):
             flag = False
             partner_link = self.env['partner.link.tracker']
             link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
+            link_partner_record = link_partner_record if link_partner_record else link_partner_record.create({'partner_id': partner_id})
             vals = {
                 'partner_id': partner_id,'purchase': self.purchase,
                 'edomechanicals': self.edomechanicals,'orthopedic': self.orthopedic,
@@ -484,11 +485,11 @@ class Partner(models.Model):
                 'email_opt_out': self.email_opt_out,'facility_type': self.facility_type,
                 'time_zone': self.time_zone,'bed_size': self.bed_size,
                 'purchase_history_date': self.purchase_history_date,'mesh': self.mesh,
-                'ordering_day1': self.ordering_day1.ids, 'fiscal_year_end': self.fiscal_year_end,
-                'last_modify_by': self.last_modify_by, 'top_subspecialties1': self.top_subspecialties1.ids,
+                'ordering_day1': self.ordering_day1, 'fiscal_year_end': self.fiscal_year_end,
+                'last_modify_by': self.last_modify_by, 'top_subspecialties1': self.top_subspecialties1,
                 'created_by': self.created_by, 'gpo': self.gpo,
                 'acq_account': self.acq_account, 'sales_account': self.sales_account,
-                'competitors_id': self.competitors_id.ids, 'status_id': self.status_id.ids,
+                'competitors_id': self.competitors_id, 'status_id': self.status_id.ids,
                 'acc_cust_parent': self.acc_cust_parent.id,
                 'sales_activity_notes': self.sales_activity_notes,
                 'acq_activity_notes': self.acq_activity_notes

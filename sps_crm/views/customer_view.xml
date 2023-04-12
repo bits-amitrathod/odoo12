@@ -32,11 +32,9 @@
                             <field name="acc_cust_parent" invisible="1"/>
                             <field name="generalnotes" invisible="1"/>
                             <field name="ent"/>
-                            <field name="ordering_day1" widget="many2many_tags" invisible="1"/>
                             <field name="fiscal_year_end" invisible="1"/>
                             <field name="last_modify_by"/>
                             <field name="created_by"/>
-                            <field name="top_subspecialties1"  widget="many2many_tags" invisible="1"/>
 
 <!--                            <field name="captis"/>-->
 <!--                            <field name="illucient"/>-->
@@ -58,7 +56,7 @@
                             <field name="purchase_history_date" invisible="1"/>
 <!--                            <field name="acq_account"/>-->
 <!--                            <field name="sales_account"/>-->
-                            <field name="competitors_id" widget="many2many_tags" invisible="1"/>
+<!--                            <field name="competitors_id" widget="many2many_tags" invisible="1"/>-->
                             <!--<field name="type"/>-->
                             <field name="status_id" widget="many2many_tags"
                             attrs="{'invisible': ['|', '&amp;', ('is_company','=', True),('parent_id', '=', False),('company_name', '!=', False),('company_name', '!=', '')]}"/>
@@ -83,13 +81,13 @@
                     <field name="acc_cust_parent" />
                 </field>
                 <field name="vat" position="after">
-                    <field name="ordering_day1" />
+                    <field name="ordering_day1" widget="many2many_tags" />
                     <field name="time_zone" />
                     <field name="bed_size" />
                     <field name="gpo" />
                     <field name="facilityERP"/>
-                    <field name="top_subspecialties1"/>
-                    <field name="competitors_id"/>
+                    <field name="top_subspecialties1" widget="many2many_tags"/>
+                    <field name="competitors_id" widget="many2many_tags"/>
                     <field name="purchase_history_date"/>
                     <field name="generalnotes" class="text-break"/>
                 </field>
@@ -156,11 +154,10 @@
                                         <field name="bed_size" invisible="1"/>
                                         <field name="purchase_history_date" invisible="1"/>
                                         <field name="ent"/>
-                                        <field name="ordering_day1" widget="many2many_tags" invisible="1"/>
                                         <field name="fiscal_year_end" invisible="1"/>
                                         <field name="last_modify_by"/>
                                         <field name="created_by"/>
-                                        <field name="top_subspecialties1"  widget="many2many_tags" invisible="1"/>
+
                                     </group>
                                     <group>
 <!--                                       <field name="captis"/>-->
@@ -179,7 +176,7 @@
                                         <field name="email_opt_out"/>
 <!--                                        <field name="acq_account"/>-->
 <!--                                        <field name="sales_account"/>-->
-                                        <field name="competitors_id" widget="many2many_tags" invisible="1"/>
+<!--                                        <field name="competitors_id" widget="many2many_tags" invisible="1"/>-->
                                         <field name="status_id"  widget="many2many_tags"/>
                                     </group>
                       </group>
@@ -233,7 +230,7 @@
                                         <field name="top_subspecialties1"/>
 <!--                                        <field name="acq_account"/>-->
 <!--                                        <field name="sales_account"/>-->
-                                        <field name="competitors_id"/>
+                                        <field name="competitors_id" />
                                         <field name="status_id"/>
                   </tree>
             </field>
