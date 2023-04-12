@@ -82,6 +82,19 @@
         </field>
     </record>
 
+        <!-- Search  -->
+        <record id="crm_mail_activity_view_search" model="ir.ui.view">
+            <field name="name">mail.activity.view.search</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="mail.mail_activity_view_search" />
+            <field name="arch" type="xml">
+                <field name="res_model_id" position="after">
+                   <field name="sales_activity_notes"/>
+                    <field name="acq_activity_notes"/>
+               </field>
+            </field>
+       </record>
+
         <!-- Activity Popup View on customer page,
         both popup views are same, Customer page- Schedule Activity popup and My Activity-Edit popup  -->
         <record id="sh_mail_activity_type_view_form_inherit" model="ir.ui.view">

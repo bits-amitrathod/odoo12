@@ -6,10 +6,25 @@ class MailActivityNotesCustom(models.Model):
     """ Inherited Mail Acitvity to add custom field"""
     _inherit = 'mail.activity'
 
+    def generic_char_search(self, operator, value, field):
+        partner_link = self.env['partner.link.tracker']
+        if operator in ['=', '!=', 'like', 'ilike', 'not ilike', 'not like','>=','<=','<','>']:
+            record = partner_link.search([(field, operator, value)], limit=None)
+            return [('related_partner_activity', 'in', [a.partner_id.id for a in record])]
+        else:
+            return expression.FALSE_DOMAIN
+    def pro_search_for_sales_activity_notes(self, operator, value):
+        return self.generic_char_search(operator, value, 'sales_activity_notes')
+
+    def pro_search_for_acq_activity_notes(self, operator, value):
+        return self.generic_char_search(operator, value, 'acq_activity_notes')
+
+
+
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False, compute="_compute_act_note_field",
-                                       readonly=False)
+                                       search="pro_search_for_sales_activity_notes", readonly=False)
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, compute="_compute_act_note_field",
-                                     readonly=False)
+                                     search="pro_search_for_acq_activity_notes", readonly=False)
 
     related_partner_activity = fields.Many2one('res.partner', string="Related Partner")
 
