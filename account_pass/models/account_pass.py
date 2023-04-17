@@ -8,7 +8,7 @@ class account_pass(models.Model):
 
     stage_id = fields.Many2one(
         'account.pass.stage', string='Account pass Stage', index=True,
-        readonly=False, store=True,
+        readonly=False, store=True, group_expand='_read_group_stage_ids',
         copy=False, ondelete='restrict')
 
     partner_id = fields.Many2one('res.partner', String='Customer')
@@ -42,6 +42,10 @@ class account_pass(models.Model):
     integration_note = fields.Text(string="Integration Note")
 
     total = fields.Float(string="Total", compute="compute_total")
+
+    @api.model
+    def _read_group_stage_ids(self, stages, domain, order):
+        return stages.browse(self.env['account.pass.stage'].search([]).ids)
 
     @onchange('partner_id')
     def partner_depends_value_cal(self):
