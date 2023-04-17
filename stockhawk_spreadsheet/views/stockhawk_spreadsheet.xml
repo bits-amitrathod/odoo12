@@ -31,9 +31,8 @@
                                 </span></center>
                                   <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
                                       Copy (Ctrl+C) and Paste (Ctrl+V) your product information into the spreadsheet below.
-                                      Update the QTY fields with your desired order amount, and
-                                      whether you want to purchase single units (EA) or boxes (BX).
-                                      Do not edit the column titles SKU, QTY &amp; UOM.
+                                      Update the QTY fields with your desired order amount,
+                                      and whether you want to purchase single units (EA) or boxes (BX).
                                       Submit and allow 30 seconds to see your Order! Your products will be reserved on the Order for 15 minutes.
 
                                 </span>
@@ -58,7 +57,7 @@
                                                 <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
                                                     <h4>Tips for using Stockhawk Rapid Order:</h4>
                                                     <ul style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 15px;">
-                                                        <li style="font-weight: bold; margin:5px">Do not edit column titles (SKU, QTY, and UOM).</li>
+
                                                         <li style="margin:5px">Enter the product code or manufacturer product number in the SKU column.</li>
                                                         <li style="margin:5px">Specify the exact number of products you are looking for in the QTY column. You will be able to decrease the quantity (not increase) after your order has been generated.</li>
                                                         <li style="margin:5px">Indicate whether you are looking for single units (EA) or boxes (BX) in the UOM column.</li>
@@ -144,7 +143,7 @@
                                   </div>
                               <center>
                                   <div class="text-right spreadsheet">
-                                    <button style="justify-content: center;" type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help"> Info </button>
+                                    <button style="justify-content: center; margin-top:15px;" type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help"> Info </button>
                                     <button id="pastemod" hidden="hidden" style="justify-content: center;" type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#paste"> paste </button>
                                   </div>
                                   <div class="spreadsheet mb-5" id="x-spreadsheet-demo"></div>
