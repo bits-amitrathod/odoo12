@@ -60,12 +60,12 @@ class account_pass(models.Model):
     def _read_group_stage_ids(self, stages, domain, order):
         return stages.browse(self.env['account.pass.stage'].search([]).ids)
 
-    @onchange('partner_id')
+    @api.onchange('partner_id')
     def partner_depends_value_cal(self):
         for rec in self:
             rec.saleforce_ac = rec.partner_id.saleforce_ac if rec.partner_id else None
 
-    @onchange("is_in_stock_report", "is_follow_up_discussed", "is_req_freq", "is_competitor_info", "is_code_in_top_20",
+    @api.onchange("is_in_stock_report", "is_follow_up_discussed", "is_req_freq", "is_competitor_info", "is_code_in_top_20",
               "is_vendors_purchased", "is_unique_codes", "is_purchase_history", "is_average_month", "is_purchased",
               "is_prime_vendor", "is_integration")
     def compute_total(self):
