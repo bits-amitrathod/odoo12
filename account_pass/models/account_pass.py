@@ -1,5 +1,4 @@
 from odoo import api, fields, models, _
-from odoo.odoo.api import onchange
 
 
 class account_pass(models.Model):
