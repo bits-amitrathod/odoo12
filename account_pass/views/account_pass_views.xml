@@ -17,6 +17,17 @@
 				<field name="is_competitor_info"/>
 				<field name="is_code_in_top_20"/>
 				<field name="stage_id"/>
+				<field name="backorder"/>
+				<field name="ph"/>
+				<field name="expansion"/>
+				<field name="bonused"/>
+				<field name="total_account_spend" widget="monetary" optional="show"/>
+				<field name="ordering_method" optional="hide"/>
+				<field name="subspecialties" optional="hide"/>
+				<field name="popular_code" optional="hide"/>
+				<field name="manufacturers" optional="hide"/>
+				<field name="in_stock_report_text" optional="hide"/>
+				<field name="position" optional="hide"/>
 			</tree>
 		</field>
 	</record>
@@ -43,6 +54,13 @@
 							<field name="is_purchase_history"/>
 							<field name="purchase_history_note"  attrs="{'invisible': [('is_purchase_history', '=', False)]}"/>
                         	<field name="total"/>
+							<field name="bonused"/>
+							<field name="total_account_spend" widget="monetary" />
+							<field name="ordering_method"/>
+							<field name="backorder"/>
+							<field name="ph"/>
+							<field name="expansion"/>
+
 						</group>
                         <group>
                             <field name="is_integration"/>
@@ -58,6 +76,10 @@
 							<field name="is_purchased"/>
 							<field name="purchased_note" attrs="{'invisible': [('is_purchased', '=', False)]}" />
 							<field name="stage_id"/>
+							<field name="popular_code"/>
+							<field name="manufacturers"/>
+							<field name="in_stock_report_text"/>
+							<field name="position"/>
                         </group>
                     </group>
 
@@ -84,11 +106,20 @@
                                         <strong><field name="partner_id"/></strong>
                                     </div>
                                     <field name="total"/>
-                                </div>
-							<div class="oe_clear"/>
+						</div>
+<!--						<div class="oe_clear"/>-->
 					</t>
 				</templates>
 			</kanban>
+		</field>
+	</record>
+	<record id="account_pass_view_search" model="ir.ui.view">
+		<field name="name">Account Pass search</field>
+		<field name="model">account.pass</field>
+		<field name="arch" type="xml">
+			<search string="Search pass">
+				<field name="partner_id"/>
+			</search>
 		</field>
 	</record>
 

@@ -42,6 +42,20 @@ class account_pass(models.Model):
     integration_note = fields.Text(string="Integration Note")
 
     total = fields.Float(string="Total", compute="compute_total")
+    backorder = fields.Selection(string='Backorder Only?', selection=[('yes', 'Yes'),('no', 'No')])
+    ph = fields.Boolean(string="PH on file?")
+    expansion = fields.Boolean(string="Expansion Call Complete?")
+
+    company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company.id)
+    bonused = fields.Boolean(string="Bonused")
+    total_account_spend = fields.Monetary(string="Total Account Spend", currency_field='company_currency',)
+    company_currency = fields.Many2one("res.currency", string='Currency', related='company_id.currency_id', readonly=True)
+    ordering_method = fields.Text(string="Ordering Days/Order Method")
+    subspecialties = fields.Text(string="Subspecialties/Manufacturers")
+    popular_code = fields.Text(string="Popular Codes they will always buy")
+    manufacturers = fields.Text(string="Manufacturers that are off the table?")
+    in_stock_report_text = fields.Text(string="In Stock Report up to date w/ all products they can/will buy with us?")
+    position = fields.Text(string="Where do they position SPS?")
 
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
