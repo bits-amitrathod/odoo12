@@ -14,11 +14,39 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
     require("web.zoomodoo");
     var _t = core._t;
 
+    $(document).ready(function() {
+                var url_loader = window.location.href
+                if(url_loader.includes('shop/quote_my_report') || url_loader.includes('shop/cart?flag') || url_loader.includes('shop/cart')){
+                    $('#loader_in_stock').show();
+                }
+                function disableBack() {
+
+                var url_temp = window.location.href
+                if(url_temp.includes('shop/cart?flag') || url_temp.includes('shop/cart')){
+                    history.pushState(null, null, window.location.href);
+                    history.back();
+                    window.onpopstate = () => history.forward();
+                     $('#loader_in_stock').hide();
+
+                }
+
+                }
+                window.onload = disableBack();
+                window.onpageshow = function(e) {
+                    if (e.persisted)
+                        disableBack();
+                }
+                setTimeout(function (){
+                    $('#loader_in_stock').hide();
+                }, 4000);
+
+            });
 
     $('#add_product_in_to_cart').click(function (ev) {
 
         console.log('in add cart js fun start');
          $("#add_product_in_to_cart").attr('disabled', true);
+           $('#loader_in_stock').show();
         var $form = $('#quote_products').closest('form');
         $form.submit();
         ev.preventDefault();
@@ -44,13 +72,14 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
 
                     }).then(function (data) {
                         console.log('return');
-                        console.log(data);
+                        //console.log(data);
                        //$form.submit();
                         ajax.post("/add/product/cart", {
                         }).then(function (data) {
                             console.log('return add to cart');
                              $("#add_product_in_to_cart").attr('disabled', false);
                               console.log('in add cart js call end');
+                                $('#loader_in_stock').hide();
                             window.location.href = window.location.origin + '/shop/cart?flag=True&partner='+partner_id
                         });
             });

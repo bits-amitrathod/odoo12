@@ -10,6 +10,11 @@
         <template id="quote_my_report" name="Quote My Report">
             <t t-call="website.layout">
                 <section id="quote" class="report">
+                    <div id="loader_in_stock" style="width: 100%; height: 100%;
+                     position: absolute; background-color: #b3b6b9;  z-index: 1; opacity: 50%;">
+                         <img src="/website_sales/static/src/images/loader.gif" class="img-fluid" style="width: 120px;
+                            height: 120px; display: block;position: absolute;top: 25%;left: 50%; z-index: 1;"></img>
+                      </div>
                         <div class="text-center pt32 pb32 in-stock-title">
                             <!--<img src="/website_sales/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>-->
                             <img src="/website_sales/static/src/images/Stockhawk_InStock_Report_R1.png" class="img-fluid"/>
@@ -189,6 +194,11 @@
                                         <span class="fa fa-chevron-left" />
                                         <span class="">Continue Shopping</span>
                 </a>
+                 <div id="loader_in_stock" style="width: 100%; height: 100%;
+                     position: absolute; background-color: #b3b6b9;  z-index: 1; opacity: 50%;top: 0%;">
+                         <img src="/website_sales/static/src/images/loader.gif" class="img-fluid" style="width: 120px;
+                            height: 120px; display: block;position: absolute;top: 25%;left: 50%; z-index: 1;"></img>
+                      </div>
             </xpath>
         </template>
     </data>
