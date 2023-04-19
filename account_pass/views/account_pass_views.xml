@@ -28,6 +28,8 @@
 				<field name="manufacturers" optional="hide"/>
 				<field name="in_stock_report_text" optional="hide"/>
 				<field name="position" optional="hide"/>
+				<field name="reinstated_or_new" optional="hide"/>
+				<field name="customer_status" optional="hide"/>
 			</tree>
 		</field>
 	</record>
@@ -56,10 +58,12 @@
                         	<field name="total"/>
 							<field name="bonused"/>
 							<field name="total_account_spend" widget="monetary" />
+							<field name="subspecialties"/>
 							<field name="ordering_method"/>
 							<field name="backorder"/>
 							<field name="ph"/>
 							<field name="expansion"/>
+							<field name="customer_status"/>
 
 						</group>
                         <group>
@@ -80,6 +84,7 @@
 							<field name="manufacturers"/>
 							<field name="in_stock_report_text"/>
 							<field name="position"/>
+							<field name="reinstated_or_new"/>
                         </group>
                     </group>
 

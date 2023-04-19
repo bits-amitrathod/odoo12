@@ -1,5 +1,7 @@
 from odoo import api, fields, models, _
-
+import pytz
+from datetime import date, datetime
+from datetime import date, timedelta
 
 class account_pass(models.Model):
     _name = "account.pass"
@@ -18,14 +20,14 @@ class account_pass(models.Model):
 
     is_follow_up_discussed = fields.Boolean(string="Follow up Cadence Discussed")
     follow_up_discussed_note = fields.Text(string="Follow up Cadence Discussed Note")
-    is_req_freq = fields.Boolean(string="Request Frequency")
+    is_req_freq = fields.Boolean(string="Contact Responsiveness/Request Frequency")
     req_freq_note = fields.Text(string="Request Frequency Note")
     is_competitor_info = fields.Boolean(string="Competitor Info")
     competitor_info_note = fields.Text(string="Competitor Info Note")
     is_code_in_top_20 = fields.Boolean(string="1 Code in Top 20")
     code_in_top_20_note = fields.Text(string="1 Code in Top 20 Note")
 
-    is_vendors_purchased = fields.Boolean(string="Vendors Purchased")
+    is_vendors_purchased = fields.Boolean(string="2 Vendors Purchased")
     vendors_purchased_note = fields.Text(string="Vendors Purchased Note")
     is_unique_codes = fields.Boolean(string="7 Unique Codes")
     unique_codes_note = fields.Text(string="7 Unique Codes Note")
@@ -33,7 +35,7 @@ class account_pass(models.Model):
     purchase_history_note = fields.Text(string=" Purchase History/ Usage Report Note")
     is_average_month = fields.Boolean(string="Average 1 order or more a month")
     average_month_note = fields.Text(string="Average 1 order or more a month Note")
-    is_purchased = fields.Boolean(string="Has purchased")
+    is_purchased = fields.Boolean(string="Has Purchased General Surgery, Ortho, Implant Spine or Implant Biologic")
     purchased_note = fields.Text(string="Has purchased Note")
     is_prime_vendor = fields.Boolean(string="Prime Vendor ")
     prime_vendor_note = fields.Text(string="Prime Vendor Note")
@@ -56,6 +58,9 @@ class account_pass(models.Model):
     in_stock_report_text = fields.Text(string="In Stock Report up to date w/ all products they can/will buy with us?")
     position = fields.Text(string="Where do they position SPS?")
 
+    reinstated_or_new = fields.Selection(string='Reinstated or New', selection=[('reinstated', 'Reinstated'), ('new', 'New')])
+    customer_status = fields.Selection(string='Ideal Customer or Inconsistent Customer', selection=[('inconsistent', 'Inconsistent'), ('ideal', 'Ideal')])
+
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         return stages.browse(self.env['account.pass.stage'].search([]).ids)
@@ -77,5 +82,15 @@ class account_pass(models.Model):
                         (0.75 if rec.is_average_month else 0.0) + (0.75 if rec.is_purchased else 0.0) + \
                         (1.0 if rec.is_prime_vendor else 0.0) + (1.0 if rec.is_integration else 0.0))
 
-
-
+    # def compute_customer_reinstated_or_new(self):
+    #     for rec in self:
+    #         if rec.partner_id and rec.partner_id.reinstated_date:
+    #             datetime_obj = datetime.strptime(str(rec.partner_id.reinstated_date),"%Y-%m-%d %H:%M:%S")
+    #             d = fields.Date.to_string(datetime_obj)
+    #             data = self.env['sale.order'].search(['date_order', '>',d])
+    #             if data and len(data) > 3:
+    #                 rec.reinstated_or_new = 'reinstated'
+    #             else:
+    #                 rec.reinstated_or_new = 'new'
+    #         else:
+    #             rec.reinstated_or_new = None
