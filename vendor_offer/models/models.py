@@ -2573,6 +2573,7 @@ class ExportPPVendorPricingXL(http.Controller):
                     worksheet.col(i).width = 4000  # around 110 pixels
 
             base_style = xlwt.easyxf('align: wrap yes')
+            number_style = xlwt.easyxf(num_format_str='0')  # for number (for Column product Number)
             date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
             datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
 
@@ -2600,6 +2601,8 @@ class ExportPPVendorPricingXL(http.Controller):
                         cell_style = datetime_style
                     elif isinstance(cell_value, datetime.date):
                         cell_style = date_style
+                    if cell_index == 0:
+                        cell_style = number_style
                     worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
 
             fp = io.BytesIO()
