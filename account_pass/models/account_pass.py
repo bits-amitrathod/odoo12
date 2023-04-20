@@ -1,6 +1,8 @@
 from odoo import api, fields, models, _
 import pytz
-from datetime import date, datetime
+import datetime
+from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+
 from datetime import date, timedelta
 
 class account_pass(models.Model):
@@ -58,7 +60,7 @@ class account_pass(models.Model):
     in_stock_report_text = fields.Text(string="In Stock Report up to date w/ all products they can/will buy with us?")
     position = fields.Text(string="Where do they position SPS?")
 
-    reinstated_or_new = fields.Selection(string='Reinstated or New', selection=[('reinstated', 'Reinstated'), ('new', 'New')])
+    reinstated_or_new = fields.Selection(string='Reinstated or New', compute="compute_customer_reinstated_or_new", selection=[('reinstated', 'Reinstated'), ('new', 'New')])
     customer_status = fields.Selection(string='Ideal Customer or Inconsistent Customer', selection=[('inconsistent', 'Inconsistent'), ('ideal', 'Ideal')])
 
     @api.model
@@ -82,15 +84,18 @@ class account_pass(models.Model):
                         (0.75 if rec.is_average_month else 0.0) + (0.75 if rec.is_purchased else 0.0) + \
                         (1.0 if rec.is_prime_vendor else 0.0) + (1.0 if rec.is_integration else 0.0))
 
-    # def compute_customer_reinstated_or_new(self):
-    #     for rec in self:
-    #         if rec.partner_id and rec.partner_id.reinstated_date:
-    #             datetime_obj = datetime.strptime(str(rec.partner_id.reinstated_date),"%Y-%m-%d %H:%M:%S")
-    #             d = fields.Date.to_string(datetime_obj)
-    #             data = self.env['sale.order'].search(['date_order', '>',d])
-    #             if data and len(data) > 3:
-    #                 rec.reinstated_or_new = 'reinstated'
-    #             else:
-    #                 rec.reinstated_or_new = 'new'
-    #         else:
-    #             rec.reinstated_or_new = None
+
+    @api.onchange('partner_id')
+    def compute_customer_reinstated_or_new(self):
+        for rec in self:
+            if rec.partner_id and rec.partner_id.reinstated_date:
+                datetime_obj = datetime.datetime.strptime(str(rec.partner_id.reinstated_date),"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d")
+                self.env.cr.execute(
+                    "SELECT * FROM sale_order where date_order > '"+datetime_obj+"'")
+                data = self.env.cr.dictfetchall()
+                if data and len(data) > 3:
+                    rec.reinstated_or_new = 'reinstated'
+                else:
+                    rec.reinstated_or_new = 'new'
+            else:
+                rec.reinstated_or_new = None
