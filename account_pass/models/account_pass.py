@@ -1,5 +1,5 @@
 from odoo import api, fields, models, _
-import pytz
+from dateutil.relativedelta import relativedelta
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
@@ -91,12 +91,25 @@ class account_pass(models.Model):
         for rec in self:
             if rec.partner_id and rec.partner_id.reinstated_date:
                 datetime_obj = datetime.datetime.strptime(str(rec.partner_id.reinstated_date),"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d")
-                self.env.cr.execute(
-                    "SELECT * FROM sale_order where date_order > '"+datetime_obj+"'")
+                self.env.cr.execute("SELECT * FROM sale_order where partner_id=" + str(rec.partner_id.id) +" and date_order > '" + datetime_obj + "' and state='sale'")
                 data = self.env.cr.dictfetchall()
                 if data and len(data) > 3:
                     rec.reinstated_or_new = 'reinstated'
                 else:
-                    rec.reinstated_or_new = 'new'
+                    start_date = datetime.datetime.now()
+                    end_date = (start_date - relativedelta(days=30))
+                    so_ordered = self.env['sale.order'].search([
+                        ('date_order', '>=', end_date),
+                        ('date_order', '<=', start_date),
+                        ('state', 'in', ['sale']),
+                        ('partner_id', '=', rec.partner_id.id)
+                    ])
+                    so_req = self.env['sale.order'].search([
+                        ('date_order', '>=', end_date),
+                        ('date_order', '<=', start_date),
+                        ('state', 'in', ['draft','send']),
+                        ('partner_id', '=', rec.partner_id.id)
+                    ])
+                    rec.reinstated_or_new = 'new' if len(so_ordered) > 0 or len(so_req) >= 2 else None
             else:
                 rec.reinstated_or_new = None
