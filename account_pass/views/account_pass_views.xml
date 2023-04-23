@@ -21,6 +21,7 @@
 				<field name="ph"/>
 				<field name="expansion"/>
 				<field name="bonused"/>
+				<field name="sales_rep"/>
 				<field name="total_account_spend" widget="monetary" optional="show"/>
 				<field name="ordering_method" optional="hide"/>
 				<field name="subspecialties" optional="hide"/>
@@ -64,6 +65,7 @@
 							<field name="ph"/>
 							<field name="expansion"/>
 							<field name="customer_status"/>
+							<field name="sales_rep"/>
 
 						</group>
                         <group>

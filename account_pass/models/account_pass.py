@@ -62,6 +62,7 @@ class account_pass(models.Model):
 
     reinstated_or_new = fields.Selection(string='Reinstated or New', compute="compute_customer_reinstated_or_new", selection=[('reinstated', 'Reinstated'), ('new', 'New')])
     customer_status = fields.Selection(string='Ideal Customer or Inconsistent Customer', selection=[('inconsistent', 'Inconsistent'), ('ideal', 'Ideal')])
+    sales_rep = fields.Many2one('res.users', string="Sales Rep", tracking=True , default=lambda self: self.env.uid)
 
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
