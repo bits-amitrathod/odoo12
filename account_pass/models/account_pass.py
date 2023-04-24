@@ -108,7 +108,7 @@ class account_pass(models.Model):
                     so_req = self.env['sale.order'].search([
                         ('date_order', '>=', end_date),
                         ('date_order', '<=', start_date),
-                        ('state', 'in', ['draft','send']),
+                        ('state', 'in', ['draft','sent']),
                         ('partner_id', '=', rec.partner_id.id)
                     ])
 
@@ -121,7 +121,7 @@ class account_pass(models.Model):
                     po_req = self.env['purchase.order'].search([
                         ('date_approve', '>=', end_date_purchase),
                         ('date_approve', '<=', start_date),
-                        ('state', 'in', ['ven_draft', 'ven_send','draft','send']),
+                        ('state', 'in', ['ven_draft', 'ven_sent','draft','sent']),
                         ('partner_id', '=', rec.partner_id.id)
                     ])
 
