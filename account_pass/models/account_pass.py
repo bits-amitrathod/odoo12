@@ -125,6 +125,6 @@ class account_pass(models.Model):
                         ('partner_id', '=', rec.partner_id.id)
                     ])
 
-                    rec.reinstated_or_new = 'new' if (len(so_ordered) > 0 or len(so_req) >= 2) or len(po_ordered) > 0 or len(po_req) >= 2 else None
+                    rec.reinstated_or_new = 'new' if (len(so_ordered) > 0 or len(so_req) >= 2) or (len(po_ordered) > 0 or len(po_req) >= 2) else None
             else:
                 rec.reinstated_or_new = None
