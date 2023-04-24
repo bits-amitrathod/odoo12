@@ -98,6 +98,7 @@ class account_pass(models.Model):
                 else:
                     start_date = datetime.datetime.now()
                     end_date = (start_date - relativedelta(days=30))
+                    end_date_purchase = (start_date - relativedelta(days=60))
                     so_ordered = self.env['sale.order'].search([
                         ('date_order', '>=', end_date),
                         ('date_order', '<=', start_date),
@@ -110,6 +111,20 @@ class account_pass(models.Model):
                         ('state', 'in', ['draft','send']),
                         ('partner_id', '=', rec.partner_id.id)
                     ])
-                    rec.reinstated_or_new = 'new' if len(so_ordered) > 0 or len(so_req) >= 2 else None
+
+                    po_ordered = self.env['purchase.order'].search([
+                        ('date_approve', '>=', end_date_purchase),
+                        ('date_approve', '<=', start_date),
+                        ('state', 'in', ['purchase']),
+                        ('partner_id', '=', rec.partner_id.id)
+                    ])
+                    po_req = self.env['purchase.order'].search([
+                        ('date_approve', '>=', end_date_purchase),
+                        ('date_approve', '<=', start_date),
+                        ('state', 'in', ['ven_draft', 'ven_send','draft','send']),
+                        ('partner_id', '=', rec.partner_id.id)
+                    ])
+
+                    rec.reinstated_or_new = 'new' if (len(so_ordered) > 0 or len(so_req) >= 2) or len(po_ordered) > 0 or len(po_req) >= 2 else None
             else:
                 rec.reinstated_or_new = None
