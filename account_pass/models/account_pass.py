@@ -93,7 +93,7 @@ class account_pass(models.Model):
                 datetime_obj = datetime.datetime.strptime(str(rec.partner_id.reinstated_date),"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d")
                 self.env.cr.execute("SELECT * FROM sale_order where partner_id=" + str(rec.partner_id.id) +" and date_order > '" + datetime_obj + "' and state='sale'")
                 data = self.env.cr.dictfetchall()
-                if data and len(data) > 3:
+                if data and len(data) > 2:
                     rec.reinstated_or_new = 'reinstated'
                 else:
                     start_date = datetime.datetime.now()
