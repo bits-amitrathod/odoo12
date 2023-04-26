@@ -62,6 +62,11 @@
                     </group>
 				<notebook>
 					<page name="pass_details" string="Pass Details">
+						<div class="center mt8">
+                        <h1>
+                           Total Points : <field name="total" string="Total Points"/>
+                        </h1>
+                    </div>
 						<group>
 							<group>
 								<field name="is_prime_vendor"/>
@@ -76,8 +81,6 @@
 								<field name="unique_codes_note" attrs="{'invisible': [('is_unique_codes', '=', False)]}"/>
 								<field name="is_purchase_history"/>
 								<field name="purchase_history_note"  attrs="{'invisible': [('is_purchase_history', '=', False)]}"/>
-								<field name="total"/>
-
 							</group>
 							<group>
 								<field name="is_integration"/>
@@ -100,11 +103,11 @@
 							<group>
 								<field name="popular_code"/>
 								<field name="manufacturers"/>
+								<field name="subspecialties"/>
 							</group>
 							<group>
 								<field name="in_stock_report_text"/>
 								<field name="position"/>
-								<field name="subspecialties"/>
 								<field name="ordering_method"/>
 							</group>
 						</group>
