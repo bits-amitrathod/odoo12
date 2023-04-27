@@ -22,6 +22,18 @@ class ProductionLot(models.Model):
                                           help="The Alert Date has been reached.")
     product_qty = fields.Float('Quantity', compute='_product_qty', search='_search_qty_available')
 
+    available_qty_for_sale = fields.Float(compute='_compute_available_qty', store=False, readonly=True)
+
+    def _compute_available_qty(self):
+        for lot in self:
+            pick_id = self.env.context.get('active_picking_id')
+            stock_move = self.env['stock.move'].search([('picking_id', '=', pick_id)], limit=1)
+            aval_qty = self.env['stock.quant']._get_available_quantity(self.product_id, stock_move.location_id,
+                                                                       lot_id=lot, package_id=None,
+                                                                       owner_id=None, strict=False,
+                                                                       allow_negative=False)
+            lot.available_qty_for_sale = aval_qty
+
     @api.depends('expiration_date')
     def _compute_product_expiry_alert(self):
         current_date = fields.Datetime.now()
