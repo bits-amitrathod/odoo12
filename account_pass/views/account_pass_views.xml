@@ -63,9 +63,9 @@
 				<notebook>
 					<page name="pass_details" string="Pass Details">
 						<div class="center mt8">
-                        <h1>
+                        <h2 style="text-align: center;">
                            Total Points : <field name="total" string="Total Points"/>
-                        </h1>
+                        </h2>
                     </div>
 						<group>
 							<group>
