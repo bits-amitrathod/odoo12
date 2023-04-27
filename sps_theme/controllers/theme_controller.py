@@ -21,6 +21,10 @@ class ThemeController(http.Controller):
     def about(self):
         return http.request.render('sps_theme.about_page_template')
 
+    @http.route('/our-team', type='http', auth="public", website=True)
+    def about(self):
+        return http.request.render('sps_theme.our_team_page_template')
+
     @http.route('/contact-us', type='http', auth="public", website=True)
     def contact(self):
         return http.request.render('sps_theme.contact_page_template1')
