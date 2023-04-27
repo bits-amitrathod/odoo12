@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<odoo>
+    <menuitem id="account_pass_parent" name ="Account Pass" />
+
+	<record id="account_pass_view_tree" model="ir.ui.view">
+		<field name="name">Account Pass tree</field>
+		<field name="model">account.pass</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="partner_id"/>
+				<field name="saleforce_ac"/>
+				<field name="is_prime_vendor"/>
+                <field name="is_integration"/>
+				<field name="is_in_stock_report"/>
+				<field name="is_follow_up_discussed"/>
+				<field name="is_req_freq"/>
+				<field name="is_competitor_info"/>
+				<field name="is_code_in_top_20"/>
+				<field name="stage_id"/>
+				<field name="backorder"/>
+				<field name="ph"/>
+				<field name="expansion"/>
+				<field name="bonused"/>
+				<field name="sales_rep"/>
+				<field name="total_account_spend" widget="monetary" optional="show"/>
+				<field name="ordering_method" optional="hide"/>
+				<field name="subspecialties" optional="hide"/>
+				<field name="popular_code" optional="hide"/>
+				<field name="manufacturers" optional="hide"/>
+				<field name="in_stock_report_text" optional="hide"/>
+				<field name="position" optional="hide"/>
+				<field name="reinstated_or_new" optional="hide"/>
+				<field name="customer_status" optional="hide"/>
+			</tree>
+		</field>
+	</record>
+	<record id="account_pass_view_form" model="ir.ui.view">
+		<field name="name">Account Pass form</field>
+		<field name="model">account.pass</field>
+		<field name="arch" type="xml">
+			<form>
+				<header>
+					<field name="stage_id" widget="statusbar"/>
+				</header>
+				<sheet>
+                    <group>
+                        <group>
+							<field name="partner_id"/>
+							<field name="saleforce_ac" readonly="1"/>
+							<field name="sales_rep"/>
+							<field name="reinstated_or_new"/>
+							<field name="customer_status"/>
+
+						</group>
+                        <group>
+							<field name="expansion"/>
+							<field name="ph"/>
+							<field name="backorder"/>
+							<field name="bonused"/>
+							<field name="total_account_spend" widget="monetary" />
+                        </group>
+                    </group>
+				<notebook>
+					<page name="pass_details" string="Pass Details">
+						<div class="center mt8">
+                        <h2 style="text-align: center;">
+                           Total Points : <field name="total" string="Total Points"/>
+                        </h2>
+                    </div>
+						<group>
+							<group>
+								<field name="is_prime_vendor"/>
+								<field name="prime_vendor_note" attrs="{'invisible': [('is_prime_vendor', '=', False)]}" />
+								<field name="is_in_stock_report"/>
+								<field name="in_stock_report_note" attrs="{'invisible': [('is_in_stock_report', '=', False)]}"/>
+								<field name="is_follow_up_discussed"/>
+								<field name="follow_up_discussed_note" attrs="{'invisible': [('is_follow_up_discussed', '=', False)]}"/>
+								<field name="is_vendors_purchased"/>
+								<field name="vendors_purchased_note" attrs="{'invisible': [('is_vendors_purchased', '=', False)]}"/>
+								<field name="is_unique_codes"/>
+								<field name="unique_codes_note" attrs="{'invisible': [('is_unique_codes', '=', False)]}"/>
+								<field name="is_purchase_history"/>
+								<field name="purchase_history_note"  attrs="{'invisible': [('is_purchase_history', '=', False)]}"/>
+							</group>
+							<group>
+								<field name="is_integration"/>
+								<field name="integration_note" attrs="{'invisible': [('is_integration', '=', False)]}" />
+								<field name="is_req_freq"/>
+								<field name="req_freq_note" attrs="{'invisible': [('is_req_freq', '=', False)]}"/>
+								<field name="is_competitor_info"/>
+								<field name="competitor_info_note" attrs="{'invisible': [('is_competitor_info', '=', False)]}"/>
+								<field name="is_code_in_top_20"/>
+								<field name="code_in_top_20_note"  attrs="{'invisible': [('is_code_in_top_20', '=', False)]}" />
+								<field name="is_average_month"/>
+								<field name="average_month_note" attrs="{'invisible': [('is_average_month', '=', False)]}" />
+								<field name="is_purchased"/>
+								<field name="purchased_note" attrs="{'invisible': [('is_purchased', '=', False)]}" />
+							</group>
+						</group>
+					</page>
+					<page name="additional_information" string="Additional Information">
+						<group>
+							<group>
+								<field name="popular_code"/>
+								<field name="manufacturers"/>
+								<field name="subspecialties"/>
+							</group>
+							<group>
+								<field name="in_stock_report_text"/>
+								<field name="position"/>
+								<field name="ordering_method"/>
+							</group>
+						</group>
+					</page>
+				</notebook>
+				</sheet>
+			</form>
+		</field>
+	</record>
+	<record id="account_pass_view_kanban" model="ir.ui.view">
+		<field name="name">Account Pass Kanban</field>
+		<field name="model">account.pass</field>
+		<field name="arch" type="xml">
+			<kanban default_group_by="stage_id">
+				<field name="partner_id"/>
+				<field name="saleforce_ac"/>
+				<field name="stage_id"/>
+				<field name="is_prime_vendor"/>
+                <field name="is_integration"/>
+                <field name="total"/>
+				<templates>
+					<t t-name="kanban-box">
+						<div class="oe_kanban_content oe_kanban_global_click">
+								   <!-- Used to show Name title -->
+                                    <div class="o_kanban_record_title">
+                                        <strong><field name="partner_id"/></strong>
+                                    </div>
+                                    <field name="total"/>
+						</div>
+<!--						<div class="oe_clear"/>-->
+					</t>
+				</templates>
+			</kanban>
+		</field>
+	</record>
+	<record id="account_pass_view_search" model="ir.ui.view">
+		<field name="name">Account Pass search</field>
+		<field name="model">account.pass</field>
+		<field name="arch" type="xml">
+			<search string="Search pass">
+				<field name="partner_id"/>
+			</search>
+		</field>
+	</record>
+
+	<record model='ir.actions.act_window' id='account_pass_windows_action'>
+        <field name="name">Account Pass </field>
+        <field name="res_model">account.pass</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">kanban,tree,form</field>
+		<field name="context">{}</field>
+    </record>
+
+    <menuitem id="account_pass" name="Account" parent="account_pass_parent" action="account_pass_windows_action"/>
+
+
+
+</odoo>
