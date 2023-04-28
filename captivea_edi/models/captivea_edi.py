@@ -359,10 +359,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                                     'x_edi_store_number': log_line.store_number,
                                     'customer_po_ref': log_id.id,
                                     'company_id': log_id.company_id.id,
-                                    'file_ref': file_ref,
-                                    # KL 2023-04-21: Get note from 'edidocumentlog' object and map to sale_note
-                                    'sale_note': log_line.note
-                                    })
+                                    'file_ref': file_ref})
 
                     order = self.env['sale.order'].sudo().create(so_vals)
                     self._create_sale_order_line(log_line, order, product)

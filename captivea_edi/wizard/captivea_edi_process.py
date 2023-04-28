@@ -8,8 +8,6 @@ from datetime import datetime
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 import pysftp
-import logging
-_logger = logging.getLogger(__name__)
 
 GHX_GLOBAL = {}
 DOC_PREFIX_PO = '850'  # Prefix for Purchase Order Document
@@ -670,11 +668,10 @@ class CaptiveaEdiProcess(models.TransientModel):
                             vendor_id = False
                             vendor_ref = False
                             customer_number = False
-                            note = ['']                            
-                            
                             for row in lines:  # Processing file begins here.
                                 row_count += 1
                                 fields = [field.strip() for field in row.replace('~', '').split('^')]
+
                                 # GHX_GLOBAL.update({
                                 #     row_count: {fields[0]: fields[1:]}
                                 if len(fields) > 1:
@@ -712,15 +709,6 @@ class CaptiveaEdiProcess(models.TransientModel):
                                         ISA_ID = fields[2]
                                         if isa_id != ISA_ID:
                                             file_status = False
-                                    # KL 2023-04-21: Map PO COMMENTS to edi document note.
-                                    elif 'PO COMMENTS' in fields:
-                                        for msg_row in range(lines.index(row) + 1, len(lines)): 
-                                            msg_fields = [msg_field.strip() for msg_field in lines[msg_row].replace('~', '').split('^')]
-                                            if msg_fields[0] == 'MSG':
-                                                note.append(msg_fields[1])
-                                            else: 
-                                                break
-                                            
                                     elif fields[0] == 'PO1':
                                         if fields[1] and fields[1] not in po_lines.keys():
                                             po_lines.update({
@@ -813,8 +801,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                                             'unit_price': product['unit_price'],
                                             'x_lin_ref1': product['unit_price'],
                                             'edi_log_id': log_id.id,
-                                            'has_exceptions': product['has_exceptions'],
-                                            'note': ' '.join(note),
+                                            'has_exceptions': product['has_exceptions']
                                             }
                                     self.env['captivea.edidocumentlog'].create(vals)
                                     log_id.x_hdr_ref1 = x_hdr_ref1
@@ -830,7 +817,6 @@ class CaptiveaEdiProcess(models.TransientModel):
                                 order.x_hdr_ref1 = x_hdr_ref1
                                 order.order_of = 'ghx'
                                 log_id.sale_id = order
-                                
                                 file_path = ftpgpath + '/' + attr.filename
                                 all_success_log_ids |= log_id
                                 log_id.status = 'success'
