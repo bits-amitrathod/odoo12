@@ -10,6 +10,7 @@
                 <!--<field name="use_date" string="Expiration Date" />-->
                 <field name="alert_date" invisible="True"  />
 		        <field name="product_qty" />
+              <field name="available_qty_for_sale" />
           </field>
           <tree  position="attributes" >
             <attribute name="decoration-danger">alert_date&lt;=current_date</attribute>

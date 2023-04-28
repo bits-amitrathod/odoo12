@@ -14,10 +14,10 @@
             <script type="text/javascript" src="/ks_dn_advance/static/lib/js/pdf.min.js"/>
         </xpath>
     </template>
-    <template id="ks_front_end" name="Ks Tv Website MyDashboard assets" inherit_id="web.assets_frontend">
-        <xpath expr="." position="inside">
-            <link rel="stylesheet" href="/ks_dn_advance/static/src/css/ks_tv_dashboard.css"/>
-            <script type="text/javascript" src="/ks_dn_advance/static/src/js/ks_website_dashboard.js"/>
-        </xpath>
-    </template>
+<!--    <template id="ks_front_end" name="Ks Tv Website MyDashboard assets" inherit_id="web.assets_frontend">-->
+<!--        <xpath expr="." position="inside">-->
+<!--            <link rel="stylesheet" href="/ks_dn_advance/static/src/css/ks_tv_dashboard.css"/>-->
+<!--            <script type="text/javascript" src="/ks_dn_advance/static/src/js/ks_website_dashboard.js"/>-->
+<!--        </xpath>-->
+<!--    </template>-->
 </odoo>

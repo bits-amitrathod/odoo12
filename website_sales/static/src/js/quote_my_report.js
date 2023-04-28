@@ -38,7 +38,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
                 }
                 setTimeout(function (){
                     $('#loader_in_stock').hide();
-                }, 4000);
+                }, 2000);
 
             });
 

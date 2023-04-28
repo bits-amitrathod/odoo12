@@ -107,8 +107,9 @@ class ExportAccountClosedByNa(http.Controller):
                                     DATE_PART('month', AGE(' """ + str(start_date) + """ ', MIN(aii.invoice_date))) AS months    
                                 FROM public.sale_order sos
                                 INNER JOIN 
-                                    public.account_move aii ON sos.name = aii.invoice_origin and aii.invoice_date > '""" + str(end_date) + """ '
-                                GROUP BY sos.partner_id )
+                                    public.account_move aii ON sos.name = aii.invoice_origin
+                                GROUP BY sos.partner_id
+                                Having MIN(aii.invoice_date) > '""" + str(end_date) + """ ')
 
                                 UNION
 
@@ -144,7 +145,7 @@ class ExportAccountClosedByNa(http.Controller):
             start_date) + "' AND SPS.date_done <= (COALESCE(rp.reinstated_date, ai.invoice_date,rp.create_date) + " \
                           "INTERVAL '18 month')  "
 
-        if national_account_id and national_account_id is not None and str(national_account_id) != 'none':
+        if national_account_id:
             select_query = select_query + "AND so.national_account = '" + str(national_account_id) + "'"
 
         group_by = """ GROUP BY so.id, SPS.date_done, SOL.currency_id,so.national_account, rp.account_manager_cust,

@@ -21,6 +21,7 @@
 				<field name="ph"/>
 				<field name="expansion"/>
 				<field name="bonused"/>
+				<field name="sales_rep"/>
 				<field name="total_account_spend" widget="monetary" optional="show"/>
 				<field name="ordering_method" optional="hide"/>
 				<field name="subspecialties" optional="hide"/>
@@ -38,56 +39,80 @@
 		<field name="model">account.pass</field>
 		<field name="arch" type="xml">
 			<form>
+				<header>
+					<field name="stage_id" widget="statusbar"/>
+				</header>
 				<sheet>
                     <group>
                         <group>
 							<field name="partner_id"/>
 							<field name="saleforce_ac" readonly="1"/>
-                            <field name="is_prime_vendor"/>
-							<field name="prime_vendor_note" attrs="{'invisible': [('is_prime_vendor', '=', False)]}" />
-							<field name="is_in_stock_report"/>
-							<field name="in_stock_report_note" attrs="{'invisible': [('is_in_stock_report', '=', False)]}"/>
-							<field name="is_follow_up_discussed"/>
-							<field name="follow_up_discussed_note" attrs="{'invisible': [('is_follow_up_discussed', '=', False)]}"/>
-							<field name="is_vendors_purchased"/>
-							<field name="vendors_purchased_note" attrs="{'invisible': [('is_vendors_purchased', '=', False)]}"/>
-							<field name="is_unique_codes"/>
-							<field name="unique_codes_note" attrs="{'invisible': [('is_unique_codes', '=', False)]}"/>
-							<field name="is_purchase_history"/>
-							<field name="purchase_history_note"  attrs="{'invisible': [('is_purchase_history', '=', False)]}"/>
-                        	<field name="total"/>
-							<field name="bonused"/>
-							<field name="total_account_spend" widget="monetary" />
-							<field name="subspecialties"/>
-							<field name="ordering_method"/>
-							<field name="backorder"/>
-							<field name="ph"/>
-							<field name="expansion"/>
+							<field name="sales_rep"/>
+							<field name="reinstated_or_new"/>
 							<field name="customer_status"/>
 
 						</group>
                         <group>
-                            <field name="is_integration"/>
-							<field name="integration_note" attrs="{'invisible': [('is_integration', '=', False)]}" />
-							<field name="is_req_freq"/>
-							<field name="req_freq_note" attrs="{'invisible': [('is_req_freq', '=', False)]}"/>
-							<field name="is_competitor_info"/>
-							<field name="competitor_info_note" attrs="{'invisible': [('is_competitor_info', '=', False)]}"/>
-							<field name="is_code_in_top_20"/>
-							<field name="code_in_top_20_note"  attrs="{'invisible': [('is_code_in_top_20', '=', False)]}" />
-							<field name="is_average_month"/>
-							<field name="average_month_note" attrs="{'invisible': [('is_average_month', '=', False)]}" />
-							<field name="is_purchased"/>
-							<field name="purchased_note" attrs="{'invisible': [('is_purchased', '=', False)]}" />
-							<field name="stage_id"/>
-							<field name="popular_code"/>
-							<field name="manufacturers"/>
-							<field name="in_stock_report_text"/>
-							<field name="position"/>
-							<field name="reinstated_or_new"/>
+							<field name="expansion"/>
+							<field name="ph"/>
+							<field name="backorder"/>
+							<field name="bonused"/>
+							<field name="total_account_spend" widget="monetary" />
                         </group>
                     </group>
-
+				<notebook>
+					<page name="pass_details" string="Pass Details">
+						<div class="center mt8">
+                        <h2 style="text-align: center;">
+                           Total Points : <field name="total" string="Total Points"/>
+                        </h2>
+                    </div>
+						<group>
+							<group>
+								<field name="is_prime_vendor"/>
+								<field name="prime_vendor_note" attrs="{'invisible': [('is_prime_vendor', '=', False)]}" />
+								<field name="is_in_stock_report"/>
+								<field name="in_stock_report_note" attrs="{'invisible': [('is_in_stock_report', '=', False)]}"/>
+								<field name="is_follow_up_discussed"/>
+								<field name="follow_up_discussed_note" attrs="{'invisible': [('is_follow_up_discussed', '=', False)]}"/>
+								<field name="is_vendors_purchased"/>
+								<field name="vendors_purchased_note" attrs="{'invisible': [('is_vendors_purchased', '=', False)]}"/>
+								<field name="is_unique_codes"/>
+								<field name="unique_codes_note" attrs="{'invisible': [('is_unique_codes', '=', False)]}"/>
+								<field name="is_purchase_history"/>
+								<field name="purchase_history_note"  attrs="{'invisible': [('is_purchase_history', '=', False)]}"/>
+							</group>
+							<group>
+								<field name="is_integration"/>
+								<field name="integration_note" attrs="{'invisible': [('is_integration', '=', False)]}" />
+								<field name="is_req_freq"/>
+								<field name="req_freq_note" attrs="{'invisible': [('is_req_freq', '=', False)]}"/>
+								<field name="is_competitor_info"/>
+								<field name="competitor_info_note" attrs="{'invisible': [('is_competitor_info', '=', False)]}"/>
+								<field name="is_code_in_top_20"/>
+								<field name="code_in_top_20_note"  attrs="{'invisible': [('is_code_in_top_20', '=', False)]}" />
+								<field name="is_average_month"/>
+								<field name="average_month_note" attrs="{'invisible': [('is_average_month', '=', False)]}" />
+								<field name="is_purchased"/>
+								<field name="purchased_note" attrs="{'invisible': [('is_purchased', '=', False)]}" />
+							</group>
+						</group>
+					</page>
+					<page name="additional_information" string="Additional Information">
+						<group>
+							<group>
+								<field name="popular_code"/>
+								<field name="manufacturers"/>
+								<field name="subspecialties"/>
+							</group>
+							<group>
+								<field name="in_stock_report_text"/>
+								<field name="position"/>
+								<field name="ordering_method"/>
+							</group>
+						</group>
+					</page>
+				</notebook>
 				</sheet>
 			</form>
 		</field>

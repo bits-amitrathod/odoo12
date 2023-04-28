@@ -1,0 +1,145 @@
+<odoo>
+    <template id="our_team_page_template" name="Our Team Page">
+        <t name="OUR TEAM Page" t-name="sps_theme.our_team_page">
+              <t t-call="website.layout">
+                <div id="wrap" class="oe_structure oe_empty">
+                  <section class="s_title pt32 o_colored_level pb0" data-vcss="001" data-snippet="s_title" data-name="Title">
+                    <div class="container s_allow_columns">
+                      <h1 style="text-align: center;">
+                        <font style="font-size: 48px;">Our <b>Team</b></font>
+                      </h1>
+                    </div>
+                  </section>
+                  <section class="s_features o_colored_level pb0 pt0" data-snippet="s_features" data-name="Features" style="">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-lg-4 pt32 text-center o_colored_level pb16" style="">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Steve.png" alt="" data-original-title="" title="" aria-describedby="tooltip471297" loading="lazy" style="width: 250px; height: 325px; object-fit: cover;" data-original-id="754110" data-original-src="/sps_theme/static/src/images/SPS_Steve.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Steve Darocy</h3>
+                          <p>
+                            <b>
+                              <font style="font-size: 18px;">Managing Partner&amp;nbsp;</font>
+                            </b>
+                            <a href="https://www.linkedin.com/in/stevendarocy/" target="_blank">
+                              <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip373306"/>
+                            </a>
+                          </p>
+                        </div>
+                        <div class="col-lg-4 pt32 text-center o_colored_level pb0">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Justin.png" alt="" data-original-title="" title="" aria-describedby="tooltip741043" loading="lazy" style="width: 250px; height: 325px; object-fit: cover;" data-original-id="754111" data-original-src="/sps_theme/static/src/images/SPS_Justin.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Justin Tennant</h3>
+                          <b>
+                            <font style="font-size: 18px;">Managing Partner&amp;nbsp;</font>
+                          </b>
+                          <a href="https://www.linkedin.com/in/justintennant/" target="_blank">
+                            <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip916929"/>
+                          </a>
+                        </div>
+                        <div class="col-lg-4 pt32 text-center o_colored_level pb0" style="">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Megan.png" alt="" data-original-title="" title="" aria-describedby="tooltip381420" style="width: 250px; height: 325px; object-fit: cover;" loading="lazy" data-original-id="754112" data-original-src="/sps_theme/static/src/images/SPS_Megan.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Megan Casey</h3>
+                          <p>
+                            <b>
+                              <font style="font-size: 18px;">Vice President&amp;nbsp;</font>
+                            </b>
+                            <a href="https://www.linkedin.com/in/megancasey1/" target="_blank">
+                              <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip284383"/>
+                            </a>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                  <section class="s_features o_colored_level pt0 pb0" data-snippet="s_features" data-name="Features">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-lg-4 text-center o_colored_level pt0 pb16" style="">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Jamie.png" alt="" data-original-title="" title="" aria-describedby="tooltip341414" loading="lazy" style="width: 250px; height: 325px; object-fit: cover;" data-original-id="754113" data-original-src="/sps_theme/static/src/images/SPS_Jamie.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Jamie Gutermuth</h3>
+                          <p>
+                            <b>
+                              <font style="font-size: 18px;">Sales Operations Director&amp;nbsp;</font>
+                            </b>
+                            <a href="https://www.linkedin.com/in/jamiegutermuth/" target="_blank">
+                              <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip215660"/>
+                            </a>
+                            <br/>
+                          </p>
+                        </div>
+                        <div class="col-lg-4 text-center o_colored_level pt0 pb0">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Greg.png" alt="" data-original-title="" title="" aria-describedby="tooltip492916" loading="lazy" style="width: 250px; height: 325px; object-fit: cover;" data-original-id="754114" data-original-src="/sps_theme/static/src/images/SPS_Greg.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Greg Rosser</h3>
+                          <p>
+                            <b>
+                              <font style="font-size: 18px;">Director of Operations&amp;nbsp;</font>
+                            </b>
+                            <a href="https://www.linkedin.com/in/greg-rosser-4761bb58/" target="_blank">
+                              <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip675412"/>
+                            </a>
+                            <br/>
+                          </p>
+                        </div>
+                        <div class="col-lg-4 text-center o_colored_level pt0 pb0">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Whitney.png" alt="" data-original-title="" title="" aria-describedby="tooltip330858" loading="lazy" style="width: 250px; height: 325px; object-fit: cover;" data-original-id="754115" data-original-src="/sps_theme/static/src/images/SPS_Whitney.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Whitney Rathfon</h3>
+                          <p>
+                            <b>
+                              <font style="font-size: 18px;">Director of Supply Chain&amp;nbsp;</font>
+                            </b>
+                            <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip48887"/>
+                            <br/>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                  <section class="s_features o_colored_level pt0 pb0" data-snippet="s_features" data-name="Features" style="">
+                    <div class="container">
+                      <div class="row">
+                        <div class="col-lg-4 text-center o_colored_level pt0 pb0">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Ryland.png" alt="" data-original-title="" title="" aria-describedby="tooltip946559" style="width: 250px; height: 325px; object-fit: cover;" loading="lazy" data-original-id="754116" data-original-src="/sps_theme/static/src/images/SPS_Ryland.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Ryland Smith</h3>
+                          <p>
+                            <b>
+                              <font style="font-size: 18px;">Associate Director of Acquisitions&amp;nbsp;</font>
+                            </b>
+                            <a href="https://www.linkedin.com/in/ryland-smith-a06684102/" target="_blank">
+                              <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip407770"/>
+                            </a>
+                            <br/>
+                          </p>
+                        </div>
+                        <div class="col-lg-4 text-center o_colored_level pt0 pb0">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Gabby.png" alt="" data-original-title="" title="" aria-describedby="tooltip429482" style="width: 250px; height: 325px; object-fit: cover;" loading="lazy" data-original-id="754117" data-original-src="/sps_theme/static/src/images/SPS_Gabby.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Gabriella Thomas</h3>
+                          <p>
+                            <b>
+                              <font style="font-size: 18px;">Associate Director of Sales&amp;nbsp;</font>
+                            </b>
+                            <a href="https://www.linkedin.com/in/gabriella-thomas-736160144/" target="_blank">
+                              <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip310439"/>
+                            </a>
+                            <br/>
+                          </p>
+                        </div>
+                        <div class="col-lg-4 text-center o_colored_level pt0 pb56" style="">
+                          <img class="img-fluid o_we_custom_image m-3" src="/sps_theme/static/src/images/SPS_Bryon.png" alt="" data-original-title="" title="" aria-describedby="tooltip723894" style="width: 250px; height: 325px; object-fit: cover;" loading="lazy" data-original-id="754118" data-original-src="/sps_theme/static/src/images/SPS_Bryon.png" data-mimetype="image/png" data-resize-width="399"/>
+                          <h3>Bryon Fimiani</h3>
+                          <p>
+                            <b>
+                              <font style="font-size: 18px;">Director of Information Technology&amp;nbsp;</font>
+                            </b>
+                            <a href="https://www.linkedin.com/in/bryon-fimiani-1892818a/" target="_blank">
+                              <span class="fa fa-linkedin-square" data-original-title="" title="" aria-describedby="tooltip17199"/>
+                            </a>
+                            <br/>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                </div>
+              </t>
+        </t>
+    </template>
+</odoo>
