@@ -15,7 +15,6 @@ class NaAccountClosedReportPopup(models.TransientModel):
 
     # #@api.multi
     def open_table(self):
-
         start_date = self.string_to_date(str(self.start_date))
         end_date = start_date - datetime.timedelta(days=548)
         end_date_from_first = datetime.date(end_date.year, end_date.month, 1)
