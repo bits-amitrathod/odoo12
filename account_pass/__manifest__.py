@@ -15,6 +15,7 @@
             'datas/data.xml',
             'views/account_pass_views.xml',
             'views/account_pass_stage_views.xml',
+            'views/customer_view.xml',
             ],
 }
 
