@@ -10,18 +10,18 @@ class Partner(models.Model):
     _inherit = "res.partner"
 
     def action_account_pass(self):
-        form_view_id = self.env.ref('account_pass.account_pass_view_form').id
-        id = self.create_account_pass(self.id)
-        # action = {
-        #     'type': 'ir.actions.act_window',
-        #     'views': [(form_view_id, 'form')],
-        #     'view_mode': 'form',
-        #     'name': 'Account Pass Form',
-        #     'res_model': 'account.pass',
-        #     'domain': [('partner_id', '=', id)]
-        # }
+        ida = self.env['ir.ui.view'].create({
+            'name': 'test Filter',
+            'model': 'account.pass',
+            'arch': """<search string='Search pass'> <field name='partner_id'/> 
+            <filter string="Active Customer" domain="[('partner_id.id', '=', '""" + str(self.id) + """')]" name="active_customer"/>
+            </search>"""
+        })
         action = self.env['ir.actions.act_window']._for_xml_id('account_pass.account_pass_windows_action')
-        action['domain'] = [('partner_id', '=', self.id)]
+        action['search_view_id'] = [ida.id, 'search']
+        action['context'] = {
+            'search_default_active_customer': True,
+        }
         return action
 
     def create_account_pass(self, partner_id):
