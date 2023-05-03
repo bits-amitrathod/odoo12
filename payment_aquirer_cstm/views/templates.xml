@@ -150,4 +150,28 @@
             <h3 class="mb24" style="font-size: 20px;">Pay with</h3>
         </xpath>
     </template>
+
+    <record id="email_after_payment_done" model="mail.template">
+            <field name="name">Email After Payment</field>
+            <field name="model_id" ref="base.model_res_users"/>
+           <field name="email_from">${ctx['email_from']}</field>
+            <field name="email_to">${ctx['email_to']}</field>
+            <field name="email_cc">${ctx['email_cc']}</field>
+            <field name="subject">Payment Received </field>
+            <field name="body_html"><![CDATA[
+
+            <p>
+                    Dear Team,<br/>
+                    Payment Received for the following Sale Order :  <br/>
+            </p>
+                %if ctx.get('sale_order') :
+                <p> Sale Order :${ctx['sale_order']} <br/> </p>
+                %endif
+
+                <p>
+                    Thank you <br/>
+                </p>
+
+            ]]></field>
+        </record>
 </odoo>
