@@ -6,6 +6,7 @@ from odoo.http import request
 from odoo.osv import expression
 from odoo.addons.portal.controllers.mail import _message_post_helper
 import werkzeug
+from odoo import api, fields, models, tools, SUPERUSER_ID
 from odoo.exceptions import AccessError, MissingError
 from odoo.tools import consteq
 from odoo import api, fields, models, _
@@ -190,7 +191,24 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         if sale_note:
             order.sudo().write({'sale_note': sale_note})
+        self.action_send_mail_after_payment(order)
         return responce
+
+    def action_send_mail_after_payment(self, order=None):
+        template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
+        values = {'subject': 'Payment Received - ' + order.name + ' ', 'model': None, 'res_id': False}
+
+        email_to = 'sales@surgicalproductsolutions.com'
+        email_cc = 'accounting@surgicalproductsolutions.com'
+        email_from = "info@surgicalproductsolutions.com"
+
+        local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to, 'sale_order': order.name}
+        try:
+            sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+                                                                                        raise_exception=True)
+            request.env['mail.mail'].sudo().browse(sent_email_template).write(values)
+        except Exception as exc:
+            response = {'message': 'Unable to connect to SMTP Server'}
 
     @http.route('/salesTeamMessage', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def salesTeamMessage(self, sales_team_message):
