@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import odoo
+import hashlib
+import hmac
 from odoo import http
 from unicodedata import normalize
 from odoo.http import request
@@ -8,8 +10,9 @@ from odoo.addons.portal.controllers.mail import _message_post_helper
 import werkzeug
 from odoo import api, fields, models, tools, SUPERUSER_ID
 from odoo.exceptions import AccessError, MissingError
-from odoo.tools import consteq
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq, ustr
 from odoo import api, fields, models, _
+from odoo.tools.float_utils import float_repr
 
 
 class PaymentAquirerCstm(http.Controller):
@@ -191,32 +194,35 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         if sale_note:
             order.sudo().write({'sale_note': sale_note})
-        self.action_send_mail_after_payment(order)
+
         return responce
 
-    def action_send_mail_after_payment(self, order=None):
-        template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
-        values = {'subject': 'Payment Received - ' + order.name + ' ', 'model': None, 'res_id': False}
 
-        email_to = 'sales@surgicalproductsolutions.com'
-        email_cc = 'accounting@surgicalproductsolutions.com'
-        email_from = "info@surgicalproductsolutions.com"
-
-        local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to, 'sale_order': order.name}
-        try:
-            sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
-                                                                                        raise_exception=True)
-            request.env['mail.mail'].sudo().browse(sent_email_template).write(values)
-        except Exception as exc:
-            response = {'message': 'Unable to connect to SMTP Server'}
 
     @http.route('/salesTeamMessage', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def salesTeamMessage(self, sales_team_message):
         request.session['sales_team_message'] = sales_team_message
 
 
-
 class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment):
+
+    def action_send_mail_after_payment(self, order_id=None):
+        template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
+        order = request.env['sale.order'].search([('id', '!=', order_id)], limit=1)
+
+        if order:
+            values = {'subject': 'Payment Received - ' + order.name + ' ', 'model': None, 'res_id': False}
+            email_to = 'sales@surgicalproductsolutions.com'
+            email_cc = 'accounting@surgicalproductsolutions.com'
+            email_from = "info@surgicalproductsolutions.com"
+
+            local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to, 'sale_order': order.name}
+            try:
+                sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+                                                                                            raise_exception=True)
+                request.env['mail.mail'].sudo().browse(sent_email_template).write(values)
+            except Exception as exc:
+                response = {'message': 'Unable to connect to SMTP Server'}
 
     @http.route(['/website_payment/pay'], type='http', auth='public', website=True, sitemap=False)
     def pay(self, reference='', order_id=None, amount=False, currency_id=None, acquirer_id=None, partner_id=False,
@@ -379,5 +385,52 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             values['pms'] = []
 
         return request.render('payment.pay', values)
+
+    @http.route(['/website_payment/transaction/<string:reference>/<string:amount>/<string:currency_id>',
+                 '/website_payment/transaction/v2/<string:amount>/<string:currency_id>/<path:reference>',
+                 '/website_payment/transaction/v2/<string:amount>/<string:currency_id>/<path:reference>/<int:partner_id>'],
+                type='json', auth='public')
+    def transaction(self, acquirer_id, reference, amount, currency_id, partner_id=False, **kwargs):
+        acquirer = request.env['payment.acquirer'].browse(acquirer_id)
+        order_id = kwargs.get('order_id')
+        invoice_id = kwargs.get('invoice_id')
+
+        reference_values = order_id and {'sale_order_ids': [(4, order_id)]} or {}
+        reference = request.env['payment.transaction']._compute_reference(values=reference_values, prefix=reference)
+
+        values = {
+            'acquirer_id': int(acquirer_id),
+            'reference': reference,
+            'amount': float(amount),
+            'currency_id': int(currency_id),
+            'partner_id': partner_id,
+            'type': 'form_save' if acquirer.save_token != 'none' and partner_id else 'form',
+        }
+
+        if order_id:
+            values['sale_order_ids'] = [(6, 0, [order_id])]
+        elif invoice_id:
+            values['invoice_ids'] = [(6, 0, [invoice_id])]
+
+        reference_values = order_id and {'sale_order_ids': [(4, order_id)]} or {}
+        reference_values.update(acquirer_id=int(acquirer_id))
+        values['reference'] = request.env['payment.transaction']._compute_reference(values=reference_values,
+                                                                                    prefix=reference)
+        tx = request.env['payment.transaction'].sudo().with_context(lang=None).create(values)
+        secret = request.env['ir.config_parameter'].sudo().get_param('database.secret')
+        token_str = '%s%s%s' % (
+        tx.id, tx.reference, float_repr(tx.amount, precision_digits=tx.currency_id.decimal_places))
+        token = hmac.new(secret.encode('utf-8'), token_str.encode('utf-8'), hashlib.sha256).hexdigest()
+        tx.return_url = '/website_payment/confirm?tx_id=%d&access_token=%s' % (tx.id, token)
+
+        odoo.addons.payment.controllers.portal.PaymentProcessing.add_payment_transaction(tx)
+
+        render_values = {
+            'partner_id': partner_id,
+            'type': tx.type,
+        }
+
+        self.action_send_mail_after_payment(order_id)
+        return acquirer.sudo().render(tx.reference, float(amount), int(currency_id), values=render_values)
 
 
