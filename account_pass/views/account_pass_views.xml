@@ -48,7 +48,7 @@
 							<field name="partner_id"/>
 							<field name="saleforce_ac" readonly="1"/>
 							<field name="sales_rep"/>
-							<field name="reinstated_or_new"/>
+							<field name="reinstated_or_new" readonly="False"/>
 							<field name="customer_status"/>
 
 						</group>

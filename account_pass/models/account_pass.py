@@ -60,7 +60,7 @@ class account_pass(models.Model):
     in_stock_report_text = fields.Text(string="In Stock Report up to date w/ all products they can/will buy with us?")
     position = fields.Text(string="Where do they position SPS?")
 
-    reinstated_or_new = fields.Selection(string='Reinstated or New', compute="compute_customer_reinstated_or_new", selection=[('reinstated', 'Reinstated'), ('new', 'New')])
+    reinstated_or_new = fields.Selection(string='Reinstated or New', compute="compute_customer_reinstated_or_new", store=True, selection=[('reinstated', 'Reinstated'), ('new', 'New')])
     customer_status = fields.Selection(string='Ideal Customer or Inconsistent Customer', selection=[('inconsistent', 'Inconsistent'), ('ideal', 'Ideal')])
     sales_rep = fields.Many2one('res.users', string="Sales Rep", tracking=True , default=lambda self: self.env.uid)
 
