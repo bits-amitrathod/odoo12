@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="account_pass_stage_view_tree" model="ir.ui.view">
+		<field name="name">Account Pass Stages tree</field>
+		<field name="model">account.pass.stage</field>
+		<field name="arch" type="xml">
+			<tree>
+				 <field name="name"/>
+				<field name="fold"/>
+			</tree>
+		</field>
+	</record>
+	<record id="account_pass_stages_view_form" model="ir.ui.view">
+		<field name="name">Account Pass stages form</field>
+		<field name="model">account.pass.stage</field>
+		<field name="arch" type="xml">
+			<form>
+				<sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="fold"/>
+                        </group>
+                    </group>
+
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record model='ir.actions.act_window' id='account_pass_stages_windows_action'>
+        <field name="name">Account Pass </field>
+        <field name="res_model">account.pass.stage</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+<!--    <menuitem id="account_pass_stages" name="Stages" parent="account_pass_parent" action="account_pass_stages_windows_action"/>-->
+
+</odoo>
