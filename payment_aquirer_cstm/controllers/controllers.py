@@ -209,10 +209,10 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
 
     def action_send_mail_after_payment(self, order_id=None):
         template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
-        order = request.env['sale.order'].search([('id', '!=', order_id)], limit=1)
+        order = request.env['sale.order'].search([('id', '=', order_id)], limit=1)
 
         if order:
-            values = {'subject': 'Payment Received - ' + order.name + ' ', 'model': None, 'res_id': False}
+            values = {'subject': 'Payment In Process - ' + order.name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
             email_cc = 'accounting@surgicalproductsolutions.com'
             email_from = "info@surgicalproductsolutions.com"
