@@ -385,7 +385,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         else:
             values['pms'] = []
 
-        #self.action_send_mail_after_payment(order_id)
+        self.action_send_mail_after_payment(order_id)
         return request.render('payment.pay', values)
 
     @http.route(['/website_payment/token/<string:reference>/<string:amount>/<string:currency_id>',
@@ -426,7 +426,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             tx.id, tx.reference, float_repr(tx.amount, precision_digits=tx.currency_id.decimal_places))
             token = hmac.new(secret.encode('utf-8'), token_str.encode('utf-8'), hashlib.sha256).hexdigest()
             tx.return_url = return_url or '/website_payment/confirm?tx_id=%d&access_token=%s' % (tx.id, token)
-            self.action_send_mail_after_payment(order_id)
+
         except Exception as e:
             _logger.exception(e)
         return request.redirect('/payment/process')
