@@ -2,7 +2,7 @@
         'name': 'Account Pass',
         'description': '',
         'author': 'benchmarkitsolutions',
-        'depends': ['base', 'customize_sales_order'],
+        'depends': ['base'],
         'application': True,
         'version': '14.0.1.0.0',
         'license': 'AGPL-3',
@@ -15,7 +15,6 @@
             'datas/data.xml',
             'views/account_pass_views.xml',
             'views/account_pass_stage_views.xml',
-            'views/customer_view.xml',
             ],
 }
 

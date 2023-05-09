@@ -37,6 +37,6 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-<!--    <menuitem id="account_pass_stages" name="Stages" parent="account_pass_parent" action="account_pass_stages_windows_action"/>-->
+    <menuitem id="account_pass_stages" name="Stages" parent="account_pass_parent" action="account_pass_stages_windows_action"/>
 
 </odoo>
