@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <odoo>
-    <menuitem id="account_pass_parent" name ="Account Pass" />
+<!--    <menuitem id="account_pass_parent" name ="Account Pass" />-->
 
 	<record id="account_pass_view_tree" model="ir.ui.view">
 		<field name="name">Account Pass tree</field>
@@ -48,7 +48,7 @@
 							<field name="partner_id"/>
 							<field name="saleforce_ac" readonly="1"/>
 							<field name="sales_rep"/>
-							<field name="reinstated_or_new"/>
+							<field name="reinstated_or_new" readonly="False"/>
 							<field name="customer_status"/>
 
 						</group>
@@ -161,7 +161,7 @@
 		<field name="context">{}</field>
     </record>
 
-    <menuitem id="account_pass" name="Account" parent="account_pass_parent" action="account_pass_windows_action"/>
+<!--    <menuitem id="account_pass" name="Account" parent="account_pass_parent" action="account_pass_windows_action"/>-->
 
 
 
