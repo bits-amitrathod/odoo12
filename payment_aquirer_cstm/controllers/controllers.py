@@ -225,6 +225,23 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             except Exception as exc:
                 response = {'message': 'Unable to connect to SMTP Server'}
 
+    def action_send_mail_after_payment_final(self, ref=None):
+        template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
+
+        if ref:
+            values = {'subject': 'Payment Done - ' + ref + ' ', 'model': None, 'res_id': False}
+            email_to = 'sales@surgicalproductsolutions.com'
+            email_cc = 'accounting@surgicalproductsolutions.com'
+            email_from = "info@surgicalproductsolutions.com"
+
+            local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to, 'sale_order': ref}
+            try:
+                sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+                                                                                            raise_exception=True)
+                request.env['mail.mail'].sudo().browse(sent_email_template).write(values)
+            except Exception as exc:
+                response = {'message': 'Unable to connect to SMTP Server'}
+
     @http.route(['/website_payment/pay'], type='http', auth='public', website=True, sitemap=False)
     def pay(self, reference='', order_id=None, amount=False, currency_id=None, acquirer_id=None, partner_id=False,
             access_token=None, **kw):
@@ -430,5 +447,36 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         except Exception as e:
             _logger.exception(e)
         return request.redirect('/payment/process')
+
+    @http.route(['/website_payment/confirm'], type='http', auth='public', website=True, sitemap=False)
+    def confirm(self, **kw):
+        tx_id = int(kw.get('tx_id', 0))
+        access_token = kw.get('access_token')
+        if tx_id:
+            if access_token:
+                tx = request.env['payment.transaction'].sudo().browse(tx_id)
+                secret = request.env['ir.config_parameter'].sudo().get_param('database.secret')
+                valid_token_str = '%s%s%s' % (
+                tx.id, tx.reference, float_repr(tx.amount, precision_digits=tx.currency_id.decimal_places))
+                valid_token = hmac.new(secret.encode('utf-8'), valid_token_str.encode('utf-8'),
+                                       hashlib.sha256).hexdigest()
+                if not consteq(ustr(valid_token), access_token):
+                    raise werkzeug.exceptions.NotFound
+            else:
+                tx = request.env['payment.transaction'].browse(tx_id)
+            if tx.state in ['done', 'authorized']:
+                status = 'success'
+                message = tx.acquirer_id.done_msg
+            elif tx.state == 'pending':
+                status = 'warning'
+                message = tx.acquirer_id.pending_msg
+            else:
+                status = 'danger'
+                message = tx.state_message or _('An error occured during the processing of this payment')
+            odoo.addons.payment.controllers.portal.PaymentProcessing.remove_payment_transaction(tx)
+            self.action_send_mail_after_payment_final(tx.reference)
+            return request.render('payment.confirm', {'tx': tx, 'status': status, 'message': message})
+        else:
+            return request.redirect('/my/home')
 
 
