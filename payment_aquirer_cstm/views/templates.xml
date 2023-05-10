@@ -167,7 +167,9 @@
                 %if ctx.get('sale_order') :
                 <p> Reference :${ctx['sale_order']} <br/> </p>
                 %endif
-
+                %if ctx.get('amount') :
+                <p> Amount :${ctx['amount']} <br/> </p>
+                %endif
                 <p>
                     Thank you <br/>
                 </p>
