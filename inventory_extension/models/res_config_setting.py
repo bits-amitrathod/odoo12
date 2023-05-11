@@ -67,7 +67,15 @@ class StockPickingMarkAllButton(models.Model):
 
     is_mark_all_button_visible = fields.Boolean(string="Mark all visibility", compute='_compute_visibility', store=False)
     acq_user_id = fields.Many2one('res.users', string='Acq  Manager', compute='_get_acq_manager')
+    picking_warn_msg = fields.Char(string="Warning", compute="compute_warning")
 
+    def compute_warning(self):
+        for rec in self:
+            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name =="Website" and rec.partner_id.picking_warn in ["warning","block"]:
+                pre_msg = "Warning" if rec.partner_id.picking_warn =="warning" else "Blocking Message"
+                rec.picking_warn_msg = (pre_msg + " : " + str(rec.partner_id.picking_warn_msg)) if rec.partner_id.picking_warn_msg else None
+            else:
+                rec.picking_warn_msg = None
     def _get_acq_manager(self):
         for sp in self:
             if sp.origin and sp.origin is not None:
