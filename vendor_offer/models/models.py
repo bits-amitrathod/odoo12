@@ -2117,7 +2117,8 @@ class VendorPricingExport(models.TransientModel):
                                          'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90', 'Quantity on Order',
                                          'Average Aging', 'Inventory Scrapped','Open Quotations Per Code']))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
-        company = self.env['res.company'].search([], limit=1, order="id desc")
+        #company = self.env['res.company'].search([], limit=1, order="id desc")
+        company = self.env.company
 
         # sql_fuction = """
         #                         CREATE  OR REPLACE FUNCTION get_aging_days(product_template_param integer)  RETURNS integer AS $$
