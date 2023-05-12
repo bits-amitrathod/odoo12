@@ -105,12 +105,17 @@
 <!--            >#{'btn btn-secondary float-right d-none d-xl-inline-block' if user_authenticated else 'btn btn-default float-right d-none d-xl-inline-block'}</attribute>-->
 <!--        </xpath>-->
 
+<!--        <xpath expr="//a[@href='/shop/checkout?express=1']" position="attributes">-->
+<!--            <attribute name="class" />-->
+<!--            <attribute-->
+<!--                name="t-attf-class"-->
+<!--            >#{'btn btn-primary float-right d-none d-xl-inline-block' if user_authenticated else 'btn btn-default float-right d-none d-xl-inline-block'}</attribute>-->
+<!--        </xpath>-->
+
         <xpath expr="//a[@href='/shop/checkout?express=1']" position="attributes">
-            <attribute name="class" />
-            <attribute
-                name="t-attf-class"
-            >#{'btn btn-primary float-right d-none d-xl-inline-block' if user_authenticated else 'btn btn-default float-right d-none d-xl-inline-block'}</attribute>
+            <attribute name="class">btn btn-primary float-right d-none d-xl-inline-block</attribute>
         </xpath>
+
         <xpath expr="//a[@href='/shop/checkout?express=1']" position="after">
             <a
                 t-if="suggest_login"
