@@ -23,6 +23,9 @@ class DormantCustomer(models.Model):
                 length=len(confirmed_sales_orders)-1
                 customer.last_purchase_date = confirmed_sales_orders[length].date_order
                 customer.sale_order= confirmed_sales_orders[length].name
+            else:
+                customer.sale_order = ""
+                customer.last_purchase_date = None
                 # sales_order_lines = confirmed_sales_orders[0].order_line
                 # for order_line in sales_order_lines:
                 #     customer.last_purchased_product = order_line.product_id.product_tmpl_id.name

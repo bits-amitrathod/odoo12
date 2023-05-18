@@ -5,6 +5,8 @@ from lxml import etree
 from datetime import datetime
 from odoo.osv import expression
 import itertools
+import logging
+_logger = logging.getLogger(__name__)
 
 
 from dateutil.relativedelta import relativedelta
@@ -178,7 +180,10 @@ class TrendingReportListView(models.Model):
             code = int(popup.code)
         for customer in self:
             if(customer.month_count>=code):
-                customer.average_sale = (customer.total_sale / code)
+                if code > 0:
+                    customer.average_sale = (customer.total_sale / code)
+                else:
+                    customer.average_sale = 1
             elif(self.get_day_from_purchase(customer.id)):
                 if (self.get_day_from_purchase(customer.id)/30 > 1):
                     customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
@@ -259,4 +264,7 @@ class TrendingReportListView(models.Model):
 
     @staticmethod
     def string_to_date(date_string):
-        return datetime.strptime(str(date_string), "%Y-%m-%d").date()
+        if date_string:
+            return datetime.strptime(str(date_string), "%Y-%m-%d").date()
+        else:
+            return datetime.today().date()
