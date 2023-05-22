@@ -712,7 +712,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                                         if isa_id != ISA_ID:
                                             file_status = False
                                     # KL 2023-04-21: Map PO COMMENTS to edi document note.
-                                    elif 'PO COMMENTS' in fields:
+                                    elif 'NO_N902' in fields:
                                         for msg_row in range(lines.index(row) + 1, len(lines)): 
                                             msg_fields = [msg_field.strip() for msg_field in lines[msg_row].replace('~', '').split('^')]
                                             if msg_fields[0] == 'MSG':
