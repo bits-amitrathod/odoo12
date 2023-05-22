@@ -76,7 +76,7 @@ class StockPickingMarkAllButton(models.Model):
 
     def compute_warning(self):
         for rec in self:
-            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name =="Website" and rec.partner_id.picking_warn in ["warning","block"]:
+            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report"] and rec.partner_id.picking_warn in ["warning","block"]:
                 pre_msg = "Warning" if rec.partner_id.picking_warn =="warning" else "Blocking Message"
                 rec.picking_warn_msg = (pre_msg + " : " + str(rec.partner_id.picking_warn_msg)) if rec.partner_id.picking_warn_msg else None
             else:
@@ -101,7 +101,7 @@ class StockPickingMarkAllButton(models.Model):
 
     def action_button_mark_all_done(self):
         self.ensure_one()
-        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name == "Website" and self.partner_id.picking_warn in ["block"]:
+        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report"] and self.partner_id.picking_warn in ["block"]:
             return {
                 'name': _("Warning for %s") % self.partner_id.name,
                 'view_type': 'form',
