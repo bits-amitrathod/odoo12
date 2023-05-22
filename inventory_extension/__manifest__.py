@@ -15,8 +15,12 @@
     'depends': ['base','base_setup', 'stock'],
 
     # always loaded
-    'data': [# 'security/ir.model.access.csv',
-         'views/res_config_setting_views.xml','views/templates.xml', ],
+    'data': [
+        'security/ir.model.access.csv',
+        'views/res_config_setting_views.xml',
+        'views/templates.xml',
+        'views/warning_popup_wizard.xml'
+    ],
     # only loaded in demonstration mode
     'demo': ['demo/demo.xml', ],
     'installable': True,

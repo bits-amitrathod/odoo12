@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
 from odoo.osv import osv
 import warnings
 from odoo.exceptions import UserError, ValidationError
@@ -61,6 +61,11 @@ class ResConfigSettings(models.TransientModel):
         self.env['ir.config_parameter'].sudo().set_param("inventory_extension.module_product_expiry",
                                                          self.module_product_expiry)
 
+class WarningPopup(models.TransientModel):
+    _name = 'warning.popup.wizard'
+
+    picking_warn_msg = fields.Char(string="Warning", compute="compute_warning")
+
 
 class StockPickingMarkAllButton(models.Model):
     _inherit = "stock.picking"
@@ -96,7 +101,17 @@ class StockPickingMarkAllButton(models.Model):
 
     def action_button_mark_all_done(self):
         self.ensure_one()
-        if self.sale_id.id:
-            for lines in self.move_lines:
-                for line_items in lines.move_line_ids:
-                    line_items.qty_done = line_items.product_uom_qty
+        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name == "Website" and self.partner_id.picking_warn in ["block"]:
+            return {
+                'name': _("Warning for %s") % self.partner_id.name,
+                'view_type': 'form',
+                "view_mode": 'form',
+                'res_model': 'warning.popup.wizard',
+                'type': 'ir.actions.act_window',
+                'context': {'default_picking_warn_msg': self.partner_id.picking_warn_msg},
+                'target': 'new', }
+        else:
+            if self.sale_id.id:
+                for lines in self.move_lines:
+                    for line_items in lines.move_line_ids:
+                        line_items.qty_done = line_items.product_uom_qty
