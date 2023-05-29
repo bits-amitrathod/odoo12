@@ -28,6 +28,7 @@ class AccountClosedByBd_18(models.Model):
     #  @api.model_cr
     def init(self):
         self.init_table()
+
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
 
@@ -122,6 +123,106 @@ class AccountClosedByBd_18(models.Model):
                                      so.name AS name
                              FROM sale_order so
                              )''' % (self._table)
+                                )
+
+    def init_table_backup(self):
+        tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))
+
+        start_date = self.env.context.get('start_date')
+        end_date = self.env.context.get('end_date')
+
+        if start_date and end_date:
+            select_query = """
+                SELECT 
+                    ROW_NUMBER () OVER (ORDER BY SOS.id)    AS id,
+                    SOS.id                                  AS sale_order_id,
+                    SOS.partner_id                          AS customer, 
+                    SOS.user_id                             AS business_development, 
+                    MAX(SPS.date_done)                      AS delivery_date, 
+                    SOS.state                               AS state,
+                    SUM(SOL.qty_delivered * SOL.price_reduce) AS total_amount,
+                    SOL.currency_id                         AS currency_id
+                FROM public.sale_order SOS
+                INNER JOIN public.sale_order_line SOL ON SOS.id = SOL.order_id 
+                INNER JOIN public.res_partner RPS ON SOS.partner_id = RPS.id AND 
+                (RPS.is_wholesaler is NULL OR RPS.is_wholesaler != TRUE) AND (RPS.is_broker is NULL OR RPS.is_broker != TRUE)
+                INNER JOIN 
+                (SELECT DISTINCT ON (origin) origin,date_done,sale_id  FROM stock_picking WHERE picking_type_id = 5 AND state = 'done' ORDER BY origin) AS SPS 
+                ON SOS.id = SPS.sale_id
+                WHERE SOS.state NOT IN ('cancel', 'void') AND SOS.user_id IS NOT NULL AND SOS.partner_id IN 
+                ((SELECT DISTINCT (SO.partner_id) partner1
+                FROM public.sale_order SO
+                INNER JOIN public.stock_picking SP ON SO.id = SP.sale_id
+                WHERE """
+
+            select_query = select_query + " SP.date_done BETWEEN '" + str(end_date) + "'" + " AND '" + str(
+                start_date) + "' " + """ AND SP.state = 'done'
+                AND SP.picking_type_id = 5 AND SO.state NOT IN ('cancel', 'void') AND SO.partner_id NOT IN (
+                    SELECT DISTINCT (SO.partner_id) partner
+                    FROM public.sale_order SO
+                    INNER JOIN public.stock_picking SP ON SO.id = SP.sale_id
+                    WHERE """
+
+            select_query = select_query + " SP.date_done <= '" + str(end_date) + "' " \
+                           + """ AND SP.state = 'done' AND SP.picking_type_id = 5 AND SO.state NOT IN ('cancel', 'void')
+                ))UNION ALL
+                (SELECT DISTINCT (SO.partner_id) partner1
+                FROM public.sale_order SO
+                INNER JOIN public.stock_picking SP ON SO.id IN (
+                    Select SO.id
+                    From public.sale_order SO
+                    INNER JOIN public.stock_picking SP 
+                    ON SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 
+                                  AND SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL
+                    WHERE SO.partner_id IN (
+                            SELECT id
+                            FROM public.res_partner RP
+                            WHERE RP.reinstated_date IS NOT NULL AND """
+
+            select_query = select_query + " RP.reinstated_date BETWEEN '" + str(end_date) + "'" + " AND '" + str(
+                start_date) + "' )) WHERE " + " SP.date_done BETWEEN '" + str(end_date) + "'" + " AND '" + str(
+                start_date) + "' " + """ AND SP.state = 'done' AND SP.picking_type_id = 5 
+                AND SO.state NOT IN ('cancel', 'void') AND SO.partner_id NOT IN (
+                        SELECT DISTINCT (SO.partner_id) partner
+                        FROM public.sale_order SO        
+                        INNER JOIN public.stock_picking SP ON SO.id IN (        
+                                Select SO.id
+                                From public.sale_order SO
+                                INNER JOIN public.stock_picking SP 
+                                ON SO.id = SP.sale_id AND SP.state = 'done' AND SP.picking_type_id = 5 
+                                              AND SO.state NOT IN ('cancel', 'void') AND SO.user_id IS NOT NULL
+                                WHERE SO.partner_id IN (
+                                        SELECT id 
+                                        FROM public.res_partner RP
+                                        WHERE RP.reinstated_date IS NOT NULL AND 
+    
+            """
+
+            select_query = select_query + " RP.reinstated_date <= '" + str(end_date) + "' ) ) WHERE SP.date_done <= '" + str(end_date) +" ' " \
+                                          " AND SP.state = 'done' AND SP.picking_type_id = 5 AND SO.state NOT IN ('cancel', 'void')))) "
+
+            select_query = select_query + " AND SPS.date_done >= COALESCE(RPS.reinstated_date, RPS.create_date) " \
+                                          " AND SPS.date_done BETWEEN '" + str(end_date) + "' " + " AND '" + str(start_date) + "' AND SPS.date_done <= (COALESCE(RPS.reinstated_date, RPS.create_date) + INTERVAL '18 months')  "
+
+            business_development_id = self.env.context.get('business_development')
+
+            if business_development_id:
+                select_query = select_query + "AND SOS.user_id = '" + str(business_development_id) + "'"
+
+            group_by = """ GROUP BY SOS.id, SPS.date_done, SOL.currency_id """
+
+            select_query = select_query + group_by
+
+            self._cr.execute("CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )")
+        else:
+            # This Code For only console error resolve purposr
+            self.env.cr.execute('''
+                         CREATE OR REPLACE VIEW %s AS (
+                         SELECT  so.id AS id,
+                                 so.name AS name
+                         FROM sale_order so
+                         )''' % (self._table,)
+                                )
 
     #  @api.model_cr
     def delete_and_create(self):
