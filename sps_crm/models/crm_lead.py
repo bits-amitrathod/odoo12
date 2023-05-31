@@ -47,12 +47,12 @@ class Lead(models.Model):
         domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")
 
     tag_purchase_ids = fields.Many2many(
-        'crm.purchase.tag', string='zTags',
+        'crm.purchase.tag', string='zzTags', filters=None,
         help="Classify and analyze your lead/opportunity categories like: Training, Service")
 
     # This Is Overwrite For Only string Name Change Purpose
     tag_ids = fields.Many2many(
-        'crm.tag', 'crm_tag_rel', 'lead_id', 'tag_id', string=' zxTags',
+        'crm.tag', 'crm_tag_rel', 'lead_id', 'tag_id', string=' zxTags', filters=None,
         help="Classify and analyze your lead/opportunity categories like: Training, Service")
 
     oppr_category_id = fields.Many2many('res.partner.category', string='Tags')
