@@ -211,13 +211,14 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
 
         if ref:
-            values = {'subject': 'Payment Done - ' + ref.reference + ' ', 'model': None, 'res_id': False}
+            so_name = ref.reference.split("-", 1)
+            values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
             email_cc = 'accounting@surgicalproductsolutions.com'
             email_from = "info@surgicalproductsolutions.com"
 
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
-                             'sale_order': ref.reference.split("-", 1), 'amount': ref.amount}
+                             'sale_order': so_name, 'amount': ref.amount}
             try:
                 sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
                                                                                             raise_exception=True)
