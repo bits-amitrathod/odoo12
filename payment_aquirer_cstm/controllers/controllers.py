@@ -219,7 +219,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
                              'sale_order': ref.reference.split("-", 1), 'amount': ref.amount}
             try:
-                sent_email_template = template.with_context(local_context).sudo().send_mail(ref,
+                sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
                                                                                             raise_exception=True)
                 request.env['mail.mail'].sudo().browse(sent_email_template).write(values)
             except Exception as exc:
@@ -414,6 +414,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                 message = tx.state_message or _('An error occured during the processing of this payment')
             odoo.addons.payment.controllers.portal.PaymentProcessing.remove_payment_transaction(tx)
             if tx and tx.reference and tx.reference.startswith("SO"):
+                _logger.info("***    Reference Start With SO ***")
                 self.action_send_mail_after_payment_final(tx)
             return request.render('payment.confirm', {'tx': tx, 'status': status, 'message': message})
         else:
