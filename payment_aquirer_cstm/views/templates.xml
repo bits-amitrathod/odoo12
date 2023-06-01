@@ -168,7 +168,7 @@
                 <p> Reference :${ctx['sale_order']} <br/> </p>
                 %endif
                 %if ctx.get('amount') :
-                <p> Amount :${ctx['amount']} <br/> </p>
+                <p> Amount :${format_amount(object.amount, object.currency_id)}<br/> </p>
                 %endif
                 <p>
                     Thank you <br/>
