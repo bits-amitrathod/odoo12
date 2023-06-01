@@ -211,7 +211,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
 
         if ref:
-            so_name = ref.reference.split("-", 1)
+            so_name = str(ref.reference.split("-", 1)[0])
             values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
             email_cc = 'accounting@surgicalproductsolutions.com'
