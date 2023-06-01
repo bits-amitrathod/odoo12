@@ -218,7 +218,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             email_from = "info@surgicalproductsolutions.com"
 
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
-                             'sale_order': so_name, 'amount': ref.amount}
+                             'sale_order': so_name, 'amount': ref.amount, 'tx': ref}
             try:
                 sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
                                                                                             raise_exception=True)
