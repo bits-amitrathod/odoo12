@@ -217,10 +217,10 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             email_cc = 'accounting@surgicalproductsolutions.com'
             email_from = "info@surgicalproductsolutions.com"
             so = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
-            sales_rep = so.user_id.name if so.user_id else None 
+            sales_rep = so.user_id.name if so.user_id else None
 
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
-                             'sale_order': so_name, 'amount': ref.amount, 'tx': ref, 'sales_rep': sales_rep}
+                             'sale_order': so_name, 'amount': ref.amount, 'tx': ref, 'sales_rep': sales_rep, 'cust_name': so.partner_id.name}
             try:
                 sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
                                                                                             raise_exception=True)

@@ -166,7 +166,7 @@
             </p>
                 %if ctx.get('sale_order') :
                 <p> Reference :${ctx['sale_order']}<br/></p>
-                <p> Customer name : ${tx.partner_name}</p><br/>
+                <p> Customer name : ${ctx['cust_name']}</p><br/>
                 %endif
                 %if ctx.get('sales_rep') :
                 <p> Sales Rep :${ctx['sales_rep']}<br/></p>
