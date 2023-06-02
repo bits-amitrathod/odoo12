@@ -165,10 +165,11 @@
                     Payment Done for the following Sale Order :  <br/>
             </p>
                 %if ctx.get('sale_order') :
-                <p> Reference :${ctx['sale_order']} <br/> </p>
+                <p> Reference :${ctx['sale_order']}<br/></p>
+                <p> Customer name : ${tx.partner_name}</p><br/>
                 %endif
                 %if ctx.get('amount') :
-                <p> Amount :${format_amount(tx.amount, tx.currency_id)}<br/> </p>
+                <p> Amount :${format_amount(tx.amount,tx.currency_id)}<br/></p>
                 %endif
                 <p>
                     Thank you <br/>
