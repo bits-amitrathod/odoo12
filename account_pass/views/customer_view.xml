@@ -11,7 +11,7 @@
                           <button class="oe_stat_button o_res_partner_tip_opp" type="object"
                             name="action_account_pass"
                             icon="fa-star"
-                            context="{'default_partner_id': active_id}">
+                            context="{'default_partner_id': active_id}" widget="statinfo">
                         <span>Account Pass</span>
                         </button>
                     </div>
