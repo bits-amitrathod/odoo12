@@ -17,8 +17,8 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/res_config_setting_views.xml',
         'views/templates.xml',
+        'views/res_config_setting_views.xml',
         'views/warning_popup_wizard.xml'
     ],
     # only loaded in demonstration mode

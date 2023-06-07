@@ -77,10 +77,23 @@ class StockPickingMarkAllButton(models.Model):
     def compute_warning(self):
         for rec in self:
             if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report"] and rec.partner_id.picking_warn in ["warning","block"]:
-                pre_msg = "Warning" if rec.partner_id.picking_warn =="warning" else "Blocking Message"
-                rec.picking_warn_msg = (pre_msg + " : " + str(rec.partner_id.picking_warn_msg)) if rec.partner_id.picking_warn_msg else None
+                pre_msg = "" if rec.partner_id.picking_warn =="warning" else ""
+                rec.picking_warn_msg = (pre_msg + "" + str(rec.partner_id.picking_warn_msg)) if rec.partner_id.picking_warn_msg else None
             else:
                 rec.picking_warn_msg = None
+
+    @api.model
+    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+        result = super(StockPickingMarkAllButton, self).fields_view_get(view_id=view_id, view_type=view_type,
+                                                                        toolbar=toolbar, submenu=submenu)
+        if view_type == 'form':
+            if 'picking_warn_msg' in result['fields']:
+                for rec in self:
+                    result['fields']['picking_warn_msg']['value'] = rec.picking_warn_msg or ''
+        return result
+
+
+
     def _get_acq_manager(self):
         for sp in self:
             if sp.origin and sp.origin is not None:
