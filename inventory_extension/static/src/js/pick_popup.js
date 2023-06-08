@@ -13,12 +13,12 @@ odoo.define('inventory_extension.pick_popup', function (require) {
             rpc.query({
                 model: 'stock.picking',
                 method: 'read',
-                args: [[parseInt(pickingId)], ['picking_warn_msg', 'partner_id']],
+                args: [[parseInt(pickingId)], ['picking_warn_msg', 'partner_id','is_online']],
             }).then(function (result) {
                 var pickingWarnMsg = result[0].picking_warn_msg || '';
                 var customerId = result[0].partner_id ? result[0].partner_id[0] : '';
 
-                if (customerId) {
+                if (customerId && result[0].is_online) {
                     rpc.query({
                         model: 'res.partner',
                         method: 'read',
