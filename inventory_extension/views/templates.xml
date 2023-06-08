@@ -30,7 +30,7 @@
                         <field name="owner_id" string="Owner" groups="stock.group_tracking_owner"/>
                     </xpath>
                     <xpath expr="//div[hasclass('oe_title')]" position="after">
-                        <div class="center mt8" invisible="1">
+                        <div class="center mt8" attrs="{'invisible': [('picking_warn_msg', '=', False)]}">
                         <h3 style="text-align: left; color: #c4262e;">
                           <field name="picking_warn_msg"></field>
                         </h3>
