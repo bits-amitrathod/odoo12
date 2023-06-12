@@ -48,6 +48,8 @@ class vendor_offer_automation(models.Model):
                 str_val = vals['import_type_ven']
                 if str_val == all_field_import:
                     record.map_customer_sku_with_catelog_number_all_column(vals)
+                elif str_val == 'new_appraisal':
+                    record.map_customer_sku_with_catelog_number_app_new(vals)
                 else:
                     record.map_customer_sku_with_catelog_number(vals)
             else:
@@ -811,6 +813,9 @@ class vendor_offer_automation(models.Model):
             if str_val == all_field_import:
                 self.unlink_lines()
                 self.map_customer_sku_with_catelog_number_all_column(vals)
+            elif str_val == 'new_appraisal':
+                self.unlink_lines()
+                self.map_customer_sku_with_catelog_number_app_new(vals)
             else:
                 self.unlink_lines()
                 self.map_customer_sku_with_catelog_number(vals)

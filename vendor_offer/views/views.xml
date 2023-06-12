@@ -68,66 +68,6 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="listmultiplier">
-            <field name="name">multiplier.multiplier listmultiplier</field>
-            <field name="model">multiplier.multiplier</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                    <field name="retail"/>
-                    <field name="margin"/>
-                </tree>
-            </field>
-        </record>
-
-        <record model="ir.ui.view" id="listcompetition">
-            <field name="name">competition.competition listcompetition</field>
-            <field name="model">competition.competition</field>
-            <field name="arch" type="xml">
-                <tree>
-                    <field name="name"/>
-                    <field name="margin"/>
-                </tree>
-            </field>
-        </record>
-
-        <record id="view_vendor_offer_multiplier" model="ir.ui.view">
-            <field name="name">multiplier.multiplier.form</field>
-            <field name="model">multiplier.multiplier</field>
-            <field name="arch" type="xml">
-                <form string="Multiplier" class="o_sale_order">
-                    <header></header>
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="name"/>
-                                <field name="code"/>
-                                <field name="retail"/>
-                                <field name="margin"/>
-                            </group>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <record id="view_vendor_offer_competition" model="ir.ui.view">
-            <field name="name">competition.competition.form</field>
-            <field name="model">competition.competition</field>
-            <field name="arch" type="xml">
-                <form string="Competition" class="o_sale_order">
-                    <header></header>
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="name"/>
-                                <field name="margin"/>
-                            </group>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
 
 
         <record id="purchase_form_action_vendor" model="ir.actions.act_window">
@@ -669,35 +609,7 @@
 <!--        <field name="code">model.action_duplicate_vendor_offer()</field>-->
 <!--        </record>-->
 
-        <record id="product_template_form_view" model="ir.ui.view">
-            <field name="name">product.template.common.form</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view"/>
-            <field name="arch" type="xml">
-                <page name="general_information" position="inside">
-                    <group>
-                        <group name="group_general">
-                            <field name="tier"></field>
-                            <field name="class_code"></field>
-                    </group>
-                    </group>
-                        <group string="Internal Notes">
-                                <field name="description" nolabel="1" placeholder="This note is only for internal purposes."/>
-                        </group>
-                </page>
-            </field>
-        </record>
 
-         <record id="product_template_form_view_extends" model="ir.ui.view">
-            <field name="name">product.template.common.form</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view"/>
-            <field name="arch" type="xml">
-                     <xpath expr="//page[@name='general_information']/group[2]" position="attributes">
-                            <attribute name="attrs">{'invisible':1}</attribute>
-                     </xpath>
-            </field>
-         </record>
 
         <record id="vendor_offer.action_window" model="ir.actions.act_window">
             <field name="name">Requests for Vendor Offer</field>
@@ -726,60 +638,7 @@
             </field>
         </record>
 
-        <record model="ir.ui.view" id="vendor_offer.vendor_pricing_list">
-            <field name="name">product.product.list8</field>
-            <field name="model">product.product</field>
-            <!--<field name="priority">20</field>-->
-            <field name="arch" type="xml">
-                <tree create="false" import="false">
-                    <field name="sku_code" string="ProductNumber"/>
-                    <field name="name" string="ProductDescription"/>
-                    <field name="list_price" string="Price"/>
-                    <field name="product_brand_id" string="CFP-Manufacturer"/>
-                    <field name="tier" string="TIER"/>
-                    <field name="product_sales_count"/>
-                    <field name="product_sales_count_yrs"/>
-                    <field name="actual_quantity"/>
-                    <field name="amount_total_ven_pri"/>
-                    <field name="premium" string="PREMIUM"/>
-                    <field name="expired_inventory"/>
-                    <!--<field name="product_sales_count_month"/>-->
-                    <field name="product_sales_count_90"/>
-                    <field name="incoming_qty" string="Quantity On Order"/>
-                    <field name="average_aging"/>
-                    <field name="inventory_scraped_yr"/>
-                    <field name="quotations_per_code"/>
-                </tree>
-            </field>
-        </record>
 
-        <record id="vendor_offer.action_vendor_pricing" model="ir.actions.act_window">
-            <field name="name">Vendor Pricing</field>
-            <!--<field name="key">action</field>-->
-            <field name="domain">[('type','=','product')]</field>
-            <!--<field name="type">ir.actions.act_window</field>-->
-            <!--<field name="limit" eval="10"/>-->
-            <field name="res_model">product.product</field>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="vendor_offer.vendor_pricing_list"/>
-        </record>
-
-        <record id="view_purchase_order_edit_note_form11" model="ir.ui.view">
-            <field name="name">product.product.export.vendor</field>
-            <field name="model">vendor.pricing</field>
-            <field name="arch" type="xml">
-                <form string="Export PPVendorPricing">
-                    <group>
-                        <div>Click On ' Export To File ' button to export PPVendorPricing file</div>
-                    </group>
-                    <footer>
-                        <button name="download_excel_ven_price" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
 
         <record id="vendor_offer_accept_popup" model="ir.ui.view">
             <field name="name">ven.offer.accept.vendor</field>
@@ -802,25 +661,6 @@
             </field>
         </record>
 
-<!--        <record name="Export PPVendorPricing"-->
-
-<!--                    res_model="vendor.pricing"-->
-<!--                    src_model="product.product"-->
-<!--                    view_mode="form"-->
-<!--                    target="new"-->
-<!--                    id="vendor_pricing_act_window"/>-->
-
-
-                <record id="vendor_pricing_act_window" model="ir.actions.act_window">
-                <field name="name">Export PPVendorPricing</field>
-<!--                <field name="type">ir.actions.act_window</field>-->
-                <field name="res_model" >vendor.pricing</field>
-                <field name="binding_model_id" ref="product.model_product_product"/>
-                <field name="view_mode">form</field>
-                     <field name="target">new</field>
-
-            </record>
-
 
         <!--do not remove this commented code -->
 
@@ -832,27 +672,7 @@
         <!--</field>-->
         <!--</record>-->
 
-        <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
-            <field name="name">Multiplier</field>
-            <field name="res_model">multiplier.multiplier</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('listmultiplier')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_multiplier')})
-        ]"/>
 
-        </record>
-
-        <record model="ir.actions.act_window" id="vendor_offer.action_window_competition">
-            <field name="name">Competition</field>
-            <field name="res_model">competition.competition</field>
-            <field name="view_mode">tree,form</field>
-            <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('listcompetition')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_competition')})
-        ]"/>
-
-        </record>
 
         <!--        <record model="ir.ui.view" id="product_template_form_view_procurement_button">-->
         <!--            <field name="name">product.template_procurement</field>-->
@@ -870,20 +690,7 @@
         <!--            </field>-->
         <!--        </record>-->
 
-        <record id="product_template_form_sku_code_add" model="ir.ui.view">
-            <field name="name">product.template.product.form</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_form_view"/>
-            <field name="arch" type="xml">
-                <field name="sale_ok" position="before">
-                    <label for="actual_quantity" style="font-size: 18px;color: #F44336;"/>
-                    <span style="font-size: 18px;color: #F44336;font-weight: bold; margin-left: -4px;">:
-                        <field name="actual_quantity" widget="statinfo" nolabel="1"/>
-                    </span>
-                    <div/>
-                </field>
-            </field>
-        </record>
+
 
 <!-- Adding Billing status column for odoo 12 -->
         <record id="purchase_order_tree_inherit" model="ir.ui.view">
@@ -931,157 +738,8 @@
 
 
 
-                    <record id="view_picking_form_inherit_website_sale_stock_arrival" model="ir.ui.view">
-                        <field name="name">stock.picking.form.inherit.show.date.done</field>
-                        <field name="model">stock.picking</field>
-                        <field name="inherit_id" ref="stock.view_picking_form"/>
-                        <field name="arch" type="xml">
-                            <xpath expr="//sheet/group/group/field[@name='partner_id']" position="after">
-                                    <field name="sale_id" invisible="1"/>
-                                     <field name="arrival_date" attrs="{'invisible': [('sale_id', '!=', False)]}" />
-                             </xpath>
-                        </field>
-                    </record>
-
-                <record id="view_picking_form_inherit_website_sale_stock_custom" model="ir.ui.view">
-                        <field name="name">stock.picking.form.inherit.show.offer.price</field>
-                        <field name="model">stock.picking</field>
-                        <field name="inherit_id" ref="stock.view_picking_form"/>
-                        <field name="arch" type="xml">
-                            <xpath expr="//sheet/notebook/page[@name='operations']/field[@name='move_ids_without_package']" position="replace">
-
-                            <field name="sale_id" invisible="1"></field>
-<!--                            <field name="move_ids_without_package" attrs="{'readonly': ['|', '&amp;', ('show_operations', '=', True), '|', ('is_locked', '=', True), ('state', '=', 'done'), '&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}" context="{'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_picking_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">-->
-<!--                                <tree limit="500" decoration-danger="not parent.immediate_transfer and state != 'done' and quantity_done > reserved_availability and show_reserved_availability" decoration-muted="scrapped == True or state == 'cancel' or (state == 'done' and is_locked == True)" string="Stock Moves" editable="bottom">-->
-<!--                                    <field name="name" invisible="1"/>-->
-<!--                                    <field name="date_expected" invisible="1"/>-->
-<!--                                    <field name="state" invisible="1" readonly="0"/>-->
-<!--                                    <field name="picking_type_id" invisible="1"/>-->
-<!--                                    <field name="location_id" invisible="1"/>-->
-<!--                                    <field name="location_dest_id" invisible="1"/>-->
-<!--                                    <field name="scrapped" invisible="1"/>-->
-<!--                                    <field name="picking_code" invisible="1"/>-->
-<!--                                    <field name="product_type" invisible="1"/>-->
-<!--                                    <field name="show_details_visible" invisible="1"/>-->
-<!--                                    <field name="show_reserved_availability" invisible="1"/>-->
-<!--                                    <field name="show_operations" invisible="1" readonly="1"/>-->
-<!--                                    <field name="additional" invisible="1"/>-->
-<!--                                    <field name="has_move_lines" invisible="1"/>-->
-<!--                                    <field name="is_locked" invisible="1"/>-->
-<!--                                    <field name="product_id" required="1" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('has_move_lines', '=', True)]}"/>-->
-<!--                                    <field name="is_initial_demand_editable" invisible="1"/>-->
-<!--                                    <field name="is_quantity_done_editable" invisible="1"/>-->
-<!--                                    <field name="product_uom_qty" string="Initial Demand" attrs="{'column_invisible': ['&amp;',('parent.immediate_transfer', '=', True), ('parent.is_locked', '=', True)], 'readonly': [('is_initial_demand_editable', '=', False)]}"/>-->
-<!--                                    <field name="re_expiration_date_str"    attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
-<!--                                    <field name="re_product_offer_price"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
-<!--                                    <field name="re_total_product_retail"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />-->
-<!--                                    <field name="currency_id"  invisible="1"/>-->
-<!--                                     <field name="re_vendor_offer_data"  invisible="1"/>-->
-<!--                                    <field name="reserved_availability" string="Reserved" attrs="{'column_invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', '=', 'incoming'),'&amp;',('parent.immediate_transfer', '=', True), ('parent.is_locked', '=', True)])}"/>-->
-<!--                                    <field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>-->
-<!--                                    <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>-->
-<!--                                    <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list" attrs="{'invisible': [('show_details_visible', '=', False)]}" options='{"warn": true}'/>-->
-<!--                                </tree>-->
-<!--                            </field>-->
-                                <field name="move_ids_without_package" mode="tree,kanban"
-                                attrs="{'readonly': ['&amp;', ('state', '=', 'done'), ('is_locked', '=', True)]}"
-                                context="{'default_company_id': company_id, 'default_date': scheduled_date, 'default_date_deadline': date_deadline, 'picking_type_code': picking_type_code, 'default_picking_id': id, 'form_view_ref':'stock.view_move_form', 'address_in_id': partner_id, 'default_picking_type_id': picking_type_id, 'default_location_id': location_id, 'default_location_dest_id': location_dest_id}">
-                                <tree limit="1000" decoration-danger="not parent.immediate_transfer and state != 'done' and quantity_done > reserved_availability and show_reserved_availability" decoration-muted="scrapped == True or state == 'cancel' or (state == 'done' and is_locked == True)" string="Stock Moves" editable="bottom">
-                                    <field name="company_id" invisible="1"/>
-                                    <field name="name" invisible="1"/>
-                                    <field name="state" invisible="1" readonly="0"/>
-                                    <field name="picking_type_id" invisible="1"/>
-                                    <field name="location_id" invisible="1"/>
-                                    <field name="location_dest_id" invisible="1"/>
-                                    <field name="scrapped" invisible="1"/>
-                                    <field name="picking_code" invisible="1"/>
-                                    <field name="product_type" invisible="1"/>
-                                    <field name="show_details_visible" invisible="1"/>
-                                    <field name="show_reserved_availability" invisible="1"/>
-                                    <field name="show_operations" invisible="1" readonly="1"/>
-                                    <field name="additional" invisible="1"/>
-                                    <field name="has_move_lines" invisible="1"/>
-                                    <field name="is_locked" invisible="1"/>
-                                    <field name="product_uom_category_id" invisible="1"/>
-                                    <field name="has_tracking" invisible="1"/>
-                                    <field name="display_assign_serial" invisible="1"/>
-                                    <field name="product_id" required="1" context="{'default_type': 'product'}" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('has_move_lines', '=', True)]}"/>
-                                    <field name="description_picking" string="Description" optional="hide"/>
-                                    <field name="date" invisible="1"/>
-                                    <field name="date_deadline" optional="hide"/>
-                                    <field name="is_initial_demand_editable" invisible="1"/>
-                                    <field name="is_quantity_done_editable" invisible="1"/>
-                                    <field name="product_uom_qty" string="Demand" attrs="{'column_invisible': [('parent.immediate_transfer', '=', True)], 'readonly': ['|', ('is_initial_demand_editable', '=', False), '&amp;', '&amp;', ('show_operations', '=', True), ('is_locked', '=', True), ('is_initial_demand_editable', '=', False)]}"/>
-                                    <field name="re_expiration_date_str"    attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />
-                                    <field name="re_product_offer_price"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />
-                                    <field name="re_total_product_retail"   attrs="{'column_invisible':[('parent.sale_id', '!=',  False)],'invisible':[('re_vendor_offer_data', '=',  False)]}" />
-                                    <field name="re_vendor_offer_data"  invisible="1"/>
-                                    <field name="reserved_availability" string="Reserved" attrs="{'column_invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', 'in', ['incoming', 'outgoing']), ('parent.immediate_transfer', '=', True)])}"/>
-                                    <field name="product_qty" invisible="1" readonly="1"/>
-                                    <field name="forecast_expected_date" invisible="1" />
-                                    <field name="forecast_availability" string="Reserved" attrs="{'column_invisible': ['|', ('parent.picking_type_code', '!=', 'outgoing'), ('parent.state','=', 'done')]}" widget="forecast_widget"/>
-                                    <field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>
-                                    <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>
-                                    <field name="lot_ids" widget="many2many_tags"
-                                        groups="stock.group_production_lot"
-                                        attrs="{'invisible': ['|', ('show_details_visible', '=', False), ('has_tracking', '!=', 'serial')]}"
-                                        optional="hide"
-                                        options="{'create': [('parent.use_create_lots', '=', True)]}"
-                                        context="{'default_company_id': company_id, 'default_product_id': product_id, 'active_picking_id': parent.id}"
-                                        domain="[('product_id','=',product_id)]"
-                                    />
-                                    <button name="action_show_details" type="object" icon="fa-list"
-                                             options='{"warn": true}'/>
-                                    <button name="action_assign_serial" type="object"
-                                            icon="fa-plus-square"
-                                            width="0.1"
-                                            role="img" title="Assign Serial Numbers"
-                                            attrs="{'invisible': ['|', ('display_assign_serial', '=', False), ('show_operations', '=', False)]}"/>
-                                </tree>
-<!--                                <form string="Stock Moves">-->
-<!--                                    <header>-->
-<!--                                        <field name="state" widget="statusbar"/>-->
-<!--                                    </header>-->
-<!--                                    <group>-->
-<!--                                        <field name="product_uom_category_id" invisible="1"/>-->
-<!--                                        <field name="additional" invisible="1"/>-->
-<!--                                        <field name="has_move_lines" invisible="1"/>-->
-<!--                                        <field name="company_id" invisible="1"/>-->
-<!--                                        <field name="product_id" required="1" attrs="{'readonly': ['|', '&amp;', ('state', '!=', 'draft'), ('additional', '=', False), ('has_move_lines', '=', True)]}"/>-->
-<!--                                        <field name="is_initial_demand_editable" invisible="1"/>-->
-<!--                                        <field name="is_quantity_done_editable" invisible="1"/>-->
-<!--                                        <field name="product_uom_qty" attrs="{'invisible': [('parent.immediate_transfer', '=', True)], 'readonly': [('is_initial_demand_editable', '=', False)]}"/>-->
-<!--                                        <field name="reserved_availability" string="Reserved" attrs="{'invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', 'in', ['outgoing', 'incoming']), ('parent.immediate_transfer', '=', True)])}"/>-->
-<!--                                        <field name="product_qty" invisible="1" readonly="1"/>-->
-<!--                                        <field name="forecast_expected_date" invisible="1"/>-->
-<!--                                        <field name="forecast_availability" string="Reserved" attrs="{'invisible': ['|', ('parent.picking_type_code', '!=', 'outgoing'), ('parent.state','=', 'done')]}" widget="forecast_widget"/>-->
-<!--                                        <field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>-->
-<!--                                        <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>-->
-<!--                                        <field name="description_picking" string="Description"/>-->
-<!--                                    </group>-->
-<!--                                </form>-->
-                            </field>
-                              </xpath>
-                        </field>
-                    </record>
 
 
-         <record id="acq_manager_form_custom" model="ir.ui.view">
-            <field name="name">res.partner.form.acq</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form" />
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='property_supplier_payment_term_id']" position="before">
-                  <field name="supplier_rank"/>
-                </xpath>
-                <xpath expr="//field[@name='property_supplier_payment_term_id']" position="after">
-                  <field name="acq_manager"/>
-                </xpath>
-                <xpath expr="//sheet/group/group[2]/field[@name='website']" position="before">
-                    <field name="vendor_email" widget="email"/>
-                </xpath>
-            </field>
-        </record>
 
         <menuitem
                 id="menu_product_in_config_purchase_setting" name="Setting" sequence="99"
