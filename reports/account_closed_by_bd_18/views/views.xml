@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tree view -->
+        <record model="ir.ui.view" id="account_closed_by_bd_list_view_18">
+              <field name="name">account.closed.by.bd.view.list</field>
+              <field name="model">report.bd.account.closed_18</field>
+              <field name="priority">20</field>
+              <field name="arch" type="xml">
+                <tree create="false" edit="false" delete="false">
+                    <field name="currency_id" invisible="1"/>
+                    <field name="sale_order_id" optional="show"/>
+                    <field name="customer" optional="show"/>
+                    <field name="business_development" optional="show"/>
+                    <field name="delivery_date" widget="date" optional="show"/>
+                    <field name="state" optional="show"/>
+                    <field name="total_amount"  widget="monetary" options="{'currency_field': 'currency_id'}" optional="show"/>
+                </tree>
+              </field>
+        </record>
+        <!-- Tree view ends here -->
+        <!-- Form view-->
+        <record id="account_closed_by_bd_form_view_18" model="ir.ui.view">
+          <field name="name">report.account.closed.by.bd.form</field>
+          <field name="model">report.bd.account.closed_18</field>
+          <field name="priority">20</field>
+          <field name="arch" type="xml">
+              <form create="false" edit="false" delete="false">
+                  <sheet>
+                      <group>
+                            <group>
+                                <field name="sale_order_id"/>
+                                <field name="customer"/>
+                                <field name="business_development"/>
+                            </group>
+                            <group>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="delivery_date" widget="date"/>
+                                <field name="total_amount" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="state"/>
+                            </group>
+                      </group>
+                  </sheet>
+              </form>
+          </field>
+        </record>
+        <!-- Form view ends here -->
+
+        <!-- Popup code -->
+        <record id="bd_account_closed_popup_view_18" model="ir.ui.view">
+            <field name="name">Revenue From Accounts Closed In 18 Months By BD</field>
+            <field name="model">popup.bd.account.closed_18</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="business_development"/>
+                        </group>
+                        <group>
+                            <!--<b>Filter By Revenue Date</b>-->
+                            <field name="delivery_start_date"/>
+                            <field name="delivery_end_date"/>
+                        </group>
+                    </group>
+
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!-- Popup code ends here-->
+
+        <!-- Action code (pop up action)-->
+        <record id="action_account_closed_by_bd_18" model="ir.actions.act_window">
+            <field name="name">Revenue From Accounts Closed In 18 Months By BD</field>
+            <field name="res_model">popup.bd.account.closed_18</field>
+            <!-- <field name="view_type">form</field> -->
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="bd_account_closed_popup_view_18"/>
+            <field name="target">new</field>
+        </record>
+        <!-- Action code ends here -->
+        <!-- Export popup code -->
+        <record id="export_account_closed_by_bd_popup_18" model="ir.ui.view">
+            <field name="name">report.account.closed.by.bd.export.popup</field>
+            <field name="model">report.bd.account.closed.export_18</field>
+            <field name="arch" type="xml">
+                <form string="Export Revenue From Accounts Closed In 18 Months By BD Report">
+                    <!--<group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="business_development"/>
+                        </group>
+                        <group>
+                            &lt;!&ndash;<b>Filter By Revenue Date</b>&ndash;&gt;
+                            <field name="delivery_start_date"/>
+                            <field name="delivery_end_date"/>
+                        </group>
+                    </group>-->
+<!--                    <div>Click On ' Export To File ' button to export Revenue From Accounts Closed In 12 Months By BD report file</div>-->
+                    <footer>
+                        <button name="download_excel_bd_account_closed" string="Export To File" type="object"
+                                class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <!-- Export popup code ends here -->
+        <!-- Filter's code -->
+        <record id="account_closed_by_bd_filter_18" model="ir.ui.view">
+            <field name="name">account.closed.by.bd.filter</field>
+            <field name="model">report.bd.account.closed_18</field>
+            <field name="arch" type="xml">
+                <search string="Search">
+                    <field name="customer"/>
+                    <field name="sale_order_id"/>
+                    <field name="business_development"/>
+                    <!--<group expand="0" string="Group By">
+                        <filter name="customer" string="Customer Name" domain="[]" context="{'group_by':'customer'}"/>
+                        <filter name="sale_order_id" string="Sale Order#" domain="[]" context="{'group_by':'sale_order_id'}"/>
+                        <filter name="business_development" string="Business Development" domain="[]" context="{'group_by':'business_development'}"/>
+                        <filter name="delivery_date" string="Delivery Date" domain="[]" context="{'group_by':'delivery_date'}"/>
+                    </group>-->
+                </search>
+            </field>
+        </record>
+        <!-- Filter's code ends here -->
+        <!-- Export Action code -->
+        <!--<act_window name="Export Revenue From Accounts Closed In 12 Months By BD"
+                    res_model="report.bd.account.closed.export"
+                    src_model="report.bd.account.closed"
+                    view_mode="form"
+                    target="new"
+                    key2="client_action_multi"
+                    id="account_closed_by_bd_export_act_window"/>-->
+        <record id="account_closed_by_bd_export_act_window_18" model="ir.actions.act_window">
+            <field name="name">Export Revenue From Accounts Closed In 18 Months By BD</field>
+            <field name="res_model">report.bd.account.closed.export_18</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="binding_model_id" ref="model_report_bd_account_closed_18" />
+
+        </record>
+
+        <record id="account_closed_by_bd_export_act_window_18" model="ir.actions.act_window">
+                <field name="name">Export Revenue From Accounts Closed In 18 Months By BD</field>
+                <field name="type">ir.actions.act_window</field>
+                <field name="res_model" >report.bd.account.closed.export_18</field>
+                <field name="binding_model_id" ref="model_report_bd_account_closed_18"/>
+                <field name="view_mode">form</field>
+                     <field name="target">new</field>
+
+            </record>
+        <!-- Export Action code ends here -->
+
+        <!-- Menus declaration in Reporting tab-->
+<!--        <menuitem id="business_development_reports" name="Business Development Reports" parent="sale.menu_sale_report" sequence="4"/>-->
+        <menuitem id="sale.account_closed_by_bd_menu_18"
+                  name="Revenue From Accounts Closed In 18 Months By BD"
+                  action="action_account_closed_by_bd_18"
+                  parent="account_closed_by_bd.business_development_reports"
+                  sequence="6"/>
+                <!--parent="sale.menu_sale_report"-->
+        <!-- Menus declaration ends here -->
+    </data>
+</odoo>

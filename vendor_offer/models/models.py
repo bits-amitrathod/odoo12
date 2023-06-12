@@ -904,7 +904,3 @@ class VendorOffer(models.Model):
 
 
 
-
-
-
-
