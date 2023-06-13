@@ -21,17 +21,18 @@ class VendorOfferNewAppraisal(models.Model):
     no_match_sku_import = fields.Text(string='SKU Cleaned', readonly=True)
     no_match_sku_import_cleaned = fields.Text(string='SKU', readonly=True)
 
-    # def action_recalculate_vendor_offer(self):
-    #
-    #     for objList in self:
-    #         for obj in objList:
-    #             for obj_line in obj.order_line:
-    #                 obj_line._cal_offer_price()
-    #                 obj_line._cal_margin()
-    #                 obj_line._set_offer_price()
-    #                 obj_line.compute_total_line_vendor()
-    #
-    #     print('-----------')
+    def action_recalculate_vendor_offer(self):
+
+        for objList in self:
+            for obj in objList:
+                for obj_line in obj.order_line:
+                    obj_line._cal_offer_price()
+                    obj_line._cal_margin()
+                    obj_line._set_offer_price()
+                    obj_line.compute_total_line_vendor()
+                    #obj_line.compute_retail_line_total()
+
+        print('-----------')
 
 
 

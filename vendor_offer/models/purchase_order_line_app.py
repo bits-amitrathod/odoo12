@@ -31,5 +31,11 @@ class VendorOfferProductLineNew(models.Model):
                 'rt_price_total': taxes1['total_included'],
             })
 
+    # def compute_retail_line_total(self):
+    #     for line in self:
+    #         line.update({
+    #             'product_retail': line.product_qty * line.product_unit_price,
+    #         })
+
 
 
