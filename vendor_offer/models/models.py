@@ -352,7 +352,10 @@ class VendorOffer(models.Model):
                 #     order.state = 'ven_draft'
 
                 amount_untaxed = amount_tax = price_total = 0.0
-                rt_price_tax = product_retail = rt_price_total = potential_profit_margin = 0.0
+                rt_price_tax = 0.0
+                product_retail = 0.0
+                rt_price_total = 0.0
+                potential_profit_margin = 0.0
                 cash_amount_untaxed = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
                 for line in order.order_line:
@@ -360,9 +363,12 @@ class VendorOffer(models.Model):
                     cash_amount_untaxed += line.price_subtotal
                     amount_untaxed += line.price_subtotal
                     price_total += line.price_total
-
+                    if (line.product_retail == 0) and line.product_qty != 0:
+                        line.product_retail = line.product_qty * line.product_unit_price
                     product_retail += line.product_retail
                     rt_price_tax += line.rt_price_tax
+                    if line.rt_price_total == 0:
+                        line.rt_price_total = line.product_retail
                     rt_price_total += line.rt_price_total
                     billed_retail_untaxed += line.billed_product_retail_price
                     billed_offer_untaxed += line.billed_product_offer_price
@@ -468,7 +474,9 @@ class VendorOffer(models.Model):
                 order.billed_offer_untaxed = False;
                 order.billed_offer_total = False;
                 amount_untaxed = amount_tax = price_total = 0.0
-                rt_price_tax = product_retail = rt_price_total = 0.0
+                rt_price_tax = 0.0
+                product_retail = 0.0
+                rt_price_total = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
                 cash_amount_untaxed = 0.0
                 # res = super(VendorOffer, self)._amount_all()

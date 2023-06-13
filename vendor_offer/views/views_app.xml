@@ -116,8 +116,8 @@
                                 <field name="shipping_number"/>
                             </group>
                         </group>
-<!--                             <button name="action_recalculate_vendor_offer" class="btn-primary"-->
-<!--                                     string="Calculate"   type="object"/>-->
+                             <button name="action_recalculate_vendor_offer" class="btn-primary"
+                                     string="Calculate"   type="object"/>
                              <notebook>
                                  <page string="Product">
                                 <field name="order_line" mode="tree,form"
