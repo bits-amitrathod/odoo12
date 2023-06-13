@@ -117,7 +117,7 @@
                             </group>
                         </group>
                              <button name="action_recalculate_vendor_offer" class="btn-primary"
-                                     string="Calculate"   type="object"/>
+                                     string="Calculate"  context="{'new_app_cal': True}"  type="object"/>
                              <notebook>
                                  <page string="Product">
                                 <field name="order_line" mode="tree,form"
@@ -252,7 +252,7 @@
                                        attrs="{'readonly': True}"/>
                                  </group>
                               <group>
-                                 <field name="no_match_sku_import_cleaned" string="SKU Cleaned 2"
+                                 <field name="no_match_sku_import_cleaned" string="SKU Cleaned"
                                        attrs="{'readonly': True}"/>
                                  </group>
 

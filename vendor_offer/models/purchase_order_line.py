@@ -181,8 +181,8 @@ class VendorOfferProduct(models.Model):
 
         line.expired_inventory = expired_lot_count
 
-    @api.onchange('multiplier', 'order_id.possible_competition')
-    @api.depends('multiplier', 'order_id.possible_competition')
+    # @api.onchange('multiplier', 'order_id.possible_competition')
+    # @api.depends('multiplier', 'order_id.possible_competition')
     def _cal_offer_price(self):
         for line in self:
             # if line.import_type_ven_line == all_field_import:
@@ -218,8 +218,8 @@ class VendorOfferProduct(models.Model):
 
     product_unit_price = fields.Monetary(string="Retail Price", default=_cal_offer_price, store=True)
 
-    @api.onchange('multiplier', 'order_id.possible_competition')
-    @api.depends('multiplier', 'order_id.possible_competition')
+    # @api.onchange('multiplier', 'order_id.possible_competition')
+    # @api.depends('multiplier', 'order_id.possible_competition')
     def _cal_margin(self):
         for line in self:
             margin = 0
@@ -233,8 +233,8 @@ class VendorOfferProduct(models.Model):
                 'margin': margin
             })
 
-    @api.onchange('multiplier', 'order_id.possible_competition')
-    @api.depends('multiplier', 'order_id.possible_competition')
+    # @api.onchange('multiplier', 'order_id.possible_competition')
+    # @api.depends('multiplier', 'order_id.possible_competition')
     def _set_offer_price(self):
         for line in self:
             # if line.import_type_ven_line == all_field_import:
