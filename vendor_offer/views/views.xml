@@ -447,6 +447,10 @@
 
 
                 </xpath>
+                <!-- This Button Added After Set to Draft button -->
+                <xpath expr="//header/button[@name='button_draft']" position="after">
+                    <button name="button_vendor_offer" states="cancel" string="Set to Vendor Offer" type="object"/>
+                </xpath>
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                     <field name="origin" string="Sale Order#"/>
                 </xpath>

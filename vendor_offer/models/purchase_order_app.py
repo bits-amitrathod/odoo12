@@ -1,5 +1,7 @@
 from odoo import models, fields, api, _
 
+import logging
+_logger = logging.getLogger(__name__)
 
 class VendorOfferNewAppraisal(models.Model):
     _description = "Vendor Offer"
@@ -20,6 +22,12 @@ class VendorOfferNewAppraisal(models.Model):
 
     no_match_sku_import = fields.Text(string='SKU Cleaned', readonly=True)
     no_match_sku_import_cleaned = fields.Text(string='SKU', readonly=True)
+
+    # This Method Convert cancelled PO -> Vendor Offer
+    def button_vendor_offer(self):
+        _logger.info("Set to VO button Action..")
+        self.write({'state': 'ven_draft'})
+        return {}
 
     # def action_recalculate_vendor_offer(self):
     #
