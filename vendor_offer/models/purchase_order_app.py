@@ -1,7 +1,9 @@
 from odoo import models, fields, api, _
 
 import logging
+
 _logger = logging.getLogger(__name__)
+
 
 class VendorOfferNewAppraisal(models.Model):
     _description = "Vendor Offer"
@@ -23,12 +25,75 @@ class VendorOfferNewAppraisal(models.Model):
     no_match_sku_import = fields.Text(string='SKU Cleaned', readonly=True)
     no_match_sku_import_cleaned = fields.Text(string='SKU', readonly=True)
 
-  # This Method Convert cancelled PO -> Vendor Offer
+    # This Method Convert cancelled PO -> Vendor Offer
     def button_vendor_offer(self):
         _logger.info("Set to VO button Action..")
         self.write({'state': 'ven_draft'})
         self.action_recalculate_vendor_offer()
         return {}
+
+    def get_quotations_count_by_product(self, product):
+        orders = self.env['sale.order'].search([('state', '=', 'draft')])
+        quotations = orders.filtered(lambda order: product.id in order.order_line.mapped('product_id.id'))
+        return len(quotations) if quotations else 0
+
+    # T1 Good – 45 PRCT
+    # T2 Good – 35 PRCT
+    # Tier 3
+    def multiplier_adjustment_criteria_1_3(self, qty_in_stock, product_sales_count, open_quotations_cnt):
+        if qty_in_stock == 0 and product_sales_count == 0:
+            if 0 < open_quotations_cnt < 5:
+                return 'Tier 3'
+            elif 5 <= open_quotations_cnt <= 15:
+                return 'T2 Good – 35 PRCT'
+            elif open_quotations_cnt > 15:
+                return 'T1 Good – 45 PRCT'
+        return None
+
+    def multiplier_adjustment_criteria_4(self, tier, inv_ratio_90_days, product_sales_total_amount_yr):
+        if tier == 1 and inv_ratio_90_days < 1 and product_sales_total_amount_yr >= 100000:
+            return "Premium – 50 PRCT"
+        return None
+
+    def multiplier_adjustment_criteria_5(self, tier, inv_ratio_90_days, open_quotations_cnt):
+        if tier == 1 and inv_ratio_90_days < 1 and open_quotations_cnt >= 20:
+            return "Premium – 50 PRCT"
+        return None
+
+    def multiplier_adjustment_criteria_6(self, tier, qty_in_stock, open_quotations_cnt):
+        if tier == 1 and qty_in_stock == 0 and open_quotations_cnt >= 20:
+            return "Premium – 50 PRCT"
+        return None
+
+    def multiplier_adjustment_criteria_7(self, tier, inv_ratio_90_days, open_quotations_cnt):
+        if tier == 2 and inv_ratio_90_days < 1 and open_quotations_cnt >= 10:
+            return "T1 Good – 45 PRCT"
+        return None
+
+    def multiplier_adjustment_criteria_8(self, tier, qty_in_stock, qty_sold_90_days, open_quotations_cnt):
+        if tier == 2 and qty_in_stock == 0 and qty_sold_90_days > 0 and open_quotations_cnt >= 10:
+            return "T1 Good – 45 PRCT"
+        return None
+
+    def multiplier_adjustment_criteria_9(self, qty_in_stock, qty_sold_90_days, qty_sold_all, qty_sold_yr,
+                                         average_aging):
+        if qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 \
+                and qty_sold_all == 0 and average_aging > 30:
+            return "Tier 3"
+        return None
+
+    def multiplier_adjustment_criteria_10(self, qty_in_stock, qty_sold_all, qty_sold_yr, open_quotations_cnt):
+        if qty_in_stock == 0 and qty_sold_yr == 0 and qty_sold_all == 0 and open_quotations_cnt < 5:
+            return "Tier 3"
+        return None
+
+    def multiplier_adjustment_criteria(self, po_line):
+        if po_line:
+            po_line.qty_in_stock
+            po_line.product_sales_count
+            po_line.product_id.tier
+            open_quotations_cnt = self.get_quotations_count_by_product(po_line.product_id)
+            po_line.product_sales_count_90
 
     # def action_recalculate_vendor_offer(self):
     #
@@ -46,14 +111,11 @@ class VendorOfferNewAppraisal(models.Model):
         for objList in self:
             for obj in objList:
                 for obj_line in obj.order_line:
-                    #obj_line._cal_offer_price()
+                    # obj_line._cal_offer_price()
                     obj_line._cal_margin()
                     obj_line._set_offer_price()
                     obj_line.compute_total_line_vendor()
-                    #obj_line.compute_retail_line_total()
+                    # obj_line.compute_retail_line_total()
+                    obj.multiplier_adjustment_criteria(obj_line)
 
         print('-----------')
-
-
-
-
