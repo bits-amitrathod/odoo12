@@ -454,6 +454,8 @@
                             <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Ref #</span></th>
                             <th class="text-left">Description</th>
                             <th class="text-left">Available Qty</th>
+                            <th class="text-center td-min-exp">Min Exp. Date</th>
+                            <th class="text-center td-max-exp">Max Exp. Date</th>
 <!--                            <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span></th>-->
                             <th class="text-left"><span t-if="any([line.order_id.team_id.team_type in ('engine', 'rapid_quote') for line in sale_order.order_line])">Expiration</span></th>
                             <th><span t-if="any([line.req_date for line in sale_order.order_line])">Requisition Date</span></th>
@@ -490,6 +492,8 @@
                                     <td id="product_name"><span t-field="line.name"/> </td>
                                     <td class="text-right" id="product_name"><span t-field="line.product_id.product_tmpl_id.actual_quantity"/></td>
 <!--                                    <td id="product_name"><span t-if="line.order_id.team_id.team_type=='engine' and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>-->
+                                    <td class="text-center td-min-exp align-middle"><div><span t-esc="line.product_id.min_exp_date" t-options="{'widget': 'date'}"/></div></td>
+                                    <td class="text-center td-min-exp align-middle"><div><span t-esc="line.product_id.max_exp_date" t-options="{'widget': 'date'}"/></div></td>
                                     <td id="product_name"><span t-if="line.order_id.team_id.team_type in ('engine', 'rapid_quote') and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>
                                     <td><span t-if="line.req_date" t-field="line.req_date" t-options='{"widget": "date"}'/></td>
                                     <td><span t-if="line.req_no" t-field="line.req_no"/></td>
