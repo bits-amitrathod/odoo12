@@ -33,67 +33,44 @@ class VendorOfferNewAppraisal(models.Model):
         return {}
 
     def get_quotations_count_by_product(self, product):
-        orders = self.env['sale.order'].search([('state', '=', 'draft')])
+        orders = self.env['sale.order'].search([('state', 'in', ['draft', 'sent'])])
         quotations = orders.filtered(lambda order: product.id in order.order_line.mapped('product_id.id'))
         return len(quotations) if quotations else 0
 
-    # T1 Good – 45 PRCT
-    # T2 Good – 35 PRCT
-    # Tier 3
-    def multiplier_adjustment_criteria_1_3(self, qty_in_stock, product_sales_count, open_quotations_cnt):
-        if qty_in_stock == 0 and product_sales_count == 0:
-            if 0 < open_quotations_cnt < 5:
-                return 'Tier 3'
-            elif 5 <= open_quotations_cnt <= 15:
-                return 'T2 Good – 35 PRCT'
-            elif open_quotations_cnt > 15:
-                return 'T1 Good – 45 PRCT'
-        return None
-
-    def multiplier_adjustment_criteria_4(self, tier, inv_ratio_90_days, product_sales_total_amount_yr):
-        if tier == 1 and inv_ratio_90_days < 1 and product_sales_total_amount_yr >= 100000:
-            return "Premium – 50 PRCT"
-        return None
-
-    def multiplier_adjustment_criteria_5(self, tier, inv_ratio_90_days, open_quotations_cnt):
-        if tier == 1 and inv_ratio_90_days < 1 and open_quotations_cnt >= 20:
-            return "Premium – 50 PRCT"
-        return None
-
-    def multiplier_adjustment_criteria_6(self, tier, qty_in_stock, open_quotations_cnt):
-        if tier == 1 and qty_in_stock == 0 and open_quotations_cnt >= 20:
-            return "Premium – 50 PRCT"
-        return None
-
-    def multiplier_adjustment_criteria_7(self, tier, inv_ratio_90_days, open_quotations_cnt):
-        if tier == 2 and inv_ratio_90_days < 1 and open_quotations_cnt >= 10:
-            return "T1 Good – 45 PRCT"
-        return None
-
-    def multiplier_adjustment_criteria_8(self, tier, qty_in_stock, qty_sold_90_days, open_quotations_cnt):
-        if tier == 2 and qty_in_stock == 0 and qty_sold_90_days > 0 and open_quotations_cnt >= 10:
-            return "T1 Good – 45 PRCT"
-        return None
-
-    def multiplier_adjustment_criteria_9(self, qty_in_stock, qty_sold_90_days, qty_sold_all, qty_sold_yr,
-                                         average_aging):
-        if qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 \
-                and qty_sold_all == 0 and average_aging > 30:
-            return "Tier 3"
-        return None
-
-    def multiplier_adjustment_criteria_10(self, qty_in_stock, qty_sold_all, qty_sold_yr, open_quotations_cnt):
-        if qty_in_stock == 0 and qty_sold_yr == 0 and qty_sold_all == 0 and open_quotations_cnt < 5:
-            return "Tier 3"
-        return None
-
     def multiplier_adjustment_criteria(self, po_line):
         if po_line:
-            po_line.qty_in_stock
-            po_line.product_sales_count
-            po_line.product_id.tier
+            qty_in_stock = po_line.qty_in_stock
+            product_sales_count = po_line.product_sales_count   # qty_sold_all
+            qty_sold_yr = po_line.product_sales_count_yrs
+            tier = po_line.product_id.tier
             open_quotations_cnt = self.get_quotations_count_by_product(po_line.product_id)
-            po_line.product_sales_count_90
+            qty_sold_90_days = po_line.product_sales_count_90
+            average_aging = po_line.product_id.average_aging
+            inv_ratio_90_days = 0                    #TODO: Calulare after
+            product_sales_total_amount_yr = 100     #TODO: make change
+
+            multiplier = 'TIER 3'
+
+            if qty_in_stock == 0 and product_sales_count == 0:
+                if 0 < open_quotations_cnt < 5:
+                    multiplier = 'TIER 3'
+                elif 5 <= open_quotations_cnt <= 15:
+                    multiplier = 'T2 Good – 35 PRCT'
+                elif open_quotations_cnt > 15:
+                    multiplier = 'T1 Good – 45 PRCT'
+            elif tier == 1 and inv_ratio_90_days < 1:
+                if product_sales_total_amount_yr >= 100000 or open_quotations_cnt >= 20 or qty_in_stock == 0:
+                    multiplier = 'Premium – 50 PRCT'
+            elif tier == 2 and inv_ratio_90_days < 1:
+                if open_quotations_cnt >= 10 or (qty_in_stock == 0 and qty_sold_90_days > 0):
+                    multiplier = 'T1 Good – 45 PRCT'
+            elif qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 and product_sales_count == 0 and average_aging > 30:
+                multiplier = 'TIER 3'
+            elif qty_in_stock == 0 and qty_sold_yr == 0 and product_sales_count == 0 and open_quotations_cnt < 5:
+                multiplier = 'TIER 3'
+
+            # Change TIER 3 To multiplier this is for only testing purpose
+            po_line.multiplier_app_new = self.env['multiplier.multiplier'].search([('name', '=', 'TIER 3')], limit=1)
 
     # def action_recalculate_vendor_offer(self):
     #
