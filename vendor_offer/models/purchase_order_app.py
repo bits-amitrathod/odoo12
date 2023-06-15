@@ -40,10 +40,10 @@ class VendorOfferNewAppraisal(models.Model):
         for objList in self:
             for obj in objList:
                 for obj_line in obj.order_line:
+                    obj_line.multiplier_adjustment_criteria()
                     obj_line.copy_product_qty_column()
                     obj_line._cal_offer_price()
                     obj_line._set_offer_price()
-                    obj_line.multiplier_adjustment_criteria()
                     obj_line._cal_margin()
 
                     obj_line.compute_total_line_vendor()

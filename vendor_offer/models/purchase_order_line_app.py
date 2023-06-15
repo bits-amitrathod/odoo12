@@ -67,7 +67,7 @@ class VendorOfferProductLineNew(models.Model):
             average_aging = po_line.product_id.average_aging
             inv_ratio_90_days = 0  # TODO: Calulare after
             product_sales_total_amount_yr = po_line.get_last_year_sales_by_product()  # TODO: make change
-            multiplier = ''
+            multiplier = 'TIER 3'
             if qty_in_stock == 0 and product_sales_count == 0:
                 if 0 < open_quotations_cnt < 5:
                     multiplier = 'TIER 3'
