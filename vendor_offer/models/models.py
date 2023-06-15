@@ -373,33 +373,33 @@ class VendorOffer(models.Model):
                     billed_retail_untaxed += line.billed_product_retail_price
                     billed_offer_untaxed += line.billed_product_offer_price
 
-                    multiplier_list = line.multiplier
-                    val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
-                    if (float(val_t) % 1) >= 0.5:
-                        product_unit_price = math.ceil(
-                            float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+                    # multiplier_list = line.multiplier
+                    # val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
+                    # if (float(val_t) % 1) >= 0.5:
+                    #     product_unit_price = math.ceil(
+                    #         float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+                    #
+                    # else:
+                    #     product_unit_price = math.floor(
+                    #         float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+                    #
+                    # val_off = float(product_unit_price) * (float(
+                    #     multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
+                    # if (float(val_off) % 1) >= 0.5:
+                    #     product_offer_price = math.ceil(
+                    #         float(product_unit_price) * (
+                    #                 float(multiplier_list.margin) / 100 + float(
+                    #             line.possible_competition.margin) / 100))
+                    #
+                    # else:
+                    #     product_offer_price = math.floor(float(product_unit_price) * (
+                    #             float(multiplier_list.margin) / 100 + float(
+                    #         line.possible_competition.margin) / 100))
 
-                    else:
-                        product_unit_price = math.floor(
-                            float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
-
-                    val_off = float(product_unit_price) * (float(
-                        multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
-                    if (float(val_off) % 1) >= 0.5:
-                        product_offer_price = math.ceil(
-                            float(product_unit_price) * (
-                                    float(multiplier_list.margin) / 100 + float(
-                                line.possible_competition.margin) / 100))
-
-                    else:
-                        product_offer_price = math.floor(float(product_unit_price) * (
-                                float(multiplier_list.margin) / 100 + float(
-                            line.possible_competition.margin) / 100))
-
-                    line.update({
-                        'product_offer_price': product_offer_price,
-                        'product_unit_price': product_unit_price
-                    })
+                    # line.update({
+                    #     'product_offer_price': product_offer_price,
+                    #     'product_unit_price': product_unit_price
+                    # })
 
                     # line.for_print_product_offer_price = str(line.product_offer_price)
                     # line.for_print_price_subtotal = str(line.price_subtotal)

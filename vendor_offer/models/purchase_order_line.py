@@ -298,41 +298,41 @@ class VendorOfferProduct(models.Model):
                 taxes = line.taxes_id.compute_all(float(line.product_offer_price), line.order_id.currency_id,
                                                   line.product_qty, product=line.product_id,
                                                   partner=line.order_id.partner_id)
-                if line.order_id.import_type_ven != 'new_appraisal':
-                    if line.order_id.import_type_ven != 'all_field_import':
-                        line.update({
-                            'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
-                            'price_subtotal': taxes['total_excluded'],
-                            'price_total': taxes['total_included'],
-                            'price_unit': line.product_offer_price,
+                #if line.order_id.import_type_ven != 'new_appraisal':
+                if line.order_id.import_type_ven != 'all_field_import':
+                    line.update({
+                        'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                        'price_subtotal': taxes['total_excluded'],
+                        'price_total': taxes['total_included'],
+                        'price_unit': line.product_offer_price,
 
-                            'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
-                            'product_retail': taxes1['total_excluded'],
-                            'rt_price_total': taxes1['total_included'],
-                        })
-                    else:
-                        line.update({
-                            'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
-                            'price_subtotal': taxes['total_excluded'],
-                            'price_total': taxes['total_included'],
-                            'price_unit': line.product_offer_price,
-
-                            'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
-                            'product_retail': taxes1['total_excluded'],
-                            'rt_price_total': taxes1['total_included'],
-                        })
-
+                        'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
+                        'product_retail': taxes1['total_excluded'],
+                        'rt_price_total': taxes1['total_included'],
+                    })
                 else:
                     line.update({
-                        'price_tax': line.price_tax,
-                        'price_subtotal': line.price_subtotal,
-                        'price_total': line.price_total,
-                        'price_unit': line.price_unit,
+                        'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
+                        'price_subtotal': taxes['total_excluded'],
+                        'price_total': taxes['total_included'],
+                        'price_unit': line.product_offer_price,
 
-                        'rt_price_tax': line.rt_price_tax,
-                        'product_retail': line.product_retail,
-                        'rt_price_total': line.rt_price_total,
+                        'rt_price_tax': sum(t.get('amount', 0.0) for t in taxes1.get('taxes', [])),
+                        'product_retail': taxes1['total_excluded'],
+                        'rt_price_total': taxes1['total_included'],
                     })
+
+                # else:
+                #     line.update({
+                #         'price_tax': line.price_tax,
+                #         'price_subtotal': line.price_subtotal,
+                #         'price_total': line.price_total,
+                #         'price_unit': line.price_unit,
+                #
+                #         'rt_price_tax': line.rt_price_tax,
+                #         'product_retail': line.product_retail,
+                #         'rt_price_total': line.rt_price_total,
+                #     })
 
 
 

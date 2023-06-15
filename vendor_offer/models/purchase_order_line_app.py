@@ -9,6 +9,10 @@ class VendorOfferProductLineNew(models.Model):
     multiplier_app_new = fields.Many2one('multiplier.multiplier', string="Multiplier")
     product_qty_app_new = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True)
 
+    def copy_product_qty_column(self):
+        for line in self:
+            line.product_qty = line.product_qty_app_new
+
     def compute_total_line_vendor(self):
         for line in self:
 
@@ -63,7 +67,7 @@ class VendorOfferProductLineNew(models.Model):
             average_aging = po_line.product_id.average_aging
             inv_ratio_90_days = 0  # TODO: Calulare after
             product_sales_total_amount_yr = po_line.get_last_year_sales_by_product()  # TODO: make change
-
+            multiplier = ''
             if qty_in_stock == 0 and product_sales_count == 0:
                 if 0 < open_quotations_cnt < 5:
                     multiplier = 'TIER 3'
@@ -83,7 +87,7 @@ class VendorOfferProductLineNew(models.Model):
                 multiplier = 'TIER 3'
 
             # Change TIER 3 To multiplier this is for only testing purpose
-            multiplier = 'TIER 3'
+            #multiplier = 'TIER 3'
             po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
 
 

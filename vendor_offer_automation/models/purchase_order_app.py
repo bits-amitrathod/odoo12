@@ -207,8 +207,8 @@ class VendorOfferNewAppraisalImport(models.Model):
 
                             if possible_competition_index and possible_competition_index >= 0:
                                 possible_competition_name = excel_data_row[possible_competition_index]
-                            if multiplier_index and multiplier_index >= 0:
-                                multiplier_name = excel_data_row[multiplier_index]
+                            # if multiplier_index and multiplier_index >= 0:
+                            #     multiplier_name = excel_data_row[multiplier_index]
                             if count_obj == 0:
                                 # if potential_profit_margin_index and potential_profit_margin_index >= 0:
                                 #     potential_profit_margin = excel_data_row[potential_profit_margin_index]
@@ -285,6 +285,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                     prod_name = products[0].name
                                 if prod_id != 0:
                                     order_line_obj = dict(name=product_sku, product_qty=quantity,
+                                                          product_qty_app_new=quantity,
                                                           date_planned=today_date,
                                                           state='ven_draft',
                                                           prod_name=prod_name,
@@ -457,7 +458,9 @@ class VendorOfferNewAppraisalImport(models.Model):
                                     count_order = count_order + 1
 
                                 insert = "INSERT INTO purchase_order_line" \
-                                         "(name,product_uom,price_unit,product_qty,date_planned,order_id,product_id," \
+                                         "(name,product_uom,price_unit,product_qty,product_qty_app_new," \
+                                         "date_planned,order_id," \
+                                         "product_id," \
                                          " qty_in_stock," \
                                          "product_unit_price,product_offer_price,product_sales_count_90" \
                                          " , product_sales_count_yrs,product_sales_count,expired_inventory," \
@@ -468,7 +471,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " ,create_uid,company_id,create_date,price_tax,qty_invoiced" \
                                          ",qty_to_invoice,propagate_cancel,qty_received_method,product_uom_qty," \
                                          " qty_received,state)" \
-                                         " VALUES (%s,%s,%s, %s,%s, %s, %s," \
+                                         " VALUES (%s,%s,%s, %s,%s, %s, %s,%s," \
                                          " %s, " \
                                          " %s, %s, %s," \
                                          " %s, " \
@@ -484,7 +487,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                 sql_query = insert
                                 val = (order_line_object['prod_name'], order_line_object['product_uom'],
                                        float("{0:.2f}".format(float(order_line_object['offer_price']))),
-                                       order_line_object['product_qty'], order_line_object['date_planned'],
+                                       order_line_object['product_qty'],  order_line_object['product_qty_app_new'],
+                                       order_line_object['date_planned'],
                                        order_line_object['order_id'], order_line_object['product_id'],
                                        order_line_object['qty_in_stock'],
                                        float("{0:.2f}".format(float(order_line_object['retail_price']))),
