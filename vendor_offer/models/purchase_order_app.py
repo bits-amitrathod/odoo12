@@ -1,5 +1,8 @@
 from odoo import models, fields, api, _
 
+from datetime import datetime, timedelta
+from odoo import models, fields
+
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -37,6 +40,9 @@ class VendorOfferNewAppraisal(models.Model):
         quotations = orders.filtered(lambda order: product.id in order.order_line.mapped('product_id.id'))
         return len(quotations) if quotations else 0
 
+    def get_last_year_sales_by_product(self):
+        return 1000
+
     def multiplier_adjustment_criteria(self, po_line):
         if po_line:
             qty_in_stock = po_line.qty_in_stock
@@ -47,9 +53,7 @@ class VendorOfferNewAppraisal(models.Model):
             qty_sold_90_days = po_line.product_sales_count_90
             average_aging = po_line.product_id.average_aging
             inv_ratio_90_days = 0                    #TODO: Calulare after
-            product_sales_total_amount_yr = 100     #TODO: make change
-
-            multiplier = 'TIER 3'
+            product_sales_total_amount_yr = self.get_last_year_sales_by_product()    #TODO: make change
 
             if qty_in_stock == 0 and product_sales_count == 0:
                 if 0 < open_quotations_cnt < 5:
@@ -70,29 +74,20 @@ class VendorOfferNewAppraisal(models.Model):
                 multiplier = 'TIER 3'
 
             # Change TIER 3 To multiplier this is for only testing purpose
-            po_line.multiplier_app_new = self.env['multiplier.multiplier'].search([('name', '=', 'TIER 3')], limit=1)
+            multiplier = 'TIER 3'
+            po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
 
-    # def action_recalculate_vendor_offer(self):
-    #
-    #     for objList in self:
-    #         for obj in objList:
-    #             for obj_line in obj.order_line:
-    #                 obj_line._cal_offer_price()
-    #                 obj_line._cal_margin()
-    #                 obj_line._set_offer_price()
-    #                 obj_line.compute_total_line_vendor()
-    #
-    #     print('-----------')
     def action_recalculate_vendor_offer(self):
 
         for objList in self:
             for obj in objList:
                 for obj_line in obj.order_line:
                     # obj_line._cal_offer_price()
+                    obj.multiplier_adjustment_criteria(obj_line)
                     obj_line._cal_margin()
                     obj_line._set_offer_price()
                     obj_line.compute_total_line_vendor()
                     # obj_line.compute_retail_line_total()
-                    obj.multiplier_adjustment_criteria(obj_line)
+
 
         print('-----------')

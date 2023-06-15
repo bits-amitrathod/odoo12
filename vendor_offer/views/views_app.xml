@@ -190,7 +190,7 @@
                                                options="{'no_create': True}"
                                                attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
                                         <field name="margin"/>
-                                        <field name="multiplier_app_new"
+                                        <field name="multiplier"
                                                attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
                                         <field name="date_planned" invisible="1"/>
                                         <field name="order_id" invisible="1"/>
