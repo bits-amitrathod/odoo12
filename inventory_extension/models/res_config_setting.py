@@ -77,7 +77,7 @@ class StockPickingMarkAllButton(models.Model):
 
     def compute_warning(self):
         for rec in self:
-            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report"] and rec.partner_id.picking_warn in ["warning","block"]:
+            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and rec.partner_id.picking_warn in ["warning","block"]:
                 pre_msg = "" if rec.partner_id.picking_warn =="warning" else ""
                 rec.is_online = True
                 rec.picking_warn_msg = (pre_msg + "" + str(rec.partner_id.picking_warn_msg)) if rec.partner_id.picking_warn_msg else None
