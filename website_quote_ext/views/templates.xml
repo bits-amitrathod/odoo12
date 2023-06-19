@@ -454,10 +454,10 @@
                             <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Ref #</span></th>
                             <th class="text-left">Description</th>
                             <th class="text-left">Available Qty</th>
-                            <th class="text-center td-min-exp">Min Exp. Date</th>
-                            <th class="text-center td-max-exp">Max Exp. Date</th>
+                            <th class="text-center td-min-exp" style="width: 100px;">Min Exp. Date</th>
+                            <th class="text-center td-max-exp" style="width: 100px;">Max Exp. Date</th>
 <!--                            <th class="text-left"><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span></th>-->
-                            <th class="text-left"><span t-if="any([line.order_id.team_id.team_type in ('engine', 'rapid_quote') for line in sale_order.order_line])">Expiration</span></th>
+                            <th class="text-left"><span t-if="any([line.order_id.team_id.team_type in ('engine', 'rapid_quote') for line in sale_order.order_line])">Selected Expiration</span></th>
                             <th><span t-if="any([line.req_date for line in sale_order.order_line])">Requisition Date</span></th>
                             <th><span t-if="any([line.req_no for line in sale_order.order_line])">Requisition No</span></th>
                             <th><span t-if="any([line.vendor for line in sale_order.order_line])">Vendor</span></th>
@@ -470,7 +470,7 @@
                                 <!-- TODO: remove in master -->
                                 <t t-set="colspan" t-value="colspan+1"/>
                             </th>
-                            <th t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">Taxes</th>
+                            <th style="display: none;" t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">Taxes</th>
                             <th class="text-right" >
                                 <span groups="account.group_show_line_subtotals_tax_excluded">Amount</span>
                                 <span groups="account.group_show_line_subtotals_tax_included">Total Price</span>
@@ -492,8 +492,8 @@
                                     <td id="product_name"><span t-field="line.name"/> </td>
                                     <td class="text-right" id="product_name"><span t-field="line.product_id.product_tmpl_id.actual_quantity"/></td>
 <!--                                    <td id="product_name"><span t-if="line.order_id.team_id.team_type=='engine' and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>-->
-                                    <td class="text-center td-min-exp align-middle"><div><span t-esc="line.product_id.min_exp_date" t-options="{'widget': 'date'}"/></div></td>
-                                    <td class="text-center td-min-exp align-middle"><div><span t-esc="line.product_id.max_exp_date" t-options="{'widget': 'date'}"/></div></td>
+                                    <td class="text-right"><div><span t-esc="line.product_id.min_exp_date" t-options="{'widget': 'date'}"/></div></td>
+                                    <td class="text-right"><div><span t-esc="line.product_id.max_exp_date" t-options="{'widget': 'date'}"/></div></td>
                                     <td id="product_name"><span t-if="line.order_id.team_id.team_type in ('engine', 'rapid_quote') and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>
                                     <td><span t-if="line.req_date" t-field="line.req_date" t-options='{"widget": "date"}'/></td>
                                     <td><span t-if="line.req_no" t-field="line.req_no"/></td>
@@ -522,7 +522,7 @@
                                             <t t-esc="((line.discount % 1) and '%s' or '%d') % line.discount"/>% discount
                                         </strong>
                                     </td>
-                                    <td t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">
+                                    <td style="display: none;" t-attf-class="text-right {{ '' if report_type == 'html' else '' }}">
                                         <span t-esc="', '.join(map(lambda x: (x.description or x.name), line.tax_id))"/>
                                     </td>
                                     <td class="text-right">
