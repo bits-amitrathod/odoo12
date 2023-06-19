@@ -949,7 +949,7 @@
                                                 <th><span>Description</span> </th>
                                                 <th class="text-left">Available Qty</th>
 <!--                                                <th><span t-if="any([line.order_id.team_id.team_type=='engine' for line in sale_order.order_line])">Expiration</span> </th>-->
-                                                <th><span t-if="any([line.order_id.team_id.team_type in ('engine', 'rapid_quote') for line in sale_order.order_line])">Expiration</span> </th>
+                                                <th><span t-if="any([line.order_id.team_id.team_type in ('engine', 'rapid_quote') for line in sale_order.order_line])">Selected Expiration</span> </th>
                                                 <th><span t-if="any([line.req_date for line in sale_order.order_line])">Requisition Date</span></th>
                                                 <th><span t-if="any([line.req_no for line in sale_order.order_line])">Requisition No</span></th>
                                                 <th><span t-if="any([line.vendor for line in sale_order.order_line])">Vendor</span></th>
