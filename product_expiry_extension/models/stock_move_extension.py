@@ -126,7 +126,7 @@ class StockMoveExtension(models.Model):
         else:
             view = self.env.ref('stock.view_stock_move_nosuggest_operations')
 
-        if self.picking_id[0].sale_id.team_id.name in ["Website", "My In-Stock Report"] and self.picking_type_id.name in ['Pick'] and self.partner_id.picking_warn in ["block"]:
+        if self.picking_id[0].sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.picking_type_id.name in ['Pick'] and self.partner_id.picking_warn in ["block"]:
             return {
                     'name': _("Warning for %s") % self.partner_id.name,
                     'view_type': 'form',

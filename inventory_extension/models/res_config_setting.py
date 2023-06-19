@@ -116,7 +116,7 @@ class StockPickingMarkAllButton(models.Model):
 
     def action_button_mark_all_done(self):
         self.ensure_one()
-        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report"] and self.partner_id.picking_warn in ["block"]:
+        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.partner_id.picking_warn in ["block"]:
             return {
                 'name': _("Warning for %s") % self.partner_id.name,
                 'view_type': 'form',
