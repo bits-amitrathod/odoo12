@@ -106,6 +106,37 @@ class VendorOfferProductLineNew(models.Model):
             # Change TIER 3 To multiplier this is for only testing purpose
             #multiplier = 'TIER 3'
             po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
+    def no_tier_multiplier_adjustment_criteria(self):
+        for po_line in self:
+            qty_in_stock = po_line.qty_in_stock
+            product_sales_count = po_line.product_sales_count  # qty_sold_all
+            qty_sold_yr = po_line.product_sales_count_yrs
+            tier = po_line.product_id.tier
+
+            t1_to_t3_threshold = 10  # TODO: Development remain, read Product Tier Switching point
+            t1_overstock_threshold = 9
+            t2_threshold = 8
+            premium = False  # TODO:
+
+            if tier:
+                if product_sales_count == 0:
+                    return "NO History / Expired"
+                elif tier == 1 and qty_sold_yr <= qty_in_stock <= qty_sold_yr * t1_to_t3_threshold:
+                    return "T2 Good - 35 PRCT"
+                elif qty_in_stock > qty_sold_yr * t1_overstock_threshold or (qty_in_stock > qty_sold_yr * t2_threshold and tier == 2):
+                    return "Tier 3"
+                elif premium:
+                    return "Premium - 50 PRCT"
+                elif tier == 1:
+                    return "T1 Good – 45 PRCT"
+                elif tier == 2:
+                    return "T2 Good – 35 PRCT"
+                else:
+                    return "OUT OF SCOPE"
+            else:
+                return "OUT OF SCOPE"
+
+            po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
     def set_values(self):
         self.product_sales_count_month = self.get_product_sales_qty_or_amt_sum_by_days(30, 'qty')
         self.product_sales_count_90 = self.get_product_sales_qty_or_amt_sum_by_days(90, 'qty')
