@@ -42,6 +42,8 @@ class VendorOfferProductLineNew(models.Model):
     #             'product_retail': line.product_qty * line.product_unit_price,
     #         })
 
+    def is_recalculate_multiplier(self):
+        return True if self.multiplier else False
     def get_product_sales_qty_or_amt_sum_by_days(self, days, type='qty'):
         start_date = fields.Date.to_string(datetime.datetime.now() - datetime.timedelta(days=days))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
