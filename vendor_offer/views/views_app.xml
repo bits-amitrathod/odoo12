@@ -164,8 +164,18 @@
                                     </control>
                                         <field name="currency_id" invisible="1"/>
                                         <field name="sku_code" readonly="1"/>
+                                        <field name="original_sku" readonly="1"/>
                                         <field name="product_id"
                                                attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
+
+                                        <field name="open_quotations_of_prod"/>
+                                        <field name="average_aging"/>
+                                        <field name="product_sales_amount_yr"/>
+                                        <field name="inv_ratio_90_days"/>
+                                        <field name="premium_product"/>
+                                        <field name="consider_dropping_tier"/>
+                                        <field name="average_retail_last_year"/>
+
                                         <field name="product_qty_app_new"/>
                                         <field name="product_brand_id" readonly="1"/>
                                         <field name="name" invisible="1"/>

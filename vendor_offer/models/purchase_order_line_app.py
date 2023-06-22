@@ -9,14 +9,90 @@ class VendorOfferProductLineNew(models.Model):
     # New for Appraisal
     multiplier_app_new = fields.Many2one('multiplier.multiplier', string="Multiplier")
     product_qty_app_new = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True)
-    original_sku = fields.Char(string='Original SKU')
-    open_quotations_of_prod = fields.Float(string='Open Quotations')
-    average_aging = fields.Char(string='Average Aging', readonly=True)
+    original_sku = fields.Char(string='Imported SKU')
+    open_quotations_of_prod = fields.Float(string='Open Quotations', readonly=True, store=True)
+    average_aging = fields.Char(string='Average Aging', readonly=True, store=True)
     product_sales_amount_yr = fields.Float(string="Sales Amount Year", readonly=True, store=True)
     inv_ratio_90_days = fields.Float(string='INV Ratio', readonly=True, store=True)
     premium_product = fields.Float(string='Premium', readonly=True, store=True)
     consider_dropping_tier = fields.Boolean(string='CDT', readonly=True, store=True)
     average_retail_last_year = fields.Float(string='Average Retail Last Year', readonly=True, store=True)
+
+    def compute_new_fields_vendor_line(self):
+        for line in self:
+            result1 = {}
+            if not line.id:
+                return result1
+
+            ''' sale count will show only done qty '''
+
+            sale_amount_yr = 0
+            today_date = datetime.datetime.now()
+            last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
+
+            ''' state = sale condition added in all sales amount to match the value of sales amount to 
+            clients PPvendorpricing file '''
+
+            sale_all_query = """SELECT  sum(sol.price_total) as total_sales
+            from  product_product pp 
+             INNER JOIN sale_order_line sol ON sol.product_id=pp.id 
+             INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id
+             INNER JOIN sale_order so ON so.id=sol.order_id
+             INNER JOIN stock_picking sp ON sp.sale_id =so.id
+             where pp.id =%s and sp.date_done>= %s and sp.date_done<=%s and sp.location_dest_id = 9
+              group by sp.state"""
+
+            self.env.cr.execute(sale_all_query, (line.product_id.id, last_yr, today_date))
+
+            sales_all_value = 0
+            sales_all_val = self.env.cr.fetchone()
+            if sales_all_val and sales_all_val[0] is not None:
+                sales_all_value = sales_all_value + float(sales_all_val[0])
+            line.product_sales_amount_yr = sales_all_value
+
+            sql_query = """SELECT     Date(PUBLIC.stock_production_lot.create_date) AS create_date , 
+                                                       Sum(PUBLIC.stock_quant.quantity)              AS quantity 
+                                            FROM       PUBLIC.product_product 
+                                            INNER JOIN PUBLIC.product_template 
+                                            ON         ( 
+                                                                  PUBLIC.product_product.product_tmpl_id = PUBLIC.product_template.id) 
+                                            INNER JOIN PUBLIC.stock_production_lot 
+                                            ON         ( 
+                                                                  PUBLIC.stock_production_lot.product_id=PUBLIC.product_product.id ) 
+                                            INNER JOIN PUBLIC.stock_quant 
+                                            ON         ( 
+                                                                  PUBLIC.stock_quant.lot_id=PUBLIC.stock_production_lot.id) 
+                                            INNER JOIN PUBLIC.stock_location 
+                                            ON         ( 
+                                                                  PUBLIC.stock_location.id=PUBLIC.stock_quant.location_id) 
+                                            INNER JOIN PUBLIC.stock_warehouse 
+                                            ON         ( 
+                                                                  PUBLIC.stock_location.id IN (PUBLIC.stock_warehouse.lot_stock_id, 
+                                                                                               PUBLIC.stock_warehouse.wh_output_stock_loc_id,
+                                                                                               wh_pack_stock_loc_id)) 
+                                            WHERE      PUBLIC.stock_quant.quantity>0 
+                                            AND        product_template.id = %s  AND stock_production_lot.use_date >= %s
+                                            GROUP BY   PUBLIC.stock_production_lot.create_date, 
+                                                       PUBLIC.product_template.id
+                                                       """
+            self._cr.execute(sql_query, (line.product_id.product_tmpl_id.id, today_date))
+            product_lot_list = self.env.cr.dictfetchall()
+            sum_qty_day = 0
+            total_quantity = 0
+            for obj in product_lot_list:
+                date_format = "%Y-%m-%d"
+                today = fields.date.today().strftime('%Y-%m-%d')
+                a = datetime.datetime.strptime(str(today), date_format)
+                b = datetime.datetime.strptime(str(obj['create_date']), date_format)
+                diff = a - b
+
+                total_quantity = total_quantity + obj['quantity']
+                sum_qty_day = sum_qty_day + (obj['quantity'] * diff.days)
+
+            if total_quantity > 0:
+                line.average_aging = int(round(sum_qty_day / total_quantity, 0))
+            else:
+                line.average_aging = 0
 
     def copy_product_qty_column(self):
         for line in self:
