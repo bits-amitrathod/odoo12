@@ -179,10 +179,10 @@ class VendorOfferProductLineNew(models.Model):
                     multiplier = 'T2 Good – 35 PRCT'
                 elif open_quotations_cnt > 15:
                     multiplier = 'T1 Good – 45 PRCT'
-            elif tier == 1 and inv_ratio_90_days < 1:
+            elif tier and tier.code == '1' and inv_ratio_90_days < 1:
                 if product_sales_total_amount_yr >= 100000 or open_quotations_cnt >= 20 or qty_in_stock == 0:
                     multiplier = 'Premium – 50 PRCT'
-            elif tier == 2 and inv_ratio_90_days < 1:
+            elif tier and tier.code == '2' and inv_ratio_90_days < 1:
                 if open_quotations_cnt >= 10 or (qty_in_stock == 0 and qty_sold_90_days > 0):
                     multiplier = 'T1 Good – 45 PRCT'
             elif qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 and product_sales_count == 0 and average_aging > 30:
