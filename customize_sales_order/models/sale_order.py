@@ -32,7 +32,7 @@ class CustomerContract(models.Model):
                                                 ('national_acc', 'National Account Target'),
                                                 ('other', 'Other'),
                                                 ('lab/_research_center', 'Lab/ Research Center')],
-                                     tracking=True)
+                                                tracking=True)
 
     company_type = fields.Selection(string='Company Type',
                                     selection=[('person', 'Individual'), ('company', 'Company')],
