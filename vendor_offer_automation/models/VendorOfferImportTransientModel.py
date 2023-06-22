@@ -78,9 +78,10 @@ class VendorOfferImportTransientModel(models.TransientModel):
         if 'mf_customer_sku' not in import_fields:
             raise ValueError(_("You must configure Customer SKU field to import"))
 
-        if import_type_ven == all_field_import:
+        if import_type_ven in (all_field_import, new_appraisal):
             if 'mf_quantity' not in import_fields:
                 raise ValueError(_("You must configure 'Quantity' field to import"))
+        if import_type_ven == all_field_import:
             if 'mf_retail_price' not in import_fields:
                 raise ValueError(_("You must configure 'Retail Price' field to import"))
             if 'mf_offer_price' not in import_fields:

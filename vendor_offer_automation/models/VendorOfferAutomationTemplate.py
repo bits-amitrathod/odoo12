@@ -13,6 +13,7 @@ hide_column_list_method_app_new = ['mf_multiplier', 'mf_potential_profit_margin'
 
 all_field_import = 'all_field_import'
 few_field_import = 'few_field_import'
+new_appraisal = 'new_appraisal'
 
 
 class VendorOfferAutomationTemplateClass(models.Model):
