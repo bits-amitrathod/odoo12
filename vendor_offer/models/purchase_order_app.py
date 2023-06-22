@@ -41,7 +41,8 @@ class VendorOfferNewAppraisal(models.Model):
             for obj in objList:
                 for obj_line in obj.order_line:
                     obj_line.set_values()
-                    obj_line.multiplier_adjustment_criteria()
+                    if obj_line.is_recalculate_multiplier():
+                        obj_line.multiplier_adjustment_criteria()
                     obj_line.copy_product_qty_column()
                     obj_line._cal_offer_price()
                     obj_line._set_offer_price()
