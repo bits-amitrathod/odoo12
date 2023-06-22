@@ -9,6 +9,14 @@ class VendorOfferProductLineNew(models.Model):
     # New for Appraisal
     multiplier_app_new = fields.Many2one('multiplier.multiplier', string="Multiplier")
     product_qty_app_new = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True)
+    original_sku = fields.Char(string='Original SKU')
+    open_quotations_of_prod = fields.Float(string='Open Quotations')
+    average_aging = fields.Char(string='Average Aging', readonly=True)
+    product_sales_amount_yr = fields.Float(string="Sales Amount Year", readonly=True, store=True)
+    inv_ratio_90_days = fields.Float(string='INV Ratio', readonly=True, store=True)
+    premium_product = fields.Float(string='Premium', readonly=True, store=True)
+    consider_dropping_tier = fields.Boolean(string='CDT', readonly=True, store=True)
+    average_retail_last_year = fields.Float(string='Average Retail Last Year', readonly=True, store=True)
 
     def copy_product_qty_column(self):
         for line in self:
