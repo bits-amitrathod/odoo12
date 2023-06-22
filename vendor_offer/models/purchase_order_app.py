@@ -54,6 +54,7 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line._cal_margin()
 
                     obj_line.compute_total_line_vendor()
+                    obj_line.compute_new_fields_vendor_line()
                     # obj_line.compute_retail_line_total()
 
         print('-----------')
