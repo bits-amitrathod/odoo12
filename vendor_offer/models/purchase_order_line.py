@@ -107,6 +107,8 @@ class VendorOfferProduct(models.Model):
                 result1 = {}
                 if not line.product_id:
                     return result1
+                if line.product_qty_app_new is False or line.product_qty_app_new == 0.0:
+                    line.product_qty_app_new = 1
                 if line.order_id.import_type_ven != 'new_appraisal':
 
                     ''' sale count will show only done qty '''
