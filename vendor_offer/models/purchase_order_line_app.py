@@ -17,6 +17,7 @@ class VendorOfferProductLineNew(models.Model):
     premium_product = fields.Float(string='Premium', readonly=True, store=True)
     consider_dropping_tier = fields.Boolean(string='CDT', readonly=True, store=True)
     average_retail_last_year = fields.Float(string='Average Retail Last Year', readonly=True, store=True)
+    dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate Price', store=True)
 
     def compute_new_fields_vendor_line(self):
         for line in self:

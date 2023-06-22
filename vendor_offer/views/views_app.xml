@@ -193,6 +193,7 @@
                                         <field name="product_sales_count_yrs" />
                                         <field name="price_unit" invisible="1"/>
                                         <field name="expired_inventory"/>
+                                        <field name="dont_recalculate_offer_price" />
                                         <field name="product_unit_price" />
                                         <field name="product_offer_price"  />
                                         <field name="import_type_ven_line" invisible="1"/>

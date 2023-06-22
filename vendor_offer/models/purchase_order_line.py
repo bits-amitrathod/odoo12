@@ -213,9 +213,13 @@ class VendorOfferProduct(models.Model):
                 margin += line.possible_competition.margin
 
             line.update({
-                'margin': margin,
-                'product_unit_price': product_unit_price,
+                'margin': margin
             })
+
+            if line.dont_recalculate_offer_price is not True:
+                line.update({
+                    'product_unit_price': product_unit_price,
+                })
 
     product_unit_price = fields.Monetary(string="Retail Price", default=_cal_offer_price, store=True)
 
@@ -271,9 +275,10 @@ class VendorOfferProduct(models.Model):
                         float(multiplier_list.margin) / 100 + float(
                     line.possible_competition.margin) / 100))
 
-            line.update({
-                'product_offer_price': product_offer_price
-            })
+            if line.dont_recalculate_offer_price is not True:
+                line.update({
+                    'product_offer_price': product_offer_price
+                })
 
     product_offer_price = fields.Monetary(string="Offer Price", default=_set_offer_price, store=True)
 
