@@ -30,6 +30,7 @@ class VendorOfferNewAppraisal(models.Model):
 
     is_change_tier1_to_premium = fields.Boolean(string="Change Items Priced as Tier 1 to Premium")
     is_dynamic_tier_adjustment = fields.Boolean(string="Allow Dynamic Tier Adjustment?", default=True)
+    offer_contain_equipment = fields.Boolean(string="Contains Equipment", compute="check_equipment_present_or_not",)
 
     t1_retail_amt = fields.Monetary(string='T1 Total Retail Amount', readonly=True)
     t1_offer_amt = fields.Monetary(string='T1 Total Offer Amount', readonly=True)
@@ -73,6 +74,7 @@ class VendorOfferNewAppraisal(models.Model):
                     obj.summary_calculate(obj_line)
 
         print('-----------')
+<<<<<<< HEAD
     def set_zero_val(self):
         self.t1_retail_amt = 0
         self.t1_offer_amt = 0
@@ -96,3 +98,14 @@ class VendorOfferNewAppraisal(models.Model):
         elif line.multiplier.name == "PREMIUM - 50 PRCT":
             self.premium_retail_amt += line.product_retail
             self.premium_offer_amt += line.price_subtotal
+=======
+
+    def check_equipment_present_or_not(self):
+        for offer in self:
+            for line in offer.order_line:
+                offer.offer_contain_equipment = False
+                if line.list_contains_equip:
+                    offer.offer_contain_equipment = True
+
+
+>>>>>>> acd9be3cf1c465943d79d5c367c7adc29fe04fde

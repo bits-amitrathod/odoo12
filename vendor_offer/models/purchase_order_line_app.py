@@ -19,6 +19,7 @@ class VendorOfferProductLineNew(models.Model):
     average_retail_last_year = fields.Float(string='Average Retail Last Year', readonly=True, store=True)
     dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate Price', store=True)
     product_multiple_matches = fields.Boolean(string='Multiple Matches', store=True)
+    list_contains_equip = fields.Boolean(string='Equipment', store=True)
 
     def compute_new_fields_vendor_line(self):
         for line in self:

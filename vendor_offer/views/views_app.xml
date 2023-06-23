@@ -117,10 +117,16 @@
                                 <field name="new_customer"/>
                                 <field name="carrier_id"/>
                                 <field name="shipping_number"/>
+                                <field name="offer_contain_equipment" invisible="1"/>
+
                             </group>
                         </group>
+                            <span style="color:green;" attrs="{'invisible': [('offer_contain_equipment', '!=', True)]}">
+                                Equipment is present in product list </span>
+                            <br/> <br/> <br/>
                              <button name="action_recalculate_vendor_offer" class="btn-primary"
                                      string="Calculate"  context="{'new_app_cal': True}"  type="object"/>
+
                              <notebook>
                                  <page string="Product">
                                 <field name="order_line" mode="tree,form"
@@ -161,11 +167,13 @@
                                             </group>
                                         </group>
                                     </form>
-                                    <tree editable="bottom" decoration-info="product_multiple_matches == True">
+                                    <tree editable="bottom" decoration-info="product_multiple_matches == True"
+                                    decoration-success="list_contains_equip == True"  >
                                         <control>
                                         <create name="add_product_control" string="Add a product"/>
                                     </control>
                                         <field name="product_multiple_matches" invisible="1" />
+                                        <field name="list_contains_equip" invisible="1" />
                                         <field name="currency_id" invisible="1"/>
                                         <field name="sku_code" readonly="1"/>
                                         <field name="original_sku" readonly="1"/>
