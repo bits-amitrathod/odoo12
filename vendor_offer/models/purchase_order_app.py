@@ -30,6 +30,7 @@ class VendorOfferNewAppraisal(models.Model):
 
     is_change_tier1_to_premium = fields.Boolean(string="Change Items Priced as Tier 1 to Premium")
     is_dynamic_tier_adjustment = fields.Boolean(string="Allow Dynamic Tier Adjustment?", default=True)
+    offer_contain_equipment = fields.Boolean(string="Contains Equipment", compute="check_equipment_present_or_not",)
 
     # This Method Convert cancelled PO -> Vendor Offer
     def button_vendor_offer(self):
@@ -58,3 +59,12 @@ class VendorOfferNewAppraisal(models.Model):
                     # obj_line.compute_retail_line_total()
 
         print('-----------')
+
+    def check_equipment_present_or_not(self):
+        for offer in self:
+            for line in offer.order_line:
+                offer.offer_contain_equipment = False
+                if line.list_contains_equip:
+                    offer.offer_contain_equipment = True
+
+

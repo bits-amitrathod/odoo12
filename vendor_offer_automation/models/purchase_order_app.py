@@ -290,6 +290,11 @@ class VendorOfferNewAppraisalImport(models.Model):
                                     flag_red = False
                                     if len(query_result) > 1:
                                         flag_red = True
+                                    list_contains_equip = False
+                                    if products.categ_id and products.categ_id.name == 'EQUIPMENT':
+                                        list_contains_equip = True
+                                        flag_red = False
+
                                     if prod_id != 0:
                                         order_line_obj = dict(name=product_sku, product_qty=quantity,
                                                               product_qty_app_new=quantity,
@@ -316,7 +321,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                               max_val=max_val, accelerator=accelerator, credit=credit,
                                                               margin=margin_cost,
                                                               import_type_ven_line=new_appraisal,
-                                                              product_multiple_matches=flag_red
+                                                              product_multiple_matches=flag_red,
+                                                              list_contains_equip=list_contains_equip
                                                               )
                                         if expiration_date:
                                             order_line_obj.update({'expiration_date': expiration_date})
@@ -478,7 +484,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " import_type_ven_line,currency_id,product_sales_count_month" \
                                          " ,create_uid,company_id,create_date,price_tax,qty_invoiced" \
                                          ",qty_to_invoice,propagate_cancel,qty_received_method,product_uom_qty," \
-                                         " qty_received,state,product_multiple_matches)" \
+                                         " qty_received,state,product_multiple_matches,list_contains_equip)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s,%s," \
                                          " %s, " \
                                          " %s, %s, %s," \
@@ -489,7 +495,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " %s ,%s,%s ," \
                                          " %s ,%s,%s ,%s,%s," \
                                          " %s,%s,%s,%s," \
-                                         " %s,%s,%s) " \
+                                         " %s,%s,%s,%s) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -512,7 +518,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                        currency_id_insert, 0, create_uid, company_id, create_date, 0, 0, 0, 'true',
                                        'stock_moves',
                                        order_line_object['product_qty'], 0, 'ven_draft',
-                                       order_line_object['product_multiple_matches'])
+                                       order_line_object['product_multiple_matches'],
+                                       order_line_object['list_contains_equip'])
 
                                 self._cr.execute(sql_query, val)
                                 line_obj = self._cr.fetchone()
