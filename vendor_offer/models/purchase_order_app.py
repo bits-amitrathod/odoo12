@@ -31,6 +31,19 @@ class VendorOfferNewAppraisal(models.Model):
     is_change_tier1_to_premium = fields.Boolean(string="Change Items Priced as Tier 1 to Premium")
     is_dynamic_tier_adjustment = fields.Boolean(string="Allow Dynamic Tier Adjustment?", default=True)
 
+    t1_retail_amt = fields.Monetary(string='T1 Total Retail Amount', readonly=True)
+    t1_offer_amt = fields.Monetary(string='T1 Total Offer Amount', readonly=True)
+
+    t2_retail_amt = fields.Monetary(string='T2 Total Retail Amount', readonly=True)
+    t2_offer_amt = fields.Monetary(string='T2 Total Offer Amount', readonly=True)
+
+    t3_retail_amt = fields.Monetary(string='T3 Total Retail Amount', readonly=True)
+    t3_offer_amt = fields.Monetary(string='T3 Total Offer Amount', readonly=True)
+
+    premium_retail_amt = fields.Monetary(string='Premium Total Retail Amount', readonly=True)
+    premium_offer_amt = fields.Monetary(string='Premium Total Offer Amount', readonly=True)
+
+
     # This Method Convert cancelled PO -> Vendor Offer
     def button_vendor_offer(self):
         _logger.info("Set to VO button Action..")
@@ -42,6 +55,7 @@ class VendorOfferNewAppraisal(models.Model):
 
         for objList in self:
             for obj in objList:
+                obj.set_zero_val()
                 for obj_line in obj.order_line:
                     obj_line.set_values()
                     if obj.is_change_tier1_to_premium:
@@ -56,5 +70,29 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line.compute_total_line_vendor()
                     obj_line.compute_new_fields_vendor_line()
                     # obj_line.compute_retail_line_total()
+                    obj.summary_calculate(obj_line)
 
         print('-----------')
+    def set_zero_val(self):
+        self.t1_retail_amt = 0
+        self.t1_offer_amt = 0
+        self.t2_retail_amt = 0
+        self.t2_offer_amt = 0
+        self.t3_retail_amt = 0
+        self.t3_offer_amt = 0
+        self.premium_retail_amt = 0
+        self.premium_offer_amt = 0
+
+    def summary_calculate(self, line):
+        if line.multiplier.name == "T1 Good – 45 PRCT":
+            self.t1_retail_amt += line.product_retail
+            self.t1_offer_amt += line.price_subtotal
+        elif line.multiplier.name == "T2 Good – 35 PRCT":
+            self.t2_retail_amt += line.product_retail
+            self.t2_offer_amt += line.price_subtotal
+        elif line.multiplier.name == "TIER 3":
+            self.t3_retail_amt += line.product_retail
+            self.t3_offer_amt += line.price_subtotal
+        elif line.multiplier.name == "PREMIUM - 50 PRCT":
+            self.premium_retail_amt += line.product_retail
+            self.premium_offer_amt += line.price_subtotal
