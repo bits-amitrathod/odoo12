@@ -161,10 +161,11 @@
                                             </group>
                                         </group>
                                     </form>
-                                    <tree editable="bottom">
+                                    <tree editable="bottom" decoration-info="product_multiple_matches == True">
                                         <control>
                                         <create name="add_product_control" string="Add a product"/>
                                     </control>
+                                        <field name="product_multiple_matches" invisible="1" />
                                         <field name="currency_id" invisible="1"/>
                                         <field name="sku_code" readonly="1"/>
                                         <field name="original_sku" readonly="1"/>

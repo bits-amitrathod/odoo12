@@ -248,7 +248,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                     as temp_data where sku_code_cleaned ='""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', product_sku.upper()) + """' or manufacturer_pref = '""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', sku_code.upper()) + """' """)
-                            query_result = self.env.cr.dictfetchone()
+                            #query_result = self.env.cr.dictfetchone()
+                            query_result = self.env.cr.dictfetchall()
                             if query_result is None and product_sku.startswith("M00"):
                                 prod_sku = product_sku[4:]
                                 final_sku = prod_sku[:len(prod_sku)-1]
@@ -266,69 +267,76 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                     as temp_data where sku_code_cleaned ='""" + re.sub(
                                     r'[^A-Za-z0-9.]', '', final_sku.upper()) + """' or manufacturer_pref ='""" + re.sub(
                                     r'[^A-Za-z0-9.]', '', sku_code.upper()) + """' """)
-                                query_result = self.env.cr.dictfetchone()
+                                #query_result = self.env.cr.dictfetchone()
+                                query_result = self.env.cr.dictfetchall()
+
                             sku_code_file = re.sub('[^A-Za-z0-9]+', '', product_sku)
                             if query_result:
-                                products = self.env['product.product'].browse(query_result['product_id'])
-                                # for product_obj in products:
-                                #     if product_obj.categ_id and product_obj.categ_id.name == 'EQUIPMENT':
-                                #         raise UserError('This is your alert message.')
-                                if count_obj == 0:
-                                    possible_competition = self.env['competition.competition'].search(
-                                        [('name', '=', possible_competition_name)]).id
-                                multiplier = self.env['multiplier.multiplier'].search(
-                                    [('name', '=', multiplier_name)]).id
-                                prod_id = 0
-                                prod_name = ''
-                                if products:
-                                    prod_id = products[0].id
-                                    prod_name = products[0].name
-                                if prod_id != 0:
-                                    order_line_obj = dict(name=product_sku, product_qty=quantity,
-                                                          product_qty_app_new=quantity,
-                                                          date_planned=today_date,
-                                                          state='ven_draft',
-                                                          prod_name=prod_name,
-                                                          product_uom=query_result['uom_id'],
-                                                          order_id=self.id,
-                                                          product_id=prod_id, qty_in_stock=quantity_in_stock,
-                                                          price_unit=offer_price,
-                                                          product_retail=0,
-                                                          product_unit_price=0, product_offer_price=0,
-                                                          product_sales_count_90=sales_count_90,
-                                                          product_sales_count_yrs=sales_count_yr,
-                                                          product_sales_count=sales_count,
-                                                          amount_total_ven_pri=sales_total,
-                                                          expired_inventory=exp_inventory,
-                                                          offer_price=offer_price, offer_price_total=offer_price_total,
-                                                          retail_price=retail_price,
-                                                          retail_price_total=retail_price_total,
-                                                          possible_competition=possible_competition,
-                                                          multiplier=multiplier,
-                                                          potential_profit_margin=potential_profit_margin,
-                                                          max_val=max_val, accelerator=accelerator, credit=credit,
-                                                          margin=margin_cost,
-                                                          import_type_ven_line=new_appraisal
-                                                          )
-                                    if expiration_date:
-                                        order_line_obj.update({'expiration_date': expiration_date})
+                                for query_result_one in query_result:
+                                    products = self.env['product.product'].browse(query_result_one['product_id'])
+                                    # for product_obj in products:
+                                    #     if product_obj.categ_id and product_obj.categ_id.name == 'EQUIPMENT':
+                                    #         raise UserError('This is your alert message.')
+                                    if count_obj == 0:
+                                        possible_competition = self.env['competition.competition'].search(
+                                            [('name', '=', possible_competition_name)]).id
+                                    multiplier = self.env['multiplier.multiplier'].search(
+                                        [('name', '=', multiplier_name)]).id
+                                    prod_id = 0
+                                    prod_name = ''
+                                    if products:
+                                        prod_id = products[0].id
+                                        prod_name = products[0].name
+                                    flag_red = False
+                                    if len(query_result) > 1:
+                                        flag_red = True
+                                    if prod_id != 0:
+                                        order_line_obj = dict(name=product_sku, product_qty=quantity,
+                                                              product_qty_app_new=quantity,
+                                                              date_planned=today_date,
+                                                              state='ven_draft',
+                                                              prod_name=prod_name,
+                                                              product_uom=query_result_one['uom_id'],
+                                                              order_id=self.id,
+                                                              product_id=prod_id, qty_in_stock=quantity_in_stock,
+                                                              price_unit=offer_price,
+                                                              product_retail=0,
+                                                              product_unit_price=0, product_offer_price=0,
+                                                              product_sales_count_90=sales_count_90,
+                                                              product_sales_count_yrs=sales_count_yr,
+                                                              product_sales_count=sales_count,
+                                                              amount_total_ven_pri=sales_total,
+                                                              expired_inventory=exp_inventory,
+                                                              offer_price=offer_price, offer_price_total=offer_price_total,
+                                                              retail_price=retail_price,
+                                                              retail_price_total=retail_price_total,
+                                                              possible_competition=possible_competition,
+                                                              multiplier=multiplier,
+                                                              potential_profit_margin=potential_profit_margin,
+                                                              max_val=max_val, accelerator=accelerator, credit=credit,
+                                                              margin=margin_cost,
+                                                              import_type_ven_line=new_appraisal,
+                                                              product_multiple_matches=flag_red
+                                                              )
+                                        if expiration_date:
+                                            order_line_obj.update({'expiration_date': expiration_date})
+                                        else:
+                                            order_line_obj.update({'expiration_date': None})
+                                        if uom:
+                                            if uom.upper() == 'EACH':
+                                                order_line_obj.update({'uom_str': uom})
+                                            if uom.upper() == 'BOX':
+                                                uom_obj = products[0].uom_id
+                                                temp_qty = uom_obj.factor_inv * float(quantity)
+                                                order_line_obj.update({'uom_str': 'each'})
+                                                order_line_obj.update({'product_qty': temp_qty})
+                                        else:
+                                            order_line_obj.update({'uom_str': ''})
+                                        order_list_list.append(order_line_obj)
+                                        count_obj = count_obj + 1
                                     else:
-                                        order_line_obj.update({'expiration_date': None})
-                                    if uom:
-                                        if uom.upper() == 'EACH':
-                                            order_line_obj.update({'uom_str': uom})
-                                        if uom.upper() == 'BOX':
-                                            uom_obj = products[0].uom_id
-                                            temp_qty = uom_obj.factor_inv * float(quantity)
-                                            order_line_obj.update({'uom_str': 'each'})
-                                            order_line_obj.update({'product_qty': temp_qty})
-                                    else:
-                                        order_line_obj.update({'uom_str': ''})
-                                    order_list_list.append(order_line_obj)
-                                    count_obj = count_obj + 1
-                                else:
-                                    sku_not_found_list.append(sku_code)
-                                    #sku_not_found_list_cleaned.append(sku_code_file)
+                                        sku_not_found_list.append(sku_code)
+                                        #sku_not_found_list_cleaned.append(sku_code_file)
                             else:
                                 sku_not_found_list.append(sku_code)
                                 sku_not_found_list_cleaned.append(sku_code_file)
@@ -470,7 +478,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " import_type_ven_line,currency_id,product_sales_count_month" \
                                          " ,create_uid,company_id,create_date,price_tax,qty_invoiced" \
                                          ",qty_to_invoice,propagate_cancel,qty_received_method,product_uom_qty," \
-                                         " qty_received,state)" \
+                                         " qty_received,state,product_multiple_matches)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s,%s," \
                                          " %s, " \
                                          " %s, %s, %s," \
@@ -481,7 +489,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " %s ,%s,%s ," \
                                          " %s ,%s,%s ,%s,%s," \
                                          " %s,%s,%s,%s," \
-                                         " %s,%s) " \
+                                         " %s,%s,%s) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -503,7 +511,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                        order_line_object['import_type_ven_line'],
                                        currency_id_insert, 0, create_uid, company_id, create_date, 0, 0, 0, 'true',
                                        'stock_moves',
-                                       order_line_object['product_qty'], 0, 'ven_draft')
+                                       order_line_object['product_qty'], 0, 'ven_draft',
+                                       order_line_object['product_multiple_matches'])
 
                                 self._cr.execute(sql_query, val)
                                 line_obj = self._cr.fetchone()
