@@ -231,6 +231,10 @@ class VendorOfferProductLineNew(models.Model):
         self.product_sales_count_90 = self.get_product_sales_qty_or_amt_sum_by_days(90, 'qty')
         self.product_sales_count_yrs = self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
 
+    def compute_average_retail(self):
+        self.average_retail_last_year = (self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
+                                         / self.product_unit_price if self.product_unit_price != 0 else 1)
+
 
 
 

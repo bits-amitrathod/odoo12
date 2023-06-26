@@ -171,6 +171,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                         accelerator = credit = 'NO'
                         for excel_data_row in excel_data_rows:
                             sku_code = excel_data_row[sku_index]
+                            original_sku = sku_code
                             price = sales_count = sales_count_yr = sales_total = exp_inventory = sales_count_90 = 0
                             quantity = 1
                             quantity_in_stock = offer_price = offer_price_total = retail_price = retail_price_total = 0
@@ -205,8 +206,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                             # if retail_price_total_index and retail_price_total_index >= 0:
                             #     retail_price_total = excel_data_row[retail_price_total_index]
 
-                            if possible_competition_index and possible_competition_index >= 0:
-                                possible_competition_name = excel_data_row[possible_competition_index]
+                            # if possible_competition_index and possible_competition_index >= 0:
+                            #     possible_competition_name = excel_data_row[possible_competition_index]
                             # if multiplier_index and multiplier_index >= 0:
                             #     multiplier_name = excel_data_row[multiplier_index]
                             if count_obj == 0:
@@ -274,9 +275,6 @@ class VendorOfferNewAppraisalImport(models.Model):
                             if query_result:
                                 for query_result_one in query_result:
                                     products = self.env['product.product'].browse(query_result_one['product_id'])
-                                    # for product_obj in products:
-                                    #     if product_obj.categ_id and product_obj.categ_id.name == 'EQUIPMENT':
-                                    #         raise UserError('This is your alert message.')
                                     if count_obj == 0:
                                         possible_competition = self.env['competition.competition'].search(
                                             [('name', '=', possible_competition_name)]).id
@@ -322,7 +320,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                               margin=margin_cost,
                                                               import_type_ven_line=new_appraisal,
                                                               product_multiple_matches=flag_red,
-                                                              list_contains_equip=list_contains_equip
+                                                              list_contains_equip=list_contains_equip,
+                                                              original_sku=original_sku
                                                               )
                                         if expiration_date:
                                             order_line_obj.update({'expiration_date': expiration_date})
@@ -484,7 +483,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " import_type_ven_line,currency_id,product_sales_count_month" \
                                          " ,create_uid,company_id,create_date,price_tax,qty_invoiced" \
                                          ",qty_to_invoice,propagate_cancel,qty_received_method,product_uom_qty," \
-                                         " qty_received,state,product_multiple_matches,list_contains_equip)" \
+                                         " qty_received,state,product_multiple_matches,list_contains_equip," \
+                                         " original_sku)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s,%s," \
                                          " %s, " \
                                          " %s, %s, %s," \
@@ -495,7 +495,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " %s ,%s,%s ," \
                                          " %s ,%s,%s ,%s,%s," \
                                          " %s,%s,%s,%s," \
-                                         " %s,%s,%s,%s) " \
+                                         " %s,%s,%s,%s," \
+                                         " %s ) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -519,7 +520,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                        'stock_moves',
                                        order_line_object['product_qty'], 0, 'ven_draft',
                                        order_line_object['product_multiple_matches'],
-                                       order_line_object['list_contains_equip'])
+                                       order_line_object['list_contains_equip'],
+                                       order_line_object['original_sku'])
 
                                 self._cr.execute(sql_query, val)
                                 line_obj = self._cr.fetchone()
