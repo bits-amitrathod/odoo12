@@ -26,7 +26,7 @@
             </field>-->
 
             <xpath expr="//field[@name='tag_ids']" position="replace" >
-                <field name="oppr_category_id"  string="Tags" widget="many2many_tags" optional="hide" />
+                <field name="oppr_category_id"  string="Tags" widget="many2many_tags" options="{'color_field': 'color'}" />
             </xpath>
         </field>
     </record>
