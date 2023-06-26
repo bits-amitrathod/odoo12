@@ -10,13 +10,13 @@ class VendorOfferProductLineNew(models.Model):
     multiplier_app_new = fields.Many2one('multiplier.multiplier', string="Multiplier")
     product_qty_app_new = fields.Float(string='Quantity', digits='Product Unit of Measure', required=True)
     original_sku = fields.Char(string='Imported SKU')
-    open_quotations_of_prod = fields.Float(string='Open Quotations', readonly=True, store=True)
-    average_aging = fields.Char(string='Average Aging', readonly=True, store=True)
-    product_sales_amount_yr = fields.Float(string="Sales Amount Year", readonly=True, store=True)
-    inv_ratio_90_days = fields.Float(string='INV Ratio', readonly=True, store=True)
+    open_quotations_of_prod = fields.Float(string='Open Quotations', readonly=True, store=True) #get_quotations_count_by_product
+    average_aging = fields.Char(string='Average Aging', readonly=True, store=True) # assined in compute_new_fields_vendor_line
+    product_sales_amount_yr = fields.Float(string="Sales Amount Year", readonly=True, store=True) #  calculated using compute_new_fields_vendor_line and get_product_sales_qty_or_amt_sum_by_days
+    inv_ratio_90_days = fields.Float(string='INV Ratio', readonly=True, store=True) # get_inv_ratio_90_days
     premium_product = fields.Float(string='Premium', readonly=True, store=True)
-    consider_dropping_tier = fields.Boolean(string='CDT', readonly=True, store=True)
-    average_retail_last_year = fields.Float(string='Average Retail Last Year', readonly=True, store=True)
+    consider_dropping_tier = fields.Boolean(string='CDT', readonly=True, store=True) # get_consider_dropping_tier
+    average_retail_last_year = fields.Float(string='Average Retail Last Year', readonly=True, store=True) # compute_average_retail
     dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate Price', store=True)
     product_multiple_matches = fields.Boolean(string='Multiple Matches', store=True)
     list_contains_equip = fields.Boolean(string='Equipment', store=True)
@@ -103,7 +103,6 @@ class VendorOfferProductLineNew(models.Model):
 
     def compute_total_line_vendor(self):
         for line in self:
-
             taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id,
                                                line.product_qty, product=line.product_id,
                                                partner=line.order_id.partner_id)
@@ -131,22 +130,24 @@ class VendorOfferProductLineNew(models.Model):
 
     def is_recalculate_multiplier(self):
         return False if self.multiplier else True
+
     def get_product_sales_qty_or_amt_sum_by_days(self, days, type='qty'):
         start_date = fields.Date.to_string(datetime.datetime.now() - datetime.timedelta(days=days))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
         idx = 0 if type == 'qty' else 1
         base_query = "SELECT sum(sml.qty_done) as qty, sum(sol.price_subtotal) as amt FROM sale_order_line AS sol " \
-               "LEFT JOIN stock_picking AS sp " \
-               "ON sp.sale_id=sol.id " \
-               "LEFT JOIN stock_move_line AS sml " \
-               "ON sml.picking_id=sp.id " \
-               "WHERE sml.state='done' " \
-               "	AND sml.location_dest_id = %s " \
-               "	AND sml.product_id = %s " \
-               "	AND sp.date_done >= %s "
+                     "LEFT JOIN stock_picking AS sp " \
+                     "ON sp.sale_id=sol.id " \
+                     "LEFT JOIN stock_move_line AS sml " \
+                     "ON sml.picking_id=sp.id " \
+                     "WHERE sml.state='done' " \
+                     "	AND sml.location_dest_id = %s " \
+                     "	AND sml.product_id = %s " \
+                     "	AND sp.date_done >= %s "
         self.env.cr.execute(base_query, (cust_location_id, self.product_id.id, start_date))
         data = self.env.cr.fetchone()
         return int(data[idx]) if data[idx] is not None else 0
+
     def get_quotations_count_by_product(self):
         # orders = self.env['sale.order'].search([('state', 'in', ['draft', 'sent'])])
         # quotations = orders.filtered(lambda order: self.id in order.order_line.mapped('product_id.id'))
@@ -160,8 +161,18 @@ class VendorOfferProductLineNew(models.Model):
         data = self.env.cr.dictfetchall()
 
         return len(data) if data else 0
+
+    # This is Achieved using get_product_sales_qty_or_amt_sum_by_days(365,'amt')
     def get_last_year_sales_amt_by_product(self):
         return 1000
+
+    def get_consider_dropping_tier(self):
+        return True if (self.qty_in_stock / self.product_sales_count_90) > 4 \
+                       and self.product_sales_count_yrs >= self.qty_in_stock else False
+
+    def get_inv_ratio_90_days(self):
+        return self.qty_in_stock / self.product_sales_count_90 if self.product_sales_count_90 == 0 else 0
+
     def multiplier_adjustment_criteria(self):
         for po_line in self:
             qty_in_stock = po_line.qty_in_stock
@@ -171,8 +182,8 @@ class VendorOfferProductLineNew(models.Model):
             open_quotations_cnt = po_line.get_quotations_count_by_product()
             qty_sold_90_days = po_line.product_sales_count_90
             average_aging = po_line.product_id.average_aging
-            inv_ratio_90_days = 0  # TODO: Calulare after
-            product_sales_total_amount_yr = po_line.get_product_sales_qty_or_amt_sum_by_days(365, 'amt')  # TODO: make change
+            inv_ratio_90_days = po_line.get_inv_ratio_90_days()
+            product_sales_total_amount_yr = po_line.get_product_sales_qty_or_amt_sum_by_days(365, 'amt')
             multiplier = 'TIER 3'
             if qty_in_stock == 0 and product_sales_count == 0:
                 if 0 < open_quotations_cnt < 5:
@@ -193,8 +204,9 @@ class VendorOfferProductLineNew(models.Model):
                 multiplier = 'TIER 3'
 
             # Change TIER 3 To multiplier this is for only testing purpose
-            #multiplier = 'TIER 3'
+            # multiplier = 'TIER 3'
             po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
+
     def no_tier_multiplier_adjustment_criteria(self):
         for po_line in self:
             qty_in_stock = po_line.qty_in_stock
@@ -212,7 +224,8 @@ class VendorOfferProductLineNew(models.Model):
                     return "NO History / Expired"
                 elif tier == 1 and qty_sold_yr <= qty_in_stock <= qty_sold_yr * t1_to_t3_threshold:
                     return "T2 Good - 35 PRCT"
-                elif qty_in_stock > qty_sold_yr * t1_overstock_threshold or (qty_in_stock > qty_sold_yr * t2_threshold and tier == 2):
+                elif qty_in_stock > qty_sold_yr * t1_overstock_threshold or (
+                        qty_in_stock > qty_sold_yr * t2_threshold and tier == 2):
                     return "Tier 3"
                 elif premium:
                     return "Premium - 50 PRCT"
@@ -226,6 +239,7 @@ class VendorOfferProductLineNew(models.Model):
                 return "OUT OF SCOPE"
 
             po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
+
     def set_values(self):
         self.product_sales_count_month = self.get_product_sales_qty_or_amt_sum_by_days(30, 'qty')
         self.product_sales_count_90 = self.get_product_sales_qty_or_amt_sum_by_days(90, 'qty')
@@ -234,7 +248,3 @@ class VendorOfferProductLineNew(models.Model):
     def compute_average_retail(self):
         self.average_retail_last_year = (self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
                                          / self.product_unit_price if self.product_unit_price != 0 else 1)
-
-
-
-
