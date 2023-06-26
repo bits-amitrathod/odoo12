@@ -281,6 +281,23 @@
                                  </group>
 
                             </page>
+                             <page string="Summary">
+                                <group>
+                                 <group>
+                                    <field name="t1_retail_amt"/>
+                                     <field name="t2_retail_amt"/>
+                                     <field name="t3_retail_amt"/>
+                                     <field name="premium_retail_amt"/>
+                                </group>
+                                <group>
+                                    <field name="t1_offer_amt"/>
+                                     <field name="t2_offer_amt"/>
+                                     <field name="t3_offer_amt"/>
+                                     <field name="premium_offer_amt"/>
+                                </group>
+                                 </group>
+
+                            </page>
                         </notebook>
                         </sheet>
 
