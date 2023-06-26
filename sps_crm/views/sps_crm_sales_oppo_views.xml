@@ -21,9 +21,13 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_case_tree_view_oppor"/>
         <field name="arch" type="xml">
-            <field name="tag_ids" position="attributes">
+            <!--<field name="tag_ids" position="attributes">
                 <attribute name="string">Tags</attribute>
-            </field>
+            </field>-->
+
+            <xpath expr="//field[@name='tag_ids']" position="replace" >
+                <field name="oppr_category_id"  string="Tags" widget="many2many_tags" options="{'color_field': 'color'}" />
+            </xpath>
         </field>
     </record>
 </odoo>
