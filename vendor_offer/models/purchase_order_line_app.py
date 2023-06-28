@@ -228,16 +228,16 @@ class VendorOfferProductLineNew(models.Model):
             if tier:
                 if product_sales_count == 0:
                     return "NO History / Expired"
-                elif tier == 1 and qty_sold_yr <= qty_in_stock <= qty_sold_yr * t1_to_t3_threshold:
+                elif tier.code == '1' and qty_sold_yr <= qty_in_stock <= qty_sold_yr * t1_to_t3_threshold:
                     return "T2 Good - 35 PRCT"
                 elif qty_in_stock > qty_sold_yr * t1_overstock_threshold or (
-                        qty_in_stock > qty_sold_yr * t2_threshold and tier == 2):
+                        qty_in_stock > qty_sold_yr * t2_threshold and tier.code == '2'):
                     return "Tier 3"
                 elif premium:
                     return "Premium - 50 PRCT"
-                elif tier == 1:
+                elif tier.code == '1':
                     return "T1 Good – 45 PRCT"
-                elif tier == 2:
+                elif tier.code == '2':
                     return "T2 Good – 35 PRCT"
                 else:
                     return "OUT OF SCOPE"
@@ -256,5 +256,6 @@ class VendorOfferProductLineNew(models.Model):
         self.average_retail_last_year = price_per_item / self.product_unit_price if self.product_unit_price != 0 else 1
 
     def upgrade_multiplier_tier1_to_premium(self):
-        if self.prduct_id.tier and self.prduct_id.tier.name == 'I':
-            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'Premium – 50 PRCT')], limit=1)
+        if self.multiplier and "T1" in self.multiplier.name:
+            mul = self.env['multiplier.multiplier'].search([('name', '=', 'Premium – 50 PRCT')], limit=1)
+            self.multiplier = mul if mul else None
