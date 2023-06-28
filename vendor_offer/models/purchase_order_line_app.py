@@ -214,10 +214,16 @@ class VendorOfferProductLineNew(models.Model):
             qty_sold_yr = po_line.product_sales_count_yrs
             tier = po_line.product_id.tier
 
-            t1_to_t3_threshold = 10  # TODO: Development remain, read Product Tier Switching point
-            t1_overstock_threshold = 9
-            t2_threshold = 8
-            premium = False  # TODO:
+            threshold = self.env['vendor.threshold']
+            t1 = threshold.search([('code', '=', 'T1')], limit=1)
+            t2 = threshold.search([('code', '=', 'T2')], limit=1)
+            t3 = threshold.search([('code', '=', 'T3')], limit=1)
+
+            t1_overstock_threshold = t1.worth if t1 else 0
+            t1_to_t3_threshold = t2.worth if t2 else 0
+            t2_threshold = t3.worth if t3 else 0
+
+            premium = po_line.product_id.premium
 
             if tier:
                 if product_sales_count == 0:
@@ -248,3 +254,7 @@ class VendorOfferProductLineNew(models.Model):
     def compute_average_retail(self):
         price_per_item = (self.get_product_sales_qty_or_amt_sum_by_days(365, 'amt') / self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')) if self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty') != 0 else 1
         self.average_retail_last_year = price_per_item / self.product_unit_price if self.product_unit_price != 0 else 1
+
+    def upgrade_multiplier_tier1_to_premium(self):
+        if self.prduct_id.tier and self.prduct_id.tier.name == 'I':
+            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'Premium – 50 PRCT')], limit=1)

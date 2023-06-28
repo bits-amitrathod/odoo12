@@ -60,7 +60,7 @@ class VendorOfferNewAppraisal(models.Model):
                 for obj_line in obj.order_line:
                     obj_line.set_values()
                     if obj.is_change_tier1_to_premium:
-                        pass  # TODO : Tier 1 products multiplier increased to Premium
+                        obj_line.upgrade_multiplier_tier1_to_premium()
                     if obj_line.is_recalculate_multiplier():
                         obj_line.multiplier_adjustment_criteria() if obj.is_dynamic_tier_adjustment else obj_line.no_tier_multiplier_adjustment_criteria()
                     obj_line.copy_product_qty_column()
