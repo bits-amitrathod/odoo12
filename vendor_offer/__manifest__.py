@@ -31,7 +31,8 @@
         'views/stock_picking.xml',
         'views/tier_multiplier.xml',
         'views/vendor_pricing.xml',
-        'views/views_app.xml'
+        'views/views_app.xml',
+        'views/threshold.xml'
         # 'views/tree_view_asset.xml'
 
     ],

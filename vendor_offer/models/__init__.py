@@ -14,4 +14,5 @@ from. import res_partner
 from. import stock_picking
 from. import tier_multiplier
 from. import vendor_pricing
+from. import threshold
 
