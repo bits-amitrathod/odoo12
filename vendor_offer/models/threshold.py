@@ -10,5 +10,5 @@ class Threshold(models.Model):
     ]
 
     name = fields.Char('Threshold Name', required=True, translate=True)
-    worth = fields.Integer('Yearly Sales Worth', default=1, help="Number of yearly sales worth of inventory")
+    worth = fields.Float('Yearly Sales Worth', default=1, help="Number of yearly sales worth of inventory")
     code = fields.Char('Code', required=True)
