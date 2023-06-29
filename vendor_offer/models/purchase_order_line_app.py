@@ -95,6 +95,8 @@ class VendorOfferProductLineNew(models.Model):
                 line.average_aging = int(round(sum_qty_day / total_quantity, 0))
             else:
                 line.average_aging = 0
+            line.open_quotations_of_prod = line.get_quotations_count_by_product()
+
 
     def copy_product_qty_column(self):
         for line in self:
@@ -255,6 +257,6 @@ class VendorOfferProductLineNew(models.Model):
 
 
     def upgrade_multiplier_tier1_to_premium(self):
-        if self.multiplier and "T 1" in self.multiplier.name:
+        if self.multiplier and self.multiplier.name and "T 1" in self.multiplier.name:
             mul = self.env['multiplier.multiplier'].search([('name', '=', 'Premium – 50 PRCT')], limit=1)
             self.multiplier = mul if mul else None
