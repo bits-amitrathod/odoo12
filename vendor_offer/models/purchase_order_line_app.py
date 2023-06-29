@@ -95,10 +95,12 @@ class VendorOfferProductLineNew(models.Model):
                 line.average_aging = int(round(sum_qty_day / total_quantity, 0))
             else:
                 line.average_aging = 0
+
             line.open_quotations_of_prod = line.get_quotations_count_by_product()
             line.inv_ratio_90_days = line.get_inv_ratio_90_days()
             line.premium_product = line.product_id.premium
-            line.consider_dropping_tier  = line.get_consider_dropping_tier()
+            line.consider_dropping_tier = line.get_consider_dropping_tier()
+            line.qty_in_stock = line.product_id.qty_available
 
 
     def copy_product_qty_column(self):
