@@ -76,10 +76,10 @@ class VendorOfferNewAppraisal(models.Model):
         self.premium_offer_amt = 0
 
     def summary_calculate(self, line):
-        if 'T1' in line.multiplier.name:
+        if 'T 1' in line.multiplier.name:
             self.t1_retail_amt += line.product_retail
             self.t1_offer_amt += line.price_subtotal
-        elif 'T2' in line.multiplier.name:
+        elif 'T 2' in line.multiplier.name:
             self.t2_retail_amt += line.product_retail
             self.t2_offer_amt += line.price_subtotal
         elif line.multiplier.name == "TIER 3":
