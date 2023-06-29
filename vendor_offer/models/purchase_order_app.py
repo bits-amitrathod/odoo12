@@ -76,18 +76,19 @@ class VendorOfferNewAppraisal(models.Model):
         self.premium_offer_amt = 0
 
     def summary_calculate(self, line):
-        if 'T 1' in line.multiplier.name:
-            self.t1_retail_amt += line.product_retail
-            self.t1_offer_amt += line.price_subtotal
-        elif 'T 2' in line.multiplier.name:
-            self.t2_retail_amt += line.product_retail
-            self.t2_offer_amt += line.price_subtotal
-        elif line.multiplier.name == "TIER 3":
-            self.t3_retail_amt += line.product_retail
-            self.t3_offer_amt += line.price_subtotal
-        elif line.multiplier.name == "PREMIUM - 50 PRCT":
-            self.premium_retail_amt += line.product_retail
-            self.premium_offer_amt += line.price_subtotal
+        if line.multiplier.name:
+            if 'T 1' in line.multiplier.name:
+                self.t1_retail_amt += line.product_retail
+                self.t1_offer_amt += line.price_subtotal
+            elif 'T 2' in line.multiplier.name:
+                self.t2_retail_amt += line.product_retail
+                self.t2_offer_amt += line.price_subtotal
+            elif line.multiplier.name == "TIER 3":
+                self.t3_retail_amt += line.product_retail
+                self.t3_offer_amt += line.price_subtotal
+            elif line.multiplier.name == "PREMIUM - 50 PRCT":
+                self.premium_retail_amt += line.product_retail
+                self.premium_offer_amt += line.price_subtotal
 
     def check_equipment_present_or_not(self):
         for offer in self:
