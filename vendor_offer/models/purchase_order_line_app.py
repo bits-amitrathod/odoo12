@@ -29,7 +29,6 @@ class VendorOfferProductLineNew(models.Model):
 
             ''' sale count will show only done qty '''
 
-            sale_amount_yr = 0
             today_date = datetime.datetime.now()
             last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
 
@@ -122,12 +121,6 @@ class VendorOfferProductLineNew(models.Model):
                 'rt_price_total': taxes1['total_included'],
             })
 
-    # def compute_retail_line_total(self):
-    #     for line in self:
-    #         line.update({
-    #             'product_retail': line.product_qty * line.product_unit_price,
-    #         })
-
     def is_recalculate_multiplier(self):
         return False if self.multiplier else True
 
@@ -161,10 +154,6 @@ class VendorOfferProductLineNew(models.Model):
         data = self.env.cr.dictfetchall()
 
         return len(data) if data else 0
-
-    # This is Achieved using get_product_sales_qty_or_amt_sum_by_days(365,'amt')
-    def get_last_year_sales_amt_by_product(self):
-        return 1000
 
     def get_consider_dropping_tier(self):
         return True if (self.qty_in_stock / self.product_sales_count_90) > 4 \

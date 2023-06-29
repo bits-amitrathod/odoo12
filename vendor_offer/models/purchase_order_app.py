@@ -14,17 +14,6 @@ class VendorOfferNewAppraisal(models.Model):
 
     # New fields for removing on change functionality
 
-    # credit_amount_untaxed_app_new = fields.Monetary(string='Untaxed Credit Offer Price', readonly=True)
-    # credit_amount_total_app_new = fields.Monetary(string='Total Credit Offer Price', readonly=True)
-    # cash_amount_untaxed_app_new = fields.Monetary(string='Untaxed Credit Offer Price', readonly=True)
-    # cash_amount_total_app_new = fields.Monetary(string='Total Credit Offer Price', readonly=True)
-    #
-    # billed_retail_untaxed_app_new = fields.Monetary(string='Billed Untaxed Retail', readonly=True)
-    # billed_retail_total_app_new = fields.Monetary(string='Billed Retail Total', readonly=True)
-    #
-    # billed_offer_untaxed_app_new = fields.Monetary(string='Billed Untaxed Offer', readonly=True)
-    # billed_offer_total_app_new = fields.Monetary(string='Billed Offer Total', readonly=True)
-
     no_match_sku_import = fields.Text(string='SKU Cleaned', readonly=True)
     no_match_sku_import_cleaned = fields.Text(string='SKU', readonly=True)
 
