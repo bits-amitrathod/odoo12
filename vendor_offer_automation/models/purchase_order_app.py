@@ -323,7 +323,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                               product_multiple_matches=flag_red,
                                                               list_contains_equip=list_contains_equip,
                                                               original_sku=original_sku,
-                                                              product_sales_count_month=sale_count_month
+                                                              product_sales_count_month=sale_count_month,
+                                                              product_sales_amount_yr=0
                                                               )
                                         if expiration_date:
                                             order_line_obj.update({'expiration_date': expiration_date})
@@ -397,7 +398,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                     last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
                                     last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
                                     str_query_cm_new = """
-                                                        select sum(sol.qty_delivered) from sale_order AS so JOIN 
+                                                        select sum(sol.qty_delivered),sum(sol.price_subtotal) as amt 
+                                                        from sale_order AS so JOIN 
                                                         sale_order_line AS sol ON  so.id = sol.order_id where 
                                                         sol.product_id = %s and sol.state in ('sale','done')
 
@@ -420,11 +422,16 @@ class VendorOfferNewAppraisalImport(models.Model):
                                     if quant_yr[0] is not None:
                                         order_line_object['product_sales_count_yrs'] = int(quant_yr[0])
 
+                                    self.env.cr.execute(str_query_cm_new, [order_line_object['product_id']])
+                                    quant_all = self.env.cr.fetchone()
+                                    if quant_all[0] is not None:
+                                        order_line_object['product_sales_count'] = int(quant_all[0])
 
-                                    # self.env.cr.execute(str_query_cm_new, [order_line_object['product_id']])
-                                    # quant_all = self.env.cr.fetchone()
-                                    # if quant_all[0] is not None:
-                                    #     order_line_object['product_sales_count_90'] = int(quant_all[0])
+                                    self.env.cr.execute(str_query_cm_new + " AND so.date_order>=%s",
+                                                        (order_line_object['product_id'], last_yr))
+                                    quant_yr = self.env.cr.fetchone()
+                                    if quant_yr[1] is not None:
+                                        order_line_object['product_sales_amount_yr'] = quant_yr[1]
 
                                     temp_date = float(order_line_object['expiration_date'])
 
@@ -481,7 +488,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " ,create_uid,company_id,create_date,price_tax,qty_invoiced" \
                                          ",qty_to_invoice,propagate_cancel,qty_received_method,product_uom_qty," \
                                          " qty_received,state,product_multiple_matches,list_contains_equip," \
-                                         " original_sku)" \
+                                         " original_sku,product_sales_amount_yr)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s,%s," \
                                          " %s, " \
                                          " %s, %s, %s," \
@@ -493,7 +500,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " %s ,%s,%s ,%s,%s," \
                                          " %s,%s,%s,%s," \
                                          " %s,%s,%s,%s," \
-                                         " %s) " \
+                                         " %s,%s) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -505,9 +512,9 @@ class VendorOfferNewAppraisalImport(models.Model):
                                        order_line_object['qty_in_stock'],
                                        float("{0:.2f}".format(float(order_line_object['retail_price']))),
                                        float("{0:.2f}".format(float(order_line_object['offer_price']))),
-                                       order_line_object['product_sales_count']
-                                       , order_line_object['product_sales_count_90'],
+                                       order_line_object['product_sales_count_90'],
                                        order_line_object['product_sales_count_yrs'],
+                                       order_line_object['product_sales_count'],
                                        order_line_object['expired_inventory'],
                                        float("{0:.2f}".format(float(order_line_object['offer_price_total']))),
                                        order_line_object['multiplier'],
@@ -519,7 +526,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                        order_line_object['product_qty'], 0, 'ven_draft',
                                        order_line_object['product_multiple_matches'],
                                        order_line_object['list_contains_equip'],
-                                       order_line_object['original_sku'])
+                                       order_line_object['original_sku'],
+                                       order_line_object['product_sales_amount_yr'])
 
                                 self._cr.execute(sql_query, val)
                                 line_obj = self._cr.fetchone()
