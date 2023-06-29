@@ -38,11 +38,32 @@ class VendorOfferNewAppraisal(models.Model):
     def button_vendor_offer(self):
         _logger.info("Set to VO button Action..")
         self.write({'state': 'ven_draft', 'status': 'ven_draft', 'status_ven': ''})
-        self.action_recalculate_vendor_offer()
+        self.action_po_to_vo_recalculate_vendor_offer()
         return {}
 
     def action_recalculate_vendor_offer(self):
+        for objList in self:
+            for obj in objList:
+                obj.set_zero_val()
+                for obj_line in obj.order_line:
+                    # obj_line.set_values()
+                    if obj.is_change_tier1_to_premium:
+                        obj_line.upgrade_multiplier_tier1_to_premium()
+                    if obj_line.is_recalculate_multiplier():
+                        obj_line.multiplier_adjustment_criteria() if obj.is_dynamic_tier_adjustment else obj_line.no_tier_multiplier_adjustment_criteria()
+                    obj_line.copy_product_qty_column()
+                    obj_line._cal_offer_price()
+                    obj_line._set_offer_price()
+                    obj_line._cal_margin()
 
+                    obj_line.compute_total_line_vendor()
+                    obj_line.compute_new_fields_vendor_line()
+                    obj_line.compute_average_retail()
+                    # obj_line.compute_retail_line_total()
+                    obj.summary_calculate(obj_line)
+
+    # This Method used On button_vendor_offer ( PO Convert in to VO )
+    def action_po_to_vo_recalculate_vendor_offer(self):
         for objList in self:
             for obj in objList:
                 obj.set_zero_val()
@@ -62,8 +83,6 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line.compute_average_retail()
                     # obj_line.compute_retail_line_total()
                     obj.summary_calculate(obj_line)
-
-        print('-----------')
 
     def set_zero_val(self):
         self.t1_retail_amt = 0
