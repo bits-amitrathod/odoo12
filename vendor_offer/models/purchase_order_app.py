@@ -92,8 +92,8 @@ class VendorOfferNewAppraisal(models.Model):
 
     def check_equipment_present_or_not(self):
         for offer in self:
+            offer.offer_contain_equipment = False
             for line in offer.order_line:
-                offer.offer_contain_equipment = False
                 if line.list_contains_equip:
                     offer.offer_contain_equipment = True
 
