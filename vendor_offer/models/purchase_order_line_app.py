@@ -14,7 +14,7 @@ class VendorOfferProductLineNew(models.Model):
     average_aging = fields.Char(string='Average Aging', readonly=True, store=True) # assined in compute_new_fields_vendor_line
     product_sales_amount_yr = fields.Float(string="Sales Amount Year", readonly=True, store=True) #  calculated using compute_new_fields_vendor_line and get_product_sales_qty_or_amt_sum_by_days
     inv_ratio_90_days = fields.Float(string='INV Ratio', readonly=True, store=True) # get_inv_ratio_90_days
-    premium_product = fields.Float(string='Premium', readonly=True, store=True)
+    premium_product = fields.Boolean(string='Premium', readonly=True, store=True)
     consider_dropping_tier = fields.Boolean(string='CDT', readonly=True, store=True) # get_consider_dropping_tier
     average_retail_last_year = fields.Float(string='Average Retail Last Year', readonly=True, store=True) # compute_average_retail
     dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate Price', store=True)
@@ -96,6 +96,8 @@ class VendorOfferProductLineNew(models.Model):
             else:
                 line.average_aging = 0
             line.open_quotations_of_prod = line.get_quotations_count_by_product()
+            line.inv_ratio_90_days = line.get_inv_ratio_90_days()
+            line.premium_product = line.product_id.premium
 
 
     def copy_product_qty_column(self):
