@@ -98,6 +98,7 @@ class VendorOfferProductLineNew(models.Model):
             line.open_quotations_of_prod = line.get_quotations_count_by_product()
             line.inv_ratio_90_days = line.get_inv_ratio_90_days()
             line.premium_product = line.product_id.premium
+            line.consider_dropping_tier  = line.get_consider_dropping_tier()
 
 
     def copy_product_qty_column(self):
