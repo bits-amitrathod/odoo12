@@ -156,11 +156,15 @@ class VendorOfferProductLineNew(models.Model):
         return len(data) if data else 0
 
     def get_consider_dropping_tier(self):
-        return True if (self.qty_in_stock / self.product_sales_count_90) > 4 \
-                       and self.product_sales_count_yrs >= self.qty_in_stock else False
+        if self.product_sales_count_90 != 0:
+            condition = self.qty_in_stock / self.product_sales_count_90 > 4
+        else:
+            condition = False
+
+        result = condition and self.product_sales_count_yrs >= self.qty_in_stock
 
     def get_inv_ratio_90_days(self):
-        return self.qty_in_stock / self.product_sales_count_90 if self.product_sales_count_90 == 0 else 0
+        return self.qty_in_stock / self.product_sales_count_90 if self.product_sales_count_90 != 0 else 0
 
     def multiplier_adjustment_criteria(self):
         for po_line in self:
@@ -241,8 +245,14 @@ class VendorOfferProductLineNew(models.Model):
         self.product_sales_count_yrs = self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
 
     def compute_average_retail(self):
-        price_per_item = (self.get_product_sales_qty_or_amt_sum_by_days(365, 'amt') / self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')) if self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty') != 0 else 1
-        self.average_retail_last_year = price_per_item / self.product_unit_price if self.product_unit_price != 0 else 1
+        qty = self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
+        price = self.product_unit_price
+        if qty != 0 and price != 0:
+            price_per_item = (self.get_product_sales_qty_or_amt_sum_by_days(365, 'amt') / qty)
+            self.average_retail_last_year = price_per_item / price
+        else:
+            self.average_retail_last_year = 0
+
 
     def upgrade_multiplier_tier1_to_premium(self):
         if self.multiplier and "T1" in self.multiplier.name:
