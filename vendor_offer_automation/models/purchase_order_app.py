@@ -402,7 +402,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                         from sale_order AS so JOIN 
                                                         sale_order_line AS sol ON  so.id = sol.order_id where 
                                                         sol.product_id = %s and sol.state in ('sale','done')
-
+                                                        and sol.qty_delivered > 0
                                                        """
                                     self.env.cr.execute(str_query_cm_new + " AND so.date_order>=%s",
                                                         (order_line_object['product_id'], last_3_months))
