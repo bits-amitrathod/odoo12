@@ -135,16 +135,15 @@ class VendorOfferProductLineNew(models.Model):
         start_date = fields.Date.to_string(datetime.datetime.now() - datetime.timedelta(days=days))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
         idx = 0 if type == 'qty' else 1
-        base_query = "SELECT sum(sml.qty_done) as qty, sum(sol.price_subtotal) as amt FROM sale_order_line AS sol " \
-                     "LEFT JOIN stock_picking AS sp " \
-                     "ON sp.sale_id=sol.id " \
-                     "LEFT JOIN stock_move_line AS sml " \
-                     "ON sml.picking_id=sp.id " \
-                     "WHERE sml.state='done' " \
-                     "	AND sml.location_dest_id = %s " \
-                     "	AND sml.product_id = %s " \
-                     "	AND sp.date_done >= %s "
-        self.env.cr.execute(base_query, (cust_location_id, self.product_id.id, start_date))
+        base_query = "select sum(sol.qty_delivered) as qty, sum(sol.price_subtotal) as amt " \
+        "from sale_order AS so " \
+        "JOIN sale_order_line AS sol " \
+        "ON  so.id = sol.order_id " \
+        "where sol.product_id = %s " \
+        "AND sol.state in ('sale','done')" \
+        "AND so.date_order>=%s" \
+        "AND sol.qty_delivered>0"
+        self.env.cr.execute(base_query, (self.product_id.id, start_date))
         data = self.env.cr.fetchone()
         return int(data[idx]) if data[idx] is not None else 0
 
