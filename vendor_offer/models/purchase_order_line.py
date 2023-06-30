@@ -144,26 +144,32 @@ class VendorOfferProduct(models.Model):
                     # line.product_sales_count = total
 
                     line.qty_in_stock = line.product_id.qty_available
-                    if line.multiplier.id == False:
-                        if line.product_tier.code == False:
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
-                            line.multiplier = multiplier_list.id
-                        elif line.product_sales_count == 0:
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
-                            line.multiplier = multiplier_list.id
-                        elif float(line.qty_in_stock) > (
-                                line.product_sales_count * 2) and line.product_sales_count != 0:
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
-                            line.multiplier = multiplier_list.id
-                        elif line.product_id.product_tmpl_id.premium == True:
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
-                            line.multiplier = multiplier_list.id
-                        elif line.product_tier.code == '1':
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
-                            line.multiplier = multiplier_list.id
-                        elif line.product_tier.code == '2':
-                            multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
-                            line.multiplier = multiplier_list.id
+
+                    if line.order_id.is_dynamic_tier_adjustment:
+                        line.multiplier_adjustment_criteria()
+                    else:
+                        line.no_tier_multiplier_adjustment_criteria()
+
+                    # if line.multiplier.id == False:
+                    #     if line.product_tier.code == False:
+                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
+                    #         line.multiplier = multiplier_list.id
+                    #     elif line.product_sales_count == 0:
+                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
+                    #         line.multiplier = multiplier_list.id
+                    #     elif float(line.qty_in_stock) > (
+                    #             line.product_sales_count * 2) and line.product_sales_count != 0:
+                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
+                    #         line.multiplier = multiplier_list.id
+                    #     elif line.product_id.product_tmpl_id.premium == True:
+                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
+                    #         line.multiplier = multiplier_list.id
+                    #     elif line.product_tier.code == '1':
+                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
+                    #         line.multiplier = multiplier_list.id
+                    #     elif line.product_tier.code == '2':
+                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
+                    #         line.multiplier = multiplier_list.id
 
                     # line.update_product_expiration_date()
 

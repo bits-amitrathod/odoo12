@@ -152,9 +152,12 @@ class VendorOfferProductLineNew(models.Model):
         "ON  so.id = sol.order_id " \
         "where sol.product_id = %s " \
         "AND sol.state in ('sale','done')" \
-        "AND so.date_order>=%s" \
         "AND sol.qty_delivered>0"
-        self.env.cr.execute(base_query, (self.product_id.id, start_date))
+
+        if days < 1000:
+            self.env.cr.execute(base_query + " AND so.date_order>=%s", (self.product_id.id, start_date))
+        else:
+            self.env.cr.execute(base_query, [self.product_id.id])
         data = self.env.cr.fetchone()
         return int(data[idx]) if data[idx] is not None else 0
 
@@ -260,6 +263,8 @@ class VendorOfferProductLineNew(models.Model):
         self.product_sales_count_month = self.get_product_sales_qty_or_amt_sum_by_days(30, 'qty')
         self.product_sales_count_90 = self.get_product_sales_qty_or_amt_sum_by_days(90, 'qty')
         self.product_sales_count_yrs = self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
+        self.product_sales_count = self.get_product_sales_qty_or_amt_sum_by_days(1001, 'qty')
+        ## 1001 is added to fetch all data
 
     def compute_average_retail(self):
         qty = self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
