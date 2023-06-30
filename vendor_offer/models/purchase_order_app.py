@@ -34,7 +34,7 @@ class VendorOfferNewAppraisal(models.Model):
     premium_offer_amt = fields.Monetary(string='Premium Total Offer Amount', readonly=True)
 
 
-    # This Method Convert cancelled PO -> Vendor Offer
+    # Convert canceled PO to Vendor Offer Action
     def button_vendor_offer(self):
         _logger.info("Set to VO button Action..")
         self.write({'state': 'ven_draft', 'status': 'ven_draft', 'status_ven': ''})
