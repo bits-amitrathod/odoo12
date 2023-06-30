@@ -27,30 +27,9 @@ class VendorOfferProductLineNew(models.Model):
             if not line.id:
                 return result1
 
-            ''' sale count will show only done qty '''
-
             today_date = datetime.datetime.now()
-            last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
 
-            ''' state = sale condition added in all sales amount to match the value of sales amount to 
-            clients PPvendorpricing file '''
-
-            sale_all_query = """SELECT  sum(sol.price_total) as total_sales
-            from  product_product pp 
-             INNER JOIN sale_order_line sol ON sol.product_id=pp.id 
-             INNER JOIN product_template pt ON  pt.id=pp.product_tmpl_id
-             INNER JOIN sale_order so ON so.id=sol.order_id
-             INNER JOIN stock_picking sp ON sp.sale_id =so.id
-             where pp.id =%s and sp.date_done>= %s and sp.date_done<=%s and sp.location_dest_id = 9
-              group by sp.state"""
-
-            self.env.cr.execute(sale_all_query, (line.product_id.id, last_yr, today_date))
-
-            sales_all_value = 0
-            sales_all_val = self.env.cr.fetchone()
-            if sales_all_val and sales_all_val[0] is not None:
-                sales_all_value = sales_all_value + float(sales_all_val[0])
-            line.product_sales_amount_yr = sales_all_value
+            line.product_sales_amount_yr = self.get_product_sales_qty_or_amt_sum_by_days(365, 'amt')
 
             sql_query = """SELECT     Date(PUBLIC.stock_production_lot.create_date) AS create_date , 
                                                        Sum(PUBLIC.stock_quant.quantity)              AS quantity 
@@ -159,7 +138,7 @@ class VendorOfferProductLineNew(models.Model):
         else:
             self.env.cr.execute(base_query, [self.product_id.id])
         data = self.env.cr.fetchone()
-        return int(data[idx]) if data[idx] is not None else 0
+        return (data[idx]) if data[idx] is not None else 0
 
     def get_quotations_count_by_product(self):
         # orders = self.env['sale.order'].search([('state', 'in', ['draft', 'sent'])])
