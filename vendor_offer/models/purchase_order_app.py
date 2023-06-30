@@ -41,12 +41,14 @@ class VendorOfferNewAppraisal(models.Model):
         self.action_po_to_vo_recalculate_vendor_offer()
         return {}
 
+    # Vendor Offer Calculate button Action
+    # Calculate Values And Assign
     def action_recalculate_vendor_offer(self):
         for objList in self:
             for obj in objList:
                 obj.set_zero_val()
                 for obj_line in obj.order_line:
-                    # obj_line.set_values()
+                    obj_line.set_values()
                     if obj.is_change_tier1_to_premium:
                         obj_line.upgrade_multiplier_tier1_to_premium()
                     if obj_line.is_recalculate_multiplier():

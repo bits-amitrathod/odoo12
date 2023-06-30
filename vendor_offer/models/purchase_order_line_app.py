@@ -101,6 +101,7 @@ class VendorOfferProductLineNew(models.Model):
             line.premium_product = line.product_id.premium
             line.consider_dropping_tier = line.get_consider_dropping_tier()
             line.qty_in_stock = line.product_id.qty_available
+            line.expired_inventory = line.expired_inventory_cal(line)
 
 
     def copy_product_qty_column(self):
@@ -188,15 +189,15 @@ class VendorOfferProductLineNew(models.Model):
                 if 0 < open_quotations_cnt < 5:
                     multiplier = 'TIER 3'
                 elif 5 <= open_quotations_cnt <= 15:
-                    multiplier = 'T 2 Good – 35 PRCT'
+                    multiplier = 'T 2 GOOD - 35 PRCT'
                 elif open_quotations_cnt > 15:
-                    multiplier = 'T 1 Good – 45 PRCT'
+                    multiplier = 'T 1 GOOD – 45 PRCT'
             elif tier and tier.code == '1' and inv_ratio_90_days < 1:
                 if product_sales_total_amount_yr >= 100000 or open_quotations_cnt >= 20 or qty_in_stock == 0:
-                    multiplier = 'Premium – 50 PRCT'
+                    multiplier = 'PREMIUM - 50 PRCT'
             elif tier and tier.code == '2' and inv_ratio_90_days < 1:
                 if open_quotations_cnt >= 10 or (qty_in_stock == 0 and qty_sold_90_days > 0):
-                    multiplier = 'T 1 Good – 45 PRCT'
+                    multiplier = 'T 1 GOOD – 45 PRCT'
             elif qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 and product_sales_count == 0 and average_aging > 30:
                 multiplier = 'TIER 3'
             elif qty_in_stock == 0 and qty_sold_yr == 0 and product_sales_count == 0 and open_quotations_cnt < 5:
@@ -226,18 +227,18 @@ class VendorOfferProductLineNew(models.Model):
 
             if tier:
                 if product_sales_count == 0:
-                    return "NO History / Expired"
+                    return "NO HISTORY / EXPIRED"
                 elif tier.code == '1' and qty_sold_yr <= qty_in_stock <= qty_sold_yr * t1_to_t3_threshold:
-                    return "T 2 Good - 35 PRCT"
+                    return "T 2 GOOD - 35 PRCT"
                 elif qty_in_stock > qty_sold_yr * t1_overstock_threshold or (
                         qty_in_stock > qty_sold_yr * t2_threshold and tier.code == '2'):
-                    return "Tier 3"
+                    return "TIER 3"
                 elif premium:
-                    return "Premium - 50 PRCT"
+                    return "PREMIUM - 50 PRCT"
                 elif tier.code == '1':
-                    return "T 1 Good – 45 PRCT"
+                    return "T 1 GOOD - 45 PRCT"
                 elif tier.code == '2':
-                    return "T 2 Good – 35 PRCT"
+                    return "T 2 GOOD – 35 PRCT"
                 else:
                     return "OUT OF SCOPE"
             else:
@@ -262,5 +263,5 @@ class VendorOfferProductLineNew(models.Model):
 
     def upgrade_multiplier_tier1_to_premium(self):
         if self.multiplier and self.multiplier.name and "T 1" in self.multiplier.name:
-            mul = self.env['multiplier.multiplier'].search([('name', '=', 'Premium – 50 PRCT')], limit=1)
+            mul = self.env['multiplier.multiplier'].search([('name', '=', 'PREMIUM - 50 PRCT')], limit=1)
             self.multiplier = mul if mul else None
