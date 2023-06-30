@@ -101,8 +101,18 @@ class VendorOfferProductLineNew(models.Model):
             line.premium_product = line.product_id.premium
             line.consider_dropping_tier = line.get_consider_dropping_tier()
             line.qty_in_stock = line.product_id.qty_available
-            line.expired_inventory = line.expired_inventory_cal(line)
+            line.expired_inventory = line.expired_inventory_fetch()
 
+    def expired_inventory_fetch(self):
+        for line in self:
+            expired_lot_count = 0
+            test_id_list = self.env['stock.production.lot'].search([('product_id', '=', line.product_id.id)])
+            for prod_lot in test_id_list:
+                if prod_lot.use_date:
+                    if fields.Datetime.from_string(prod_lot.use_date).date() < fields.date.today():
+                        expired_lot_count = expired_lot_count + 1
+
+            return expired_lot_count
 
     def copy_product_qty_column(self):
         for line in self:
