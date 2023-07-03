@@ -240,6 +240,11 @@ from  product_product pp
         }
         return action
 
+class Product(models.Model):
+    _inherit = 'product.template'
+
+    product_note = fields.Text('Note')
+
 
 #  this global variable is required for storing and fetching values as the list cant be sent using the URL,
 #  and the method of ExportPPVendorPricing class will be called from JS file .

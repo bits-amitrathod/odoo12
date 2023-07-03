@@ -21,6 +21,8 @@ class VendorOfferProductLineNew(models.Model):
     product_multiple_matches = fields.Boolean(string='Multiple Matches', store=True)
     list_contains_equip = fields.Boolean(string='Equipment', store=True)
 
+    product_note = fields.Text(string="Product Note", related='product_id.product_note', readonly=True)
+
     def compute_new_fields_vendor_line(self):
         for line in self:
             result1 = {}
