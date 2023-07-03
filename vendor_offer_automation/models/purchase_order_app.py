@@ -98,16 +98,9 @@ class VendorOfferNewAppraisalImport(models.Model):
                     sku_not_found_list = []
                     sku_not_found_list_cleaned = []
                     expiration_date_index = uom_index = -1
-                    sales_count_index = sales_count_yr_index = sales_total_index = False
                     quantity_index = False
                     price_index = False
-                    premium_index = exp_inventory_index = sales_count_90_index = quantity_in_stock_index = False
-                    possible_competition_index = False
-                    multiplier_index = False
                     credit_index = False
-                    potential_profit_margin_index = max_index = False
-                    accelerator_index = margin_cost_index = offer_price_index = False
-                    offer_price_total_index = retail_price_index = retail_price_total_index = False
 
                     if 'mf_customer_sku' in mapping_fields:
                         sku_index = excel_columns.index(mapping_fields['mf_customer_sku'])
@@ -118,48 +111,16 @@ class VendorOfferNewAppraisalImport(models.Model):
                     if 'mf_quantity' in mapping_fields:
                         quantity_index = excel_columns.index(mapping_fields['mf_quantity'])
 
-                    if 'mf_price' in mapping_fields:
-                        price_index = excel_columns.index(mapping_fields['mf_price'])
-                    # if 'mf_sales_count' in mapping_fields:
-                    #     sales_count_index = excel_columns.index(mapping_fields['mf_sales_count'])
-                    # if 'mf_sales_count_yr' in mapping_fields:
-                    #     sales_count_yr_index = excel_columns.index(mapping_fields['mf_sales_count_yr'])
-                    # if 'mf_sales_total' in mapping_fields:
-                    #     sales_total_index = excel_columns.index(mapping_fields['mf_sales_total'])
-                    # if 'mf_premium' in mapping_fields:
-                    #     premium_index = excel_columns.index(mapping_fields['mf_premium'])
-                    # if 'mf_exp_inventory' in mapping_fields:
-                    #     exp_inventory_index = excel_columns.index(mapping_fields['mf_exp_inventory'])
-                    # if 'mf_sales_count_90' in mapping_fields:
-                    #     sales_count_90_index = excel_columns.index(mapping_fields['mf_sales_count_90'])
-                    # if 'mf_quantity_in_stock' in mapping_fields:
-                    #     quantity_in_stock_index = excel_columns.index(mapping_fields['mf_quantity_in_stock'])
+                    # if 'mf_price' in mapping_fields:
+                    #     price_index = excel_columns.index(mapping_fields['mf_price'])
                     #
-                    # if 'mf_offer_price' in mapping_fields:
-                    #     offer_price_index = excel_columns.index(mapping_fields['mf_offer_price'])
-                    # if 'mf_offer_price_total' in mapping_fields:
-                    #     offer_price_total_index = excel_columns.index(mapping_fields['mf_offer_price_total'])
-                    # if 'mf_retail_price' in mapping_fields:
-                    #     retail_price_index = excel_columns.index(mapping_fields['mf_retail_price'])
-                    # if 'mf_retail_price_total' in mapping_fields:
-                    #     retail_price_total_index = excel_columns.index(mapping_fields['mf_retail_price_total'])
+                    # if 'mf_possible_competition' in mapping_fields:
+                    #     possible_competition_index = excel_columns.index(mapping_fields['mf_possible_competition'])
+                    # if 'mf_multiplier' in mapping_fields:
+                    #     multiplier_index = excel_columns.index(mapping_fields['mf_multiplier'])
 
-                    if 'mf_possible_competition' in mapping_fields:
-                        possible_competition_index = excel_columns.index(mapping_fields['mf_possible_competition'])
-                    if 'mf_multiplier' in mapping_fields:
-                        multiplier_index = excel_columns.index(mapping_fields['mf_multiplier'])
-                    # if 'mf_potential_profit_margin' in mapping_fields:
-                    #     potential_profit_margin_index = excel_columns.index(
-                    #         mapping_fields['mf_potential_profit_margin'])
-                    # if 'mf_max' in mapping_fields:
-                    #     max_index = excel_columns.index(mapping_fields['mf_max'])
-                    #
-                    # if 'mf_accelerator' in mapping_fields:
-                    #     accelerator_index = excel_columns.index(mapping_fields['mf_accelerator'])
                     if 'mf_credit' in mapping_fields:
                         credit_index = excel_columns.index(mapping_fields['mf_credit'])
-                    # if 'mf_margin_cost' in mapping_fields:
-                    #     margin_cost_index = excel_columns.index(mapping_fields['mf_margin_cost'])
 
                     if sku_index is not None:
                         today_date = datetime.datetime.now().strftime(DEFAULT_SERVER_DATETIME_FORMAT)
@@ -180,44 +141,13 @@ class VendorOfferNewAppraisalImport(models.Model):
                             expiration_date = False
                             uom = ''
 
-                            if price_index and price_index >= 0:
-                                price = excel_data_row[price_index]
-                            # if sales_count_index and sales_count_index >= 0:
-                            #     sales_count = excel_data_row[sales_count_index]
-                            # if sales_count_yr_index and sales_count_yr_index >= 0:
-                            #     sales_count_yr = excel_data_row[sales_count_yr_index]
-                            # if sales_total_index and sales_total_index >= 0:
-                            #     sales_total = excel_data_row[sales_total_index]
+                            # if price_index and price_index >= 0:
+                            #     price = excel_data_row[price_index]
 
-                            # if exp_inventory_index and exp_inventory_index >= 0:
-                            #     exp_inventory = excel_data_row[exp_inventory_index]
-                            # if sales_count_90_index and sales_count_90_index >= 0:
-                            #     sales_count_90 = excel_data_row[sales_count_90_index]
                             if quantity_index and quantity_index >= 0:
                                 quantity = excel_data_row[quantity_index]
-                            # if quantity_in_stock_index and quantity_in_stock_index >= 0:
-                            #     quantity_in_stock = excel_data_row[quantity_in_stock_index]
 
-                            # if offer_price_index and offer_price_index >= 0:
-                            #     offer_price = excel_data_row[offer_price_index]
-                            # if offer_price_total_index and offer_price_total_index >= 0:
-                            #     offer_price_total = excel_data_row[offer_price_total_index]
-                            # if retail_price_index and retail_price_index >= 0:
-                            #     retail_price = excel_data_row[retail_price_index]
-                            # if retail_price_total_index and retail_price_total_index >= 0:
-                            #     retail_price_total = excel_data_row[retail_price_total_index]
-
-                            # if possible_competition_index and possible_competition_index >= 0:
-                            #     possible_competition_name = excel_data_row[possible_competition_index]
-                            # if multiplier_index and multiplier_index >= 0:
-                            #     multiplier_name = excel_data_row[multiplier_index]
                             if count_obj == 0:
-                                # if potential_profit_margin_index and potential_profit_margin_index >= 0:
-                                #     potential_profit_margin = excel_data_row[potential_profit_margin_index]
-                                # if max_index and max_index >= 0:
-                                #     max_val = excel_data_row[max_index]
-                                # if accelerator_index and accelerator_index >= 0:
-                                #     accelerator = excel_data_row[accelerator_index]
                                 if credit_index and credit_index >= 0:
                                     credit = excel_data_row[credit_index]
 
@@ -225,8 +155,6 @@ class VendorOfferNewAppraisalImport(models.Model):
                                 expiration_date = excel_data_row[expiration_date_index]
                             if uom_index and uom_index >= 0:
                                 uom = excel_data_row[uom_index]
-                            # if margin_cost_index and margin_cost_index >= 0:
-                            #     margin_cost = excel_data_row[margin_cost_index]
 
                             product_sku = sku_code
                             if self.partner_id.sku_preconfig and product_sku.startswith(
@@ -357,28 +285,28 @@ class VendorOfferNewAppraisalImport(models.Model):
                             amount_untaxed = amount_total = 0
 
                             for order_line_object_add in order_list_list:
-                                if order_line_object_add['multiplier'] is False:
-                                    order_line_object_add['multiplier'] = None
-                                try:
-                                    offer_price = float(order_line_object_add['offer_price'])
-                                except:
-                                    raise ValueError(_("Offer Price  contains incorrect values %s")
-                                                     % order_line_object_add['offer_price'])
-                                try:
-                                    retail_price = float(order_line_object_add['retail_price'])
-                                except:
-                                    raise ValueError(_("Retail Price  contains incorrect values %s")
-                                                     % order_line_object_add['retail_price'])
-                                try:
-                                    offer_price_total = float(order_line_object_add['offer_price_total'])
-                                except:
-                                    raise ValueError(_("Offer Price Total  contains incorrect values %s")
-                                                     % order_line_object_add['offer_price_total'])
-                                try:
-                                    retail_price_total = float(order_line_object_add['retail_price_total'])
-                                except:
-                                    raise ValueError(_("Retail Price Total  contains incorrect values %s")
-                                                     % order_line_object_add['retail_price_total'])
+                                # if order_line_object_add['multiplier'] is False:
+                                #     order_line_object_add['multiplier'] = None
+                                # try:
+                                #     offer_price = float(order_line_object_add['offer_price'])
+                                # except:
+                                #     raise ValueError(_("Offer Price  contains incorrect values %s")
+                                #                      % order_line_object_add['offer_price'])
+                                # try:
+                                #     retail_price = float(order_line_object_add['retail_price'])
+                                # except:
+                                #     raise ValueError(_("Retail Price  contains incorrect values %s")
+                                #                      % order_line_object_add['retail_price'])
+                                # try:
+                                #     offer_price_total = float(order_line_object_add['offer_price_total'])
+                                # except:
+                                #     raise ValueError(_("Offer Price Total  contains incorrect values %s")
+                                #                      % order_line_object_add['offer_price_total'])
+                                # try:
+                                #     retail_price_total = float(order_line_object_add['retail_price_total'])
+                                # except:
+                                #     raise ValueError(_("Retail Price Total  contains incorrect values %s")
+                                #                      % order_line_object_add['retail_price_total'])
                                 try:
                                     float(order_line_object_add['product_qty'])
                                 except:
@@ -517,7 +445,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                        order_line_object['product_sales_count'],
                                        order_line_object['expired_inventory'],
                                        float("{0:.2f}".format(float(order_line_object['offer_price_total']))),
-                                       order_line_object['multiplier'],
+                                       None,
                                        exp_date, order_line_object['uom_str'], exp_date_str,
                                        order_line_object['import_type_ven_line'],
                                        currency_id_insert, order_line_object['product_sales_count_month'],
