@@ -214,6 +214,7 @@
                                                options="{'no_create': True}"
                                                attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
                                         <field name="margin"/>
+                                        <field name="is_pddo"/>
                                         <field name="multiplier"
                                                attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
                                         <field name="product_note" string="Note"/>
