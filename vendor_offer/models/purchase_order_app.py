@@ -38,7 +38,9 @@ class VendorOfferNewAppraisal(models.Model):
     def button_vendor_offer(self):
         _logger.info("Set to VO button Action..")
         self.write({'state': 'ven_draft', 'status': 'ven_draft', 'status_ven': ''})
-        self.action_po_to_vo_recalculate_vendor_offer()
+        if self.import_type_ven != 'all_field_import':
+            self.action_po_to_vo_recalculate_vendor_offer()
+
         return {}
 
     # Vendor Offer Calculate button Action
