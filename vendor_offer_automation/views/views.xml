@@ -46,20 +46,20 @@
             </field>
         </record>
 
-        <record id="view_popup_alert_import_app_new" model="ir.ui.view">
-             <field name="name">Vendor Offer Import Alert New</field>
-            <field name="model">purchase.order</field>
-            <field name="arch" type="xml">
-                <form >
-                    <group>
-                        <div>Please Note : The Import file also contains the Equipment Products</div>
-                    </group>
-                    <footer>
-                        <button string="Close" class="btn-default" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
+<!--        <record id="view_popup_alert_import_app_new" model="ir.ui.view">-->
+<!--             <field name="name">Vendor Offer Import Alert New</field>-->
+<!--            <field name="model">purchase.order</field>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <form >-->
+<!--                    <group>-->
+<!--                        <div>Please Note : The Import file also contains the Equipment Products</div>-->
+<!--                    </group>-->
+<!--                    <footer>-->
+<!--                        <button string="Close" class="btn-default" special="cancel"/>-->
+<!--                    </footer>-->
+<!--                </form>-->
+<!--            </field>-->
+<!--        </record>-->
 
        <!--<menuitem-->
             <!--id="menu_product_offer_template_import" name="Import Template" action="vendor_offer_automation.vendor_template_client_action"-->
