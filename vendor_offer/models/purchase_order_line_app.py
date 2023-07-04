@@ -20,7 +20,7 @@ class VendorOfferProductLineNew(models.Model):
     dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate Price', store=True)
     product_multiple_matches = fields.Boolean(string='Multiple Matches', store=True)
     list_contains_equip = fields.Boolean(string='Equipment', store=True)
-
+    is_pddo = fields.Boolean(string='PDDO', default=False, readonly=True, store=True)
     product_note = fields.Text(string="Product Note", related='product_id.product_note', readonly=True)
 
     def compute_new_fields_vendor_line(self):
@@ -83,6 +83,7 @@ class VendorOfferProductLineNew(models.Model):
             line.consider_dropping_tier = line.get_consider_dropping_tier()
             line.qty_in_stock = line.product_id.qty_available
             line.expired_inventory = line.expired_inventory_fetch()
+            line.is_pddo = True if line.product_sales_count_90 == 0 else False
 
     def expired_inventory_fetch(self):
         for line in self:
@@ -245,6 +246,7 @@ class VendorOfferProductLineNew(models.Model):
         self.product_sales_count_90 = self.get_product_sales_qty_or_amt_sum_by_days(90, 'qty')
         self.product_sales_count_yrs = self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
         self.product_sales_count = self.get_product_sales_qty_or_amt_sum_by_days(1001, 'qty')
+        self.is_pddo = True if self.product_sales_count_90 == 0 else False
         ## 1001 is added to fetch all data
 
     def compute_average_retail(self):
