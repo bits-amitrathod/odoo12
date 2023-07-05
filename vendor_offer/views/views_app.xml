@@ -125,7 +125,7 @@
                                 Equipment is present in product list </span>
                             <br/> <br/> <br/>
                              <button name="action_recalculate_vendor_offer" class="btn-primary"
-                                     string="Calculate"  context="{'new_app_cal': True}"  type="object"/>
+                                     string="Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': [('import_type_ven', '==', 'all_field_import')]}" type="object"/>
 
                              <notebook>
                                  <page string="Product">
