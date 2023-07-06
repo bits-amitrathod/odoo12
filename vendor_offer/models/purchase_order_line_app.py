@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 import datetime
+from odoo.tools.profiler import profile
 
 
 class VendorOfferProductLineNew(models.Model):
@@ -126,7 +127,7 @@ class VendorOfferProductLineNew(models.Model):
 
     def get_product_sales_qty_or_amt_sum_by_days(self, days, type='qty'):
         start_date = fields.Date.to_string(datetime.datetime.now() - datetime.timedelta(days=days))
-        cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+        # cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
         idx = 0 if type == 'qty' else 1
         base_query = "select sum(sol.qty_delivered) as qty, sum(sol.price_subtotal) as amt " \
         "from sale_order AS so " \
@@ -164,6 +165,7 @@ class VendorOfferProductLineNew(models.Model):
             condition = False
 
         result = condition and self.product_sales_count_yrs >= self.qty_in_stock
+        return result
 
     def get_inv_ratio_90_days(self):
         return self.qty_in_stock / self.product_sales_count_90 if self.product_sales_count_90 != 0 else 0
@@ -174,11 +176,11 @@ class VendorOfferProductLineNew(models.Model):
             product_sales_count = po_line.product_sales_count  # qty_sold_all
             qty_sold_yr = po_line.product_sales_count_yrs
             tier = po_line.product_id.tier
-            open_quotations_cnt = po_line.get_quotations_count_by_product()
+            open_quotations_cnt = po_line.open_quotations_of_prod
             qty_sold_90_days = po_line.product_sales_count_90
             average_aging = po_line.product_id.average_aging
-            inv_ratio_90_days = po_line.get_inv_ratio_90_days()
-            product_sales_total_amount_yr = po_line.get_product_sales_qty_or_amt_sum_by_days(365, 'amt')
+            inv_ratio_90_days = po_line.inv_ratio_90_days
+            product_sales_total_amount_yr = po_line.product_sales_amount_yr
             multiplier = 'TIER 3'
             if qty_in_stock == 0 and product_sales_count == 0:
                 if 0 < open_quotations_cnt < 5:
@@ -241,6 +243,7 @@ class VendorOfferProductLineNew(models.Model):
 
             po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
 
+    # @profile
     def set_values(self):
         self.product_sales_count_month = self.get_product_sales_qty_or_amt_sum_by_days(30, 'qty')
         self.product_sales_count_90 = self.get_product_sales_qty_or_amt_sum_by_days(90, 'qty')
@@ -250,10 +253,10 @@ class VendorOfferProductLineNew(models.Model):
         ## 1001 is added to fetch all data
 
     def compute_average_retail(self):
-        qty = self.get_product_sales_qty_or_amt_sum_by_days(365, 'qty')
+        qty = self.product_sales_count_yrs
         price = self.product_unit_price
         if qty != 0 and price != 0:
-            price_per_item = (self.get_product_sales_qty_or_amt_sum_by_days(365, 'amt') / qty)
+            price_per_item = (self.product_sales_amount_yr / qty)
             self.average_retail_last_year = price_per_item / price
         else:
             self.average_retail_last_year = 0
