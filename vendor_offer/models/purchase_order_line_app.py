@@ -171,6 +171,7 @@ class VendorOfferProductLineNew(models.Model):
     def get_inv_ratio_90_days(self):
         return self.qty_in_stock / self.product_sales_count_90 if self.product_sales_count_90 != 0 else 0
 
+
     def multiplier_adjustment_criteria(self):
         for po_line in self:
             qty_in_stock = po_line.qty_in_stock
@@ -179,7 +180,7 @@ class VendorOfferProductLineNew(models.Model):
             tier = po_line.product_id.tier
             open_quotations_cnt = po_line.open_quotations_of_prod
             qty_sold_90_days = po_line.product_sales_count_90
-            average_aging = po_line.product_id.average_aging
+            average_aging = po_line.average_aging
             inv_ratio_90_days = po_line.inv_ratio_90_days
             product_sales_total_amount_yr = po_line.product_sales_amount_yr
             multiplier = 'TIER 3'
