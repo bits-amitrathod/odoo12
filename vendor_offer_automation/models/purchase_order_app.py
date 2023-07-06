@@ -28,6 +28,41 @@ class VendorOfferNewAppraisalImport(models.Model):
     _description = "Vendor Offer Import"
     _inherit = "purchase.order"
 
+    def expired_inventory_fetch(self):
+        for line in self:
+            expired_lot_count = 0
+            test_id_list = self.env['stock.production.lot'].search([('product_id', '=', line.product_id.id)])
+            for prod_lot in test_id_list:
+                if prod_lot.use_date:
+                    if fields.Datetime.from_string(prod_lot.use_date).date() < fields.date.today():
+                        expired_lot_count = expired_lot_count + 1
+
+            return expired_lot_count
+
+    def get_inv_ratio_90_days(self, qty_in_stock, product_sales_count_90):
+        return qty_in_stock / product_sales_count_90 if product_sales_count_90 != 0 else 0
+
+    def get_consider_dropping_tier(self, qty_in_stock, product_sales_count_90, product_sales_count_yrs):
+        if product_sales_count_90 != 0:
+            condition = qty_in_stock / product_sales_count_90 > 4
+        else:
+            condition = False
+
+        result = condition and product_sales_count_yrs >= qty_in_stock
+        return result
+
+    def get_quotations_count_by_product(self, prod_id):
+
+        self.env.cr.execute("select "
+                            "so.id, so.name "
+                            "from sale_order so "
+                            "right join sale_order_line sol "
+                            "on so.id = sol.order_id and sol.product_id = " + str(prod_id) +
+                            " where so.state in ('draft','send')")
+        data = self.env.cr.dictfetchall()
+
+        return len(data) if data else 0
+
     def action_import_order_lines_app_new(self):
         tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
         return {
@@ -133,7 +168,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                         for excel_data_row in excel_data_rows:
                             sku_code = excel_data_row[sku_index]
                             original_sku = sku_code
-                            price = sales_count = sales_count_yr = sales_total = exp_inventory = sales_count_90 = 0
+                            price = sales_count = sales_count_yr = sales_total = sales_count_90 = 0
                             quantity = 1
                             sale_count_month = 0
                             quantity_in_stock = offer_price = offer_price_total = retail_price = retail_price_total = 0
@@ -204,11 +239,11 @@ class VendorOfferNewAppraisalImport(models.Model):
                             if query_result:
                                 for query_result_one in query_result:
                                     products = self.env['product.product'].browse(query_result_one['product_id'])
-                                    if count_obj == 0:
-                                        possible_competition = self.env['competition.competition'].search(
-                                            [('name', '=', possible_competition_name)]).id
-                                    multiplier = self.env['multiplier.multiplier'].search(
-                                        [('name', '=', multiplier_name)]).id
+                                    # if count_obj == 0:
+                                    #     possible_competition = self.env['competition.competition'].search(
+                                    #         [('name', '=', possible_competition_name)]).id
+                                    # multiplier = self.env['multiplier.multiplier'].search(
+                                    #     [('name', '=', multiplier_name)]).id
                                     prod_id = 0
                                     prod_name = ''
                                     if products:
@@ -230,7 +265,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                               prod_name=prod_name,
                                                               product_uom=query_result_one['uom_id'],
                                                               order_id=self.id,
-                                                              product_id=prod_id, qty_in_stock=quantity_in_stock,
+                                                              product_id=prod_id,
+                                                              qty_in_stock=products[0].qty_available,
                                                               price_unit=offer_price,
                                                               product_retail=0,
                                                               product_unit_price=0, product_offer_price=0,
@@ -238,12 +274,12 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                               product_sales_count_yrs=sales_count_yr,
                                                               product_sales_count=sales_count,
                                                               amount_total_ven_pri=sales_total,
-                                                              expired_inventory=exp_inventory,
+                                                              expired_inventory=0,
                                                               offer_price=offer_price, offer_price_total=offer_price_total,
                                                               retail_price=retail_price,
                                                               retail_price_total=retail_price_total,
-                                                              possible_competition=possible_competition,
-                                                              multiplier=multiplier,
+                                                              possible_competition=None,
+                                                              multiplier=None,
                                                               potential_profit_margin=potential_profit_margin,
                                                               max_val=max_val, accelerator=accelerator, credit=credit,
                                                               margin=margin_cost,
@@ -252,7 +288,11 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                               list_contains_equip=list_contains_equip,
                                                               original_sku=original_sku,
                                                               product_sales_count_month=sale_count_month,
-                                                              product_sales_amount_yr=0
+                                                              product_sales_amount_yr=0,
+                                                              open_quotations_of_prod=0,
+                                                              inv_ratio_90_days=0,
+                                                              consider_dropping_tier=False
+
                                                               )
                                         if expiration_date:
                                             order_line_obj.update({'expiration_date': expiration_date})
@@ -285,28 +325,6 @@ class VendorOfferNewAppraisalImport(models.Model):
                             amount_untaxed = amount_total = 0
 
                             for order_line_object_add in order_list_list:
-                                # if order_line_object_add['multiplier'] is False:
-                                #     order_line_object_add['multiplier'] = None
-                                # try:
-                                #     offer_price = float(order_line_object_add['offer_price'])
-                                # except:
-                                #     raise ValueError(_("Offer Price  contains incorrect values %s")
-                                #                      % order_line_object_add['offer_price'])
-                                # try:
-                                #     retail_price = float(order_line_object_add['retail_price'])
-                                # except:
-                                #     raise ValueError(_("Retail Price  contains incorrect values %s")
-                                #                      % order_line_object_add['retail_price'])
-                                # try:
-                                #     offer_price_total = float(order_line_object_add['offer_price_total'])
-                                # except:
-                                #     raise ValueError(_("Offer Price Total  contains incorrect values %s")
-                                #                      % order_line_object_add['offer_price_total'])
-                                # try:
-                                #     retail_price_total = float(order_line_object_add['retail_price_total'])
-                                # except:
-                                #     raise ValueError(_("Retail Price Total  contains incorrect values %s")
-                                #                      % order_line_object_add['retail_price_total'])
                                 try:
                                     float(order_line_object_add['product_qty'])
                                 except:
@@ -363,6 +381,17 @@ class VendorOfferNewAppraisalImport(models.Model):
 
                                     temp_date = float(order_line_object['expiration_date'])
 
+                                    order_line_object['open_quotations_of_prod'] = \
+                                        self.get_quotations_count_by_product(order_line_object['product_id'])
+                                    order_line_object['inv_ratio_90_days'] = \
+                                        self.get_inv_ratio_90_days(order_line_object['qty_in_stock'],
+                                                                   order_line_object['product_sales_count_90'])
+                                    order_line_object['expired_inventory'] = self.expired_inventory_fetch()
+                                    order_line_object['consider_dropping_tier'] = \
+                                        self.get_consider_dropping_tier(order_line_object['qty_in_stock'],
+                                                                        order_line_object['product_sales_count_90'],
+                                                                        order_line_object['product_sales_count_yrs'])
+
                                     def floatHourToTime(fh):
                                         h, r = divmod(fh, 1)
                                         m, r = divmod(r * 60, 1)
@@ -392,7 +421,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                     order_model.write({'offer_type': temp_offer_type})
                                     order_model.write({'amount_untaxed': amount_untaxed})
                                     order_model.write({'amount_total': amount_total})
-                                    order_model.write({'possible_competition': possible_competition})
+                                    order_model.write({'possible_competition': None})
                                     order_model.write({'date_planned': order_line_object['date_planned']})
                                     order_model.write({'no_match_sku_import': sku_not_found_list})
                                     order_model.write({'no_match_sku_import_cleaned': sku_not_found_list_cleaned})
@@ -416,7 +445,9 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " ,create_uid,company_id,create_date,price_tax,qty_invoiced" \
                                          ",qty_to_invoice,propagate_cancel,qty_received_method,product_uom_qty," \
                                          " qty_received,state,product_multiple_matches,list_contains_equip," \
-                                         " original_sku,product_sales_amount_yr)" \
+                                         " original_sku,product_sales_amount_yr," \
+                                         " open_quotations_of_prod,inv_ratio_90_days" \
+                                         ",consider_dropping_tier)" \
                                          " VALUES (%s,%s,%s, %s,%s, %s, %s,%s," \
                                          " %s, " \
                                          " %s, %s, %s," \
@@ -428,7 +459,9 @@ class VendorOfferNewAppraisalImport(models.Model):
                                          " %s ,%s,%s ,%s,%s," \
                                          " %s,%s,%s,%s," \
                                          " %s,%s,%s,%s," \
-                                         " %s,%s) " \
+                                         " %s,%s," \
+                                         "  %s,%s," \
+                                         " %s ) " \
                                          " RETURNING id"
 
                                 sql_query = insert
@@ -455,7 +488,11 @@ class VendorOfferNewAppraisalImport(models.Model):
                                        order_line_object['product_multiple_matches'],
                                        order_line_object['list_contains_equip'],
                                        order_line_object['original_sku'],
-                                       order_line_object['product_sales_amount_yr'])
+                                       order_line_object['product_sales_amount_yr'],
+
+                                       order_line_object['open_quotations_of_prod'],
+                                       order_line_object['inv_ratio_90_days'],
+                                       order_line_object['consider_dropping_tier'])
 
                                 self._cr.execute(sql_query, val)
                                 line_obj = self._cr.fetchone()
