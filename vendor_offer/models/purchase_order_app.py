@@ -22,7 +22,7 @@ class VendorOfferNewAppraisal(models.Model):
     is_dynamic_tier_adjustment = fields.Boolean(string="Allow Dynamic Tier Adjustment?", default=True)
     offer_contain_equipment = fields.Boolean(string="Contains Equipment", compute="check_equipment_present_or_not",)
 
-    t1_retail_amt = fields.Monetary(string='T1 Total Retail Amount', readonly=True)
+    t1_retail_amt = fields.Monetary(string='T1 Total Retail Amount', compute="summary_calculate", readonly=True)
     t1_offer_amt = fields.Monetary(string='T1 Total Offer Amount', readonly=True)
 
     t2_retail_amt = fields.Monetary(string='T2 Total Retail Amount', readonly=True)
@@ -64,7 +64,7 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line._cal_margin()
                     obj_line.compute_total_line_vendor()
                     obj_line.compute_average_retail()
-                    obj.summary_calculate(obj_line)
+                    # obj.summary_calculate(obj_line)
 
     # This Method used On button_vendor_offer ( PO Convert in to VO )
     def action_po_to_vo_recalculate_vendor_offer(self):
@@ -85,20 +85,23 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line.compute_average_retail()
                     obj.summary_calculate(obj_line)
 
-    def summary_calculate(self, line):
-        if line.multiplier.name:
-            if 'T 1' in line.multiplier.name:
-                self.t1_retail_amt += line.product_retail
-                self.t1_offer_amt += line.price_subtotal
-            elif 'T 2' in line.multiplier.name:
-                self.t2_retail_amt += line.product_retail
-                self.t2_offer_amt += line.price_subtotal
-            elif line.multiplier.name == "TIER 3":
-                self.t3_retail_amt += line.product_retail
-                self.t3_offer_amt += line.price_subtotal
-            elif line.multiplier.name == "PREMIUM - 50 PRCT":
-                self.premium_retail_amt += line.product_retail
-                self.premium_offer_amt += line.price_subtotal
+    def summary_calculate(self):
+        for po in self:
+            for line in po.order_line:
+                if line.multiplier.name:
+                    if 'T 1' in line.multiplier.name:
+                        po.t1_retail_amt += line.product_retail
+                        po.t1_offer_amt += line.price_subtotal
+                    elif 'T 2' in line.multiplier.name:
+                        po.t2_retail_amt += line.product_retail
+                        po.t2_offer_amt += line.price_subtotal
+                    elif line.multiplier.name == "TIER 3":
+                        po.t3_retail_amt += line.product_retail
+                        po.t3_offer_amt += line.price_subtotal
+                    elif line.multiplier.name == "PREMIUM - 50 PRCT":
+                        po.premium_retail_amt += line.product_retail
+                        po.premium_offer_amt += line.price_subtotal
+            po.t1_retail_amt = po.t1_retail_amt
 
     def check_equipment_present_or_not(self):
         for offer in self:
