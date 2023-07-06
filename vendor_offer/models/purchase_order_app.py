@@ -2,7 +2,7 @@ from odoo import models, fields, api, _
 
 from datetime import datetime, timedelta
 from odoo import models, fields
-from odoo.tools.profiler import profile
+# from odoo.tools.profiler import profile
 
 import logging
 
@@ -46,13 +46,13 @@ class VendorOfferNewAppraisal(models.Model):
 
     # Vendor Offer Calculate button Action
     # Calculate Values And Assign
-    @profile
+    # @profile
     def action_recalculate_vendor_offer(self):
         for objList in self:
             for obj in objList:
-                obj.set_zero_val()
                 for obj_line in obj.order_line:
-                    obj_line.set_values()
+                    if obj_line.import_type_ven_line != 'new_appraisal':
+                        obj_line.set_values()
                     obj_line.compute_new_fields_vendor_line()
                     if obj.is_change_tier1_to_premium:
                         obj_line.upgrade_multiplier_tier1_to_premium()
@@ -62,20 +62,17 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line._cal_offer_price()
                     obj_line._set_offer_price()
                     obj_line._cal_margin()
-
                     obj_line.compute_total_line_vendor()
-
                     obj_line.compute_average_retail()
-                    # obj_line.compute_retail_line_total()
                     obj.summary_calculate(obj_line)
 
     # This Method used On button_vendor_offer ( PO Convert in to VO )
     def action_po_to_vo_recalculate_vendor_offer(self):
         for objList in self:
             for obj in objList:
-                obj.set_zero_val()
                 for obj_line in obj.order_line:
                     obj_line.set_values()
+                    obj_line.compute_new_fields_vendor_line()
                     if obj.is_change_tier1_to_premium:
                         obj_line.upgrade_multiplier_tier1_to_premium()
                     if obj_line.is_recalculate_multiplier():
@@ -84,22 +81,9 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line._cal_offer_price()
                     obj_line._set_offer_price()
                     obj_line._cal_margin()
-
                     obj_line.compute_total_line_vendor()
-                    obj_line.compute_new_fields_vendor_line()
                     obj_line.compute_average_retail()
-                    # obj_line.compute_retail_line_total()
                     obj.summary_calculate(obj_line)
-
-    def set_zero_val(self):
-        self.t1_retail_amt = 0
-        self.t1_offer_amt = 0
-        self.t2_retail_amt = 0
-        self.t2_offer_amt = 0
-        self.t3_retail_amt = 0
-        self.t3_offer_amt = 0
-        self.premium_retail_amt = 0
-        self.premium_offer_amt = 0
 
     def summary_calculate(self, line):
         if line.multiplier.name:
