@@ -32,7 +32,7 @@ class VendorOfferProductLineNew(models.Model):
 
             today_date = datetime.datetime.now()
 
-            line.product_sales_amount_yr = self.get_product_sales_qty_or_amt_sum_by_days(365, 'amt')
+            #line.product_sales_amount_yr = self.get_product_sales_qty_or_amt_sum_by_days(365, 'amt')
 
             sql_query = """SELECT     Date(PUBLIC.stock_production_lot.create_date) AS create_date , 
                                                        Sum(PUBLIC.stock_quant.quantity)              AS quantity 
