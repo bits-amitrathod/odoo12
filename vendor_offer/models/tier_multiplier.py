@@ -79,3 +79,6 @@ class ProductNotesActivity(models.Model):
                                ondelete='cascade')
     note = fields.Text(string="Note", required=True)
     note_date = fields.Datetime(string="Note Date", default=fields.Datetime.now, )
+
+    def action_add_note(self):
+        self.write({'note': self.note})

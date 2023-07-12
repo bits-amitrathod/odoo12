@@ -13,7 +13,7 @@
                         <field name="order_id" invisible="1"/>
                     </group>
                     <footer invisible="context.get('isFooterInvisible', True)">
-                        <button name="write" string="Save" type="object" class="btn-primary"/>
+                        <button name="action_add_note" string="Save" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
                     </footer>
                 </form>
