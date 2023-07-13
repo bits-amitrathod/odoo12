@@ -774,7 +774,7 @@ class VendorOffer(models.Model):
     #@api.multi
     def action_cancel_vendor_offer(self):
 
-        if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
+        if self.offer_type == 'cash' or (self.offer_type is None) or self.offer_type == 'cashcredit':
             self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
             self.amount_total = math.floor(round(self.cash_amount_total, 2))
             self.offer_type = 'cash'
@@ -813,7 +813,7 @@ class VendorOffer(models.Model):
     def button_cancel(self):
         if (self.vendor_offer_data == True):
 
-            if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
+            if self.offer_type == 'cash' or (self.offer_type is None) or self.offer_type == 'cashcredit':
                 self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
                 self.amount_total = math.floor(round(self.cash_amount_total, 2))
                 self.offer_type = 'cash'

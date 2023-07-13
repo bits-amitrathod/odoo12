@@ -83,7 +83,7 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line._cal_margin()
                     obj_line.compute_total_line_vendor()
                     obj_line.compute_average_retail()
-                    obj.summary_calculate(obj_line)
+                    obj.summary_calculate()
 
     def summary_calculate(self):
         for po in self:
