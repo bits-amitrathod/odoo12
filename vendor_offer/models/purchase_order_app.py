@@ -64,7 +64,7 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line._cal_margin()
                     obj_line.compute_total_line_vendor()
                     obj_line.compute_average_retail()
-                    obj.summary_calculate()
+                obj.summary_calculate()
 
     def action_manual_recalculate_vendor_offer(self):
         for objList in self:
@@ -90,10 +90,12 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line._cal_margin()
                     obj_line.compute_total_line_vendor()
                     obj_line.compute_average_retail()
-                    obj.summary_calculate()
+                obj.summary_calculate()
 
+    # @profile
     def summary_calculate(self):
         for po in self:
+            po.set_zero_val()
             for line in po.order_line:
                 if line.multiplier.name:
                     if 'T 1' in line.multiplier.name:
@@ -109,12 +111,18 @@ class VendorOfferNewAppraisal(models.Model):
                         po.premium_retail_amt += line.product_retail
                         po.premium_offer_amt += line.price_subtotal
             po.t1_retail_amt = po.t1_retail_amt
-
+    def set_zero_val(self):
+        self.t1_retail_amt = 0
+        self.t1_offer_amt = 0
+        self.t2_retail_amt = 0
+        self.t2_offer_amt = 0
+        self.t3_retail_amt = 0
+        self.t3_offer_amt = 0
+        self.premium_retail_amt = 0
+        self.premium_offer_amt = 0
     def check_equipment_present_or_not(self):
         for offer in self:
             offer.offer_contain_equipment = False
             for line in offer.order_line:
                 if line.list_contains_equip:
                     offer.offer_contain_equipment = True
-
-
