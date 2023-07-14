@@ -2,7 +2,7 @@ from odoo import models, fields, api, _
 
 from datetime import datetime, timedelta
 from odoo import models, fields
-# from odoo.tools.profiler import profile
+from odoo.tools.profiler import profile
 
 import logging
 
@@ -92,34 +92,33 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line.compute_average_retail()
                 obj.summary_calculate()
 
-    # @profile
+    @profile
     def summary_calculate(self):
+        t1_retail_amt,t1_offer_amt = 0, 0
+        t2_retail_amt, t2_offer_amt = 0, 0
+        t3_retail_amt, t3_offer_amt = 0, 0
+        premium_retail_amt, premium_offer_amt = 0, 0
         for po in self:
-            po.set_zero_val()
             for line in po.order_line:
                 if line.multiplier.name:
                     if 'T 1' in line.multiplier.name:
-                        po.t1_retail_amt += line.product_retail
-                        po.t1_offer_amt += line.price_subtotal
+                        t1_retail_amt += line.product_retail
+                        t1_offer_amt += line.price_subtotal
                     elif 'T 2' in line.multiplier.name:
-                        po.t2_retail_amt += line.product_retail
-                        po.t2_offer_amt += line.price_subtotal
+                        t2_retail_amt += line.product_retail
+                        t2_offer_amt += line.price_subtotal
                     elif line.multiplier.name == "TIER 3":
-                        po.t3_retail_amt += line.product_retail
-                        po.t3_offer_amt += line.price_subtotal
+                        t3_retail_amt += line.product_retail
+                        t3_offer_amt += line.price_subtotal
                     elif line.multiplier.name == "PREMIUM - 50 PRCT":
-                        po.premium_retail_amt += line.product_retail
-                        po.premium_offer_amt += line.price_subtotal
-            po.t1_retail_amt = po.t1_retail_amt
-    def set_zero_val(self):
-        self.t1_retail_amt = 0
-        self.t1_offer_amt = 0
-        self.t2_retail_amt = 0
-        self.t2_offer_amt = 0
-        self.t3_retail_amt = 0
-        self.t3_offer_amt = 0
-        self.premium_retail_amt = 0
-        self.premium_offer_amt = 0
+                        premium_retail_amt += line.product_retail
+                        premium_offer_amt += line.price_subtotal
+
+            po.t1_retail_amt, po.t1_offer_amt = t1_retail_amt, t1_offer_amt
+            po.t2_retail_amt, po.t2_offer_amt = t2_retail_amt, t2_offer_amt
+            po.t3_retail_amt, po.t3_offer_amt = t3_retail_amt, t3_offer_amt
+            po.premium_retail_amt, po.premium_offer_amt = premium_retail_amt, premium_offer_amt
+
     def check_equipment_present_or_not(self):
         for offer in self:
             offer.offer_contain_equipment = False
