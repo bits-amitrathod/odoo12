@@ -127,6 +127,9 @@
                              <button name="action_recalculate_vendor_offer" class="btn-primary"
                                      string="Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': [('import_type_ven', '==', 'all_field_import')]}" type="object"/>
 
+                            <button name="action_manual_recalculate_vendor_offer" class="btn-primary"
+                                     string="Manual Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': ['|',('import_type_ven', '=', 'new_appraisal'),('import_type_ven', '=', False)]}" type="object"/>
+
                              <notebook>
                                  <page string="Product">
                                 <field name="order_line" mode="tree,form"

@@ -22,7 +22,7 @@ class VendorOfferNewAppraisal(models.Model):
     is_dynamic_tier_adjustment = fields.Boolean(string="Allow Dynamic Tier Adjustment?", default=True)
     offer_contain_equipment = fields.Boolean(string="Contains Equipment", compute="check_equipment_present_or_not",)
 
-    t1_retail_amt = fields.Monetary(string='T1 Total Retail Amount', compute="summary_calculate", readonly=True)
+    t1_retail_amt = fields.Monetary(string='T1 Total Retail Amount', readonly=True)
     t1_offer_amt = fields.Monetary(string='T1 Total Offer Amount', readonly=True)
 
     t2_retail_amt = fields.Monetary(string='T2 Total Retail Amount', readonly=True)
@@ -66,6 +66,13 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line.compute_average_retail()
                     # obj.summary_calculate(obj_line)
 
+    def action_manual_recalculate_vendor_offer(self):
+        for objList in self:
+            for obj in objList:
+                for obj_line in obj.order_line:
+                    obj_line.set_values()
+                    obj_line.compute_new_fields_vendor_line()
+
     # This Method used On button_vendor_offer ( PO Convert in to VO )
     def action_po_to_vo_recalculate_vendor_offer(self):
         for objList in self:
@@ -83,7 +90,7 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line._cal_margin()
                     obj_line.compute_total_line_vendor()
                     obj_line.compute_average_retail()
-                    obj.summary_calculate()
+                    # obj.summary_calculate()
 
     def summary_calculate(self):
         for po in self:
