@@ -2,7 +2,7 @@ from odoo import models, fields, api, _
 
 from datetime import datetime, timedelta
 from odoo import models, fields
-from odoo.tools.profiler import profile
+# from odoo.tools.profiler import profile
 
 import logging
 
@@ -92,7 +92,7 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line.compute_average_retail()
                 obj.summary_calculate()
 
-    @profile
+    # @profile
     def summary_calculate(self):
         t1_retail_amt,t1_offer_amt = 0, 0
         t2_retail_amt, t2_offer_amt = 0, 0
