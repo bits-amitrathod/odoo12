@@ -223,27 +223,28 @@ class VendorOfferProductLineNew(models.Model):
             t2_threshold = t3.worth if t3 else 0
 
             premium = po_line.product_id.premium
+            multi = 'OUT OF SCOPE'
 
             if tier:
                 if product_sales_count == 0:
-                    return "NO HISTORY / EXPIRED"
+                    multi = "NO HISTORY / EXPIRED"
                 elif tier.code == '1' and qty_sold_yr <= qty_in_stock <= qty_sold_yr * t1_to_t3_threshold:
-                    return "T 2 GOOD - 35 PRCT"
+                    multi = "T 2 GOOD - 35 PRCT"
                 elif qty_in_stock > qty_sold_yr * t1_overstock_threshold or (
                         qty_in_stock > qty_sold_yr * t2_threshold and tier.code == '2'):
-                    return "TIER 3"
+                    multi = "TIER 3"
                 elif premium:
-                    return "PREMIUM - 50 PRCT"
+                    multi = "PREMIUM - 50 PRCT"
                 elif tier.code == '1':
-                    return "T 1 GOOD - 45 PRCT"
+                    multi = "T 1 GOOD - 45 PRCT"
                 elif tier.code == '2':
-                    return "T 2 GOOD – 35 PRCT"
+                    multi = "T 2 GOOD - 35 PRCT"
                 else:
-                    return "OUT OF SCOPE"
+                    multi = "OUT OF SCOPE"
             else:
-                return "OUT OF SCOPE"
+                multi = "OUT OF SCOPE"
 
-            po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
+            po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multi)], limit=1)
 
     # @profile
     def set_values(self):
