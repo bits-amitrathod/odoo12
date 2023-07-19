@@ -217,16 +217,16 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)])
             if sale_order:
                 if sale_order.account_manager:
-                    user_id_email = sale_order.account_manager
+                    user_id_email = sale_order.account_manager.login
                 elif sale_order.user_id:
                     if sale_order.user_id.name == "National Accounts" and sale_order.national_account:
-                        user_id_email = sale_order.national_account
+                        user_id_email = sale_order.national_account.login
                     else:
-                        user_id_email = sale_order.user_id
+                        user_id_email = sale_order.user_id.login
                 elif sale_order.national_account:
-                    user_id_email = sale_order.national_account
+                    user_id_email = sale_order.national_account.login
                 else:
-                    user_id_email = sale_order.user_id
+                    user_id_email = sale_order.user_id.login
 
             email_to = user_id_email
 
