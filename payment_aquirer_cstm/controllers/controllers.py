@@ -214,6 +214,22 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             so_name = str(ref.reference.split("-", 1)[0])
             values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
+            sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)])
+            if sale_order:
+                if sale_order.account_manager:
+                    user_id_email = sale_order.account_manager
+                elif sale_order.user_id:
+                    if sale_order.user_id.name == "National Accounts" and sale_order.national_account:
+                        user_id_email = sale_order.national_account
+                    else:
+                        user_id_email = sale_order.user_id
+                elif sale_order.national_account:
+                    user_id_email = sale_order.national_account
+                else:
+                    user_id_email = sale_order.user_id
+
+            email_to = user_id_email
+
             email_cc = 'accounting@surgicalproductsolutions.com'
             email_from = "info@surgicalproductsolutions.com"
             so = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
@@ -417,7 +433,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                 message = tx.state_message or _('An error occured during the processing of this payment')
             odoo.addons.payment.controllers.portal.PaymentProcessing.remove_payment_transaction(tx)
             if tx and tx.reference and tx.reference.startswith("SO"):
-                _logger.info("***    Reference Start With SO ***")
+                #_logger.info("***    Reference Start With SO ***")
                 self.action_send_mail_after_payment_final(tx)
             return request.render('payment.confirm', {'tx': tx, 'status': status, 'message': message})
         else:
