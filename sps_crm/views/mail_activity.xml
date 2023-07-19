@@ -93,9 +93,8 @@
                     <field name="acq_activity_notes"/>
                     <field name="related_partner_activity" string="Fiscal Year End" filter_domain="[('related_partner_activity.fiscal_year_end','ilike',self)]"/>
                     <field name="related_partner_activity" string="Top subspecialties" filter_domain="[('related_partner_activity.top_subspecialties1','ilike',self)]"/>
-                    <!-- Studio Fields -->
-                    <filter name="related_partner_activity" string="Ordered Online" filter_domain="[('related_partner_activity.x_studio_ordered_online','=',True)]"/>
-                    <filter name="related_partner_activity" string="Ordered with GHX" filter_domain="[('related_partner_activity.x_studio_ordered_with_ghx','=',True)]"/>
+                    <filter name="related_partner_activity" string="Ordered Online" domain="[('related_partner_activity.x_studio_ordered_online','=',True)]"/>
+                    <filter name="related_partner_activity" string="Ordered with GHX" domain="[('related_partner_activity.x_studio_ordered_with_ghx','=',True)]"/>
                 </field>
             </field>
        </record>
