@@ -269,3 +269,15 @@ class VendorOfferProductLineNew(models.Model):
         if self.multiplier and self.multiplier.name and "T 1" in self.multiplier.name:
             mul = self.env['multiplier.multiplier'].search([('name', '=', 'PREMIUM - 50 PRCT')], limit=1)
             self.multiplier = mul if mul else None
+
+    def overstock_threshold(self):
+        threshold = self.env['vendor.threshold'].search([('code', '=', 'T1')], limit=1)
+        threshold3 = self.env['vendor.threshold'].search([('code', '=', 'T3')], limit=1)
+        last_year_sales_qty = self.product_sales_count_yrs
+        qty_in_stock = self.qty_in_stock
+
+        if threshold3 and (last_year_sales_qty * threshold3.worth) > qty_in_stock and 'T 1' in self.multiplier:
+            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'TIER 3')], limit=1)
+        elif threshold and (last_year_sales_qty * threshold.worth) > qty_in_stock and 'T 1' in self.multiplier:
+            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'T 2 GOOD - 35 PRCT')], limit=1)
+        # TODO : T2 threshold Dev remaining

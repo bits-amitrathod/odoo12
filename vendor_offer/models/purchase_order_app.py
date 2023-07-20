@@ -58,6 +58,7 @@ class VendorOfferNewAppraisal(models.Model):
                         obj_line.upgrade_multiplier_tier1_to_premium()
                     if obj_line.is_recalculate_multiplier():
                         obj_line.multiplier_adjustment_criteria() if obj.is_dynamic_tier_adjustment else obj_line.no_tier_multiplier_adjustment_criteria()
+                        obj_line.overstock_threshold()
                     obj_line.copy_product_qty_column()
                     obj_line._cal_offer_price()
                     obj_line._set_offer_price()
