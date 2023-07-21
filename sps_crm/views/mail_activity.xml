@@ -91,7 +91,7 @@
                 <field name="res_model_id" position="after">
                    <field name="sales_activity_notes"/>
                     <field name="acq_activity_notes"/>
-               </field>
+                </field>
             </field>
        </record>
 

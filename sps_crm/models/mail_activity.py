@@ -40,6 +40,15 @@ class MailActivityNotesCustom(models.Model):
     phone = fields.Char(related="related_partner_activity.phone", readonly=True, store=False)
     mobile = fields.Char(related="related_partner_activity.mobile", readonly=True, store=False)
 
+    ordered_online = fields.Boolean(related="related_partner_activity.x_studio_ordered_online", readonly=True,
+                                      store=False)
+    ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True, store=False)
+
+    fiscal_year_end = fields.Selection(related="related_partner_activity.fiscal_year_end", readonly=True,
+                                    store=False)
+    top_subspecialties1 = fields.Many2many(related="related_partner_activity.top_subspecialties1", readonly=True,
+                                      store=False)
+
     #date_done = fields.Date("Completed Date", index=True, readonly=False)
 
     # def write(self, vals):
