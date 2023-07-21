@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+report_bd_account_closed_18,report.bd.account.closed_18,model_report_bd_account_closed_18,,1,1,1,1
+popup_bd_account_closed_18,popup.bd.account.closed_18,model_popup_bd_account_closed_18,,1,1,1,1

@@ -47,7 +47,12 @@ class Lead(models.Model):
         domain="['|', ('team_id', '=', False), ('team_id', '=', team_id)]")
 
     tag_purchase_ids = fields.Many2many(
-        'crm.purchase.tag', string='Tags',
+        'crm.purchase.tag', string='zzTags',
+        help="Classify and analyze your lead/opportunity categories like: Training, Service")
+
+    # This Is Overwrite For Only string Name Change Purpose
+    tag_ids = fields.Many2many(
+        'crm.tag', 'crm_tag_rel', 'lead_id', 'tag_id', string='ZxTags',
         help="Classify and analyze your lead/opportunity categories like: Training, Service")
 
     oppr_category_id = fields.Many2many('res.partner.category', string='Tags')
@@ -83,7 +88,8 @@ class Lead(models.Model):
                                                 ('closed', 'Non-Surgery/Closed'),
                                                 ('wholesale', 'Wholesale'),
                                                 ('national_acc', 'National Account Target'),
-                                                ('other', 'Other')])
+                                                ('other', 'Other'),
+                                                ('lab/_research_center', 'Lab/ Research Center')])
 
     opportunity_type = fields.Selection(string='Opportunity Type Acq',
                                      selection=[('product_acq', 'Product Acquisition'),
@@ -160,7 +166,7 @@ class Lead(models.Model):
     # Need To More Dev
     @api.constrains('product_list_doc')
     def _check_docs_ids_mimetype(self):
-        required_extensions_list = ['.xlsx', '.pdf', '.docx', '.csv', '.xls', '.jpeg', '.png']
+        required_extensions_list = ['.xlsx', '.pdf', '.docx', '.csv', '.xls', '.jpeg', '.png', '.jpg']
         for doc in self:
             file_name_list = [d.name for d in doc.product_list_doc]
         extensions_list = [pathlib.Path(f).suffix for f in file_name_list]

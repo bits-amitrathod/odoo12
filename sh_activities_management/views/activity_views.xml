@@ -284,7 +284,7 @@
             	<searchpanel>
             		<field name="company_id" icon="fa-building" enable_counters="1"/>
             		<field name="activity_type_id" icon="fa-tasks" enable_counters="1"/>
-            		<field name="user_id" icon="fa-users" enable_counters="1"/>
+<!--            		<field name="user_id" icon="fa-users" enable_counters="1"/>-->
             		<field name="res_model_id" enable_counters="1"/>
             		<field name="sh_state" enable_counters="1"/>
             	</searchpanel>

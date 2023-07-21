@@ -421,7 +421,7 @@ class VendorOffer(models.Model):
 
                 credit_amount_untaxed = 0
                 credit_amount_total = 0
-                flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in
+                flag = any(e in ['Ovation Elevate', 'Alliant Purchasing', 'SurgeryPartners'] for e in
                            list(map(lambda x: x.name, order.partner_id.category_id)))
 
                 if product_retail > 0:
@@ -522,7 +522,7 @@ class VendorOffer(models.Model):
                 credit_amount_untaxed = 0
                 credit_amount_total = 0
 
-                flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in
+                flag = any(e in ['Ovation Elevate', 'Alliant Purchasing', 'SurgeryPartners'] for e in
                            list(map(lambda x: x.name, order.partner_id.category_id)))
                 if product_retail > 0:
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
@@ -2117,7 +2117,8 @@ class VendorPricingExport(models.TransientModel):
                                          'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90', 'Quantity on Order',
                                          'Average Aging', 'Inventory Scrapped','Open Quotations Per Code']))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
-        company = self.env['res.company'].search([], limit=1, order="id desc")
+        #company = self.env['res.company'].search([], limit=1, order="id desc")
+        company = self.env.company
 
         # sql_fuction = """
         #                         CREATE  OR REPLACE FUNCTION get_aging_days(product_template_param integer)  RETURNS integer AS $$
@@ -2573,6 +2574,7 @@ class ExportPPVendorPricingXL(http.Controller):
                     worksheet.col(i).width = 4000  # around 110 pixels
 
             base_style = xlwt.easyxf('align: wrap yes')
+            number_style = xlwt.easyxf(num_format_str='0')  # for number (for Column product Number)
             date_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD')
             datetime_style = xlwt.easyxf('align: wrap yes', num_format_str='YYYY-MM-DD HH:mm:SS')
 
@@ -2600,6 +2602,8 @@ class ExportPPVendorPricingXL(http.Controller):
                         cell_style = datetime_style
                     elif isinstance(cell_value, datetime.date):
                         cell_style = date_style
+                    if cell_index == 0:
+                        cell_style = number_style
                     worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
 
             fp = io.BytesIO()

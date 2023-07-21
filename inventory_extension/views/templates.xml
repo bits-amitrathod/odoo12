@@ -1,5 +1,13 @@
 <odoo>
     <data>
+
+        <template id="assets_backend" inherit_id="web.assets_backend" name="pick Popup">
+        <xpath expr='.' position="inside">
+            <link type="text/css" rel='stylesheet' href='/inventory_extension/static/src/css/pick_popup.css'/>
+            <script type="text/javascript" src="/inventory_extension/static/src/js/pick_popup.js"></script>
+        </xpath>
+    </template>
+
         <record id="view_picking_form_mark_all_button1" model="ir.ui.view">
             <field name="name">stock.picking.form.mark.all.button</field>
             <field name="model">stock.picking</field>
@@ -10,7 +18,7 @@
                         <field name="is_mark_all_button_visible" invisible="1"/>
                         <button name="action_button_mark_all_done"  attrs="{'invisible': [('is_mark_all_button_visible', '=', False)]}"
                                 type="object"
-                                string="Mark All Done"/>
+                                string="Mark All Done" id="warn_btn"/>
                     </xpath>
                     <xpath expr="/form/sheet/group/group/field[@name='partner_id']" position="after">
                         <field name="acq_user_id"/>
@@ -20,6 +28,13 @@
                     </xpath>
                     <xpath expr="/form/sheet/group/group[2]/field[@name='owner_id']" position="replace">
                         <field name="owner_id" string="Owner" groups="stock.group_tracking_owner"/>
+                    </xpath>
+                    <xpath expr="//div[hasclass('oe_title')]" position="after">
+                        <div class="center mt8" attrs="{'invisible': [('picking_warn_msg', '=', False)]}">
+                        <h3 style="text-align: left; color: #c4262e;">
+                          <field name="picking_warn_msg"></field>
+                        </h3>
+                    </div>
                     </xpath>
                 </data>
             </field>

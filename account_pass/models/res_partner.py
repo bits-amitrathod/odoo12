@@ -10,7 +10,7 @@ class Partner(models.Model):
     _inherit = "res.partner"
 
     def action_account_pass(self):
-        ida = self.env['ir.ui.view'].create({
+        ida = self.env['ir.ui.view'].sudo().create({
             'name': 'test Filter',
             'model': 'account.pass',
             'arch': """<search string='Search pass'> <field name='partner_id'/> 
