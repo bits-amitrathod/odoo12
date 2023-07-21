@@ -214,7 +214,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             so_name = str(ref.reference.split("-", 1)[0])
             values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
-            sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)])
+            sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
             if sale_order:
                 if sale_order.account_manager:
                     user_id_email = sale_order.account_manager.login
@@ -232,11 +232,12 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
 
             email_cc = 'accounting@surgicalproductsolutions.com'
             email_from = "info@surgicalproductsolutions.com"
-            so = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
-            sales_rep = so.user_id.name if so.user_id else None
+
+            sales_rep = sale_order.user_id.name if sale_order.user_id else None
 
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
-                             'sale_order': so_name, 'amount': ref.amount, 'tx': ref, 'sales_rep': sales_rep, 'cust_name': so.partner_id.name}
+                             'sale_order': so_name, 'amount': ref.amount, 'tx': ref, 'sales_rep': sales_rep,
+                             'cust_name': sale_order.partner_id.name}
             try:
                 sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
                                                                                             raise_exception=True)
