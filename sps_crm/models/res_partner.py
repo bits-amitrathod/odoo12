@@ -402,56 +402,57 @@ class Partner(models.Model):
 
 
     def _compute_details_field(self):
-        for record in self:
-            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
-            if partner_link:
-                record.gpo = partner_link.gpo
-                record.purchase = partner_link.purchase
-                record.mesh = partner_link.mesh
-                record.edomechanicals = partner_link.edomechanicals
-                record.orthopedic = partner_link.orthopedic
-                record.suture = partner_link.suture
-                record.gynecological = partner_link.gynecological
-                record.uology = partner_link.uology
-                record.edoscopy = partner_link.edoscopy
-                record.ent = partner_link.ent
-                record.woundcare = partner_link.woundcare
-                # record.generalnotes = partner_link.generalnotes
-                record.bariatric = partner_link.bariatric
-                # record.facilityERP = partner_link.facilityERP
-                record.description = partner_link.description
-                record.captis = partner_link.captis
-                record.illucient = partner_link.illucient
-                record.capstone_health_aliance = partner_link.capstone_health_aliance
-                record.salina_contract = partner_link.salina_contract
-                record.mha = partner_link.mha
-                record.veteran_affairs = partner_link.veteran_affairs
-                record.partners_co_operative = partner_link.partners_co_operative
-                record.magnet_group = partner_link.magnet_group
-                record.fsasc = partner_link.fsasc
-                record.uspi = partner_link.uspi
-                record.surgery_partners = partner_link.surgery_partners
-                record.premier = partner_link.premier
-                record.email_opt_out = partner_link.email_opt_out
-                record.intalere_contract = partner_link.intalere_contract
-                # record.time_zone = partner_link.time_zone
-                record.facility_type = partner_link.facility_type
-                # record.bed_size = partner_link.bed_size
-                # record.purchase_history_date = partner_link.purchase_history_date
-                # record.ordering_day1 = partner_link.ordering_day1
-                # record.fiscal_year_end = partner_link.fiscal_year_end
-                record.last_modify_by = partner_link.last_modify_by
-                # record.top_subspecialties1 = partner_link.top_subspecialties1
-                record.created_by = partner_link.created_by
-                record.acq_account = partner_link.acq_account
-                record.sales_account = partner_link.sales_account
-                # record.competitors_id = partner_link.competitors_id
-                # record.status_id = partner_link.status_id
-                # record.acc_cust_parent = partner_link.acc_cust_parent
-                record.sales_activity_notes = partner_link.sales_activity_notes
-                record.acq_activity_notes = partner_link.acq_activity_notes
-            else:
-                record.gpo =''
+        if 'action' in self.env.context.keys():
+            for record in self:
+                partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+                if partner_link:
+                    record.gpo = partner_link.gpo
+                    record.purchase = partner_link.purchase
+                    record.mesh = partner_link.mesh
+                    record.edomechanicals = partner_link.edomechanicals
+                    record.orthopedic = partner_link.orthopedic
+                    record.suture = partner_link.suture
+                    record.gynecological = partner_link.gynecological
+                    record.uology = partner_link.uology
+                    record.edoscopy = partner_link.edoscopy
+                    record.ent = partner_link.ent
+                    record.woundcare = partner_link.woundcare
+                    # record.generalnotes = partner_link.generalnotes
+                    record.bariatric = partner_link.bariatric
+                    # record.facilityERP = partner_link.facilityERP
+                    record.description = partner_link.description
+                    record.captis = partner_link.captis
+                    record.illucient = partner_link.illucient
+                    record.capstone_health_aliance = partner_link.capstone_health_aliance
+                    record.salina_contract = partner_link.salina_contract
+                    record.mha = partner_link.mha
+                    record.veteran_affairs = partner_link.veteran_affairs
+                    record.partners_co_operative = partner_link.partners_co_operative
+                    record.magnet_group = partner_link.magnet_group
+                    record.fsasc = partner_link.fsasc
+                    record.uspi = partner_link.uspi
+                    record.surgery_partners = partner_link.surgery_partners
+                    record.premier = partner_link.premier
+                    record.email_opt_out = partner_link.email_opt_out
+                    record.intalere_contract = partner_link.intalere_contract
+                    # record.time_zone = partner_link.time_zone
+                    record.facility_type = partner_link.facility_type
+                    # record.bed_size = partner_link.bed_size
+                    # record.purchase_history_date = partner_link.purchase_history_date
+                    # record.ordering_day1 = partner_link.ordering_day1
+                    # record.fiscal_year_end = partner_link.fiscal_year_end
+                    record.last_modify_by = partner_link.last_modify_by
+                    # record.top_subspecialties1 = partner_link.top_subspecialties1
+                    record.created_by = partner_link.created_by
+                    record.acq_account = partner_link.acq_account
+                    record.sales_account = partner_link.sales_account
+                    # record.competitors_id = partner_link.competitors_id
+                    # record.status_id = partner_link.status_id
+                    # record.acc_cust_parent = partner_link.acc_cust_parent
+                    record.sales_activity_notes = partner_link.sales_activity_notes
+                    record.acq_activity_notes = partner_link.acq_activity_notes
+                else:
+                    record.gpo =''
 
     @api.onchange('gpo','acc_cust_parent','status_id','acq_account','sales_account','competitors_id','created_by',
                   'top_subspecialties1','last_modify_by','fiscal_year_end','purchase_history_date','ordering_day1','mesh'

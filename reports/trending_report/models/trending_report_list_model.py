@@ -47,48 +47,49 @@ class TrendingReportListView(models.Model):
 
     #@api.onchange('')
     def _compute_sales_vals(self):
-        if 's_date' in self.env.context:
-            start_date = self.string_to_date(self.env.context['s_date'])
-        else:
-            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-            start_date = self.string_to_date(popup.start_date)
-        if 'code' in self.env.context:
-            code = self.env.context['code']
-        else:
-            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-            code = int(popup.code)
+        if 'action' in self.env.context.keys():
+            if 's_date' in self.env.context:
+                start_date = self.string_to_date(self.env.context['s_date'])
+            else:
+                popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                start_date = self.string_to_date(popup.start_date)
+            if 'code' in self.env.context:
+                code = self.env.context['code']
+            else:
+                popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                code = int(popup.code)
 
-        for customer in self:
-            groupby_dict_month = {}
-            sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale')])
-            groupby_dict_month['data'] = sale_orders
-            for sale_order in groupby_dict_month['data']:
-                confirmation_date=datetime.date(datetime.strptime(str(sale_order.date_order).split(".")[0],"%Y-%m-%d %H:%M:%S"))
-                if((confirmation_date.month == (start_date - relativedelta(months=5)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=5)).year)):
-                    customer.month6 = customer.month6 + sale_order.amount_total
-                if((confirmation_date.month == (start_date - relativedelta(months=4)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=4)).year)):
-                    customer.month5 = customer.month5 + sale_order.amount_total
-                if((confirmation_date.month == (start_date - relativedelta(months=3)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=3)).year)):
-                    customer.month4 = customer.month4 + sale_order.amount_total
-                if((confirmation_date.month == (start_date - relativedelta(months=2)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=2)).year)):
-                    customer.month3 = customer.month3 + sale_order.amount_total
-                if((confirmation_date.month == (start_date - relativedelta(months=1)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=1)).year)):
-                    customer.month2 = customer.month2 + sale_order.amount_total
-                if((confirmation_date.month == (start_date).month) and (confirmation_date.year ==  (start_date).year)):
-                    customer.month1 = customer.month1 + sale_order.amount_total
-                if(code==12):
-                    if ((confirmation_date.month == (start_date - relativedelta(months=11)).month) and (confirmation_date.year == (start_date - relativedelta(months=11)).year)):
-                        customer.month12 = customer.month12 + sale_order.amount_total
-                    if ((confirmation_date.month == (start_date - relativedelta(months=10)).month) and (confirmation_date.year == (start_date - relativedelta(months=10)).year)):
-                        customer.month11 = customer.month11 + sale_order.amount_total
-                    if ((confirmation_date.month == (start_date - relativedelta(months=9)).month) and (confirmation_date.year == (start_date - relativedelta(months=9)).year)):
-                        customer.month10 = customer.month10 + sale_order.amount_total
-                    if ((confirmation_date.month == (start_date - relativedelta(months=8)).month) and (confirmation_date.year == (start_date - relativedelta(months=8)).year)):
-                        customer.month9 = customer.month9 + sale_order.amount_total
-                    if ((confirmation_date.month == (start_date - relativedelta(months=7)).month) and (confirmation_date.year == (start_date - relativedelta(months=7)).year)):
-                        customer.month8 = customer.month8 + sale_order.amount_total
-                    if ((confirmation_date.month == (start_date - relativedelta(months=6)).month) and (confirmation_date.year == (start_date - relativedelta(months=6)).year)):
-                        customer.month7 = customer.month7 + sale_order.amount_total
+            for customer in self:
+                groupby_dict_month = {}
+                sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale')])
+                groupby_dict_month['data'] = sale_orders
+                for sale_order in groupby_dict_month['data']:
+                    confirmation_date=datetime.date(datetime.strptime(str(sale_order.date_order).split(".")[0],"%Y-%m-%d %H:%M:%S"))
+                    if((confirmation_date.month == (start_date - relativedelta(months=5)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=5)).year)):
+                        customer.month6 = customer.month6 + sale_order.amount_total
+                    if((confirmation_date.month == (start_date - relativedelta(months=4)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=4)).year)):
+                        customer.month5 = customer.month5 + sale_order.amount_total
+                    if((confirmation_date.month == (start_date - relativedelta(months=3)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=3)).year)):
+                        customer.month4 = customer.month4 + sale_order.amount_total
+                    if((confirmation_date.month == (start_date - relativedelta(months=2)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=2)).year)):
+                        customer.month3 = customer.month3 + sale_order.amount_total
+                    if((confirmation_date.month == (start_date - relativedelta(months=1)).month) and (confirmation_date.year ==  (start_date - relativedelta(months=1)).year)):
+                        customer.month2 = customer.month2 + sale_order.amount_total
+                    if((confirmation_date.month == (start_date).month) and (confirmation_date.year ==  (start_date).year)):
+                        customer.month1 = customer.month1 + sale_order.amount_total
+                    if(code==12):
+                        if ((confirmation_date.month == (start_date - relativedelta(months=11)).month) and (confirmation_date.year == (start_date - relativedelta(months=11)).year)):
+                            customer.month12 = customer.month12 + sale_order.amount_total
+                        if ((confirmation_date.month == (start_date - relativedelta(months=10)).month) and (confirmation_date.year == (start_date - relativedelta(months=10)).year)):
+                            customer.month11 = customer.month11 + sale_order.amount_total
+                        if ((confirmation_date.month == (start_date - relativedelta(months=9)).month) and (confirmation_date.year == (start_date - relativedelta(months=9)).year)):
+                            customer.month10 = customer.month10 + sale_order.amount_total
+                        if ((confirmation_date.month == (start_date - relativedelta(months=8)).month) and (confirmation_date.year == (start_date - relativedelta(months=8)).year)):
+                            customer.month9 = customer.month9 + sale_order.amount_total
+                        if ((confirmation_date.month == (start_date - relativedelta(months=7)).month) and (confirmation_date.year == (start_date - relativedelta(months=7)).year)):
+                            customer.month8 = customer.month8 + sale_order.amount_total
+                        if ((confirmation_date.month == (start_date - relativedelta(months=6)).month) and (confirmation_date.year == (start_date - relativedelta(months=6)).year)):
+                            customer.month7 = customer.month7 + sale_order.amount_total
 
 
 
