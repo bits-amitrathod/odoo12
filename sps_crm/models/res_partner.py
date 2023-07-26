@@ -12,41 +12,46 @@ class Partner(models.Model):
     acq_opportunity_count = fields.Integer("ACQ Opportunity", compute='_compute_acq_opportunity_count')
 
     def _compute_acq_opportunity_count(self):
-        # retrieve all children partners and prefetch 'parent_id' on them
-        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
-        all_partners.read(['parent_id'])
+        if 'action' in self.env.context.keys():
+            # retrieve all children partners and prefetch 'parent_id' on them
+            all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+            all_partners.read(['parent_id'])
 
-        opportunity_data = self.env['crm.lead'].read_group(
-            domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'purchase_opportunity')],
-            fields=['partner_id'], groupby=['partner_id']
-        )
+            opportunity_data = self.env['crm.lead'].read_group(
+                domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'purchase_opportunity')],
+                fields=['partner_id'], groupby=['partner_id']
+            )
 
-        self.acq_opportunity_count = 0
-        for group in opportunity_data:
-            partner = self.browse(group['partner_id'][0])
-            while partner:
-                if partner in self:
-                    partner.acq_opportunity_count += group['partner_id_count']
-                partner = partner.parent_id
+            self.acq_opportunity_count = 0
+            for group in opportunity_data:
+                partner = self.browse(group['partner_id'][0])
+                while partner:
+                    if partner in self:
+                        partner.acq_opportunity_count += group['partner_id_count']
+                    partner = partner.parent_id
+        else:
+            self.acq_opportunity_count = 0
 
     def _compute_opportunity_count(self):
-        # retrieve all children partners and prefetch 'parent_id' on them
-        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
-        all_partners.read(['parent_id'])
+        if 'action' in self.env.context.keys():
+            # retrieve all children partners and prefetch 'parent_id' on them
+            all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+            all_partners.read(['parent_id'])
 
-        opportunity_data = self.env['crm.lead'].read_group(
-            domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'opportunity')],
-            fields=['partner_id'], groupby=['partner_id']
-        )
+            opportunity_data = self.env['crm.lead'].read_group(
+                domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'opportunity')],
+                fields=['partner_id'], groupby=['partner_id']
+            )
 
-        self.opportunity_count = 0
-        for group in opportunity_data:
-            partner = self.browse(group['partner_id'][0])
-            while partner:
-                if partner in self:
-                    partner.opportunity_count += group['partner_id_count']
-                partner = partner.parent_id
-
+            self.opportunity_count = 0
+            for group in opportunity_data:
+                partner = self.browse(group['partner_id'][0])
+                while partner:
+                    if partner in self:
+                        partner.opportunity_count += group['partner_id_count']
+                    partner = partner.parent_id
+        else:
+            self.opportunity_count
 
     def pro_search_for_gpo(self, operator, value):
         return self.generic_char_search(operator, value, 'gpo')
@@ -586,12 +591,15 @@ class Partner(models.Model):
             else:
                 record.bed_size = record.bed_size
     def _compute_facilityERP(self):
-        for record in self:
-            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
-            if partner_link:
-                record.facilityERP = partner_link.facilityERP
-            else:
-                record.facilityERP = record.facilityERP
+        if 'action' in self.env.context.keys():
+            for record in self:
+                partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+                if partner_link:
+                    record.facilityERP = partner_link.facilityERP
+                else:
+                    record.facilityERP = record.facilityERP
+        else:
+            self.facilityERP = None
     def _compute_competitors(self):
         for record in self:
            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)

@@ -39,8 +39,11 @@ class TrendingReportListView(models.Model):
         return [('id', '=', [x.id for x in la])]
 
     def _compute_commercial_entity(self):
-        for customer in self:
-            customer.commercial_entity = customer.parent_id.name if customer.parent_id else customer.name
+        if 'action' in self.env.context.keys():
+            for customer in self:
+                customer.commercial_entity = customer.parent_id.name if customer.parent_id else customer.name
+        else:
+            self.commercial_entity = None
 
     commercial_entity = fields.Char(string="Commercial Entity", compute='_compute_commercial_entity', store=False)
 
@@ -95,103 +98,122 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('trend_val')
     def _get_total_value(self):
-        if 'code' in self.env.context:
-            code = self.env.context['code']
+        if 'action' in self.env.context.keys():
+            if 'code' in self.env.context:
+                code = self.env.context['code']
+            else:
+                popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                code = int(popup.code)
+            for customer in self:
+                customer.total_sale=customer.month1+customer.month2+customer.month3+customer.month4+customer.month5+customer.month6
+                if(code==12):
+                    customer.total_sale=customer.total_sale+customer.month7+customer.month8+customer.month9+customer.month10+customer.month11+customer.month12
         else:
-            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-            code = int(popup.code)
-        for customer in self:
-            customer.total_sale=customer.month1+customer.month2+customer.month3+customer.month4+customer.month5+customer.month6
-            if(code==12):
-                customer.total_sale=customer.total_sale+customer.month7+customer.month8+customer.month9+customer.month10+customer.month11+customer.month12
+            self.total_sale = 0
 
     @api.onchange('month_count')
     def _first_purchase_date(self):
-        self._compute_sales_vals()
-        for customer in self:
-            if(self.get_day_from_purchase(customer.id)):
-                customer.month_count = self.get_day_from_purchase(customer.id) / 30
-            else:
-                customer.month_count=0
+        if 'action' in self.env.context.keys():
+            self._compute_sales_vals()
+            for customer in self:
+                if(self.get_day_from_purchase(customer.id)):
+                    customer.month_count = self.get_day_from_purchase(customer.id) / 30
+                else:
+                    customer.month_count=0
+        else:
+            self.month_count = 0
+            _logger.info("trending _first_purchase_date-->  else")
 
 
 
     def get_day_from_purchase(self,customer_id):
-        if 's_date' in self.env.context:
-            start_date = self.string_to_date(self.env.context['s_date'])
-        else:
-            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-            start_date = self.string_to_date(popup.start_date)
-        groupby_dict_month = {}
-        min = None
-        sale_orders = self.env['sale.order'].search([('partner_id', '=', customer_id), ('state', '=', 'sale')])
-        groupby_dict_month['data'] = sale_orders
-        for sale_order in groupby_dict_month['data']:
-            if (min == None):
-                min = sale_order.date_order
-            elif (min > sale_order.date_order):
-                min = sale_order.date_order
-        if (min):
-            in_days = (start_date - datetime.date(datetime.strptime(str(min).split(".")[0], "%Y-%m-%d %H:%M:%S"))).days
-            return in_days
+        if 'action' in self.env.context.keys():
+            if 's_date' in self.env.context:
+                start_date = self.string_to_date(self.env.context['s_date'])
+            else:
+                popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                start_date = self.string_to_date(popup.start_date)
+            groupby_dict_month = {}
+            min = None
+            sale_orders = self.env['sale.order'].search([('partner_id', '=', customer_id), ('state', '=', 'sale')])
+            groupby_dict_month['data'] = sale_orders
+            for sale_order in groupby_dict_month['data']:
+                if (min == None):
+                    min = sale_order.date_order
+                elif (min > sale_order.date_order):
+                    min = sale_order.date_order
+            if (min):
+                in_days = (start_date - datetime.date(datetime.strptime(str(min).split(".")[0], "%Y-%m-%d %H:%M:%S"))).days
+                return in_days
+            else:
+                return None
         else:
             return None
 
 
     @api.onchange('month_total')
     def _total_purchased_month(self):
-        if 's_date' in self.env.context:
-            start_date = self.env.context['s_date']
-        else:
-            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-            start_date = popup.start_date
-        for customer in self:
-            groupby_dict_month = {}
-            sale_order_dict= {}
-            sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale'), ('date_order','<=', start_date)])
-            sale_order_dict['data'] = sale_orders
-            for sale_order in sale_order_dict['data']:
-                confirmation_date = datetime.date(datetime.strptime(str(sale_order.date_order).split(".")[0], "%Y-%m-%d %H:%M:%S"))
-                count=0
-                if (groupby_dict_month.get(confirmation_date.strftime('%b-%Y'))):
-                    count=groupby_dict_month[confirmation_date.strftime('%b-%Y')]
-                    count=count+1
-                    groupby_dict_month[confirmation_date.strftime('%b-%Y')]=count
-                else:
-                    groupby_dict_month[confirmation_date.strftime('%b-%Y')]=1
-            customer.month_total = len(groupby_dict_month)
+        if 'action' in self.env.context.keys():
+            if 's_date' in self.env.context:
+                start_date = self.env.context['s_date']
+            else:
+                popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                start_date = popup.start_date
+            for customer in self:
+                groupby_dict_month = {}
+                sale_order_dict= {}
+                sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale'), ('date_order','<=', start_date)])
+                sale_order_dict['data'] = sale_orders
+                for sale_order in sale_order_dict['data']:
+                    confirmation_date = datetime.date(datetime.strptime(str(sale_order.date_order).split(".")[0], "%Y-%m-%d %H:%M:%S"))
+                    count=0
+                    if (groupby_dict_month.get(confirmation_date.strftime('%b-%Y'))):
+                        count=groupby_dict_month[confirmation_date.strftime('%b-%Y')]
+                        count=count+1
+                        groupby_dict_month[confirmation_date.strftime('%b-%Y')]=count
+                    else:
+                        groupby_dict_month[confirmation_date.strftime('%b-%Y')]=1
+                customer.month_total = len(groupby_dict_month)
+            else:
+                customer.month_total = 0
 
     @api.onchange('total_sale')
     def _get_trend_value(self):
-        for customer in self:
-            if(customer.average_sale <= customer.month1):
-                customer.trend_val='UP'
-            elif(customer.average_sale > customer.month1):
-                customer.trend_val = 'DOWN'
-            if (customer.month1 == 0):
-                customer.trend_val = 'NO SALE'
+        if 'action' in self.env.context.keys():
+            for customer in self:
+                if(customer.average_sale <= customer.month1):
+                    customer.trend_val='UP'
+                elif(customer.average_sale > customer.month1):
+                    customer.trend_val = 'DOWN'
+                if (customer.month1 == 0):
+                    customer.trend_val = 'NO SALE'
+        else:
+            self.trend_val = 0
 
 
     # @api.onchange('average_sale')
     def _get_average_value(self):
-        if 'code' in self.env.context:
-            code=self.env.context['code']
-        else:
-            popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-            code = int(popup.code)
-        for customer in self:
-            if(customer.month_count>=code):
-                if code > 0:
-                    customer.average_sale = (customer.total_sale / code)
-                else:
-                    customer.average_sale = 1
-            elif(self.get_day_from_purchase(customer.id)):
-                if (self.get_day_from_purchase(customer.id)/30 > 1):
-                    customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
-                else:
-                    customer.average_sale=customer.total_sale
+        if 'action' in self.env.context.keys():
+            if 'code' in self.env.context:
+                code=self.env.context['code']
             else:
-                customer.average_sale = customer.total_sale
+                popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                code = int(popup.code)
+            for customer in self:
+                if(customer.month_count>=code):
+                    if code > 0:
+                        customer.average_sale = (customer.total_sale / code)
+                    else:
+                        customer.average_sale = 1
+                elif(self.get_day_from_purchase(customer.id)):
+                    if (self.get_day_from_purchase(customer.id)/30 > 1):
+                        customer.average_sale=(customer.total_sale *30 / self.get_day_from_purchase(customer.id))
+                    else:
+                        customer.average_sale=customer.total_sale
+                else:
+                    customer.average_sale = customer.total_sale
+            else:
+                self.average_sale = 0
 
 
     def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
