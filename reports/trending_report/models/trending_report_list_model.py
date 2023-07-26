@@ -39,7 +39,7 @@ class TrendingReportListView(models.Model):
         return [('id', '=', [x.id for x in la])]
 
     def _compute_commercial_entity(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             for customer in self:
                 customer.commercial_entity = customer.parent_id.name if customer.parent_id else customer.name
         else:
@@ -50,7 +50,7 @@ class TrendingReportListView(models.Model):
 
     #@api.onchange('')
     def _compute_sales_vals(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             if 's_date' in self.env.context:
                 start_date = self.string_to_date(self.env.context['s_date'])
             else:
@@ -98,7 +98,7 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('trend_val')
     def _get_total_value(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             if 'code' in self.env.context:
                 code = self.env.context['code']
             else:
@@ -113,7 +113,7 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('month_count')
     def _first_purchase_date(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             self._compute_sales_vals()
             for customer in self:
                 if(self.get_day_from_purchase(customer.id)):
@@ -127,7 +127,7 @@ class TrendingReportListView(models.Model):
 
 
     def get_day_from_purchase(self,customer_id):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             if 's_date' in self.env.context:
                 start_date = self.string_to_date(self.env.context['s_date'])
             else:
@@ -153,7 +153,7 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('month_total')
     def _total_purchased_month(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             if 's_date' in self.env.context:
                 start_date = self.env.context['s_date']
             else:
@@ -179,7 +179,7 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('total_sale')
     def _get_trend_value(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             for customer in self:
                 if(customer.average_sale <= customer.month1):
                     customer.trend_val='UP'
@@ -193,7 +193,7 @@ class TrendingReportListView(models.Model):
 
     # @api.onchange('average_sale')
     def _get_average_value(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             if 'code' in self.env.context:
                 code=self.env.context['code']
             else:
