@@ -63,6 +63,8 @@ class ReceivingListPoReport(models.Model):
         ('partially_available', 'Partially Available'),
         ('assigned', 'Available'),
         ('done', 'Done')], string='Status')
+    short = fields.Html(string="Short")
+    extra = fields.Html(string="Extra")
 
     def init(self):
         self.init_table()
@@ -86,7 +88,9 @@ class ReceivingListPoReport(models.Model):
                     stock_picking.location_dest_id,
                     stock_move_line.product_uom_qty,
                     stock_move_line.qty_done,
-                    stock_move_line.product_uom_id
+                    stock_move_line.product_uom_id,
+                    stock_picking.short,
+                    stock_picking.extra
                 FROM
                     purchase_order_line
                 INNER JOIN

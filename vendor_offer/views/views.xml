@@ -1065,6 +1065,26 @@
                         </field>
                     </record>
 
+        <!-- Short/Extra tab added in receipts -->
+        <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">view_picking_form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='note']" position="after">
+                <page string="Short/Extra" name="short/extra">
+                    <group>
+                        <group>
+                            <field name="short" widget="html"/>
+                        </group>
+                        <group>
+                            <field name="extra" widget="html"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
 
          <record id="acq_manager_form_custom" model="ir.ui.view">
             <field name="name">res.partner.form.acq</field>
