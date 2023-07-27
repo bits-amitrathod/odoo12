@@ -532,6 +532,9 @@ class VendorOffer(models.Model):
                     if order.import_type_ven != 'all_field_import':
                         if flag:
                             credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
+                    elif order.offer_type == 'credit' and flag:
+                        credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
+
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
                 order.update({
