@@ -213,9 +213,10 @@ class VendorOfferNewAppraisalImport(models.Model):
                                                     as temp_data where sku_code_cleaned ='""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', product_sku.upper()) + """' or manufacturer_pref = '""" + re.sub(
                                 r'[^A-Za-z0-9.]', '', sku_code.upper()) + """' """)
-                            #query_result = self.env.cr.dictfetchone()
+
                             query_result = self.env.cr.dictfetchall()
-                            if query_result is None and product_sku.startswith("M00"):
+
+                            if len(query_result) == 0 and product_sku.startswith("M00"):
                                 prod_sku = product_sku[4:]
                                 final_sku = prod_sku[:len(prod_sku)-1]
                                 self.env.cr.execute("""
@@ -302,17 +303,18 @@ class VendorOfferNewAppraisalImport(models.Model):
                                             if uom.upper() == 'EACH':
                                                 order_line_obj.update({'uom_str': uom})
                                             if uom.upper() == 'BOX':
-                                                uom_obj = products[0].uom_id
+                                                uom_obj = products[0].manufacturer_uom
                                                 temp_qty = uom_obj.factor_inv * float(quantity)
                                                 order_line_obj.update({'uom_str': 'each'})
                                                 order_line_obj.update({'product_qty': temp_qty})
+                                                order_line_obj.update({'product_qty_app_new': temp_qty})
                                         else:
                                             order_line_obj.update({'uom_str': ''})
                                         order_list_list.append(order_line_obj)
                                         count_obj = count_obj + 1
                                     else:
                                         sku_not_found_list.append(sku_code)
-                                        #sku_not_found_list_cleaned.append(sku_code_file)
+                                        sku_not_found_list_cleaned.append(sku_code_file)
                             else:
                                 sku_not_found_list.append(sku_code)
                                 sku_not_found_list_cleaned.append(sku_code_file)
