@@ -77,10 +77,15 @@ class StockPickingMarkAllButton(models.Model):
 
     def compute_warning(self):
         for rec in self:
-            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and rec.partner_id.picking_warn in ["warning","block"]:
-                pre_msg = "" if rec.partner_id.picking_warn =="warning" else ""
+            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"]:
                 rec.is_online = True
-                rec.picking_warn_msg = (pre_msg + "" + str(rec.partner_id.picking_warn_msg)) if rec.partner_id.picking_warn_msg else None
+                # if rec.partner_id.picking_warn in ["warning","block"] and rec.partner_id.picking_warn_msg:
+                #     rec.picking_warn_msg = str(rec.partner_id.picking_warn_msg)
+                if rec.sale_id.partner_id.picking_warn in ["warning","block"] and rec.sale_id.partner_id.picking_warn_msg:
+                    rec.picking_warn_msg = str(rec.sale_id.partner_id.picking_warn_msg)
+                else:
+                    rec.picking_warn_msg = None
+
             else:
                 rec.picking_warn_msg = None
 
@@ -116,14 +121,14 @@ class StockPickingMarkAllButton(models.Model):
 
     def action_button_mark_all_done(self):
         self.ensure_one()
-        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.partner_id.picking_warn in ["block"]:
+        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.sale_id.partner_id.picking_warn in ["block"]:
             return {
-                'name': _("Warning for %s") % self.partner_id.name,
+                'name': _("Warning for %s") % self.sale_id.partner_id.name,
                 'view_type': 'form',
                 "view_mode": 'form',
                 'res_model': 'warning.popup.wizard',
                 'type': 'ir.actions.act_window',
-                'context': {'default_picking_warn_msg': self.partner_id.picking_warn_msg},
+                'context': {'default_picking_warn_msg': self.sale_id.partner_id.picking_warn_msg},
                 'target': 'new', }
         else:
             if self.sale_id.id:

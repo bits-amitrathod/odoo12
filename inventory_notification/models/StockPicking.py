@@ -10,14 +10,14 @@ class StockPicking(models.Model):
     def button_validate(self):
         inv_notification = self.env['inventory.notification.scheduler'].search([])
         for picking in self:
-            if picking.sale_id and picking.sale_id.team_id and picking.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and picking.partner_id.picking_warn in ["block"]:
+            if picking.sale_id and picking.sale_id.team_id and picking.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and picking.sale_id.partner_id.picking_warn in ["block"]:
                 return {
-                    'name': _("Warning for %s") % picking.partner_id.name,
+                    'name': _("Warning for %s") % picking.sale_id.partner_id.name,
                     'view_type': 'form',
                     "view_mode": 'form',
                     'res_model': 'warning.popup.wizard',
                     'type': 'ir.actions.act_window',
-                    'context': {'default_picking_warn_msg': picking.partner_id.picking_warn_msg},
+                    'context': {'default_picking_warn_msg': picking.sale_id.partner_id.picking_warn_msg},
                     'target': 'new', }
             else:
                 action = super(StockPicking, self).button_validate()
