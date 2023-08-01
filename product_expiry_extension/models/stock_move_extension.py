@@ -131,12 +131,12 @@ class StockMoveExtension(models.Model):
 
         if self.picking_id[0].sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.picking_type_id.name in ['Pick'] and self.getParent(self.picking_id[0].sale_id).picking_warn in ["block"]:
             return {
-                    'name': _("Warning for %s") % self.picking_id[0].sale_id.partner_id.name,
+                    'name': _("Warning for %s") % self.getParent(self.picking_id[0].sale_id).name,
                     'view_type': 'form',
                     "view_mode": 'form',
                     'res_model': 'warning.popup.wizard',
                     'type': 'ir.actions.act_window',
-                    'context': {'default_picking_warn_msg': self.picking_id[0].sale_id.partner_id.picking_warn_msg},
+                    'context': {'default_picking_warn_msg': self.getParent(self.picking_id[0].sale_id).picking_warn_msg},
                     'target': 'new', }
         else:
             return {
