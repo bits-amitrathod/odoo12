@@ -75,13 +75,14 @@ class StockPickingMarkAllButton(models.Model):
     picking_warn_msg = fields.Char(string="Warning", compute="compute_warning")
     is_online = fields.Boolean(string="Is online", store=False, default=False)
 
+    # This method help to display popup at page load
     def compute_warning(self):
         for rec in self:
             if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"]:
                 rec.is_online = True
                 # if rec.partner_id.picking_warn in ["warning","block"] and rec.partner_id.picking_warn_msg:
                 #     rec.picking_warn_msg = str(rec.partner_id.picking_warn_msg)
-                if rec.sale_id.partner_id.picking_warn in ["warning","block"] and rec.sale_id.partner_id.picking_warn_msg:
+                if self.getParent(rec.sale_id).picking_warn in ["warning","block"] and self.getParent(rec.sale_id).picking_warn_msg:
                     rec.picking_warn_msg = str(rec.sale_id.partner_id.picking_warn_msg)
                 else:
                     rec.picking_warn_msg = None
@@ -119,9 +120,12 @@ class StockPickingMarkAllButton(models.Model):
         for pick in self:
             pick.is_mark_all_button_visible =  pick.sale_id.id and not pick.state in ['done','cancel']
 
+    def getParent(self, saleOrder):
+        return saleOrder.partner_id.parent_id if saleOrder.partner_id.parent_id else saleOrder.partner_id
+
     def action_button_mark_all_done(self):
         self.ensure_one()
-        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.sale_id.partner_id.picking_warn in ["block"]:
+        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.getParent(self.sale_id).picking_warn in ["block"]:
             return {
                 'name': _("Warning for %s") % self.sale_id.partner_id.name,
                 'view_type': 'form',

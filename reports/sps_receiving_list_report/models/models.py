@@ -39,6 +39,8 @@ class SpsReceivingList(models.Model):
 class receivingList(models.Model):
     _inherit = "stock.picking"
 
+    short = fields.Html(string="Short")
+    extra = fields.Html(string="Extra")
     def do_sps_receiving_list(self):
         print("Ok.........")
         # return self.env['sps_receive_popup.view.model'].open_table()
