@@ -1074,12 +1074,8 @@
             <xpath expr="//page[@name='note']" position="after">
                 <page string="Short/Extra" name="short/extra" attrs="{'invisible':[('picking_type_id','!=', 2)]}">
                     <group>
-                        <group>
                             <field name="short" widget="html"/>
-                        </group>
-                        <group>
                             <field name="extra" widget="html"/>
-                        </group>
                     </group>
                 </page>
             </xpath>

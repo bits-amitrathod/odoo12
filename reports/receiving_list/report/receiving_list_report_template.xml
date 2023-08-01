@@ -106,22 +106,16 @@
                         </table>
 <!--                    </div>-->
                     <br/>
-                    <table class="table table-sm" style="margin-bottom: 0px;">
-                            <tr>
-                                <td style="border: 1px solid #ffffff;width:50%; display: inline-table;">
-                                     <t t-if="data">
-                                        Short : <span style="display: inherit;" t-raw="data[0].short"/>
-                                     </t>
-                                </td>
-                                <td style="border: 1px solid #ffffff;  display: inline-table;">
-
-                                     <t t-if="data">
-                                        Extra : <span style="display: inherit;" t-raw="data[0].extra"/>
-                                     </t>
-                                </td>
-                            </tr>
-                        </table>
-
+                    <div>
+                        <t t-if="data">
+                            <strong>Short : </strong> <span style="display: inherit;" t-raw="data[0].short"/>
+                        </t>
+                        </div>
+                    <div>
+                        <t t-if="data">
+                            <strong>Extra : </strong> <span style="display: inherit;" t-raw="data[0].extra"/>
+                        </t>
+                     </div>
                 </page>
             </t>
         </t>
