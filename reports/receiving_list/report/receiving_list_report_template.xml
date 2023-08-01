@@ -109,15 +109,14 @@
                     <table class="table table-sm" style="margin-bottom: 0px;">
                             <tr>
                                 <td style="border: 1px solid #ffffff;width:50%; display: inline-table;">
-                                    <strong>Short:</strong>
                                      <t t-if="data">
-                                        <span style="display: inherit;" t-raw="data[0].short"/>
+                                        Short : <span style="display: inherit;" t-raw="data[0].short"/>
                                      </t>
                                 </td>
                                 <td style="border: 1px solid #ffffff;  display: inline-table;">
-                                    <strong>Extra:</strong>
+
                                      <t t-if="data">
-                                         <span style="display: inherit;" t-raw="data[0].extra"/>
+                                        Extra : <span style="display: inherit;" t-raw="data[0].extra"/>
                                      </t>
                                 </td>
                             </tr>
