@@ -174,7 +174,7 @@ class TrendingReportListView(models.Model):
                     else:
                         groupby_dict_month[confirmation_date.strftime('%b-%Y')]=1
                 customer.month_total = len(groupby_dict_month)
-            else:
+        else:
                 customer.month_total = 0
 
     @api.onchange('total_sale')
@@ -212,7 +212,7 @@ class TrendingReportListView(models.Model):
                         customer.average_sale=customer.total_sale
                 else:
                     customer.average_sale = customer.total_sale
-            else:
+        else:
                 self.average_sale = 0
 
 
