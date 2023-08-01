@@ -83,7 +83,7 @@ class StockPickingMarkAllButton(models.Model):
                 # if rec.partner_id.picking_warn in ["warning","block"] and rec.partner_id.picking_warn_msg:
                 #     rec.picking_warn_msg = str(rec.partner_id.picking_warn_msg)
                 if self.getParent(rec.sale_id).picking_warn in ["warning","block"] and self.getParent(rec.sale_id).picking_warn_msg:
-                    rec.picking_warn_msg = str(rec.sale_id.partner_id.picking_warn_msg)
+                    rec.picking_warn_msg = str(self.getParent(rec.sale_id).picking_warn_msg)
                 else:
                     rec.picking_warn_msg = None
 
