@@ -165,7 +165,7 @@
                 <td>
                     <strong>Shipping Method:</strong>
                     ${object.carrier_id.name}
-                    % if object.amount_delivery == 0.0:
+                    % if object.amount_delivery == 0.0  and object.carrier_id.name!= 'My Shipper Account':
                         (Free)
                     % endif
                 </td>
