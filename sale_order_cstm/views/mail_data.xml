@@ -139,8 +139,8 @@
                         ${transaction.acquirer_id.name}
                     % endif
 
-                    % if transaction.payment_token_id:
-                        % if transaction.payment_token_id.name == 'Purchase Order':
+                    % if transaction.acquirer_id:
+                        % if transaction.acquirer_id.name == 'Purchase Order':
                             (${format_amount(object.amount_total, object.currency_id)})
                         % else:
                             (${format_amount(transaction.amount, object.currency_id)})
