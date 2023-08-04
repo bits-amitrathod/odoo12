@@ -18,7 +18,7 @@
 
 
     <report id="action_sps_receiving_list_report1"
-            string="SPS Receiving List"
+            string="SPS Receiving List PDF"
             model="stock.picking"
             report_type="qweb-html"
             file="sps_receiving_list_report.adjustment_report1"
@@ -37,106 +37,104 @@
                             <h2>SPS Receiving List</h2>
                         </b>
                     </center>
-
-
                     <t t-foreach="new_receiving_list" t-as="new_receiving_list_int">
-                             <t t-set="new_receiving_item" t-value="new_receiving_list[new_receiving_list_int]"/>
-
+                        <t t-set="new_receiving_item" t-value="new_receiving_list[new_receiving_list_int]"/>
                         <table class="tav  ble table-condensed" style="border: 1px solid black;width:100%;margin-bottom: 50px;">
-                            <thead>
-                                <tr>
-                                    <th style="border: 1px solid black;text-align:  center !important; width:70%">
-                                        Product Name
-                                    </th>
-                                    <th style="border: 1px solid black;text-align:  center !important; width:10%">
-                                        Qty Received
-                                    </th>
-                                    <th style="border: 1px solid black;text-align:  center !important; width:10%">
-                                        Date Validated
-                                    </th>
-                                    <th style="border: 1px solid black;text-align:  center !important; width:15%">
-                                        UOM
-                                    </th>
-                                </tr>
-                            </thead>
-                    <tbody>
+                                <thead>
+                                    <tr>
+                                        <th style="border: 1px solid black;text-align:  center !important; width:70%">
+                                            Product Name
+                                        </th>
+                                        <th style="border: 1px solid black;text-align:  center !important; width:10%">
+                                            Qty Received
+                                        </th>
+                                        <th style="border: 1px solid black;text-align:  center !important; width:10%">
+                                            Date Validated
+                                        </th>
+                                        <th style="border: 1px solid black;text-align:  center !important; width:15%">
+                                            UOM
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <div class="col-sm-6" style="margin-bottom: 10px;">
+                                    <strong>To be Received Date :</strong>
+                                     <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                                </div>
+                                    <div class="col-sm-6" style="margin-bottom: 10px;">
+                                    <strong>Purchase Order :</strong>
+                                    <span t-esc="new_receiving_item['po_order_no']"/>
+                                </div>
+                                    <div class="col-sm-6" style="margin-bottom: 10px;">
+                                    <strong>Vendor :</strong>
+                                    <span t-esc="new_receiving_item['ven_id']"/>
+                                </div>
+                                    <t t-foreach="new_receiving_item['data']" t-as="receiving_list_int">
+                                <t t-set="receiving_item" t-value="new_receiving_item['data'][receiving_list_int]"/>
+                                      <!--<t t-foreach="receiving_item_list" t-as="receiving_item_int_temp">-->
+                                           <!--<t t-set="receiving_item_ls" t-value="receiving_item_list[receiving_item_int_temp]"/>-->
 
-                      <div class="col-sm-6" style="margin-bottom: 10px;">
-                            <strong>To be Received Date :</strong>
-                             <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+
+                                        <tr>
+                                            <td style="border-top: 1px solid black;">
+                                                <b>
+                                                    <span t-esc="receiving_item['product']"/>
+                                                </b>
+                                            </td>
+                                            <td style="border-top: 1px solid black;">
+
+                                            </td>
+                                            <td style="border-top: 1px solid black;">
+
+                                            </td>
+                                            <td style="border-top: 1px solid black;">
+
+                                            </td>
+                                        </tr>
+                                        <tr t-foreach="receiving_item['lots']" t-as="lot">
+                                            <td style="border: 1px solid black; text-align:  center ">
+                                                Lot# :
+                                                <span t-esc="lot['lot_id']"/>
+                                                Exp Date :
+                                                <span t-esc="lot['exp_date']" t-options='{"widget": "datetime"}'/>
+                                            </td>
+
+                                            <td style="border: 1px solid black; text-align:  center ">
+                                                    <span t-esc="lot['qty_done']"/>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align:  center ">
+                                                    <span t-esc="lot['date_done']" t-options='{"widget": "datetime"}'/>
+                                            </td>
+                                            <td style="border: 1px solid black; text-align:  center ">
+                                                <span t-esc="lot['product_uom_id']"/>
+                                            </td>
+                                        </tr>
+                                        <tr style="height: 25px;">
+                                            <td style="border: 1px solid black;">
+
+                                            </td>
+                                             <td style="border: 1px solid black;">
+
+                                            </td>
+                                             <td style="border: 1px solid black;">
+
+                                            </td>
+                                            <td style="border: 1px solid black;">
+
+                                            </td>
+
+                                        </tr>
+                                    <!--</t>-->
+                                  </t>
+                                </tbody>
+                            </table>
+                        <div>
+                            <t t-if="new_receiving_item['short']"><b>Short : </b><span t-raw="new_receiving_item['short']"/><br/></t>
+                            <t t-if="new_receiving_item['extra']"><b>Extra : </b><span t-raw="new_receiving_item['extra']"/><br/></t>
+                            <hr/>
                         </div>
-                     <div class="col-sm-6" style="margin-bottom: 10px;">
-                            <strong>Purchase Order :</strong>
-                            <span t-esc="new_receiving_item['po_order_no']"/>
-                        </div>
-                        <div class="col-sm-6" style="margin-bottom: 10px;">
-                            <strong>Vendor :</strong>
-                            <span t-esc="new_receiving_item['ven_id']"/>
-                        </div>
-                    <t t-foreach="new_receiving_item['data']" t-as="receiving_list_int">
-                        <t t-set="receiving_item" t-value="new_receiving_item['data'][receiving_list_int]"/>
-                              <!--<t t-foreach="receiving_item_list" t-as="receiving_item_int_temp">-->
-                                   <!--<t t-set="receiving_item_ls" t-value="receiving_item_list[receiving_item_int_temp]"/>-->
-
-
-                                <tr>
-                                    <td style="border-top: 1px solid black;">
-                                        <b>
-                                            <span t-esc="receiving_item['product']"/>
-                                        </b>
-                                    </td>
-                                    <td style="border-top: 1px solid black;">
-
-                                    </td>
-                                    <td style="border-top: 1px solid black;">
-
-                                    </td>
-                                    <td style="border-top: 1px solid black;">
-
-                                    </td>
-                                </tr>
-                                <tr t-foreach="receiving_item['lots']" t-as="lot">
-                                    <td style="border: 1px solid black; text-align:  center ">
-                                        Lot# :
-                                        <span t-esc="lot['lot_id']"/>
-                                        Exp Date :
-                                        <span t-esc="lot['exp_date']" t-options='{"widget": "datetime"}'/>
-                                    </td>
-
-                                    <td style="border: 1px solid black; text-align:  center ">
-                                            <span t-esc="lot['qty_done']"/>
-                                    </td>
-                                    <td style="border: 1px solid black; text-align:  center ">
-                                            <span t-esc="lot['date_done']" t-options='{"widget": "datetime"}'/>
-                                    </td>
-                                    <td style="border: 1px solid black; text-align:  center ">
-                                        <span t-esc="lot['product_uom_id']"/>
-                                    </td>
-                                </tr>
-                                <tr style="height: 25px;">
-                                    <td style="border: 1px solid black;">
-
-                                    </td>
-                                     <td style="border: 1px solid black;">
-
-                                    </td>
-                                     <td style="border: 1px solid black;">
-
-                                    </td>
-                                    <td style="border: 1px solid black;">
-
-                                    </td>
-
-                                </tr>
-                            <!--</t>-->
-                          </t>
-
-                </tbody>
-
-  </table>
                     </t>
                 </div>
-
             </t>
         </t>
     </template>
@@ -153,70 +151,8 @@
                             <h2>SPS Receiving List</h2>
                         </b>
                     </center>
-
-
-                    <!--<t t-foreach="receiving_list" t-as="receiving_list_int">-->
-                        <!--<t t-set="receiving_item" t-value="receiving_list[receiving_list_int]"/>-->
-                        <!--<div class="col-sm-6">-->
-                            <!--<strong>Purchase Order :</strong>-->
-                            <!--<span t-esc="receiving_item['purchase_order_id']"/>-->
-                        <!--</div>-->
-                        <!--<div class="col-sm-6">-->
-                            <!--<strong>Vendor :</strong>-->
-                            <!--<span t-esc="receiving_item['purchase_partner_id']"/>-->
-                        <!--</div>-->
-                        <!--<table class="table table-condensed" style="border: 1px solid black;">-->
-                            <!--<thead>-->
-                                <!--<tr>-->
-                                    <!--<th style="border: 1px solid black;text-align:  center !important;">-->
-                                        <!--Product Name-->
-                                    <!--</th>-->
-                                    <!--<th style="border: 1px solid black;text-align:  center !important;">-->
-                                        <!--Qty Received-->
-                                    <!--</th>-->
-                                    <!--<th style="border: 1px solid black;text-align:  center !important;">-->
-                                        <!--UOM-->
-                                    <!--</th>-->
-                                <!--</tr>-->
-                            <!--</thead>-->
-                            <!--<tbody>-->
-                                <!--<tr>-->
-                                    <!--<td style="border: 1px solid black;">-->
-                                        <!--<b>-->
-                                            <!--<span t-esc="receiving_item['product']"/>-->
-                                        <!--</b>-->
-                                    <!--</td>-->
-                                    <!--<td style="border: 1px solid black;">-->
-
-                                    <!--</td>-->
-                                    <!--<td style="border: 1px solid black;">-->
-
-                                    <!--</td>-->
-                                <!--</tr>-->
-                                <!--<tr t-foreach="receiving_item['lots']" t-as="lot">-->
-                                    <!--<td style="border: 1px solid black; text-align:  center ">-->
-                                        <!--Lot# :-->
-                                        <!--<span t-esc="lot['lot_id']"/>-->
-                                        <!--Exp Date :-->
-                                        <!--<span t-esc="lot['exp_date']"/>-->
-                                    <!--</td>-->
-
-                                    <!--<td style="border: 1px solid black; text-align:  center ">-->
-                                        <!--<b>-->
-                                            <!--<span t-esc="lot['qty_done']"/>-->
-                                        <!--</b>-->
-                                    <!--</td>-->
-                                    <!--<td style="border: 1px solid black; text-align:  center ">-->
-                                        <!--<span t-esc="lot['product_uom_id']"/>-->
-                                    <!--</td>-->
-                                <!--</tr>-->
-                            <!--</tbody>-->
-                        <!--</table>-->
-                    <!--</t>-->
-
-                <t t-foreach="new_receiving_list" t-as="new_receiving_list_int">
-                             <t t-set="new_receiving_item" t-value="new_receiving_list[new_receiving_list_int]"/>
-
+                    <t t-foreach="new_receiving_list" t-as="new_receiving_list_int">
+                        <t t-set="new_receiving_item" t-value="new_receiving_list[new_receiving_list_int]"/>
                         <table class="tav  ble table-condensed" style="border: 1px solid black;width:100%;margin-bottom: 50px;">
                             <thead>
                                 <tr>
@@ -234,84 +170,74 @@
                                     </th>
                                 </tr>
                             </thead>
-                    <tbody>
-                          <div class="col-sm-6" style="margin-bottom: 10px;">
-                            <strong>To be Received Date :</strong>
-                             <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
-                        </div>
-                     <div class="col-sm-6" style="margin-bottom: 10px;">
-                            <strong>Purchase Order :</strong>
-                            <span t-esc="new_receiving_item['po_order_no']"/>
-                        </div>
-                        <div class="col-sm-6" style="margin-bottom: 10px;">
-                            <strong>Vendor :</strong>
-                            <span t-esc="new_receiving_item['ven_id']"/>
-                        </div>
-                    <t t-foreach="new_receiving_item['data']" t-as="receiving_list_int">
-                        <t t-set="receiving_item" t-value="new_receiving_item['data'][receiving_list_int]"/>
-                              <!--<t t-foreach="receiving_item_list" t-as="receiving_item_int_temp">-->
-                                   <!--<t t-set="receiving_item_ls" t-value="receiving_item_list[receiving_item_int_temp]"/>-->
+                            <tbody>
+                                <div class="col-sm-6" style="margin-bottom: 10px;">
+                                   <strong>To be Received Date :</strong>
+                                    <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%m/%d/%Y')"/>
+                                </div>
+                                <div class="col-sm-6" style="margin-bottom: 10px;">
+                                   <strong>Purchase Order :</strong>
+                                   <span t-esc="new_receiving_item['po_order_no']"/>
+                                </div>
+                                <div class="col-sm-6" style="margin-bottom: 10px;">
+                                    <strong>Vendor :</strong>
+                                    <span t-esc="new_receiving_item['ven_id']"/>
+                                </div>
+                                <t t-foreach="new_receiving_item['data']" t-as="receiving_list_int">
+                                    <t t-set="receiving_item" t-value="new_receiving_item['data'][receiving_list_int]"/>
+                                    <tr>
+                                        <td style="border-top: 1px solid black;">
+                                            <b>
+                                                <span t-esc="receiving_item['product']"/>
+                                            </b>
+                                        </td>
+                                        <td style="border-top: 1px solid black;"></td>
+                                        <td style="border-top: 1px solid black;"></td>
+                                        <td style="border-top: 1px solid black;"></td>
+                                    </tr>
+                                    <tr t-foreach="receiving_item['lots']" t-as="lot">
+                                        <td style="border: 1px solid black; text-align:  center ">
+                                                    Lot# :
+                                                    <span t-esc="lot['lot_id']"/>
+                                                    Exp Date :
+                                                    <span t-esc="lot['exp_date']" t-options='{"widget": "datetime"}'/>
+                                        </td>
 
-
-                                <tr>
-                                    <td style="border-top: 1px solid black;">
-                                        <b>
-                                            <span t-esc="receiving_item['product']"/>
-                                        </b>
-                                    </td>
-                                    <td style="border-top: 1px solid black;">
-
-                                    </td>
-                                    <td style="border-top: 1px solid black;">
-
-                                    </td>
-                                     <td style="border-top: 1px solid black;">
-
-                                    </td>
-
-                                </tr>
-                                <tr t-foreach="receiving_item['lots']" t-as="lot">
-                                    <td style="border: 1px solid black; text-align:  center ">
-                                        Lot# :
-                                        <span t-esc="lot['lot_id']"/>
-                                        Exp Date :
-                                        <span t-esc="lot['exp_date']" t-options='{"widget": "datetime"}'/>
-                                    </td>
-
-                                    <td style="border: 1px solid black; text-align:  center ">
-                                            <span t-esc="lot['qty_done']"/>
-                                    </td>
-                                     <td style="border: 1px solid black; text-align:  center ">
+                                        <td style="border: 1px solid black; text-align:  center ">
+                                                        <span t-esc="lot['qty_done']"/>
+                                        </td>
+                                        <td style="border: 1px solid black; text-align:  center ">
                                             <span t-esc="lot['date_done']" t-options='{"widget": "datetime"}'/>
-                                    </td>
-                                    <td style="border: 1px solid black; text-align:center">
-                                        <span t-esc="lot['product_uom_id']"/>
-                                    </td>
-                                </tr>
-                                <tr style="height: 25px;">
-                                    <td style="border: 1px solid black;">
+                                        </td>
+                                        <td style="border: 1px solid black; text-align:center">
+                                            <span t-esc="lot['product_uom_id']"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="height: 25px;">
+                                                <td style="border: 1px solid black;">
 
-                                    </td>
-                                     <td style="border: 1px solid black;">
+                                                </td>
+                                                 <td style="border: 1px solid black;">
 
-                                    </td>
-                                     <td style="border: 1px solid black;">
+                                                </td>
+                                                 <td style="border: 1px solid black;">
 
-                                    </td>
-                                     <td style="border: 1px solid black;">
+                                                </td>
+                                                 <td style="border: 1px solid black;">
 
-                                    </td>
+                                                </td>
 
-                                </tr>
-                            <!--</t>-->
-                          </t>
-
-                </tbody>
-
-  </table>
+                                            </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div>
+                            <t t-if="new_receiving_item['short']"><b>Short : </b><span t-raw="new_receiving_item['short']"/><br/></t>
+                            <t t-if="new_receiving_item['extra']"><b>Extra : </b><span t-raw="new_receiving_item['extra']"/><br/></t>
+                            <hr/>
+                        </div>
                     </t>
                 </div>
-
             </t>
         </t>
     </template>
