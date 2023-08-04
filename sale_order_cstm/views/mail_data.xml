@@ -138,16 +138,8 @@
                     % else:
                         ${transaction.acquirer_id.name}
                     % endif
+                    (${format_amount(object.amount_total, object.currency_id)})
 
-                    % if transaction.acquirer_id:
-                        % if transaction.acquirer_id.name == 'Purchase Order':
-                            (${format_amount(object.amount_total, object.currency_id)})
-                        % else:
-                            (${format_amount(transaction.amount, object.currency_id)})
-                        % endif
-                    % else:
-                        (${format_amount(transaction.amount, object.currency_id)})
-                    % endif
                 </td>
             </tr>
         </table>
@@ -174,9 +166,6 @@
                 <td>
                     <strong>Shipping Method:</strong>
                     ${object.carrier_id.name}
-                    % if object.amount_delivery == 0.0  and object.carrier_id.name!= 'My Shipper Account':
-                        (Free)
-                    % endif
                 </td>
             </tr>
         </table>
