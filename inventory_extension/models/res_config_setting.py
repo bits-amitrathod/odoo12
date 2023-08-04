@@ -78,7 +78,7 @@ class StockPickingMarkAllButton(models.Model):
     # This method help to display popup at page load
     def compute_warning(self):
         for rec in self:
-            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"]:
+            if rec.sale_id and rec.sale_id.team_id:
                 rec.is_online = True
                 # if rec.partner_id.picking_warn in ["warning","block"] and rec.partner_id.picking_warn_msg:
                 #     rec.picking_warn_msg = str(rec.partner_id.picking_warn_msg)
@@ -125,7 +125,7 @@ class StockPickingMarkAllButton(models.Model):
 
     def action_button_mark_all_done(self):
         self.ensure_one()
-        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.getParent(self.sale_id).picking_warn in ["block"]:
+        if self.sale_id and self.sale_id.team_id and self.getParent(self.sale_id).picking_warn in ["block"]:
             return {
                 'name': _("Warning for %s") % self.getParent(self.sale_id).name,
                 'view_type': 'form',

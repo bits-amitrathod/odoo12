@@ -13,7 +13,7 @@ class StockPicking(models.Model):
     def button_validate(self):
         inv_notification = self.env['inventory.notification.scheduler'].search([])
         for picking in self:
-            if picking.sale_id and picking.sale_id.team_id and picking.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and picking.getParent(picking.sale_id).picking_warn in ["block"]:
+            if picking.sale_id and picking.sale_id.team_id and picking.getParent(picking.sale_id).picking_warn in ["block"]:
                 return {
                     'name': _("Warning for %s") % picking.getParent(picking.sale_id).name,
                     'view_type': 'form',
