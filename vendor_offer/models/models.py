@@ -1858,8 +1858,6 @@ class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     arrival_date = fields.Datetime(string="Arrival Date")
-    short = fields.Html(string="Short")
-    extra = fields.Html(string="Extra")
 
     @api.model
     def create(self, vals):

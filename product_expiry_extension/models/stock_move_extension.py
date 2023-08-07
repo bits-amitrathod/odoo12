@@ -162,3 +162,9 @@ class StockMoveExtension(models.Model):
                                 picking_type_id.use_existing_lots or self.state == 'done' or self.origin_returned_move_id.id) and self.picking_type_id.code == 'incoming'
                 ),
             }
+
+class StockPicking(models.Model):
+    _inherit = 'stock.picking'
+
+    short = fields.Html(string="Short")
+    extra = fields.Html(string="Extra")
