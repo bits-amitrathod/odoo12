@@ -1,7 +1,7 @@
 <odoo>
 
     <report id="action_sps_receiving_list_report_pdf"
-            string="SPS Receiving List"
+            string="SPS Receiving PDF"
             model="stock.move.line"
             report_type="qweb-pdf"
             file="sps_receiving_list_report.adjustment_report"
