@@ -11,4 +11,21 @@
         </field>
       </field>
 </record>
+  <!-- Short/Extra tab added in receipts -->
+  <record id="view_picking_form" model="ir.ui.view">
+        <field name="name">view_picking_form</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='note']" position="after">
+                <page string="Short/Extra" name="short/extra" attrs="{'invisible':[('picking_type_id','!=', 2)]}">
+                    <group>
+                            <field name="short" widget="html"/>
+                            <field name="extra" widget="html"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>
