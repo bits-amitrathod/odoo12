@@ -75,12 +75,18 @@ class StockPickingMarkAllButton(models.Model):
     picking_warn_msg = fields.Char(string="Warning", compute="compute_warning")
     is_online = fields.Boolean(string="Is online", store=False, default=False)
 
+    # This method help to display popup at page load
     def compute_warning(self):
         for rec in self:
-            if rec.sale_id and rec.sale_id.team_id and rec.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and rec.partner_id.picking_warn in ["warning","block"]:
-                pre_msg = "" if rec.partner_id.picking_warn =="warning" else ""
+            if rec.sale_id and rec.sale_id.team_id:
                 rec.is_online = True
-                rec.picking_warn_msg = (pre_msg + "" + str(rec.partner_id.picking_warn_msg)) if rec.partner_id.picking_warn_msg else None
+                # if rec.partner_id.picking_warn in ["warning","block"] and rec.partner_id.picking_warn_msg:
+                #     rec.picking_warn_msg = str(rec.partner_id.picking_warn_msg)
+                if self.getParent(rec.sale_id).picking_warn in ["warning","block"] and self.getParent(rec.sale_id).picking_warn_msg:
+                    rec.picking_warn_msg = str(self.getParent(rec.sale_id).picking_warn_msg)
+                else:
+                    rec.picking_warn_msg = None
+
             else:
                 rec.picking_warn_msg = None
 
@@ -114,16 +120,19 @@ class StockPickingMarkAllButton(models.Model):
         for pick in self:
             pick.is_mark_all_button_visible =  pick.sale_id.id and not pick.state in ['done','cancel']
 
+    def getParent(self, saleOrder):
+        return saleOrder.partner_id.parent_id if saleOrder.partner_id.parent_id else saleOrder.partner_id
+
     def action_button_mark_all_done(self):
         self.ensure_one()
-        if self.sale_id and self.sale_id.team_id and self.sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.partner_id.picking_warn in ["block"]:
+        if self.sale_id and self.sale_id.team_id and self.getParent(self.sale_id).picking_warn in ["block"]:
             return {
-                'name': _("Warning for %s") % self.partner_id.name,
+                'name': _("Warning for %s") % self.getParent(self.sale_id).name,
                 'view_type': 'form',
                 "view_mode": 'form',
                 'res_model': 'warning.popup.wizard',
                 'type': 'ir.actions.act_window',
-                'context': {'default_picking_warn_msg': self.partner_id.picking_warn_msg},
+                'context': {'default_picking_warn_msg': self.getParent(self.sale_id).picking_warn_msg},
                 'target': 'new', }
         else:
             if self.sale_id.id:

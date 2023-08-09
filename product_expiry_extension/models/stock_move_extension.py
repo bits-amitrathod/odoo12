@@ -108,6 +108,9 @@ class StockMoveExtension(models.Model):
             receipt_moves_to_reassign._action_assign()
         return res
 
+    def getParent(self, saleOrder):
+        return saleOrder.partner_id.parent_id if saleOrder.partner_id.parent_id else saleOrder.partner_id
+
     def action_show_details(self):
         """ Returns an action that will open a form view (in a popup) allowing to work on all the
         move lines of a particular move. This form view is used when "show operations" is not
@@ -126,14 +129,14 @@ class StockMoveExtension(models.Model):
         else:
             view = self.env.ref('stock.view_stock_move_nosuggest_operations')
 
-        if self.picking_id[0].sale_id.team_id.name in ["Website", "My In-Stock Report", "Sales", "Prioritization"] and self.picking_type_id.name in ['Pick'] and self.partner_id.picking_warn in ["block"]:
+        if self.picking_type_id.name in ['Pick'] and self.getParent(self.picking_id[0].sale_id).picking_warn in ["block"]:
             return {
-                    'name': _("Warning for %s") % self.partner_id.name,
+                    'name': _("Warning for %s") % self.getParent(self.picking_id[0].sale_id).name,
                     'view_type': 'form',
                     "view_mode": 'form',
                     'res_model': 'warning.popup.wizard',
                     'type': 'ir.actions.act_window',
-                    'context': {'default_picking_warn_msg': self.partner_id.picking_warn_msg},
+                    'context': {'default_picking_warn_msg': self.getParent(self.picking_id[0].sale_id).picking_warn_msg},
                     'target': 'new', }
         else:
             return {
