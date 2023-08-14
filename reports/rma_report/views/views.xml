@@ -18,7 +18,7 @@
             </field>
         </record>
 
-        <record id="action_rma_report" model="ir.actions.act_window">
+        <record id="action_rma_report1" model="ir.actions.act_window">
             <field name="name">RMA Report</field>
             <field name="res_model">rma.report.popup</field>
             <field name="view_mode">form</field>
@@ -28,7 +28,7 @@
         </record>
 
         <menuitem id="rma_history_report"
-                  action="action_rma_report"
+                  action="action_rma_report1"
                   name="RMA Report"
                   parent="sale.menu_sale_report"
                   sequence="9"/>
