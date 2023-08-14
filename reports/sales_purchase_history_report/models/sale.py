@@ -12,7 +12,7 @@ class SaleSalespersonReport(models.TransientModel):
     contract_id = fields.Many2many('contract.contract', string='Contract')
     category_id = fields.Many2many('res.partner.category', string='Tag')
     order_account_manager_cust = fields.Many2one('res.users', string="Key Account", domain="[('active','=',True),('share','=',False)]")
-
+    saleforce_ac = fields.Char("Parent SF A/C  No#")
     #@api.multi
     def open_table(self):
         tree_view_id = self.env.ref('sales_purchase_history_report.list_view').id
@@ -53,6 +53,9 @@ class SaleSalespersonReport(models.TransientModel):
             action['domain'].append(('order_partner_id.account_manager_cust', '=', self.order_account_manager_cust.id))
         if self.category_id:
             action['domain'].append(('order_partner_id.category_id', 'in', self.category_id.ids))
+        if self.saleforce_ac:
+            action['domain'].append(('order_partner_id.parent_saleforce_ac', 'ilike', self.saleforce_ac))
+
         return action
 
     @staticmethod
