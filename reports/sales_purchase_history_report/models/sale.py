@@ -30,15 +30,28 @@ class SaleSalespersonReport(models.TransientModel):
             sale_order_line = self.env['sale.order.line'].search([('order_id', 'in', so_id), ('state', 'not in', ('cancel', 'void'))]).ids
         else:
             sale_order_line = self.env['sale.order.line'].search([('state', 'not in', ('cancel', 'void')), ]).ids
-        action = {
-            'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
-            'view_mode': 'tree,form',
-            'name': _('Sales Purchase History'),
-            'res_model': 'sale.order.line',
-            'domain': [('id', 'in', sale_order_line), ('qty_delivered', '>', 0), ('price_unit', '>=', 0)],
-            'target': 'main'
-        }
+        if self.saleforce_ac:
+           action = {
+               'type': 'ir.actions.act_window',
+               'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+               'view_mode': 'tree,form',
+               'name': _('Sales Purchase History'),
+               'res_model': 'sale.order.line',
+               'domain': ['|', ('order_id.partner_id.parent_id.saleforce_ac', '=', self.saleforce_ac),
+                          ('order_id.partner_id.saleforce_ac', '=', self.saleforce_ac),
+                          ('id', 'in', sale_order_line), ('qty_delivered', '>', 0), ('price_unit', '>=', 0)],
+               'target': 'main'
+                }
+        else:
+            action = {
+               'type': 'ir.actions.act_window',
+               'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+               'view_mode': 'tree,form',
+               'name': _('Sales Purchase History'),
+               'res_model': 'sale.order.line',
+               'domain': [('id', 'in', sale_order_line), ('qty_delivered', '>', 0), ('price_unit', '>=', 0)],
+               'target': 'main'
+           }
 
         if self.product_id and self.order_partner_id:
             action['domain'].append(('product_id', 'in', self.product_id.ids))
@@ -53,8 +66,6 @@ class SaleSalespersonReport(models.TransientModel):
             action['domain'].append(('order_partner_id.account_manager_cust', '=', self.order_account_manager_cust.id))
         if self.category_id:
             action['domain'].append(('order_partner_id.category_id', 'in', self.category_id.ids))
-        if self.saleforce_ac:
-            action['domain'].append(('order_partner_id.parent_saleforce_ac', 'ilike', self.saleforce_ac))
 
         return action
 
