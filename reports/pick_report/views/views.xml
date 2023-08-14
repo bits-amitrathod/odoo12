@@ -16,7 +16,7 @@
             </field>
         </record>
 
-        <record id="action_pick_report" model="ir.actions.act_window">
+        <record id="action_pick_report1" model="ir.actions.act_window">
             <field name="name">Pick Report</field>
             <field name="res_model">pick_report.popup</field>
 <!--            <field name="view_type">form</field>-->
@@ -28,6 +28,6 @@
 
 
         <menuitem name="Pick Report" id="pick_report_menu" parent="stock.menu_warehouse_report"
-                  action="pick_report.action_pick_report"/>
+                  action="pick_report.action_pick_report1"/>
     </data>
 </odoo>
