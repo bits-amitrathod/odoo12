@@ -18,6 +18,7 @@ class ReportInStockReportPopup(models.TransientModel):
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     sku_code = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
+    saleforce_ac = fields.Char("Parent SF A/C  No#")
 
     def open_table(self):
         tree_view_id = self.env.ref('in_stock_report.view_in_stock_report_line_tree').id
@@ -25,16 +26,28 @@ class ReportInStockReportPopup(models.TransientModel):
         res_model = 'report.in.stock.report'
         self.env[res_model].with_context(margins_context).delete_and_create()
 
-
-        action = {
-            'type': 'ir.actions.act_window',
-            'views': [(tree_view_id, 'tree')],
-            'view_mode': 'tree',
-            'name': 'In Stock Report',
-            'res_model': res_model,
-            'context':margins_context,
-            'domain': [('actual_quantity','>',0)]
-        }
+        if self.saleforce_ac:
+            action = {
+                'type': 'ir.actions.act_window',
+                'views': [(tree_view_id, 'tree')],
+                'view_mode': 'tree',
+                'name': 'In Stock Report',
+                'res_model': res_model,
+                'context': margins_context,
+                'domain': ['|', ('partner_id.parent_id.saleforce_ac', '=', self.saleforce_ac),
+                           ('partner_id.saleforce_ac', '=', self.saleforce_ac),
+                           ('actual_quantity', '>', 0)]
+            }
+        else:
+            action = {
+                'type': 'ir.actions.act_window',
+                'views': [(tree_view_id, 'tree')],
+                'view_mode': 'tree',
+                'name': 'In Stock Report',
+                'res_model': res_model,
+                'context':margins_context,
+                'domain': [('actual_quantity','>',0)]
+            }
 
         if self.partner_id.id:
             action["domain"].append(('partner_id', '=', self.partner_id.id))
@@ -47,8 +60,6 @@ class ReportInStockReportPopup(models.TransientModel):
 
         if self.sku_code:
             action["domain"].append(('product_id.id', 'ilike', self.sku_code.id))
-
-
 
         return action
 
