@@ -9,11 +9,11 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-<!--                            <field name="end_date"  />-->
+                            <field name="end_date"  />
                         </group>
                     </group>
                     <footer>
-<!--                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>-->
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel" />
                     </footer>
                 </form>
