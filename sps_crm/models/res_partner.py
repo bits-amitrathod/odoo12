@@ -12,7 +12,7 @@ class Partner(models.Model):
     acq_opportunity_count = fields.Integer("ACQ Opportunity", compute='_compute_acq_opportunity_count')
 
     def _compute_acq_opportunity_count(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
             # retrieve all children partners and prefetch 'parent_id' on them
             all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
             all_partners.read(['parent_id'])
@@ -33,7 +33,7 @@ class Partner(models.Model):
             self.acq_opportunity_count = 0
 
     def _compute_opportunity_count(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
             # retrieve all children partners and prefetch 'parent_id' on them
             all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
             all_partners.read(['parent_id'])
@@ -407,7 +407,7 @@ class Partner(models.Model):
 
 
     def _compute_details_field(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
             for record in self:
                 partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
                 if partner_link:
@@ -591,7 +591,7 @@ class Partner(models.Model):
             else:
                 record.bed_size = record.bed_size
     def _compute_facilityERP(self):
-        if 'action' in self.env.context.keys():
+        if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
             for record in self:
                 partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
                 if partner_link:
