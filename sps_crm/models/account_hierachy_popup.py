@@ -53,6 +53,7 @@ class AccountHierarchyReport(models.TransientModel):
 
     def _compute_account_hierarchy_html(self):
 
+
         web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
         self.env['ir.config_parameter'].set_param('web.shopsps_odoo_com', 'https://shopsps.odoo.com')
         matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
