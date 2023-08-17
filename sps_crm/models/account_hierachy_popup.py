@@ -223,7 +223,7 @@ class SalePaymentLink(models.TransientModel):
         Ticket 659, Added through code , so that even record is deleted it will recreate
         """
         web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        self.env['ir.config_parameter'].set_param('web.shopsps_com', 'https://www.shopsps.com')
+        self.env['ir.config_parameter'].sudo().set_param('web.shopsps_com', 'https://www.shopsps.com')
         matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
 
         if any([x in web_base_url for x in matches]):
