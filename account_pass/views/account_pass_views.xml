@@ -77,7 +77,7 @@
 								<field name="follow_up_discussed_note" attrs="{'invisible': [('is_follow_up_discussed', '=', False)]}"/>
 								<field name="is_vendors_purchased"/>
 								<field name="vendors_purchased_note" attrs="{'invisible': [('is_vendors_purchased', '=', False)]}"/>
-								<field name="is_unique_codes"/>
+								<field name="is_unique_codes" class="abc"/>
 								<field name="unique_codes_note" attrs="{'invisible': [('is_unique_codes', '=', False)]}"/>
 								<field name="is_purchase_history"/>
 								<field name="purchase_history_note"  attrs="{'invisible': [('is_purchase_history', '=', False)]}"/>
@@ -91,9 +91,9 @@
 								<field name="competitor_info_note" attrs="{'invisible': [('is_competitor_info', '=', False)]}"/>
 								<field name="is_code_in_top_20"/>
 								<field name="code_in_top_20_note"  attrs="{'invisible': [('is_code_in_top_20', '=', False)]}" />
-								<field name="is_average_month"/>
+								<field name="is_average_month" class="abc"/>
 								<field name="average_month_note" attrs="{'invisible': [('is_average_month', '=', False)]}" />
-								<field name="is_purchased"/>
+								<field name="is_purchased" class="abc"/>
 								<field name="purchased_note" attrs="{'invisible': [('is_purchased', '=', False)]}" />
 							</group>
 						</group>
@@ -110,6 +110,11 @@
 								<field name="position"/>
 								<field name="ordering_method"/>
 							</group>
+						</group>
+					</page>
+					<page name="notes" string="Notes">
+						<group>
+							<field name="note"/>
 						</group>
 					</page>
 				</notebook>
