@@ -223,7 +223,7 @@ class SalePaymentLink(models.TransientModel):
         Ticket 659, Added through code , so that even record is deleted it will recreate
         """
         web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        self.env['ir.config_parameter'].set_param('web.shopsps_com', 'https://shopsps.com')
+        self.env['ir.config_parameter'].sudo().set_param('web.shopsps_com', 'https://www.shopsps.com')
         matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
 
         if any([x in web_base_url for x in matches]):
@@ -255,4 +255,22 @@ class SalePaymentLink(models.TransientModel):
                                         payment_link.access_token
                                     )
             else:
-                super(SalePaymentLink, payment_link)._generate_link()
+                self._generate_link_invoice_custom()
+
+    def _generate_link_invoice_custom(self):
+        for payment_link in self:
+            record = self.env[payment_link.res_model].browse(payment_link.res_id)
+            link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
+                    '&partner_id=%s&access_token=%s') % (
+                        self.get_base_url_custom(),
+                        urls.url_quote_plus(payment_link.description),
+                        payment_link.amount,
+                        payment_link.currency_id.id,
+                        payment_link.partner_id.id,
+                        payment_link.access_token
+                    )
+            if payment_link.company_id:
+                link += '&company_id=%s' % payment_link.company_id.id
+            if payment_link.res_model == 'account.move':
+                link += '&invoice_id=%s' % payment_link.res_id
+            payment_link.link = link
