@@ -381,8 +381,6 @@ class VendorOfferNewAppraisalImport(models.Model):
                                     if quant_yr[1] is not None:
                                         order_line_object['product_sales_amount_yr'] = quant_yr[1]
 
-                                    temp_date = float(order_line_object['expiration_date'])
-
                                     order_line_object['open_quotations_of_prod'] = \
                                         self.get_quotations_count_by_product(order_line_object['product_id'])
                                     order_line_object['inv_ratio_90_days'] = \
@@ -393,6 +391,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                         self.get_consider_dropping_tier(order_line_object['qty_in_stock'],
                                                                         order_line_object['product_sales_count_90'],
                                                                         order_line_object['product_sales_count_yrs'])
+
+                                    temp_date = float(order_line_object['expiration_date'])
 
                                     def floatHourToTime(fh):
                                         h, r = divmod(fh, 1)
