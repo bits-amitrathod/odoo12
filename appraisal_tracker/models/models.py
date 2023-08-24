@@ -242,6 +242,19 @@ class apprisal_tracker_vendor(models.Model):
 
         return self.action_view_invoice(moves)
 
+class stock_picking(models.Model):
+    _inherit = "stock.picking"
+    def action_receiving_list_email(self):
+        template_id = self.env.ref('appraisal_tracker.mail_template_Receiving_list').id
+        ctx = {'default_template_id': template_id}
+        return {
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'target': 'new',
+            'context': ctx,
+        }
+
 
 
 

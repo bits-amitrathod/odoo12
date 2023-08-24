@@ -411,5 +411,20 @@
                   parent="purchase.menu_procurement_management" action="appraisal_tracker.action_window" sequence="15"
         />
 
+         <record id="receiving_list_button" model="ir.ui.view">
+            <field name="name">stock.picking.receiving.list.button</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+                    <xpath expr="/form/header/button[last()]" position="after">
+                        <button name="action_receiving_list_email"
+                                type="object"
+                                string="Send by Email" id="warn_btn"
+                                attrs="{'invisible':[('picking_type_id','!=', 2)]}"
+                        />
+                    </xpath>
+            </field>
+        </record>
+
     </data>
 </odoo>

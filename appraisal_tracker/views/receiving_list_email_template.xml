@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="mail_template_Receiving_list" model="mail.template">
+            <field name="name">Receiving : Send by Email</field>
+            <field name="model_id" ref="model_stock_picking"/>
+            <field name="subject">Receiving list Email</field>
+            <field name="email_from">${object.env.user.email|safe}</field>
+            <field name="email_to">acquisitions@surgicalproductsolutions.com, sales@surgicalproductsolutions.com, appraisal@surgicalproductsolutions.com, warehouse@surgicalproductsolutions.com</field>
+            <field name="body_html" type="html">
+                <div>
+                    Hi, <br/>
+                        PO : ${object.origin},<br/>
+                        Receive From : ${object.partner_id.name},<br/>
+                        Receipt Name : ${object.name},<br/>
+                        % if object.short:
+                            <div>Short: ${object.short|safe}</div>
+                        % endif
+                        % if object.extra:
+                            <div>Extra: ${object.extra|safe}</div>
+                        % endif
+                </div>
+            </field>
+            <field name="report_template" ref="sps_receiving_list_report.action_sps_receiving_list_report_pdf"/>
+            <field name="report_name">sps_receiving_List_${(object.name or '').replace('/','_')}</field>
+            <field name="lang">${object.partner_id.lang}</field>
+            <field name="auto_delete" eval="True"/>
+        </record>
+    </data>
+</odoo>
