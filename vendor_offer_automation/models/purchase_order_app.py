@@ -28,10 +28,10 @@ class VendorOfferNewAppraisalImport(models.Model):
     _description = "Vendor Offer Import"
     _inherit = "purchase.order"
 
-    def expired_inventory_fetch(self):
+    def expired_inventory_fetch(self, prod_id):
         for line in self:
             expired_lot_count = 0
-            test_id_list = self.env['stock.production.lot'].search([('product_id', '=', line.product_id.id)])
+            test_id_list = self.env['stock.production.lot'].search([('product_id', '=', prod_id)])
             for prod_lot in test_id_list:
                 if prod_lot.use_date:
                     if fields.Datetime.from_string(prod_lot.use_date).date() < fields.date.today():
@@ -386,7 +386,8 @@ class VendorOfferNewAppraisalImport(models.Model):
                                     order_line_object['inv_ratio_90_days'] = \
                                         self.get_inv_ratio_90_days(order_line_object['qty_in_stock'],
                                                                    order_line_object['product_sales_count_90'])
-                                    order_line_object['expired_inventory'] = self.expired_inventory_fetch()
+                                    order_line_object['expired_inventory'] = \
+                                        self.expired_inventory_fetch(order_line_object['product_id'])
                                     order_line_object['consider_dropping_tier'] = \
                                         self.get_consider_dropping_tier(order_line_object['qty_in_stock'],
                                                                         order_line_object['product_sales_count_90'],
