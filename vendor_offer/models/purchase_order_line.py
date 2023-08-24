@@ -17,16 +17,16 @@ class VendorOfferProduct(models.Model):
     product_brand_id = fields.Many2one('product.brand', string='Manufacture',
                                        compute='onchange_product_id_vendor_offer',
                                        help='Select a Manufacture for this product', store=False)
-    product_sales_count = fields.Integer(string="Sales Count All", readonly=True, store=True)
-    product_sales_count_month = fields.Integer(string="Sales Count Month", readonly=True, store=True)
-    product_sales_count_90 = fields.Integer(string="Sales Count 90 Days", readonly=True, store=True)
-    product_sales_count_yrs = fields.Integer(string="Sales Count Yr", readonly=True, store=True)
+    product_sales_count = fields.Integer(string="Sales All", readonly=True, store=True)
+    product_sales_count_month = fields.Integer(string="Sales Month", readonly=True, store=True)
+    product_sales_count_90 = fields.Integer(string="Sales 90", readonly=True, store=True)
+    product_sales_count_yrs = fields.Integer(string="Sales Yr", readonly=True, store=True)
     qty_in_stock = fields.Integer(string="Quantity In Stock", readonly=True, compute='onchange_product_id_vendor_offer',
                                   store=True)
     expiration_date = fields.Datetime(string="Expiration Date", readonly=True, )
     expiration_date_str = fields.Char(string="Expiration Date")
     uom_str = fields.Char(string="UOM")
-    expired_inventory = fields.Char(string="Expired Inventory Items", compute='onchange_product_id_vendor_offer',
+    expired_inventory = fields.Char(string="Expired Inv", compute='onchange_product_id_vendor_offer',
                                     readonly=True,
                                     store=True)
     multiplier = fields.Many2one('multiplier.multiplier', string="Multiplier")
