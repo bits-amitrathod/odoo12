@@ -5,6 +5,8 @@ import threading
 from odoo import api, fields, models, tools, SUPERUSER_ID, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.modules import get_module_resource
+from dateutil.relativedelta import relativedelta
+from odoo.tools.misc import format_date
 MAP_INVOICE_TYPE_PARTNER_TYPE = {
     'out_invoice': 'customer',
     'out_refund': 'customer',
@@ -268,6 +270,7 @@ class hide_state_code(models.Model):
 class AccountMoveVendorBill(models.Model):
     _inherit = "account.move"
 
+    due_date_note = fields.Text(string="Due Dates", compute="due_date_note_cal")
     def create(self, vals_list):
         data = super(AccountMoveVendorBill, self).create(vals_list)
         if self.env.context.get('create_bill'):
@@ -282,3 +285,31 @@ class AccountMoveVendorBill(models.Model):
                         if child_id.type == "other":
                             data.partner_id = child_id.id
         return data
+
+    @api.onchange('invoice_payment_term_id')
+    @api.depends('invoice_payment_term_id')
+    def due_date_note_cal(self):
+        lista = list(self.invoice_payment_term_id.line_ids)
+        date_ref = self.invoice_date
+        next_date = fields.Date.from_string(date_ref)
+        self.due_date_note = False
+        due_str = ""
+        for line in lista:
+            if line.option == 'day_after_invoice_date':
+                next_date += relativedelta(days=line.days)
+                if line.day_of_the_month > 0:
+                    months_delta = (line.day_of_the_month < next_date.day) and 1 or 0
+                    next_date += relativedelta(day=line.day_of_the_month, months=months_delta)
+            elif line.option == 'after_invoice_month':
+                next_first_date = next_date + relativedelta(day=1, months=1)  # Getting 1st of next month
+                next_date = next_first_date + relativedelta(days=line.days - 1)
+            elif line.option == 'day_following_month':
+                next_date += relativedelta(day=line.days, months=1)
+            elif line.option == 'day_current_month':
+                next_date += relativedelta(day=line.days, months=0)
+            due_str += "Due Date :- " + str(format_date(self.env, next_date, date_format="MM/dd/yyyy")) + "\n"
+
+        if due_str == "":
+            self.due_date_note ="Due Date :- " + str(format_date(self.env, self.invoice_date_due, date_format="MM/dd/yyyy"))
+        else:
+            self.due_date_note = due_str
