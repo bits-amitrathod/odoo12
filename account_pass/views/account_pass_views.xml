@@ -78,7 +78,7 @@
 								<field name="is_vendors_purchased"/>
 								<field name="vendors_purchased_note" attrs="{'invisible': [('is_vendors_purchased', '=', False)]}"/>
 <!--								<field name="is_unique_codes" class="label_underline"/>-->
-								<label for="is_unique_codes"  style="border-bottom: 1px solid;font-weight: 900;"/>
+								<label for="is_unique_codes"  style="border-bottom: 1px solid;"/>
 								  <div class="o_row">
 										<field name="is_unique_codes"  />
 									<label for="is_unique_codes" string=" "/>
@@ -97,14 +97,14 @@
 								<field name="is_code_in_top_20"/>
 								<field name="code_in_top_20_note"  attrs="{'invisible': [('is_code_in_top_20', '=', False)]}" />
 <!--								<field name="is_average_month" class="label_underline"/>-->
-								<label for="is_average_month"  style="border-bottom: 1px solid;font-weight: 900;"/>
+								<label for="is_average_month"  style="border-bottom: 1px solid;"/>
 								  <div class="o_row">
 										<field name="is_average_month"  />
 									<label for="is_average_month" string=" "/>
 								  </div>
 								<field name="average_month_note" attrs="{'invisible': [('is_average_month', '=', False)]}" />
 <!--								<field name="is_purchased" class="label_underline"/>-->
-								<label for="is_purchased"  style="border-bottom: 1px solid;font-weight: 900;"/>
+								<label for="is_purchased"  style="border-bottom: 1px solid;"/>
 								  <div class="o_row">
 										<field name="is_purchased"  />
 									<label for="is_purchased" string=" "/>
