@@ -34,7 +34,7 @@
 
                 </xpath>
                 <field name="invoice_date_due" position="after">
-                    <field name='due_date_note'></field>
+                    <field name='due_date_note'  attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund'))]}"></field>
                 </field>
             </field>
         </record>
