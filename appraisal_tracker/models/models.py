@@ -246,7 +246,9 @@ class stock_picking(models.Model):
     _inherit = "stock.picking"
     def action_receiving_list_email(self):
         template_id = self.env.ref('appraisal_tracker.mail_template_Receiving_list').id
-        ctx = {'default_template_id': template_id}
+        ctx = {'default_template_id': template_id,
+               'default_subtype_id': False,
+               'default_model': False}
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
