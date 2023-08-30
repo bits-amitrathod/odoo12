@@ -18,7 +18,7 @@ class VendorOfferProductLineNew(models.Model):
     premium_product = fields.Boolean(string='Premium', readonly=True, store=True)
     consider_dropping_tier = fields.Boolean(string='CDT', readonly=True, store=True) # get_consider_dropping_tier
     average_retail_last_year = fields.Float(string='Average Retail Last Year', readonly=True, store=True) # compute_average_retail
-    dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate Price', store=True)
+    dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate', store=True)
     product_multiple_matches = fields.Boolean(string='Multiple Matches', store=True)
     list_contains_equip = fields.Boolean(string='Equipment', store=True)
     is_pddo = fields.Boolean(string='PDDO', default=False, readonly=True, store=True)

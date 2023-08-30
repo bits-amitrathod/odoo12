@@ -56,7 +56,7 @@ class VendorOfferNewAppraisal(models.Model):
                     obj_line.compute_new_fields_vendor_line()
                     if obj.is_change_tier1_to_premium:
                         obj_line.upgrade_multiplier_tier1_to_premium()
-                    if obj_line.is_recalculate_multiplier():
+                    if obj_line.dont_recalculate_offer_price is not True:
                         obj_line.multiplier_adjustment_criteria() if obj.is_dynamic_tier_adjustment else obj_line.no_tier_multiplier_adjustment_criteria()
                         obj_line.overstock_threshold()
                     obj_line.copy_product_qty_column()
