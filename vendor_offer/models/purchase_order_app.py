@@ -51,8 +51,8 @@ class VendorOfferNewAppraisal(models.Model):
         for objList in self:
             for obj in objList:
                 for obj_line in obj.order_line:
-                    if obj_line.import_type_ven_line != 'new_appraisal':
-                        obj_line.set_values()
+                    #if obj_line.import_type_ven_line != 'new_appraisal':
+                    obj_line.set_values()
                     obj_line.compute_new_fields_vendor_line()
                     if obj.is_change_tier1_to_premium:
                         obj_line.upgrade_multiplier_tier1_to_premium()

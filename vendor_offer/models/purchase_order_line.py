@@ -109,76 +109,76 @@ class VendorOfferProduct(models.Model):
                     return result1
                 if line.product_qty_app_new is False or line.product_qty_app_new == 0.0:
                     line.product_qty_app_new = 1
-                if line.order_id.import_type_ven != 'new_appraisal':
+                #if line.order_id.import_type_ven != 'new_appraisal':
 
-                    ''' sale count will show only done qty '''
+                ''' sale count will show only done qty '''
 
-                    # last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
-                    # last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
-                    #
-                    # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                    #                                                              line.product_id.id, last_month))
-                    # quant_m = self.env.cr.fetchone()
-                    # if quant_m[0] is not None:
-                    #     total_m = total_m + int(quant_m[0])
-                    # line.product_sales_count_month = total_m
-                    #
-                    # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                    #                                                              line.product_id.id, last_3_months))
-                    # quant_90 = self.env.cr.fetchone()
-                    # if quant_90[0] is not None:
-                    #     total_90 = total_90 + int(quant_90[0])
-                    # line.product_sales_count_90 = total_90
-                    #
-                    # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
-                    #                                                              line.product_id.id, last_yr))
-                    # quant_yr = self.env.cr.fetchone()
-                    # if quant_yr[0] is not None:
-                    #     total_yr = total_yr + int(quant_yr[0])
-                    # line.product_sales_count_yrs = total_yr
-                    #
-                    # self.env.cr.execute(str_query_cm, (cust_location_id, line.product_id.id))
-                    # quant_all = self.env.cr.fetchone()
-                    # if quant_all[0] is not None:
-                    #     total = total + int(quant_all[0])
-                    # line.product_sales_count = total
+                # last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
+                # last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
+                #
+                # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                #                                                              line.product_id.id, last_month))
+                # quant_m = self.env.cr.fetchone()
+                # if quant_m[0] is not None:
+                #     total_m = total_m + int(quant_m[0])
+                # line.product_sales_count_month = total_m
+                #
+                # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                #                                                              line.product_id.id, last_3_months))
+                # quant_90 = self.env.cr.fetchone()
+                # if quant_90[0] is not None:
+                #     total_90 = total_90 + int(quant_90[0])
+                # line.product_sales_count_90 = total_90
+                #
+                # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
+                #                                                              line.product_id.id, last_yr))
+                # quant_yr = self.env.cr.fetchone()
+                # if quant_yr[0] is not None:
+                #     total_yr = total_yr + int(quant_yr[0])
+                # line.product_sales_count_yrs = total_yr
+                #
+                # self.env.cr.execute(str_query_cm, (cust_location_id, line.product_id.id))
+                # quant_all = self.env.cr.fetchone()
+                # if quant_all[0] is not None:
+                #     total = total + int(quant_all[0])
+                # line.product_sales_count = total
 
-                    line.qty_in_stock = line.product_id.qty_available
+                line.qty_in_stock = line.product_id.qty_available
 
-                    if line.order_id.is_dynamic_tier_adjustment:
-                        line.multiplier_adjustment_criteria()
-                    else:
-                        line.no_tier_multiplier_adjustment_criteria()
+                if line.order_id.is_dynamic_tier_adjustment:
+                    line.multiplier_adjustment_criteria()
+                else:
+                    line.no_tier_multiplier_adjustment_criteria()
 
-                    # if line.multiplier.id == False:
-                    #     if line.product_tier.code == False:
-                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
-                    #         line.multiplier = multiplier_list.id
-                    #     elif line.product_sales_count == 0:
-                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
-                    #         line.multiplier = multiplier_list.id
-                    #     elif float(line.qty_in_stock) > (
-                    #             line.product_sales_count * 2) and line.product_sales_count != 0:
-                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
-                    #         line.multiplier = multiplier_list.id
-                    #     elif line.product_id.product_tmpl_id.premium == True:
-                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
-                    #         line.multiplier = multiplier_list.id
-                    #     elif line.product_tier.code == '1':
-                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
-                    #         line.multiplier = multiplier_list.id
-                    #     elif line.product_tier.code == '2':
-                    #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
-                    #         line.multiplier = multiplier_list.id
+                # if line.multiplier.id == False:
+                #     if line.product_tier.code == False:
+                #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'out of scope')])
+                #         line.multiplier = multiplier_list.id
+                #     elif line.product_sales_count == 0:
+                #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'no history')])
+                #         line.multiplier = multiplier_list.id
+                #     elif float(line.qty_in_stock) > (
+                #             line.product_sales_count * 2) and line.product_sales_count != 0:
+                #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'overstocked')])
+                #         line.multiplier = multiplier_list.id
+                #     elif line.product_id.product_tmpl_id.premium == True:
+                #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 'premium')])
+                #         line.multiplier = multiplier_list.id
+                #     elif line.product_tier.code == '1':
+                #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't1 good 45')])
+                #         line.multiplier = multiplier_list.id
+                #     elif line.product_tier.code == '2':
+                #         multiplier_list = line.env['multiplier.multiplier'].search([('code', '=', 't2 good 35')])
+                #         line.multiplier = multiplier_list.id
 
-                    # line.update_product_expiration_date()
+                # line.update_product_expiration_date()
 
-                    if (line.product_qty == False):
-                        line.product_qty = '1'
-                        # line.price_subtotal = line.list_price ???
-                        # line.product_unit_price = line.list_price
+                if (line.product_qty == False):
+                    line.product_qty = '1'
+                    # line.price_subtotal = line.list_price ???
+                    # line.product_unit_price = line.list_price
 
-                    self.expired_inventory_cal(line)
+                self.expired_inventory_cal(line)
 
     def expired_inventory_cal(self, line):
         expired_lot_count = 0
