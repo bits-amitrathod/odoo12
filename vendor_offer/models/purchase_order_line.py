@@ -144,11 +144,11 @@ class VendorOfferProduct(models.Model):
                 # line.product_sales_count = total
 
                 line.qty_in_stock = line.product_id.qty_available
-
-                if line.order_id.is_dynamic_tier_adjustment:
-                    line.multiplier_adjustment_criteria()
-                else:
-                    line.no_tier_multiplier_adjustment_criteria()
+                if line.order_id.import_type_ven != 'new_appraisal':
+                    if line.order_id.is_dynamic_tier_adjustment:
+                        line.multiplier_adjustment_criteria()
+                    else:
+                        line.no_tier_multiplier_adjustment_criteria()
 
                 # if line.multiplier.id == False:
                 #     if line.product_tier.code == False:
