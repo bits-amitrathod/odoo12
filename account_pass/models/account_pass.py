@@ -64,6 +64,7 @@ class account_pass(models.Model):
     customer_status = fields.Selection(string='Ideal Customer or Inconsistent Customer', selection=[('inconsistent', 'Inconsistent'), ('ideal', 'Ideal')])
     sales_rep = fields.Many2one('res.users', string="Sales Rep", tracking=True , default=lambda self: self.env.uid)
 
+    note = fields.Text(string="Notes")
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         return stages.browse(self.env['account.pass.stage'].search([]).ids)
