@@ -69,6 +69,8 @@
                     </div>
 						<group>
 							<group>
+
+								<field name="no_past_due_invoices"/>
 								<field name="is_prime_vendor"/>
 								<field name="prime_vendor_note" attrs="{'invisible': [('is_prime_vendor', '=', False)]}" />
 								<field name="is_in_stock_report"/>
