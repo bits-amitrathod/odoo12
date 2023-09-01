@@ -39,7 +39,7 @@ class MailActivityNotesCustom(models.Model):
     email = fields.Char(related="related_partner_activity.email", readonly=True, store=False)
     phone = fields.Char(related="related_partner_activity.phone", readonly=True, store=False)
     mobile = fields.Char(related="related_partner_activity.mobile", readonly=True, store=False)
-
+    tags = fields.Many2many(related="related_partner_activity.category_id", readonly=True, store=False)
     ordered_online = fields.Boolean(related="related_partner_activity.x_studio_ordered_online", readonly=True,
                                       store=False)
     ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True, store=False)

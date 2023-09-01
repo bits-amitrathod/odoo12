@@ -59,8 +59,10 @@
                  <field name="related_partner_activity" string="Contact"></field>
                 <field name="email" ></field>
                 <field name="phone" ></field>
-                <field name="mobile" ></field>
-
+                <field name="mobile"></field>
+            </field>
+            <field name="summary" position="after">
+                <field name="tags" widget="many2many_tags" ></field>
             </field>
         </field>
     </record>
