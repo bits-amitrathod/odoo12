@@ -418,7 +418,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 email_list_cc = []
                 for contact in contacts:
                     # if (contact.email not in email_queue):
-                    if (contact.email != customr.email and contact.email not in email_list_cc):
+                    if (contact.email not in email_list_cc):
                         if (contact.start_date == False and contact.end_date == False) \
                                 or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
                             contact.end_date) and InventoryNotificationScheduler.string_to_date(
@@ -434,8 +434,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                             cust_ids.extend(contact.ids)
                             _logger.info("cc Customer =")
                             _logger.info(contact.email)
-                            if contact.type not in ['other','invoice']:
-                                email_list_cc.append(contact.email)
+                            # Add this condition to include sales of all contact ticket 668
+                            if contact.email != customr.email:
+                                if contact.type not in ['other','invoice']:
+                                    email_list_cc.append(contact.email)
                         # email_queue.append(contact.email)
                 if (customr.historic_months > 0):
                     historic_day = customr.historic_months * 30
