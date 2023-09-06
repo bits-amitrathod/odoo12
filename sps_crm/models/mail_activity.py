@@ -97,6 +97,8 @@ class MailActivityNotesCustom(models.Model):
                 if partner_link:
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
+            # studio field data migration
+            record.comment = record.comment if record.comment else record.x_studio_comments
 
     @api.model
     def create(self, val):
