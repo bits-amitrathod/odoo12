@@ -291,10 +291,10 @@ class AccountMoveVendorBill(models.Model):
     def due_date_note_cal(self):
         lista = list(self.invoice_payment_term_id.line_ids)
         date_ref = self.invoice_date
-        next_date = fields.Date.from_string(date_ref)
         self.due_date_note = False
         due_str = ""
         for line in lista:
+            next_date = fields.Date.from_string(date_ref)
             if line.option == 'day_after_invoice_date':
                 next_date += relativedelta(days=line.days)
                 if line.day_of_the_month > 0:
