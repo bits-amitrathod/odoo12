@@ -290,7 +290,7 @@ class AccountMoveVendorBill(models.Model):
     @api.depends('invoice_payment_term_id')
     def due_date_note_cal(self):
         lista = list(self.invoice_payment_term_id.line_ids)
-        date_ref = self.invoice_date
+        date_ref = self.invoice_date or fields.Date.context_today(self)
         self.due_date_note = False
         due_str = ""
         for line in lista:
