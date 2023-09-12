@@ -40,6 +40,21 @@ class MailActivityNotesCustom(models.Model):
     phone = fields.Char(related="related_partner_activity.phone", readonly=True, store=False)
     mobile = fields.Char(related="related_partner_activity.mobile", readonly=True, store=False)
 
+    # studio field replacement
+    tags = fields.Many2many(related="related_partner_activity.category_id", readonly=True, store=False)
+    # related field id studio field need to change
+    direct_line = fields.Char(related="related_partner_activity.x_studio_direct_line", readonly=True, store=False)
+    time_zone = fields.Selection([
+        ('est', 'EST'),
+        ('cst', 'CST'),
+        ('mst', 'MST'),
+        ('pst', 'PST'),
+        ('ast', 'AST'),
+        ('hast', 'HAST')],related="related_partner_activity.time_zone", readonly=True, store=False)
+    function = fields.Char(related="related_partner_activity.function", readonly=True, store=False)
+
+    comment = fields.Html(string='Comments')
+
     ordered_online = fields.Boolean(related="related_partner_activity.x_studio_ordered_online", readonly=True,
                                       store=False)
     ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True, store=False)
@@ -82,6 +97,8 @@ class MailActivityNotesCustom(models.Model):
                 if partner_link:
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
+            # studio field data migration
+            record.comment = record.comment if record.comment else record.x_studio_comments
 
     @api.model
     def create(self, val):
@@ -175,7 +192,7 @@ class MailActivityNotesCustom(models.Model):
     def action_view_activity_popup(self):
         self.ensure_one()
         view_id = self.env.ref(
-            'sh_activities_management.sh_mail_activity_view_form').id
+            'sh_activities_management.sh_mail_activity_view_form_n').id
         return {
             'name': _('Schedule an Activity'),
             'view_mode': 'form',
@@ -284,7 +301,7 @@ class MailActivityNotesCustom(models.Model):
             messages |= record.sudo().message_ids[0]
 
             view_id = self.env.ref(
-                'sh_activities_management.sh_mail_activity_view_form').id
+                'sh_activities_management.sh_mail_activity_view_form_n').id
             if copy_of_activity:
                 context = dict(self.env.context)
                 context['form_view_initial_mode'] = 'edit'
