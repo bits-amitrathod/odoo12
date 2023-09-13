@@ -273,6 +273,7 @@ class apprisal_tracker_vendor(models.Model):
             'currency_id': currency and currency.id or False,
             'date_maturity': move.invoice_date_due,
             'partner_id': move.partner_id.id,
+            'name': 'CREDIT (%s - %s)' % (self.name, self.appraisal_no)
         })
         return res
 
