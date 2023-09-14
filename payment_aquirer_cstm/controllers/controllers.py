@@ -212,6 +212,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
          - UDPATE ME
         """
+        _logger.info("****/shop/payment/validate**** in ")
         if sale_order_id is None:
             order = request.website.sale_get_order()
             if not order and 'sale_last_order_id' in request.session:
@@ -231,15 +232,12 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
             tx = order.get_portal_last_transaction()
         else:
             tx = None
-
+        _logger.info("****/shop/payment/validate****  check order amount ")
         if not order or (order.amount_total and not tx):
             return request.redirect('/shop')
-
+        _logger.info("****/shop/payment/validate****  before Confirmation ")
         if order and not order.amount_total and not tx:
-            if order.check_product_qty_before_sale():
-                _logger.log("* Before SO confirm ** pmt val***** Product Sold SO Name:- ******** {} ".format(order.name))
-            else:
-                order.with_context(send_email=True).action_confirm()
+            # order.with_context(send_email=True).action_confirm()
             return request.redirect(order.get_portal_url())
 
         # clean context and session, then redirect to the confirmation page
