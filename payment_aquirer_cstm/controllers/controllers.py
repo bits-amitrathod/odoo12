@@ -14,6 +14,7 @@ from odoo.exceptions import AccessError, MissingError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq, ustr
 from odoo import api, fields, models, _
 from odoo.tools.float_utils import float_repr
+from odoo.addons.payment.controllers.portal import PaymentProcessing
 
 _logger = logging.getLogger(__name__)
 class PaymentAquirerCstm(http.Controller):
@@ -46,6 +47,9 @@ class PaymentAquirerCstm(http.Controller):
                                 if result2:
                                     order.state = 'sent'
                                     order.client_order_ref = kwargs['purchase_order']
+                                    if order.check_product_qty_before_sale():
+                                        vals = {'error': " Product(s) Out Of Stack."}
+                                        return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                                     order.action_confirm()
                                 else:
                                     vals = {'error': "The PO number is already present on another Sales Order."}
@@ -53,6 +57,9 @@ class PaymentAquirerCstm(http.Controller):
                             else:
                                 order.state = 'sent'
                                 order.client_order_ref = kwargs['purchase_order']
+                                if order.check_product_qty_before_sale():
+                                    vals = {'error': " Product(s) Out Of Stack."}
+                                    return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                                 order.action_confirm()
                     return request.redirect('/shop/payment/validate')
                 else:
@@ -198,7 +205,50 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         return responce
 
+    @http.route('/shop/payment/validate', type='http', auth="public", website=True, sitemap=False)
+    def payment_validate(self, transaction_id=None, sale_order_id=None, **post):
+        """ Method that should be called by the server when receiving an update
+        for a transaction. State at this point :
 
+         - UDPATE ME
+        """
+        if sale_order_id is None:
+            order = request.website.sale_get_order()
+            if not order and 'sale_last_order_id' in request.session:
+                # Retrieve the last known order from the session if the session key `sale_order_id`
+                # was prematurely cleared. This is done to prevent the user from updating their cart
+                # after payment in case they don't return from payment through this route.
+                last_order_id = request.session['sale_last_order_id']
+                order = request.env['sale.order'].sudo().browse(last_order_id).exists()
+        else:
+            order = request.env['sale.order'].sudo().browse(sale_order_id)
+            assert order.id == request.session.get('sale_last_order_id')
+
+        if transaction_id:
+            tx = request.env['payment.transaction'].sudo().browse(transaction_id)
+            assert tx in order.transaction_ids()
+        elif order:
+            tx = order.get_portal_last_transaction()
+        else:
+            tx = None
+
+        if not order or (order.amount_total and not tx):
+            return request.redirect('/shop')
+
+        if order and not order.amount_total and not tx:
+            if order.check_product_qty_before_sale():
+                _logger.log("* Before SO confirm ** pmt val***** Product Sold SO Name:- ******** {} ".format(order.name))
+            else:
+                order.with_context(send_email=True).action_confirm()
+            return request.redirect(order.get_portal_url())
+
+        # clean context and session, then redirect to the confirmation page
+        request.website.sale_reset()
+        if tx and tx.state == 'draft':
+            return request.redirect('/shop')
+
+        PaymentProcessing.remove_payment_transaction(tx)
+        return request.redirect('/shop/confirmation')
 
     @http.route('/salesTeamMessage', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def salesTeamMessage(self, sales_team_message):
