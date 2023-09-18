@@ -15,6 +15,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq, ustr
 from odoo import api, fields, models, _
 from odoo.tools.float_utils import float_repr
 from odoo.addons.payment.controllers.portal import PaymentProcessing
+from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
 class PaymentAquirerCstm(http.Controller):
@@ -203,8 +204,53 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         if sale_note:
             order.sudo().write({'sale_note': sale_note})
 
+        # remove Product from Product Process
+        product_process = request.env['product.process.list'].sudo()
+        for line in order.order_line:
+            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+                product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
+
         return responce
 
+    @http.route()
+    def payment_transaction(self, *args, **kwargs):
+        order = request.website.sale_get_order()
+        values = []
+        values_b = []
+        product_process = request.env['product.process.list'].sudo()
+        # this is custom code  used to handle Same Items being sold simultaneously
+        for line in order.order_line:
+            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+                cart_qty = sum(order.order_line.filtered(lambda p: p.product_id.id == line.product_id.id).mapped(
+                    'product_uom_qty'))
+                avl_qty = line.product_id.with_context(warehouse=order.warehouse_id.id).virtual_available
+                if product_process.is_product_in_process(line.product_id):
+                    process_qty = product_process.get_product_process_qty_by_product(line.product_id)
+                    if (cart_qty + process_qty) > avl_qty:
+                        values_b.append(_('Oops Some Product Out of Stock'))
+                if cart_qty > avl_qty:
+                    values.append(_(
+                        'You ask for %(quantity)s products but only %(available_qty)s is available',
+                        quantity=cart_qty,
+                        available_qty=avl_qty if avl_qty > 0 else 0
+                    ))
+        if values:
+            raise ValidationError('. '.join(values) + '.')
+        if values_b:
+            raise ValidationError('. '.join(values_b) + '.')
+
+        # add Products in process
+        for line in order.order_line:
+            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+                product_process.create({
+                    'product_id': line.product_id.id,
+                    'so_name': order.name,
+                    'process_qty': sum(order.order_line.filtered(lambda p: p.product_id.id == line.product_id.id).mapped(
+                            'product_uom_qty')),
+                    'customer_id': order.partner_id.id,
+                })
+
+        return super(WebsiteSalesPaymentAquirerCstm, self).payment_transaction(*args, **kwargs)
     @http.route('/salesTeamMessage', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def salesTeamMessage(self, sales_team_message):
         request.session['sales_team_message'] = sales_team_message
