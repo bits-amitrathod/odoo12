@@ -205,49 +205,6 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         return responce
 
-    @http.route('/shop/payment/validate', type='http', auth="public", website=True, sitemap=False)
-    def payment_validate(self, transaction_id=None, sale_order_id=None, **post):
-        """ Method that should be called by the server when receiving an update
-        for a transaction. State at this point :
-
-         - UDPATE ME
-        """
-        _logger.info("****/shop/payment/validate**** in ")
-        if sale_order_id is None:
-            order = request.website.sale_get_order()
-            if not order and 'sale_last_order_id' in request.session:
-                # Retrieve the last known order from the session if the session key `sale_order_id`
-                # was prematurely cleared. This is done to prevent the user from updating their cart
-                # after payment in case they don't return from payment through this route.
-                last_order_id = request.session['sale_last_order_id']
-                order = request.env['sale.order'].sudo().browse(last_order_id).exists()
-        else:
-            order = request.env['sale.order'].sudo().browse(sale_order_id)
-            assert order.id == request.session.get('sale_last_order_id')
-
-        if transaction_id:
-            tx = request.env['payment.transaction'].sudo().browse(transaction_id)
-            assert tx in order.transaction_ids()
-        elif order:
-            tx = order.get_portal_last_transaction()
-        else:
-            tx = None
-        _logger.info("****/shop/payment/validate****  check order amount ")
-        if not order or (order.amount_total and not tx):
-            return request.redirect('/shop')
-        _logger.info("****/shop/payment/validate****  before Confirmation ")
-        if order and not order.amount_total and not tx:
-            # order.with_context(send_email=True).action_confirm()
-            return request.redirect(order.get_portal_url())
-
-        # clean context and session, then redirect to the confirmation page
-        request.website.sale_reset()
-        if tx and tx.state == 'draft':
-            return request.redirect('/shop')
-
-        PaymentProcessing.remove_payment_transaction(tx)
-        return request.redirect('/shop/confirmation')
-
     @http.route('/salesTeamMessage', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def salesTeamMessage(self, sales_team_message):
         request.session['sales_team_message'] = sales_team_message
