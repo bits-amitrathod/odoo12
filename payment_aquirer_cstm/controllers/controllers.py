@@ -227,7 +227,10 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                 if product_process.is_product_in_process(line.product_id):
                     process_qty = product_process.get_product_process_qty_by_product(line.product_id)
                     if (cart_qty + process_qty) > avl_qty:
-                        values_b.append(_('Oops Some Product Out of Stock'))
+                        values_b.append(_('You ask %(quantity)s products of SKU Name: %(sku)s but only %(available_qty)s are available',
+                        sku=line.product_id.sku_code,
+                        quantity=cart_qty,
+                        available_qty=(avl_qty - process_qty) if(avl_qty - process_qty) > 0 else 0))
                 if cart_qty > avl_qty:
                     values.append(_(
                         'You ask for %(quantity)s products but only %(available_qty)s is available',
