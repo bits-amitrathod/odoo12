@@ -13,8 +13,8 @@ class product_process_list(models.Model):
     customer_id = fields.Many2one('res.partner', string='Customer')
 
 
-    def is_product_in_process(self, product_id,so_name):
-        records = self.search([('product_id', '=', product_id.id),('so_name', '=', so_name)])
+    def is_product_in_process(self, product_id):
+        records = self.search([('product_id', '=', product_id.id)])
         return True if len(records) > 0 else False
 
     def get_product_process_qty_by_product(self, product_id):

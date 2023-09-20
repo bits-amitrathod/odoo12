@@ -224,7 +224,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                 cart_qty = sum(order.order_line.filtered(lambda p: p.product_id.id == line.product_id.id).mapped(
                     'product_uom_qty'))
                 avl_qty = line.product_id.with_context(warehouse=order.warehouse_id.id).virtual_available
-                if product_process.is_product_in_process(line.product_id,order.name):
+                if product_process.is_product_in_process(line.product_id):
                     process_qty = product_process.get_product_process_qty_by_product(line.product_id)
                     if (cart_qty + process_qty) > avl_qty:
                         values_b.append(_('You ask %(quantity)s products of SKU Name: %(sku)s but only %(available_qty)s are available',
