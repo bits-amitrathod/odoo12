@@ -25,5 +25,5 @@ class product_process_list(models.Model):
         return sum
 
     def remove_recored_by_product_and_so(self, product_id, so_name):
-        record = self.search([('product_id', '=', product_id.id),('so_name', '=', so_name)], limit=1)
+        record = self.search([('product_id', '=', product_id),('so_name', '=', so_name)], limit=1)
         return record.unlink()
