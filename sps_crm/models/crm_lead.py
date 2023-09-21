@@ -409,6 +409,11 @@ class Lead(models.Model):
         sales_person = self.user_id.login.strip() \
             if self.user_id.login else 'info@surgicalproductsolutions.com'
 
+        email_from = sales_person
+
+        if self.user_id.name == "Sarah Davidson":
+            sales_person += ',mdietrick@shopsps.com'
+
         email ='jtennant@shopsps.com,equipment@surgicalproductsolutions.com,equipment@shopspseq.com'\
             if self.opportunity_type and self.opportunity_type == "eq_acq" else "appraisal@surgicalproductsolutions.com"
 
@@ -419,6 +424,7 @@ class Lead(models.Model):
                          'payment_type': self.payment_type, 'acq_priority': dict(self._fields['acq_priority'].selection).get(self.acq_priority),
                          'payment_terms': self.property_supplier_payment_term_id.name,
                          'sales_person': sales_person,
+                         'email_from': email_from,
                          'internal_notes_description': self.internal_notes_description,
                          'email': email
                          }
