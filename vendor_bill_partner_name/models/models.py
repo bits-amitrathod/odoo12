@@ -289,27 +289,30 @@ class AccountMoveVendorBill(models.Model):
     @api.onchange('invoice_payment_term_id')
     @api.depends('invoice_payment_term_id')
     def due_date_note_cal(self):
-        lista = list(self.invoice_payment_term_id.line_ids)
-        date_ref = self.invoice_date or fields.Date.context_today(self)
-        self.due_date_note = False
-        due_str = ""
-        for line in lista:
-            next_date = fields.Date.from_string(date_ref)
-            if line.option == 'day_after_invoice_date':
-                next_date += relativedelta(days=line.days)
-                if line.day_of_the_month > 0:
-                    months_delta = (line.day_of_the_month < next_date.day) and 1 or 0
-                    next_date += relativedelta(day=line.day_of_the_month, months=months_delta)
-            elif line.option == 'after_invoice_month':
-                next_first_date = next_date + relativedelta(day=1, months=1)  # Getting 1st of next month
-                next_date = next_first_date + relativedelta(days=line.days - 1)
-            elif line.option == 'day_following_month':
-                next_date += relativedelta(day=line.days, months=1)
-            elif line.option == 'day_current_month':
-                next_date += relativedelta(day=line.days, months=0)
-            due_str += "Due Date :- " + str(format_date(self.env, next_date, date_format="MM/dd/yyyy")) + "\n"
+        for rec in self:
+            lista = list(rec.invoice_payment_term_id.line_ids)
+            date_ref = rec.invoice_date or fields.Date.context_today(rec)
+            rec.due_date_note = False
+            due_str = ""
+            for line in lista:
+                next_date = fields.Date.from_string(date_ref)
+                if line.option == 'day_after_invoice_date':
+                    next_date += relativedelta(days=line.days)
+                    if line.day_of_the_month > 0:
+                        months_delta = (line.day_of_the_month < next_date.day) and 1 or 0
+                        next_date += relativedelta(day=line.day_of_the_month, months=months_delta)
+                elif line.option == 'after_invoice_month':
+                    next_first_date = next_date + relativedelta(day=1, months=1)  # Getting 1st of next month
+                    next_date = next_first_date + relativedelta(days=line.days - 1)
+                elif line.option == 'day_following_month':
+                    next_date += relativedelta(day=line.days, months=1)
+                elif line.option == 'day_current_month':
+                    next_date += relativedelta(day=line.days, months=0)
+                due_str += "Due Date :- " + str(format_date(rec.env, next_date, date_format="MM/dd/yyyy")) + "\n"
 
-        if due_str == "":
-            self.due_date_note ="Due Date :- " + str(format_date(self.env, self.invoice_date_due, date_format="MM/dd/yyyy"))
-        else:
-            self.due_date_note = due_str
+            if due_str == "":
+                rec.due_date_note = "Due Date :- " + str(
+                    format_date(rec.env, rec.invoice_date_due, date_format="MM/dd/yyyy"))
+            else:
+                rec.due_date_note = due_str
+
