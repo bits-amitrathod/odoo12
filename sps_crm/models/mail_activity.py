@@ -64,6 +64,13 @@ class MailActivityNotesCustom(models.Model):
     top_subspecialties1 = fields.Many2many(related="related_partner_activity.top_subspecialties1", readonly=True,
                                       store=False)
 
+    connected_in_ghx = fields.Boolean(related="related_partner_activity.x_studio_connected_in_ghx", readonly=True,
+                                           store=False)
+    ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True,
+                                           store=False)
+    email_opt_out = fields.Boolean(related="related_partner_activity.email_opt_out", readonly=True,
+                                        store=False)
+
     #date_done = fields.Date("Completed Date", index=True, readonly=False)
 
     # def write(self, vals):
