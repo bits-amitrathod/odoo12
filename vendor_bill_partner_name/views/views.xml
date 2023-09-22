@@ -34,7 +34,7 @@
 
                 </xpath>
                 <field name="invoice_date_due" position="after">
-                    <field name='due_date_note'></field>
+                    <field name='due_date_note' attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))]}"></field>
                 </field>
             </field>
         </record>
@@ -226,7 +226,7 @@
 
         <template id="report_invoice_document_inherited_for_due_dates" inherit_id="account.report_invoice_document">
             <xpath expr="//div[@class='page']/div[@id='informations']/div[@name='due_date']" position="after">
-                <div class="col-auto col-3 mw-100 mb-2" t-if="o.due_date_note" name="due_dates">
+                <div class="col-auto col-3 mw-100 mb-2" t-if="o.due_date_note and o.move_type in ('in_invoice', 'in_refund', 'in_receipt')" name="due_dates">
                     <strong>Due Dates:</strong>
                     <p t-field="o.due_date_note"/>
                 </div>
