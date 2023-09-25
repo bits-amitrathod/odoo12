@@ -74,7 +74,12 @@
                         </group>
                     </page>
                     <page name="wishlist" string="Wish List">
-                        <field name="wishlist_ids"/>
+                        <field name="wishlist_ids">
+                            <tree>
+                                <field name="product_id"/>
+                                <field name="website_id"/>
+                            </tree>
+                        </field>
                     </page>
                 </xpath>
                 <field name="vat" position="attributes">
