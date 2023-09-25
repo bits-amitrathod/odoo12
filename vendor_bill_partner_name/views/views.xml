@@ -30,7 +30,7 @@
                          'show_address': 1
                          }"
                                        options='{"always_reload": True, "no_quick_create": True}'
-                                       attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"/>
+                                       attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"/> 
 
                 </xpath>
                 <field name="invoice_date_due" position="after">
