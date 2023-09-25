@@ -73,6 +73,9 @@
                                    <field name="acq_activity_notes"/>
                         </group>
                     </page>
+                    <page name="wishlist" string="Wish List">
+                        <field name="wishlist_ids"/>
+                    </page>
                 </xpath>
                 <field name="vat" position="attributes">
                     <attribute name="groups">account.group_account_manager</attribute>
