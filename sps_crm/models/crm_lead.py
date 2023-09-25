@@ -89,7 +89,10 @@ class Lead(models.Model):
                                                 ('wholesale', 'Wholesale'),
                                                 ('national_acc', 'National Account Target'),
                                                 ('other', 'Other'),
-                                                ('lab/_research_center', 'Lab/ Research Center')])
+                                                ('lab/_research_center', 'Lab/ Research Center'),
+                                                ('closed1', 'Closed'),
+                                                ('no_surgery', 'No Surgery'),
+                                                ])
 
     opportunity_type = fields.Selection(string='Opportunity Type Acq',
                                      selection=[('product_acq', 'Product Acquisition'),
