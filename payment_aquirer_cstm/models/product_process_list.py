@@ -27,3 +27,10 @@ class product_process_list(models.Model):
     def remove_recored_by_product_and_so(self, product_id, so_name):
         record = self.search([('product_id', '=', product_id),('so_name', '=', so_name)], limit=1)
         return record.unlink()
+    @api.model
+    def _delete_old_records(self):
+        # delete records older than 5 minutes
+        from datetime import datetime, timedelta
+        five_minutes_ago = datetime.now() - timedelta(minutes=5)
+        records_to_delete = self.env['product.process.list'].search([('create_date', '<', five_minutes_ago)])
+        records_to_delete.unlink()
