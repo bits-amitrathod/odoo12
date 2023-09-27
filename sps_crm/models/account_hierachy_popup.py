@@ -165,6 +165,8 @@ class AccountHierarchyReport(models.TransientModel):
             'wholesale': 'Wholesale',
             'national_acc': 'National Account Target',
             'other': 'Other',
+            'closed1':'Closed',
+            'no_surgery':'No Surgery',
             'lab/_research_center': 'Lab/ Research Center'
         }
 

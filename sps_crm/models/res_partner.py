@@ -384,7 +384,9 @@ class Partner(models.Model):
         ('non_surgery', 'Non-Surgery/Closed'),
         ('wholesale','Wholesale'),
         ('reseller', 'Reseller'),
-        ('national account_target', 'National Account Target')], string='Facility Type', store=False)
+        ('national account_target', 'National Account Target'),
+        ('closed1', 'Closed'),
+        ('no_surgery', 'No Surgery')], string='Facility Type', store=False)
     bed_size = fields.Integer(default=0, string="Bed Size", store=False, compute="_compute_bed_size",
                               inverse="_inverse_parent_account", search='pro_search_for_bed_size')
     purchase_history_date = fields.Datetime(string="Last Purchase History", compute="_compute_purchase_history_date", store=False,
@@ -763,9 +765,11 @@ class PartnerLinkTracker(models.Model):
         ('broker', 'Broker'),
         ('veterinarian', 'Veterinarian'),
         ('non_surgery', 'Non-Surgery/Closed'),
-        ('wholesale','Wholesale'),
+        ('wholesale', 'Wholesale'),
         ('reseller', 'Reseller'),
-        ('national account_target', 'National Account Target')],string='Facility Type')
+        ('national account_target', 'National Account Target'),
+        ('closed1', 'Closed'),
+        ('no_surgery', 'No Surgery')],string='Facility Type')
     bed_size = fields.Integer(default=0, string="Bed Size")
     purchase_history_date = fields.Datetime(string="Last Purchase History")
     ordering_day1 = fields.Many2many('day.tag',string='Ordering Day')
