@@ -2,6 +2,7 @@
 
 from odoo.http import request
 from odoo import api, fields, models, tools, SUPERUSER_ID, _
+from datetime import datetime, timedelta
 
 class product_process_list(models.Model):
     _name = "product.process.list"
@@ -18,7 +19,8 @@ class product_process_list(models.Model):
         return True if len(records) > 0 else False
 
     def get_product_process_qty_by_product(self, product_id):
-        records = self.search([('product_id', '=', product_id.id)])
+        minutes_ago = datetime.now() - timedelta(minutes=2)
+        records = self.search([('product_id', '=', product_id.id), ('create_date', '>', minutes_ago)])
         sum = 0
         for rec in records:
             sum += rec.process_qty
@@ -30,7 +32,6 @@ class product_process_list(models.Model):
     @api.model
     def _delete_old_records(self):
         # delete records older than 5 minutes
-        from datetime import datetime, timedelta
         five_minutes_ago = datetime.now() - timedelta(minutes=5)
         records_to_delete = self.env['product.process.list'].search([('create_date', '<', five_minutes_ago)])
         records_to_delete.unlink()
