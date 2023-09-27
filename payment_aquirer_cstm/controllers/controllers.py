@@ -15,6 +15,7 @@ from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq, ustr
 from odoo import api, fields, models, _
 from odoo.tools.float_utils import float_repr
 from odoo.addons.payment.controllers.portal import PaymentProcessing
+from odoo.addons.payment_paypal.controllers.main import PaypalController
 from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -494,4 +495,31 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         else:
             return request.redirect('/my/home')
 
+class PaymentProcessing(PaymentProcessing):
 
+    @http.route()
+    def payment_status_page(self, **kwargs):
+        # Remove product from
+        order_id = request.session.sale_order_id
+        if order_id:
+            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
+            product_process = request.env['product.process.list'].sudo()
+            for line in order.order_line:
+                if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always',
+                                                                                                    'threshold']:
+                    product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
+        return super(PaymentProcessing, self).payment_status_page(**kwargs)
+
+
+class PaypalController(PaypalController):
+    @http.route()
+    def paypal_cancel(self, **post):
+        order_id = request.session.sale_order_id
+        if order_id:
+            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
+            product_process = request.env['product.process.list'].sudo()
+            for line in order.order_line:
+                if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+                    product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
+
+        return super(PaypalController, self).paypal_cancel(**post)
