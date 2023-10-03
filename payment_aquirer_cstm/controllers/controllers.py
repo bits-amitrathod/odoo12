@@ -169,11 +169,12 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         ctx['showShippingNote'] = False
         ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session['expedited_shipping'] or ""
-        for x in ctx['deliveries']:
-            if x.delivery_type == "fixed" and x.fixed_price == 0:
-                ctx['showShippingNote'] = True
-                ctx['freeShipingLabel'] = x.code
-            break
+        if 'deliveries' in ctx:
+            for x in ctx['deliveries']:
+                if x.delivery_type == "fixed" and x.fixed_price == 0:
+                    ctx['showShippingNote'] = True
+                    ctx['freeShipingLabel'] = x.code
+                break
 
         return responce
 
