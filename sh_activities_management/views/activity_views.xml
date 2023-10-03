@@ -58,7 +58,7 @@
             </xpath>
         </field>
     </record>
-    <record id="sh_mail_activity_view_form" model="ir.ui.view">
+    <record id="sh_mail_activity_view_form_n" model="ir.ui.view">
         <field name="name">mail.activity</field>
         <field name="model">mail.activity</field>
         <field name="priority">10000</field>
@@ -304,7 +304,7 @@
         <field name="view_ids" eval="[(5, 0, 0),
             	(0, 0, {'view_mode': 'tree', 'view_id': ref('sh_mail_activity_view_tree')}),
             	(0, 0, {'view_mode': 'kanban', 'view_id': ref('sh_mail_schedule_activity_view_kanban')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('sh_mail_activity_view_form')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sh_mail_activity_view_form_n')}),
                 (0, 0, {'view_mode': 'pivot', 'view_id': ref('sh_mail_schedule_activity_view_pivot')}),
                 (0, 0, {'view_mode': 'calendar', 'view_id': ref('sh_mail_schedule_activity_view_calendar')}),
                 (0, 0, {'view_mode': 'graph', 'view_id': ref('sh_mail_schedule_activity_view_graph')})]" />
@@ -323,7 +323,7 @@
         <field name="view_ids" eval="[(5, 0, 0),
             	(0, 0, {'view_mode': 'tree', 'view_id': ref('sh_mail_activity_view_tree')}),
             	(0, 0, {'view_mode': 'kanban', 'view_id': ref('sh_mail_schedule_activity_view_kanban')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('sh_mail_activity_view_form')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sh_mail_activity_view_form_n')}),
                 (0, 0, {'view_mode': 'pivot', 'view_id': ref('sh_mail_schedule_activity_view_pivot')}),
                 (0, 0, {'view_mode': 'calendar', 'view_id': ref('sh_mail_schedule_activity_view_calendar')}),
                 (0, 0, {'view_mode': 'graph', 'view_id': ref('sh_mail_schedule_activity_view_graph')})]" />
@@ -337,7 +337,7 @@
         <field name="view_ids" eval="[(5, 0, 0),
             	(0, 0, {'view_mode': 'tree', 'view_id': ref('sh_mail_activity_view_tree')}),
             	(0, 0, {'view_mode': 'kanban', 'view_id': ref('sh_mail_schedule_activity_view_kanban')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('sh_mail_activity_view_form')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('sh_mail_activity_view_form_n')}),
                 (0, 0, {'view_mode': 'pivot', 'view_id': ref('sh_mail_schedule_activity_view_pivot')}),
                 (0, 0, {'view_mode': 'calendar', 'view_id': ref('sh_mail_schedule_activity_view_calendar')}),
                 (0, 0, {'view_mode': 'graph', 'view_id': ref('sh_mail_schedule_activity_view_graph')})]" />

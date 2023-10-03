@@ -391,7 +391,7 @@ class VendorOffer(models.Model):
 
                 credit_amount_untaxed = 0
                 credit_amount_total = 0
-                flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in
+                flag = any(e in ['Ovation Elevate', 'Alliant Purchasing', 'SurgeryPartners'] for e in
                            list(map(lambda x: x.name, order.partner_id.category_id)))
 
                 if product_retail > 0:
@@ -494,7 +494,7 @@ class VendorOffer(models.Model):
                 credit_amount_untaxed = 0
                 credit_amount_total = 0
 
-                flag = any(e in ['QPA PLUS', 'Alliant Purchasing'] for e in
+                flag = any(e in ['Ovation Elevate', 'Alliant Purchasing', 'SurgeryPartners'] for e in
                            list(map(lambda x: x.name, order.partner_id.category_id)))
                 if product_retail > 0:
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
@@ -504,6 +504,9 @@ class VendorOffer(models.Model):
                     if order.import_type_ven != 'all_field_import':
                         if flag:
                             credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
+                    elif order.offer_type == 'credit' and flag:
+                        credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
+
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
                 order.update({

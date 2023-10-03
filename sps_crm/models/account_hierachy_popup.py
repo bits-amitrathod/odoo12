@@ -1,7 +1,9 @@
 from odoo import api, fields, models,_
 import datetime
 from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
+from werkzeug import urls
 import logging
+
 
 _logger = logging.getLogger(__name__)
 
@@ -51,12 +53,22 @@ class AccountHierarchyReport(models.TransientModel):
 
     def _compute_account_hierarchy_html(self):
 
+
+        web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        self.env['ir.config_parameter'].set_param('web.shopsps_odoo_com', 'https://shopsps.odoo.com')
+        matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
+
+        if any([x in web_base_url for x in matches]):
+            url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        else:
+            url = self.env['ir.config_parameter'].sudo().get_param('web.shopsps_odoo_com')
+
         flag = True
         current_partner_name = ""
         partner = 0
         data_val = ''
         res_model = 'partner.link.tracker'
-        _logger.info('--------- _compute_account_hierarchy_html  In Account hierarchy code ')
+        #_logger.info('--------- _compute_account_hierarchy_html  In Account hierarchy code ')
 
         current_partner_record = self.env['res.partner'].browse(int(self.env.context.get('default_partner_id')))
         if current_partner_record.id is False:
@@ -88,15 +100,19 @@ class AccountHierarchyReport(models.TransientModel):
         final_data, final_data_name = self.set_data(grand_parent, list_all, level, final_data,
                                                     final_data_name)
 
-        url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        _logger.info('--------- _compute_account_hierarchy_html  url ')
-        _logger.info('--------- _compute_account_hierarchy_html %s', url)
+
+        #_logger.info('--------- _compute_account_hierarchy_html  url ')
+        #_logger.info('--------- _compute_account_hierarchy_html %s', url)
         data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
                    "style='table-layout: fixed;'><tbody>"
         for x, list_data in enumerate(final_data):
             # p = list_data.lstrip('&nbps; ')
             customer = self.env['res.partner'].sudo().search([('id', '=', final_data_name[x].id)], limit=1)
             l= []
+            facility_code = customer.facility_tpcd if customer.facility_tpcd else ""
+            facility_name = ""
+            if facility_code:
+                facility_name = self.get_facility_name(facility_code)
             sale_mngr = self.get_sales_manager(customer).name if self.get_sales_manager(customer) else ""
             purchase_mngr = self.get_purchase_manager(customer).name if self.get_purchase_manager(customer) else ""
             state = customer.state_id.name if customer.state_id else ""
@@ -116,14 +132,14 @@ class AccountHierarchyReport(models.TransientModel):
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<b><a style='color:blue !important;' target='_blank' href=' " + url + '/web#id=' + str(
                     final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + "</a> </b>"+ s1 + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
+                                                             " " + list_data + "</a> </b>"+ s1 + " | " + facility_name + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
                 flag = False
             else:
                 data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
                                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
                                       "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
                     final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + " </a>"+ s1 + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
+                                                             " " + list_data + " </a>"+ s1 + " | " + facility_name + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
             # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
             #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
             #                       "" + list_data + "</td></tr>"
@@ -131,6 +147,30 @@ class AccountHierarchyReport(models.TransientModel):
         data_val = data_val + '</tbody></table>'
         # self.account_hierarchy_html = data_val
         return data_val
+
+    def get_facility_name(self, facility_code):
+        """ This function is added because the facility_tcpd field
+            at customer level is giving string as value and not
+            object .And this selection field in not in DB .
+               """
+        switcher = {
+            'health_sys': 'Health System',
+            'hospital': 'Hospital',
+            'surgery_cen': 'Surgery Center',
+            'pur_alli': 'Purchasing Alliance',
+            'charity': 'Charity',
+            'broker': 'Broker',
+            'veterinarian': 'Veterinarian',
+            'closed': 'Non-Surgery/Closed',
+            'wholesale': 'Wholesale',
+            'national_acc': 'National Account Target',
+            'other': 'Other',
+            'closed1':'Closed',
+            'no_surgery':'No Surgery',
+            'lab/_research_center': 'Lab/ Research Center'
+        }
+
+        return switcher.get(facility_code, "nothing")
 
     def get_sales_manager(self, customer):
         user_name = None
@@ -173,3 +213,66 @@ class AccountHierarchyReport(models.TransientModel):
             partner_child_list = list_all[partner.id]
             for prt in partner_child_list:
                 self.recursive_hir(prt, list_all, level, final_data, final_data_name)
+
+
+class SalePaymentLink(models.TransientModel):
+    _inherit = "payment.link.wizard"
+    _description = "Generate Sales Payment Link"
+
+    def get_base_url_custom(self):
+        """
+        Returns Custom URL as per client requirement
+        Ticket 659, Added through code , so that even record is deleted it will recreate
+        """
+        web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        self.env['ir.config_parameter'].sudo().set_param('web.shopsps_com', 'https://www.shopsps.com')
+        matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
+
+        if any([x in web_base_url for x in matches]):
+            url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        else:
+            url = self.env['ir.config_parameter'].sudo().get_param('web.shopsps_com')
+
+        return url
+
+    def _generate_link(self):
+        """ Override of the base method to add the order_id in the link. """
+        for payment_link in self:
+            # only add order_id for SOs,
+            # otherwise the controller might try to link it with an unrelated record
+            # NOTE: company_id is not necessary here, we have it in order_id
+            # however, should parsing of the id fail in the controller, let's include
+            # it anyway
+            if payment_link.res_model == 'sale.order':
+                record = self.env[payment_link.res_model].browse(payment_link.res_id)
+                payment_link.link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
+                                    '&partner_id=%s&order_id=%s&company_id=%s&access_token=%s') % (
+                                        self.get_base_url_custom(),
+                                        urls.url_quote_plus(payment_link.description),
+                                        payment_link.amount,
+                                        payment_link.currency_id.id,
+                                        payment_link.partner_id.id,
+                                        payment_link.res_id,
+                                        payment_link.company_id.id,
+                                        payment_link.access_token
+                                    )
+            else:
+                self._generate_link_invoice_custom()
+
+    def _generate_link_invoice_custom(self):
+        for payment_link in self:
+            record = self.env[payment_link.res_model].browse(payment_link.res_id)
+            link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
+                    '&partner_id=%s&access_token=%s') % (
+                        self.get_base_url_custom(),
+                        urls.url_quote_plus(payment_link.description),
+                        payment_link.amount,
+                        payment_link.currency_id.id,
+                        payment_link.partner_id.id,
+                        payment_link.access_token
+                    )
+            if payment_link.company_id:
+                link += '&company_id=%s' % payment_link.company_id.id
+            if payment_link.res_model == 'account.move':
+                link += '&invoice_id=%s' % payment_link.res_id
+            payment_link.link = link

@@ -33,6 +33,9 @@
                                        attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"/>
 
                 </xpath>
+                <field name="invoice_date_due" position="after">
+                    <field name='due_date_note'  attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund'))]}"></field>
+                </field>
             </field>
         </record>
         <record id="invoice_payment_form_partner_name" model="ir.ui.view">
@@ -220,6 +223,16 @@
                    </xpath>
             </field>
         </record>-->
+
+        <template id="report_invoice_document_inherited_for_due_dates" inherit_id="account.report_invoice_document">
+            <xpath expr="//div[@class='page']/div[@id='informations']/div[@name='due_date']" position="after">
+                <div class="col-auto col-3 mw-100 mb-2" t-if="o.due_date_note and o.move_type == 'out_invoice' and o.state == 'posted'" name="due_dates">
+                    <strong>Due Dates:</strong>
+                    <p t-field="o.due_date_note"/>
+                </div>
+            </xpath>
+        </template>
+
 
     </data>
 </odoo>

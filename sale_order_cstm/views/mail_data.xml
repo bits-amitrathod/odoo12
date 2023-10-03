@@ -138,7 +138,8 @@
                     % else:
                         ${transaction.acquirer_id.name}
                     % endif
-                     (${format_amount(transaction.amount, object.currency_id)})
+                    (${format_amount(object.amount_total, object.currency_id)})
+
                 </td>
             </tr>
         </table>
@@ -165,11 +166,6 @@
                 <td>
                     <strong>Shipping Method:</strong>
                     ${object.carrier_id.name}
-                    % if object.carrier_id.fixed_price == 0.0:
-                        (Free)
-                    % else:
-                        (${format_amount(object.carrier_id.fixed_price, object.currency_id)})
-                    % endif
                 </td>
             </tr>
         </table>

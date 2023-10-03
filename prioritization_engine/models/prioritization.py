@@ -109,6 +109,7 @@ class Customer(models.Model):
         # self.ensure_one()
         #_logger.info("pritization engin :%r", vals)
         # this below if condition code  is added for trending report timeout issue.
+        #if 'action' in self.env.context.keys():
         if not any(f in vals for f in ['month1', 'month2', 'month3','month4', 'month5', 'month6','month7', 'month8', 'month9','month10', 'month11', 'month12','month_total']):
             _logger.info("pritization engin  :%r", vals)
             for ml in self:

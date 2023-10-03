@@ -1,16 +1,21 @@
 # -*- coding: utf-8 -*-
 import odoo
+import hashlib
+import hmac
+import logging
 from odoo import http
 from unicodedata import normalize
 from odoo.http import request
 from odoo.osv import expression
 from odoo.addons.portal.controllers.mail import _message_post_helper
 import werkzeug
+from odoo import api, fields, models, tools, SUPERUSER_ID
 from odoo.exceptions import AccessError, MissingError
-from odoo.tools import consteq
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq, ustr
 from odoo import api, fields, models, _
+from odoo.tools.float_utils import float_repr
 
-
+_logger = logging.getLogger(__name__)
 class PaymentAquirerCstm(http.Controller):
 
     @http.route('/shop/payment/purchaseorderform', type='http', auth="public", website=True, csrf=False)
@@ -190,15 +195,55 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         if sale_note:
             order.sudo().write({'sale_note': sale_note})
+
         return responce
+
+
 
     @http.route('/salesTeamMessage', type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def salesTeamMessage(self, sales_team_message):
         request.session['sales_team_message'] = sales_team_message
 
 
-
 class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment):
+
+    def action_send_mail_after_payment_final(self, ref=None):
+        template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
+
+        if ref:
+            so_name = str(ref.reference.split("-", 1)[0])
+            values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
+            email_to = 'sales@surgicalproductsolutions.com'
+            sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
+            if sale_order:
+                if sale_order.account_manager:
+                    user_id_email = sale_order.account_manager.login
+                elif sale_order.user_id:
+                    if sale_order.user_id.name == "National Accounts" and sale_order.national_account:
+                        user_id_email = sale_order.national_account.login
+                    else:
+                        user_id_email = sale_order.user_id.login
+                elif sale_order.national_account:
+                    user_id_email = sale_order.national_account.login
+                else:
+                    user_id_email = sale_order.user_id.login
+
+            email_to = user_id_email
+
+            email_cc = 'accounting@surgicalproductsolutions.com'
+            email_from = "info@surgicalproductsolutions.com"
+
+            sales_rep = sale_order.user_id.name if sale_order.user_id else None
+
+            local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
+                             'sale_order': so_name, 'amount': ref.amount, 'tx': ref, 'sales_rep': sales_rep,
+                             'cust_name': sale_order.partner_id.name}
+            try:
+                sent_email_template = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID,
+                                                                                            raise_exception=True)
+                request.env['mail.mail'].sudo().browse(sent_email_template).write(values)
+            except Exception as exc:
+                response = {'message': 'Unable to connect to SMTP Server'}
 
     @http.route(['/website_payment/pay'], type='http', auth='public', website=True, sitemap=False)
     def pay(self, reference='', order_id=None, amount=False, currency_id=None, acquirer_id=None, partner_id=False,
@@ -361,5 +406,38 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             values['pms'] = []
 
         return request.render('payment.pay', values)
+
+    @http.route(['/website_payment/confirm'], type='http', auth='public', website=True, sitemap=False)
+    def confirm(self, **kw):
+        tx_id = int(kw.get('tx_id', 0))
+        access_token = kw.get('access_token')
+        if tx_id:
+            if access_token:
+                tx = request.env['payment.transaction'].sudo().browse(tx_id)
+                secret = request.env['ir.config_parameter'].sudo().get_param('database.secret')
+                valid_token_str = '%s%s%s' % (
+                tx.id, tx.reference, float_repr(tx.amount, precision_digits=tx.currency_id.decimal_places))
+                valid_token = hmac.new(secret.encode('utf-8'), valid_token_str.encode('utf-8'),
+                                       hashlib.sha256).hexdigest()
+                if not consteq(ustr(valid_token), access_token):
+                    raise werkzeug.exceptions.NotFound
+            else:
+                tx = request.env['payment.transaction'].browse(tx_id)
+            if tx.state in ['done', 'authorized']:
+                status = 'success'
+                message = tx.acquirer_id.done_msg
+            elif tx.state == 'pending':
+                status = 'warning'
+                message = tx.acquirer_id.pending_msg
+            else:
+                status = 'danger'
+                message = tx.state_message or _('An error occured during the processing of this payment')
+            odoo.addons.payment.controllers.portal.PaymentProcessing.remove_payment_transaction(tx)
+            if tx and tx.reference and tx.reference.startswith("SO"):
+                #_logger.info("***    Reference Start With SO ***")
+                self.action_send_mail_after_payment_final(tx)
+            return request.render('payment.confirm', {'tx': tx, 'status': status, 'message': message})
+        else:
+            return request.redirect('/my/home')
 
 

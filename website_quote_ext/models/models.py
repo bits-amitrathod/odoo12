@@ -5,7 +5,41 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+class ProductProduct(models.Model):
+    _inherit = 'product.product'
 
+    min_exp_date = fields.Date(compute='_compute_exp_dates', store=False)
+    max_exp_date = fields.Date(compute='_compute_exp_dates', store=False)
+
+    def _compute_exp_dates(self):
+        for product in self:
+            if product.id:
+                query = """
+                    SELECT
+                        sum(quantity), min(use_date), max(use_date)
+                    FROM
+                        stock_quant
+                    INNER JOIN
+                        stock_production_lot
+                    ON
+                        (stock_quant.lot_id = stock_production_lot.id)
+                    INNER JOIN
+                        stock_location
+                    ON
+                        (stock_quant.location_id = stock_location.id)
+                    WHERE
+                        stock_location.usage IN ('internal', 'transit')
+                        AND stock_production_lot.product_id = %s
+                """
+                self.env.cr.execute(query, (product.id,))
+                result = self.env.cr.fetchone()
+
+                if result and all(result):
+                    product.min_exp_date = result[1]
+                    product.max_exp_date = result[2]
+                else:
+                    product.min_exp_date = False
+                    product.max_exp_date = False
 class Website(models.Model):
     _inherit = 'website'
 

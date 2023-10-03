@@ -30,8 +30,12 @@ class CustomerContract(models.Model):
                                                 ('closed', 'Non-Surgery/Closed'),
                                                 ('wholesale', 'Wholesale'),
                                                 ('national_acc', 'National Account Target'),
-                                                ('other', 'Other')],
-                                     tracking=True)
+                                                ('other', 'Other'),
+                                                ('lab/_research_center', 'Lab/ Research Center'),
+                                                ('closed1', 'Closed'),
+                                                ('no_surgery', 'No Surgery'),
+                                                ],
+                                                tracking=True)
 
     company_type = fields.Selection(string='Company Type',
                                     selection=[('person', 'Individual'), ('company', 'Company')],

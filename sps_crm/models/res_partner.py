@@ -12,41 +12,46 @@ class Partner(models.Model):
     acq_opportunity_count = fields.Integer("ACQ Opportunity", compute='_compute_acq_opportunity_count')
 
     def _compute_acq_opportunity_count(self):
-        # retrieve all children partners and prefetch 'parent_id' on them
-        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
-        all_partners.read(['parent_id'])
+        if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
+            # retrieve all children partners and prefetch 'parent_id' on them
+            all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+            all_partners.read(['parent_id'])
 
-        opportunity_data = self.env['crm.lead'].read_group(
-            domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'purchase_opportunity')],
-            fields=['partner_id'], groupby=['partner_id']
-        )
+            opportunity_data = self.env['crm.lead'].read_group(
+                domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'purchase_opportunity')],
+                fields=['partner_id'], groupby=['partner_id']
+            )
 
-        self.acq_opportunity_count = 0
-        for group in opportunity_data:
-            partner = self.browse(group['partner_id'][0])
-            while partner:
-                if partner in self:
-                    partner.acq_opportunity_count += group['partner_id_count']
-                partner = partner.parent_id
+            self.acq_opportunity_count = 0
+            for group in opportunity_data:
+                partner = self.browse(group['partner_id'][0])
+                while partner:
+                    if partner in self:
+                        partner.acq_opportunity_count += group['partner_id_count']
+                    partner = partner.parent_id
+        else:
+            self.acq_opportunity_count = 0
 
     def _compute_opportunity_count(self):
-        # retrieve all children partners and prefetch 'parent_id' on them
-        all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
-        all_partners.read(['parent_id'])
+        if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
+            # retrieve all children partners and prefetch 'parent_id' on them
+            all_partners = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+            all_partners.read(['parent_id'])
 
-        opportunity_data = self.env['crm.lead'].read_group(
-            domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'opportunity')],
-            fields=['partner_id'], groupby=['partner_id']
-        )
+            opportunity_data = self.env['crm.lead'].read_group(
+                domain=[('partner_id', 'in', all_partners.ids), ('type', '=', 'opportunity')],
+                fields=['partner_id'], groupby=['partner_id']
+            )
 
-        self.opportunity_count = 0
-        for group in opportunity_data:
-            partner = self.browse(group['partner_id'][0])
-            while partner:
-                if partner in self:
-                    partner.opportunity_count += group['partner_id_count']
-                partner = partner.parent_id
-
+            self.opportunity_count = 0
+            for group in opportunity_data:
+                partner = self.browse(group['partner_id'][0])
+                while partner:
+                    if partner in self:
+                        partner.opportunity_count += group['partner_id_count']
+                    partner = partner.parent_id
+        else:
+            self.opportunity_count
 
     def pro_search_for_gpo(self, operator, value):
         return self.generic_char_search(operator, value, 'gpo')
@@ -379,7 +384,9 @@ class Partner(models.Model):
         ('non_surgery', 'Non-Surgery/Closed'),
         ('wholesale','Wholesale'),
         ('reseller', 'Reseller'),
-        ('national account_target', 'National Account Target')], string='Facility Type', store=False)
+        ('national account_target', 'National Account Target'),
+        ('closed1', 'Closed'),
+        ('no_surgery', 'No Surgery')], string='Facility Type', store=False)
     bed_size = fields.Integer(default=0, string="Bed Size", store=False, compute="_compute_bed_size",
                               inverse="_inverse_parent_account", search='pro_search_for_bed_size')
     purchase_history_date = fields.Datetime(string="Last Purchase History", compute="_compute_purchase_history_date", store=False,
@@ -402,56 +409,57 @@ class Partner(models.Model):
 
 
     def _compute_details_field(self):
-        for record in self:
-            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
-            if partner_link:
-                record.gpo = partner_link.gpo
-                record.purchase = partner_link.purchase
-                record.mesh = partner_link.mesh
-                record.edomechanicals = partner_link.edomechanicals
-                record.orthopedic = partner_link.orthopedic
-                record.suture = partner_link.suture
-                record.gynecological = partner_link.gynecological
-                record.uology = partner_link.uology
-                record.edoscopy = partner_link.edoscopy
-                record.ent = partner_link.ent
-                record.woundcare = partner_link.woundcare
-                record.generalnotes = partner_link.generalnotes
-                record.bariatric = partner_link.bariatric
-                record.facilityERP = partner_link.facilityERP
-                record.description = partner_link.description
-                record.captis = partner_link.captis
-                record.illucient = partner_link.illucient
-                record.capstone_health_aliance = partner_link.capstone_health_aliance
-                record.salina_contract = partner_link.salina_contract
-                record.mha = partner_link.mha
-                record.veteran_affairs = partner_link.veteran_affairs
-                record.partners_co_operative = partner_link.partners_co_operative
-                record.magnet_group = partner_link.magnet_group
-                record.fsasc = partner_link.fsasc
-                record.uspi = partner_link.uspi
-                record.surgery_partners = partner_link.surgery_partners
-                record.premier = partner_link.premier
-                record.email_opt_out = partner_link.email_opt_out
-                record.intalere_contract = partner_link.intalere_contract
-                record.time_zone = partner_link.time_zone
-                record.facility_type = partner_link.facility_type
-                record.bed_size = partner_link.bed_size
-                record.purchase_history_date = partner_link.purchase_history_date
-                record.ordering_day1 = partner_link.ordering_day1
-                record.fiscal_year_end = partner_link.fiscal_year_end
-                record.last_modify_by = partner_link.last_modify_by
-                record.top_subspecialties1 = partner_link.top_subspecialties1
-                record.created_by = partner_link.created_by
-                record.acq_account = partner_link.acq_account
-                record.sales_account = partner_link.sales_account
-                record.competitors_id = partner_link.competitors_id
-                record.status_id = partner_link.status_id
-                record.acc_cust_parent = partner_link.acc_cust_parent
-                record.sales_activity_notes = partner_link.sales_activity_notes
-                record.acq_activity_notes = partner_link.acq_activity_notes
-            else:
-                record.gpo =''
+        if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
+            for record in self:
+                partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+                if partner_link:
+                    record.gpo = partner_link.gpo
+                    record.purchase = partner_link.purchase
+                    record.mesh = partner_link.mesh
+                    record.edomechanicals = partner_link.edomechanicals
+                    record.orthopedic = partner_link.orthopedic
+                    record.suture = partner_link.suture
+                    record.gynecological = partner_link.gynecological
+                    record.uology = partner_link.uology
+                    record.edoscopy = partner_link.edoscopy
+                    record.ent = partner_link.ent
+                    record.woundcare = partner_link.woundcare
+                    # record.generalnotes = partner_link.generalnotes
+                    record.bariatric = partner_link.bariatric
+                    # record.facilityERP = partner_link.facilityERP
+                    record.description = partner_link.description
+                    record.captis = partner_link.captis
+                    record.illucient = partner_link.illucient
+                    record.capstone_health_aliance = partner_link.capstone_health_aliance
+                    record.salina_contract = partner_link.salina_contract
+                    record.mha = partner_link.mha
+                    record.veteran_affairs = partner_link.veteran_affairs
+                    record.partners_co_operative = partner_link.partners_co_operative
+                    record.magnet_group = partner_link.magnet_group
+                    record.fsasc = partner_link.fsasc
+                    record.uspi = partner_link.uspi
+                    record.surgery_partners = partner_link.surgery_partners
+                    record.premier = partner_link.premier
+                    record.email_opt_out = partner_link.email_opt_out
+                    record.intalere_contract = partner_link.intalere_contract
+                    # record.time_zone = partner_link.time_zone
+                    record.facility_type = partner_link.facility_type
+                    # record.bed_size = partner_link.bed_size
+                    # record.purchase_history_date = partner_link.purchase_history_date
+                    # record.ordering_day1 = partner_link.ordering_day1
+                    # record.fiscal_year_end = partner_link.fiscal_year_end
+                    record.last_modify_by = partner_link.last_modify_by
+                    # record.top_subspecialties1 = partner_link.top_subspecialties1
+                    record.created_by = partner_link.created_by
+                    record.acq_account = partner_link.acq_account
+                    record.sales_account = partner_link.sales_account
+                    # record.competitors_id = partner_link.competitors_id
+                    # record.status_id = partner_link.status_id
+                    # record.acc_cust_parent = partner_link.acc_cust_parent
+                    record.sales_activity_notes = partner_link.sales_activity_notes
+                    record.acq_activity_notes = partner_link.acq_activity_notes
+                else:
+                    record.gpo =''
 
     @api.onchange('gpo','acc_cust_parent','status_id','acq_account','sales_account','competitors_id','created_by',
                   'top_subspecialties1','last_modify_by','fiscal_year_end','purchase_history_date','ordering_day1','mesh'
@@ -585,12 +593,15 @@ class Partner(models.Model):
             else:
                 record.bed_size = record.bed_size
     def _compute_facilityERP(self):
-        for record in self:
-            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
-            if partner_link:
-                record.facilityERP = partner_link.facilityERP
-            else:
-                record.facilityERP = record.facilityERP
+        if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
+            for record in self:
+                partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+                if partner_link:
+                    record.facilityERP = partner_link.facilityERP
+                else:
+                    record.facilityERP = record.facilityERP
+        else:
+            self.facilityERP = None
     def _compute_competitors(self):
         for record in self:
            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
@@ -675,7 +686,7 @@ class Partner(models.Model):
 
         act_list = self.env['mail.activity'].search([('res_id', '=', self.id), ('active', 'in', [True, False])])
         view_id = self.env.ref('sps_crm.sh_mail_activity_view_tree_popup12').id
-        form_view_id = self.env.ref('sh_activities_management.sh_mail_activity_view_form').id
+        form_view_id = self.env.ref('sh_activities_management.sh_mail_activity_view_form_n').id
         return {
             'name': "Activity List",
             'type': 'ir.actions.act_window',
@@ -754,9 +765,11 @@ class PartnerLinkTracker(models.Model):
         ('broker', 'Broker'),
         ('veterinarian', 'Veterinarian'),
         ('non_surgery', 'Non-Surgery/Closed'),
-        ('wholesale','Wholesale'),
+        ('wholesale', 'Wholesale'),
         ('reseller', 'Reseller'),
-        ('national account_target', 'National Account Target')],string='Facility Type')
+        ('national account_target', 'National Account Target'),
+        ('closed1', 'Closed'),
+        ('no_surgery', 'No Surgery')],string='Facility Type')
     bed_size = fields.Integer(default=0, string="Bed Size")
     purchase_history_date = fields.Datetime(string="Last Purchase History")
     ordering_day1 = fields.Many2many('day.tag',string='Ordering Day')

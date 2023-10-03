@@ -22,7 +22,7 @@
         <record id="sh_mail_activity_view_form_custom" model="ir.ui.view">
             <field name="name">sh.mail.activity.view.form.add</field>
             <field name="model">mail.activity</field>
-            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form" />
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
             <field name="arch" type="xml">
                   <field name="summary" position="replace">
                     <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
@@ -51,7 +51,7 @@
          <record id="sh_mail_activity_view_form_custom2" model="ir.ui.view">
         <field name="name">sh.mail.activity.view.form.add.priority</field>
         <field name="model">mail.activity</field>
-        <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form" />
+        <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
         <field name="arch" type="xml">
             <field name="reference" position="replace">
                  <field name="reference" string="Account"></field>
@@ -59,8 +59,10 @@
                  <field name="related_partner_activity" string="Contact"></field>
                 <field name="email" ></field>
                 <field name="phone" ></field>
-                <field name="mobile" ></field>
-
+                <field name="mobile"></field>
+            </field>
+            <field name="summary" position="after">
+                <field name="tags" widget="many2many_tags" ></field>
             </field>
         </field>
     </record>
@@ -82,6 +84,53 @@
         </field>
     </record>
 
+        <!-- Studio changes-->
+        <record id="sh_mail_activity_view_form_n" model="ir.ui.view">
+            <field name="name">sh.mail.activity.view.form.add.priority</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
+<!--            <field name="priority"></field>-->
+            <field name="arch" type="xml">
+                <xpath expr="/form[1]/sheet[1]/group[3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]" position="before">
+                    <page name="detail_tab" string="Details">
+                        <group>
+                            <field name="reference"  string="Account"></field>
+                            <field name="related_partner_activity" string="Contact" options="{'no_create': True}"></field>
+                        </group>
+                        <group name="parent_group">
+                            <group name="group_left">
+                                <field name="activity_type_id" options="{'no_create': True}"/>
+                                <field name="summary" string="Subject"/>
+                                <field name="activity_priority"/>
+                                <field name="email" widget="email"/>
+                                <field name="function" string="Job Title"/>
+                                <field name="phone" widget="phone"/>
+                                <field name="direct_line"/>
+                                <field name="mobile" widget="phone"/>
+                                <field name="tags" widget="many2many_tags"/>
+                                <field name="request_partner_id"/>
+                            </group>
+                            <group name="group_right">
+                                <field name="date_deadline"/>
+                                <field name="date_done"/>
+                                <field name="create_date"/>
+                                <field name="user_id"/>
+                                <field name="time_zone"/>
+                            </group>
+                        </group>
+                    </page>
+                </xpath>
+                 <xpath expr="//page[@name='actnotes']" position="replace">
+                    <page name="comment_tab" string="NA or Comments">
+                      <group> <field name="comment"/></group>
+                   </page>
+                  </xpath>
+            </field>
+        </record>
+
         <!-- Search  -->
         <record id="crm_mail_activity_view_search" model="ir.ui.view">
             <field name="name">mail.activity.view.search</field>
@@ -91,7 +140,8 @@
                 <field name="res_model_id" position="after">
                    <field name="sales_activity_notes"/>
                     <field name="acq_activity_notes"/>
-               </field>
+                    
+                </field>
             </field>
        </record>
 
@@ -127,19 +177,55 @@
             <field name="model">mail.activity</field>
             <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
             <field name="arch" type="xml">
+                <xpath expr="/form[1]/sheet[1]/group[3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <field name="note" position="replace">
                     <notebook>
+                        <!-- studio Changes Added-->
+                        <page name="detail_tab" string="Details">
+                        <group>
+                            <field name="reference"  string="Account"></field>
+                            <field name="related_partner_activity" string="Contact" options="{'no_create': True}"></field>
+                        </group>
+                        <group name="parent_group">
+                            <group name="group_left">
+                                <field name="activity_type_id" options="{'no_create': True}"/>
+                                <field name="summary" string="Subject"/>
+                                <field name="activity_priority"/>
+                                <field name="email" widget="email"/>
+                                <field name="function" string="Job Title"/>
+                                <field name="phone" widget="phone"/>
+                                <field name="direct_line"/>
+                                <field name="mobile" widget="phone"/>
+                                <field name="tags" widget="many2many_tags"/>
+
+                            </group>
+                            <group name="group_right">
+                                <field name="date_deadline"/>
+                                <field name="date_done"/>
+                                <field name="create_date"/>
+                                <field name="user_id"/>
+                                <field name="request_partner_id"/>
+                            </group>
+                        </group>
+                    </page>
                         <page name="salesactnotes" string="Sales Notes">
-                     <group>
-                      <field name="sales_activity_notes" String ="Sales Activity Notes"/>
-                     </group>
-                     </page>
+                            <group>
+                                <field name="sales_activity_notes" String ="Sales Activity Notes"/>
+                            </group>
+                        </page>
                         <page name="acqactnotes" string="Acquisition Notes">
-                     <group>
-                       <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
-                     </group>
-                     </page>
-<!--                        <page name="actnotes" string="Notes">-->
+                            <group>
+                                <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
+                            </group>
+                         </page>
+                        <!-- studio Changes Added-->
+                        <page name="comment_tab" string="NA or Comments">
+                            <group> <field name="comment"/></group>
+                        </page>
+
+<!--                    <page name="actnotes" string="Notes">-->
 <!--                         <group>-->
 <!--                           <field name="note" placeholder="Log a note..." />-->
 <!--                         </group>-->
@@ -179,7 +265,7 @@
             <field name="name">Done &amp; Duplicate</field>
             <field name="model">mail.activity</field>
             <field eval="40" name="priority"/>
-            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form"/>
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="replace">
                     <button attrs="{'invisible': ['|',('force_next', '=', True),('state', '=', 'done')]}" string="Done &amp; Duplicate" name="action_done_duplicate_act" type="object" class="btn-secondary"  />
