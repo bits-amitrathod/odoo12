@@ -518,8 +518,8 @@ class PaypalController(PaypalController):
     def paypal_cancel(self, **post):
         order_id = request.session.sale_order_id
         if order_id:
-            # order = request.env['sale.order'].sudo().browse(request.session.sale_order_id)
-            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
+            order = request.env['sale.order'].sudo().browse(request.session.sale_order_id)
+            # order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:
                 if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
