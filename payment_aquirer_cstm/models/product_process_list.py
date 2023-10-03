@@ -18,9 +18,9 @@ class product_process_list(models.Model):
         records = self.search([('product_id', '=', product_id.id)])
         return True if len(records) > 0 else False
 
-    def get_product_process_qty_by_product(self, product_id):
+    def get_product_process_qty_by_product(self, product_id, so_name):
         minutes_ago = datetime.now() - timedelta(minutes=2)
-        records = self.search([('product_id', '=', product_id.id), ('create_date', '>', minutes_ago)])
+        records = self.search([('product_id', '=', product_id.id), ('create_date', '>', minutes_ago), ('so_name', '!=', so_name)])
         sum = 0
         for rec in records:
             sum += rec.process_qty
