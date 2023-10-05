@@ -73,7 +73,7 @@
                                    <field name="acq_activity_notes"/>
                         </group>
                     </page>
-                    <page name="wishlist" string="Wish List">
+                    <page name="wishlist" string="Wishlist">
                         <field name="wishlist_ids">
                             <tree>
                                 <field name="product_id"/>
