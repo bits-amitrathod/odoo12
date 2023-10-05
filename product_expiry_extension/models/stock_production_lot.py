@@ -85,9 +85,18 @@ class ProductionLot(models.Model):
                          'removal_date': False})
             _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot 1")
         else:
-            vals.update({'use_date': vals['expiration_date'], 'alert_date': False,
-                         'expiration_date': vals['expiration_date'],
-                         'removal_date': False})
+            if vals['expiration_date'] is not False:
+                _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot 3")
+                _logger.info(vals['expiration_date'])
+                temp_date = fields.Datetime.from_string(vals['expiration_date']) - datetime.timedelta(days=3)
+                str_date = temp_date.strftime('%Y-%m-%d %H:%M:%S')
+                vals.update({'use_date': vals['expiration_date'], 'alert_date': str_date,
+                             'expiration_date': vals['expiration_date'],
+                             'removal_date': vals['expiration_date']})
+                _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot 3 done")
+            else:
+                vals.update({'use_date': vals['expiration_date'], 'alert_date': False,
+                             'expiration_date': vals['expiration_date'], 'removal_date': False})
             _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot 2")
         return vals
 
