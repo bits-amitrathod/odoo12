@@ -73,7 +73,7 @@
                                    <field name="acq_activity_notes"/>
                         </group>
                     </page>
-                    <page name="wishlist" string="Wishlist2">
+                    <page name="wishlist" string="Wishlist">
                         <field name="wishlist_product_ids">
                             <tree>
                                 <field name="name"/>
@@ -327,5 +327,14 @@
         action="sps_crm.customer_extra_fields_action1"
         sequence="6"/>
  </data>
+
+    <template id="product_wishlist" name="Wishlist Page" inherit_id="website_sale_wishlist.product_wishlist">
+                <xpath expr="//body/t/tr/td[3]" position="before">
+                    <td>
+                         <t t-set="actual_quantity" t-value="int(wish.product_id.actual_quantity)"/>
+                            <b><t t-esc="actual_quantity"/></b> item(s) left
+                         </td>
+                </xpath>
+    </template>
 </odoo>
 
