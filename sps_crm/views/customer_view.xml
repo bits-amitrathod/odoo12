@@ -329,10 +329,28 @@
  </data>
 
     <template id="product_wishlist" name="Wishlist Page" inherit_id="website_sale_wishlist.product_wishlist">
-                <xpath expr="//body/t/tr/td[3]" position="before">
+
+        <xpath expr="//body" position="before">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th style="text-align: center;color: black;">Product Name</th>
+                    <th style="text-align: center;color: black;">On Hand Qty</th>
+                    <th style="text-align: center;color: black;">Available for Sale Qty</th>
+                    <th style="text-align: center;color: black;">Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </xpath>
+
+        <xpath expr="//body/t/tr/td[3]" position="before">
+                    <td>
+                         <t t-set="qty_available" t-value="int(wish.product_id.qty_available)"/>
+                            <b><t t-esc="qty_available"/></b>
+                         </td>
                     <td>
                          <t t-set="actual_quantity" t-value="int(wish.product_id.actual_quantity)"/>
-                            <b><t t-esc="actual_quantity"/></b> item(s) left
+                            <b><t t-esc="actual_quantity"/></b>
                          </td>
                 </xpath>
     </template>
