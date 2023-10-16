@@ -158,12 +158,17 @@ class ReportSpsReceivingList1(models.AbstractModel):
             else:
                 short = None
                 extra = None
-                purchase_order = self.env['purchase.order'].search([('name', '=', pur_id)], limit=1)
-                for po in purchase_order:
-                    for pick in po.picking_ids:
-                        if pick.picking_type_id.id == 2:
-                            short = pick.short
-                            extra = pick.extra
+                # purchase_order = self.env['purchase.order'].search([('name', '=', pur_id)], limit=1)
+                # for po in purchase_order:
+                #     for pick in po.picking_ids:
+                #         if pick.picking_type_id.id == 2:
+                #             short = pick.short
+                #             extra = pick.extra
+                stock_picking = self.env['stock.picking'].search([('id', 'in', docids)])
+                for stock_obj in stock_picking:
+                    short = stock_obj.short
+                    extra = stock_obj.extra
+
                 new_receiving_list[count] = {
                     'po_order_no': pur_id,
                     'data': {prod_id: dict_new},
