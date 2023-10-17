@@ -107,6 +107,9 @@ class VendorOffer(models.Model):
     cash_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True)
     cash_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True)
 
+    credit_amount_untaxed_before_qpa = fields.Monetary(string='Credit Offer Price', compute='_amount_all', readonly=True)
+    credit_amount_qpq = fields.Monetary(string='Additional 3 %', compute='_amount_all', readonly=True)
+
     billed_retail_untaxed = fields.Monetary(string='Billed Untaxed Retail', compute='_amount_all', readonly=True)
     billed_retail_total = fields.Monetary(string='Billed Retail Total', compute='_amount_all', readonly=True)
     final_billed_retail_total = fields.Monetary(string='Final Billed Retail Total', default=0, track_visibility='onchange')
@@ -391,6 +394,8 @@ class VendorOffer(models.Model):
                 rt_price_tax = product_retail = rt_price_total = potential_profit_margin = 0.0
                 cash_amount_untaxed = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
+                credit_amount_untaxed_before_qpa = 0.0
+                credit_amount_qpq = 0.0
                 for line in order.order_line:
                     amount_tax += line.price_tax
                     cash_amount_untaxed += line.price_subtotal
@@ -428,9 +433,11 @@ class VendorOffer(models.Model):
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
                     per_val = per_val + 10
                     credit_amount_untaxed = product_retail * (per_val / 100)
+                    credit_amount_untaxed_before_qpa = credit_amount_untaxed
                     # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
                     if flag:
                         credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
+                        credit_amount_qpq = credit_amount_untaxed * 0.03
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
                 if order.import_type_ven != 'all_field_import':
@@ -450,7 +457,9 @@ class VendorOffer(models.Model):
                         'billed_retail_untaxed': billed_retail_untaxed,
                         'billed_offer_untaxed': billed_offer_untaxed,
                         'billed_retail_total': billed_retail_untaxed + amount_tax,
-                        'billed_offer_total': billed_offer_untaxed + amount_tax
+                        'billed_offer_total': billed_offer_untaxed + amount_tax ,
+                        'credit_amount_qpq' : math.floor(round(credit_amount_qpq, 2)),
+                        'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2))
 
                     })
 
@@ -482,7 +491,9 @@ class VendorOffer(models.Model):
                         'billed_retail_untaxed': billed_retail_untaxed,
                         'billed_offer_untaxed': billed_offer_untaxed,
                         'billed_retail_total': billed_retail_untaxed + amount_tax,
-                        'billed_offer_total': billed_offer_untaxed + amount_tax
+                        'billed_offer_total': billed_offer_untaxed + amount_tax,
+                        'credit_amount_qpq': math.floor(round(credit_amount_qpq, 2)),
+                        'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2))
 
                     })
                     if order.offer_type and order.offer_type == 'credit':
@@ -551,6 +562,8 @@ class VendorOffer(models.Model):
                     'credit_amount_total': math.floor(round(credit_amount_total, 2)),
                     'cash_amount_untaxed': cash_amount_untaxed,
                     'cash_amount_total': cash_amount_untaxed + amount_tax,
+                    'credit_amount_qpq': math.floor(round(credit_amount_qpq, 2)),
+                    'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2))
                 })
 
                 #  The reason a static date is added : It is to do calculation for the records of PO
