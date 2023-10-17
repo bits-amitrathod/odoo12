@@ -436,8 +436,8 @@ class VendorOffer(models.Model):
                     credit_amount_untaxed_before_qpa = credit_amount_untaxed
                     # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
                     if flag:
-                        credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                         credit_amount_qpq = credit_amount_untaxed * 0.03
+                        credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
                 if order.import_type_ven != 'all_field_import':
@@ -458,7 +458,7 @@ class VendorOffer(models.Model):
                         'billed_offer_untaxed': billed_offer_untaxed,
                         'billed_retail_total': billed_retail_untaxed + amount_tax,
                         'billed_offer_total': billed_offer_untaxed + amount_tax ,
-                        'credit_amount_qpq' : math.floor(round(credit_amount_qpq, 2)),
+                        'credit_amount_qpq': math.floor(round(credit_amount_qpq, 2)),
                         'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2))
 
                     })
@@ -518,6 +518,8 @@ class VendorOffer(models.Model):
                 rt_price_tax = product_retail = rt_price_total = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
                 cash_amount_untaxed = 0.0
+                credit_amount_untaxed_before_qpa = 0.0
+                credit_amount_qpq = 0.0
                 # res = super(VendorOffer, self)._amount_all()
                 for line in order.order_line:
                     amount_tax += line.price_tax
@@ -543,7 +545,9 @@ class VendorOffer(models.Model):
                     if order.import_type_ven != 'all_field_import':
                         if flag:
                             credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
+                            credit_amount_untaxed_before_qpa = credit_amount_untaxed
                     elif order.offer_type == 'credit' and flag:
+                        credit_amount_qpq = credit_amount_untaxed * 0.03
                         credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
 
                     credit_amount_total = credit_amount_untaxed + amount_tax
