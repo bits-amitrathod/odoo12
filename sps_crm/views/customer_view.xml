@@ -335,7 +335,7 @@
                 <tr>
                     <th></th>
                     <th style="text-align: center;color: black;">Product Name</th>
-                    <th style="text-align: center;color: black;">On Hand Qty</th>
+<!--                    <th style="text-align: center;color: black;">On Hand Qty</th>-->
                     <th style="text-align: center;color: black;">Available for Sale Qty</th>
                     <th style="text-align: center;color: black;">Price</th>
                     <th></th>
@@ -344,15 +344,20 @@
         </xpath>
 
         <xpath expr="//body/t/tr/td[3]" position="before">
-                    <td>
+                    <!--<td>
                          <t t-set="qty_available" t-value="int(wish.product_id.qty_available)"/>
                             <b><t t-esc="qty_available"/></b>
-                         </td>
+                         </td>-->
                     <td>
                          <t t-set="actual_quantity" t-value="int(wish.product_id.actual_quantity)"/>
                             <b><t t-esc="actual_quantity"/></b>
                          </td>
                 </xpath>
+
+        <xpath expr="//input[@id='b2b_wish']" position="attributes">
+            <attribute name='checked'>True</attribute>
+        </xpath>
     </template>
+
 </odoo>
 
