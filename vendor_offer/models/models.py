@@ -109,6 +109,7 @@ class VendorOffer(models.Model):
 
     credit_amount_untaxed_before_qpa = fields.Monetary(string='Credit Offer Price', compute='_amount_all', readonly=True)
     credit_amount_qpq = fields.Monetary(string='Additional 3 %', compute='_amount_all', readonly=True)
+    credit_amount_qpq_flag = fields.Boolean(compute='_amount_all', readonly=True)
 
     billed_retail_untaxed = fields.Monetary(string='Billed Untaxed Retail', compute='_amount_all', readonly=True)
     billed_retail_total = fields.Monetary(string='Billed Retail Total', compute='_amount_all', readonly=True)
@@ -395,6 +396,7 @@ class VendorOffer(models.Model):
                 cash_amount_untaxed = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
                 credit_amount_untaxed_before_qpa = 0.0
+                credit_amount_qpq_flag = False
                 credit_amount_qpq = 0.0
                 for line in order.order_line:
                     amount_tax += line.price_tax
@@ -436,6 +438,7 @@ class VendorOffer(models.Model):
                     credit_amount_untaxed_before_qpa = credit_amount_untaxed
                     # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
                     if flag:
+                        credit_amount_qpq_flag = True
                         credit_amount_qpq = credit_amount_untaxed * 0.03
                         credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                     credit_amount_total = credit_amount_untaxed + amount_tax
@@ -459,7 +462,8 @@ class VendorOffer(models.Model):
                         'billed_retail_total': billed_retail_untaxed + amount_tax,
                         'billed_offer_total': billed_offer_untaxed + amount_tax ,
                         'credit_amount_qpq': math.floor(round(credit_amount_qpq, 2)),
-                        'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2))
+                        'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2)),
+                        'credit_amount_qpq_flag':credit_amount_qpq_flag
 
                     })
 
@@ -493,7 +497,8 @@ class VendorOffer(models.Model):
                         'billed_retail_total': billed_retail_untaxed + amount_tax,
                         'billed_offer_total': billed_offer_untaxed + amount_tax,
                         'credit_amount_qpq': math.floor(round(credit_amount_qpq, 2)),
-                        'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2))
+                        'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2)),
+                        'credit_amount_qpq_flag': credit_amount_qpq_flag
 
                     })
                     if order.offer_type and order.offer_type == 'credit':
@@ -520,6 +525,7 @@ class VendorOffer(models.Model):
                 cash_amount_untaxed = 0.0
                 credit_amount_untaxed_before_qpa = 0.0
                 credit_amount_qpq = 0.0
+                credit_amount_qpq_flag = False
                 # res = super(VendorOffer, self)._amount_all()
                 for line in order.order_line:
                     amount_tax += line.price_tax
@@ -547,6 +553,7 @@ class VendorOffer(models.Model):
                             credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                             credit_amount_untaxed_before_qpa = credit_amount_untaxed
                     elif order.offer_type == 'credit' and flag:
+                        credit_amount_qpq_flag = True
                         credit_amount_qpq = credit_amount_untaxed * 0.03
                         credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
 
@@ -567,7 +574,8 @@ class VendorOffer(models.Model):
                     'cash_amount_untaxed': cash_amount_untaxed,
                     'cash_amount_total': cash_amount_untaxed + amount_tax,
                     'credit_amount_qpq': math.floor(round(credit_amount_qpq, 2)),
-                    'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2))
+                    'credit_amount_untaxed_before_qpa': math.floor(round(credit_amount_untaxed_before_qpa, 2)),
+                    'credit_amount_qpq_flag': credit_amount_qpq_flag
                 })
 
                 #  The reason a static date is added : It is to do calculation for the records of PO

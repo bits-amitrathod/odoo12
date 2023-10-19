@@ -411,10 +411,12 @@
                                 </field>
                                 <group>
                                      <group class="oe_subtotal_footer oe_right" style=" margin-left: 20px;">
+
+                                        <field name="credit_amount_qpq_flag" invisible="1"/>
                                         <field name="credit_amount_untaxed_before_qpa" widget="monetary"
-                                               string="Credit Offer Price"/>
+                                               string="Credit Offer Price"  attrs="{'invisible': [('credit_amount_qpq_flag', '=', False)]}"/>
                                          <field name="credit_amount_qpq" widget="monetary"
-                                               string="Additional 3 %"/>
+                                               string="Additional 3 %" attrs="{'invisible': [('credit_amount_qpq_flag', '=', False)]}"/>
                                         <field name="credit_amount_untaxed" widget="monetary"
                                                string="Untaxed Credit Offer Price"/>
                                         <field name="amount_tax" string="Tax"/>
