@@ -41,8 +41,8 @@ class SaleOrderAvailability(models.Model):
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
             taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.product_uom_qty,
                                             product=line.product_id, partner=line.order_id.partner_shipping_id)
-            price2 = line.price_reduce * (1 - (line.discount or 0.0) / 100.0)
-            price_subtotal = line.product_uom_qty * price2
+            # price2 = line.price_reduce * (1 - (line.discount or 0.0) / 100.0)
+            price_subtotal = line.product_uom_qty * line.price_reduce
             line.update({
                 'price_tax': sum(t.get('amount', 0.0) for t in taxes.get('taxes', [])),
                 'price_total': taxes['total_included'],
