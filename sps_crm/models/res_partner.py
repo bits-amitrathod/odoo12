@@ -407,7 +407,17 @@ class Partner(models.Model):
     phone_search = fields.Char('Phone Cust', store=False, search="pro_search_for_phone")
     name_search_cust = fields.Char('Name Cust', store=False, search="pro_search_for_name")
 
+    def _compute_productlist(self):
+        self.wishlist_product_ids = None
+        l = []
+        for a in self.child_ids:
+            for b in a.wishlist_ids:
+                l.append(b.product_id.id)
+        for x in self.wishlist_ids:
+            l.append(x.product_id.id)
+        self.wishlist_product_ids = l
 
+    wishlist_product_ids = fields.Many2many('product.product', store=False, compute="_compute_productlist")
     def _compute_details_field(self):
         if any(item in ['action','allowed_company_ids'] for item in self.env.context.keys()):
             for record in self:

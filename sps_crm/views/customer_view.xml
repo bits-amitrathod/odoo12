@@ -73,6 +73,16 @@
                                    <field name="acq_activity_notes"/>
                         </group>
                     </page>
+                    <page name="wishlist" string="Wishlist">
+                        <field name="wishlist_product_ids">
+                            <tree>
+                                <field name="name"/>
+                                <field name="actual_quantity"/>
+                                <field name="qty_available"/>
+<!--                                <field name="website_id"/>-->
+                            </tree>
+                        </field>
+                    </page>
                 </xpath>
                 <field name="vat" position="attributes">
                     <attribute name="groups">account.group_account_manager</attribute>
@@ -317,5 +327,37 @@
         action="sps_crm.customer_extra_fields_action1"
         sequence="6"/>
  </data>
+
+    <template id="product_wishlist" name="Wishlist Page" inherit_id="website_sale_wishlist.product_wishlist">
+
+        <xpath expr="//body" position="before">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th style="text-align: center;color: black;">Product Name</th>
+<!--                    <th style="text-align: center;color: black;">On Hand Qty</th>-->
+                    <th style="text-align: center;color: black;">Available for Sale Qty</th>
+                    <th style="text-align: center;color: black;">Price</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </xpath>
+
+        <xpath expr="//body/t/tr/td[3]" position="before">
+                    <!--<td>
+                         <t t-set="qty_available" t-value="int(wish.product_id.qty_available)"/>
+                            <b><t t-esc="qty_available"/></b>
+                         </td>-->
+                    <td>
+                         <t t-set="actual_quantity" t-value="int(wish.product_id.actual_quantity)"/>
+                            <b><t t-esc="actual_quantity"/></b>
+                         </td>
+                </xpath>
+
+        <xpath expr="//input[@id='b2b_wish']" position="attributes">
+            <attribute name='checked'>True</attribute>
+        </xpath>
+    </template>
+
 </odoo>
 
