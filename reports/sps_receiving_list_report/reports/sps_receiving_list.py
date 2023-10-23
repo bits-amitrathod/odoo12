@@ -54,35 +54,44 @@ class ReportSpsReceivingList(models.AbstractModel):
                 if flag_ck == False:
                     short = None
                     extra = None
+                    short_date = None
+
                     purchase_order = self.env['purchase.order'].search([('name', '=', pur_id)], limit=1)
                     for po in purchase_order:
                         for pick in po.picking_ids:
                             if pick.picking_type_id.id == 2:
                                 short = pick.short
                                 extra = pick.extra
+                                short_date = pick.short_date
+
                 new_receiving_list[count] = {
                         'po_order_no': pur_id,
                         'data': {prod_id: dict_new},
                         'ven_id': ven_id,
                         'short': short,
-                        'extra': extra
+                        'extra': extra,
+                        'short_date': short_date
                     }
 
             else:
                 short = None
                 extra = None
+                short_date = None
                 purchase_order = self.env['purchase.order'].search([('name', '=', pur_id)], limit=1)
                 for po in purchase_order:
                     for pick in po.picking_ids:
                         if pick.picking_type_id.id == 2:
                             short = pick.short
                             extra = pick.extra
+                            short_date = pick.short_date
+
                 new_receiving_list[count] = {
                     'po_order_no': pur_id,
                     'data': {prod_id: dict_new},
                     'ven_id': ven_id,
                     'short': short,
-                    'extra': extra
+                    'extra': extra,
+                    'short_date': short_date
                 }
             count = count + 1
 
@@ -140,24 +149,28 @@ class ReportSpsReceivingList1(models.AbstractModel):
                 if flag_ck == False:
                     short = None
                     extra = None
+                    short_date = None
                     purchase_order = self.env['purchase.order'].search([('name', '=', pur_id)], limit=1)
                     for po in purchase_order:
                         for pick in po.picking_ids:
                             if pick.picking_type_id.id == 2:
                                 short = pick.short
                                 extra = pick.extra
+                                short_date = pick.short_date
+
                     new_receiving_list[count] = {
                         'po_order_no': pur_id,
                         'data': {prod_id: dict_new},
                         'ven_id': ven_id,
                         'short': short,
-                        'extra': extra
-
+                        'extra': extra,
+                        'short_date': short_date
                     }
 
             else:
                 short = None
                 extra = None
+                short_date = None
                 # purchase_order = self.env['purchase.order'].search([('name', '=', pur_id)], limit=1)
                 # for po in purchase_order:
                 #     for pick in po.picking_ids:
@@ -168,13 +181,15 @@ class ReportSpsReceivingList1(models.AbstractModel):
                 for stock_obj in stock_picking:
                     short = stock_obj.short
                     extra = stock_obj.extra
+                    short_date = stock_obj.short_date
 
                 new_receiving_list[count] = {
                     'po_order_no': pur_id,
                     'data': {prod_id: dict_new},
                     'ven_id': ven_id,
                     'short': short,
-                    'extra': extra
+                    'extra': extra,
+                    'short_date': short_date
                 }
             count = count + 1
 
