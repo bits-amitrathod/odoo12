@@ -95,6 +95,7 @@ class VendorBillDate(models.Model):
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
+
     def _get_price_total_and_subtotal_model(self, price_unit, quantity, discount, currency, product, partner, taxes,
                                             move_type):
         ''' This method is used to compute 'price_total' & 'price_subtotal'.
@@ -132,6 +133,7 @@ class AccountMoveLine(models.Model):
         if currency:
             res = {k: currency.round(v) for k, v in res.items()}
         return res
+
 class Memo(models.Model):
     # Via this inherited model, handled an xml condition
     _inherit = "account.payment"
