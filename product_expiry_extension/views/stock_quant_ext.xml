@@ -22,10 +22,6 @@
                     <group>
                             <field name="short" widget="html"/>
                             <field name="extra" widget="html"/>
-                    </group>
-                </page>
-                <page string="Notes" name="Notes" attrs="{'invisible':[('picking_type_id','!=', 2)]}">
-                    <group>
                             <field name="short_date" widget="html"/>
                     </group>
                 </page>
