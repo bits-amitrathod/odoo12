@@ -131,6 +131,7 @@
                         <div>
                             <t t-if="new_receiving_item['short']"><b>Short : </b><span t-raw="new_receiving_item['short']"/><br/></t>
                             <t t-if="new_receiving_item['extra']"><b>Extra : </b><span t-raw="new_receiving_item['extra']"/><br/></t>
+                            <t t-if="new_receiving_item['short_date']"><b>Notes : </b><span t-raw="new_receiving_item['short_date']"/><br/></t>
                             <hr/>
                         </div>
                     </t>
@@ -234,6 +235,7 @@
                         <div>
                             <t t-if="new_receiving_item['short']"><b>Short : </b><span t-raw="new_receiving_item['short']"/><br/></t>
                             <t t-if="new_receiving_item['extra']"><b>Extra : </b><span t-raw="new_receiving_item['extra']"/><br/></t>
+                            <t t-if="new_receiving_item['short_date']"><b>Notes : </b><span t-raw="new_receiving_item['short_date']"/><br/></t>
                             <hr/>
                         </div>
                     </t>

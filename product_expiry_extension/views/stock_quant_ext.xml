@@ -22,6 +22,7 @@
                     <group>
                             <field name="short" widget="html"/>
                             <field name="extra" widget="html"/>
+                            <field name="short_date" widget="html"/>
                     </group>
                 </page>
             </xpath>
