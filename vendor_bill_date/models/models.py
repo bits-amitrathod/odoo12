@@ -115,7 +115,7 @@ class AccountMoveLine(models.Model):
         # Compute 'price_subtotal'.
         line_discount_price_unit = price_unit * (1 - (discount / 100.0))
         if move_type == 'out_invoice':  # this is customized for SO
-            line_discount_price_unit = round(price_unit * (1 - (discount / 100.0)), 2)
+            line_discount_price_unit = self.sale_line_ids[0].price_reduce if self.sale_line_ids else round(price_unit * (1 - (discount / 100.0)), 2)
         subtotal = quantity * line_discount_price_unit
 
         # Compute 'price_total'.
