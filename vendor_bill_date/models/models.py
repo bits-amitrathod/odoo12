@@ -113,7 +113,7 @@ class AccountMoveLine(models.Model):
         res = {}
 
         sale_orders = self.env['sale.order'].search([('name', '=', partner.sale_order)], limit=1)
-        l = [line for line in sale_orders.order_line if line.product_id.id == product.id] if sale_orders else False
+        l = [line for line in sale_orders.order_line if line.product_id.id == product.id and line.discount == discount] if sale_orders else False
         price = l[0].price_reduce if sale_orders and l and l[0] else False
 
         # Compute 'price_subtotal'.
