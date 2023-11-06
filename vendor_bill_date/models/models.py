@@ -112,10 +112,19 @@ class AccountMoveLine(models.Model):
         '''
         res = {}
 
+        sale_orders = self.env['sale.order'].search([('name', '=', partner.sale_order)], limit=1)
+        l = [line for line in sale_orders.order_line if line.product_id.id == product.id] if sale_orders else False
+        price = l[0].price_reduce if sale_orders and l and l[0] else False
+
         # Compute 'price_subtotal'.
         line_discount_price_unit = price_unit * (1 - (discount / 100.0))
         if move_type == 'out_invoice':  # this is customized for SO
-            line_discount_price_unit = self.sale_line_ids[0].price_reduce if self.sale_line_ids else round(price_unit * (1 - (discount / 100.0)), 2)
+            if self.sale_line_ids:
+                line_discount_price_unit = self.sale_line_ids[0].price_reduce
+            elif price:
+                line_discount_price_unit = price
+            else:
+                line_discount_price_unit = round(price_unit * (1 - (discount / 100.0)), 2)
         subtotal = quantity * line_discount_price_unit
 
         # Compute 'price_total'.
