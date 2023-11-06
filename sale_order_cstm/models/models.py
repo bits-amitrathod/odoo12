@@ -48,6 +48,27 @@ class SaleOrderAvailability(models.Model):
                 'price_total': taxes['total_included'],
                 'price_subtotal': price_subtotal,
             })
+    @api.depends('price_unit', 'discount')
+    def _get_price_reduce(self):
+        for line in self:
+            fixed_price = False
+            for x in line.order_id.pricelist_id.item_ids:
+                if x.compute_price == 'fixed' and x.applied_on in ['1_product', '0_product_variant']:
+                    if x.applied_on in ['1_product']:
+                        if line.product_id.product_tmpl_id.id == x.product_tmpl_id.id:
+                            fixed_price = x.fixed_price
+                    if x.applied_on in ['0_product_variant']:
+                        if line.product_id.product_tmpl_id.id == x.product_id.id:
+                            fixed_price = x.fixed_price
+
+            price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+            if fixed_price:
+                if (fixed_price - price_reduce) >= 0.5:
+                    line.price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+                else:
+                    line.price_reduce = fixed_price
+            else:
+                line.price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
 
 class SaleOrderCstm(models.Model):
     _inherit = "sale.order"
