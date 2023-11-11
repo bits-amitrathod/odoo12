@@ -330,8 +330,8 @@ class VendorOffer(models.Model):
         new_po.update({
             'amount_untaxed': self.amount_untaxed,
             'amount_total': self.amount_total,
-            'credit_amount_untaxed': math.floor(round(self.credit_amount_untaxed, 2)),
-            'credit_amount_total': math.floor(round(self.credit_amount_total, 2)),
+            'credit_amount_untaxed': round(self.credit_amount_untaxed, 2),
+            'credit_amount_total': round(self.credit_amount_total, 2),
             'cash_amount_untaxed': self.cash_amount_untaxed,
             'cash_amount_total': self.cash_amount_untaxed
         })
@@ -456,8 +456,8 @@ class VendorOffer(models.Model):
                         'rt_price_subtotal_amt': product_retail,
                         'rt_price_tax_amt': rt_price_tax,
                         'rt_price_total_amt': rt_price_total,
-                        'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                        'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                        'credit_amount_untaxed': round(credit_amount_untaxed, 2),
+                        'credit_amount_total': round(credit_amount_total, 2),
                         'cash_amount_untaxed': cash_amount_untaxed,
                         'cash_amount_total': cash_amount_untaxed + amount_tax,
                         'billed_retail_untaxed': billed_retail_untaxed,
@@ -473,8 +473,8 @@ class VendorOffer(models.Model):
 
                     if order.offer_type and order.offer_type == 'credit':
                         order.update({
-                            'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                            'amount_total': math.floor(round(credit_amount_total, 2))
+                            'amount_untaxed': round(credit_amount_untaxed, 2),
+                            'amount_total': round(credit_amount_total, 2)
                         })
                     else:
                         order.update({
@@ -492,8 +492,8 @@ class VendorOffer(models.Model):
                         'rt_price_subtotal_amt': product_retail,
                         'rt_price_tax_amt': rt_price_tax,
                         'rt_price_total_amt': rt_price_total,
-                        'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                        'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                        'credit_amount_untaxed': round(credit_amount_untaxed, 2),
+                        'credit_amount_total': round(credit_amount_total, 2),
                         'cash_amount_untaxed': cash_amount_untaxed,
                         'cash_amount_total': cash_amount_untaxed + amount_tax,
                         'billed_retail_untaxed': billed_retail_untaxed,
@@ -508,8 +508,8 @@ class VendorOffer(models.Model):
                     })
                     if order.offer_type and order.offer_type == 'credit':
                         order.update({
-                            'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                            'amount_total': math.floor(round(credit_amount_total, 2))
+                            'amount_untaxed': round(credit_amount_untaxed, 2),
+                            'amount_total': round(credit_amount_total, 2)
                         })
                     else:
                         order.update({
@@ -529,16 +529,25 @@ class VendorOffer(models.Model):
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
                 cash_amount_untaxed = 0.0
                 credit_amount_untaxed_before_qpa = 0.0
+                credit_amount_untaxed_after_qpa = 0.0
                 credit_amount_qpq = 0.0
                 credit_amount_qpq_flag = False
+                direct_po_flag = False
                 # res = super(VendorOffer, self)._amount_all()
                 for line in order.order_line:
                     amount_tax += line.price_tax
                     rt_price_tax += line.rt_price_tax
                     rt_price_total += line.rt_price_total
                     product_retail += line.product_retail
-                    amount_untaxed += line.price_subtotal
-                    price_total += line.price_total
+                    if order.import_type_ven is False:
+                        direct_po_flag = True
+                        line.price_subtotal = line.product_qty * line.price_unit
+                        amount_untaxed += line.product_qty * line.price_unit
+                        price_total += line.price_subtotal + line.price_tax
+                    else:
+                        amount_untaxed += line.price_subtotal
+                        price_total += line.price_total
+
                     cash_amount_untaxed += line.price_subtotal
                     billed_retail_untaxed += line.billed_product_retail_price
                     billed_offer_untaxed += line.billed_product_offer_price
@@ -578,8 +587,8 @@ class VendorOffer(models.Model):
                     'billed_offer_untaxed': billed_offer_untaxed,
                     'billed_retail_total': billed_retail_untaxed + amount_tax,
                     'billed_offer_total': billed_offer_untaxed + amount_tax,
-                    'credit_amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                    'credit_amount_total': math.floor(round(credit_amount_total, 2)),
+                    'credit_amount_untaxed': round(credit_amount_untaxed, 2),
+                    'credit_amount_total': round(credit_amount_total, 2),
                     'cash_amount_untaxed': cash_amount_untaxed,
                     'cash_amount_total': cash_amount_untaxed + amount_tax,
                     'credit_amount_qpq': round(credit_amount_qpq, 2),
@@ -599,14 +608,20 @@ class VendorOffer(models.Model):
                     if order.offer_type:
                         if order.offer_type == 'credit':
                             order.update({
-                                'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
-                                'amount_total': math.floor(round(credit_amount_total, 2))
+                                'amount_untaxed': round(credit_amount_untaxed, 2),
+                                'amount_total': round(credit_amount_total, 2)
                             })
                         else:
                             order.update({
                                 'amount_untaxed': amount_untaxed,
                                 'amount_total': price_total
                             })
+
+                if order.create_date is False and direct_po_flag:
+                    order.update({
+                        'amount_untaxed': amount_untaxed,
+                        'amount_total': price_total
+                    })
 
     #@api.multi
     def action_send_offer_email(self):
@@ -718,11 +733,11 @@ class VendorOffer(models.Model):
                 self.offer_type = 'cash'
             if self.offer_type:
                 if self.offer_type == 'credit':
-                    self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
-                    self.amount_total = math.floor(round(self.credit_amount_total, 2))
+                    self.amount_untaxed = round(self.credit_amount_untaxed, 2)
+                    self.amount_total = round(self.credit_amount_total, 2)
                 if self.offer_type == 'cash':
-                    self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
-                    self.amount_total = math.floor(round(self.cash_amount_total, 2))
+                    self.amount_untaxed = round(self.cash_amount_untaxed, 2)
+                    self.amount_total = round(self.cash_amount_total, 2)
 
             self.button_confirm()
             # self.write({'state': 'purchase'})
@@ -739,8 +754,8 @@ class VendorOffer(models.Model):
     #@api.multi
     def action_button_confirm_api_cash(self, product_id):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
-        self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
-        self.amount_total = math.floor(round(self.cash_amount_total, 2))
+        self.amount_untaxed = round(self.cash_amount_untaxed, 2)
+        self.amount_total = round(self.cash_amount_total, 2)
         self.offer_type = 'cash'
         self.button_confirm()
 
@@ -762,8 +777,8 @@ class VendorOffer(models.Model):
         # purchase = self.env['purchase.order'].search([('id', '=', product_id)])
 
         self.offer_type = 'credit'
-        self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
-        self.amount_total = math.floor(round(self.credit_amount_total, 2))
+        self.amount_untaxed = round(self.credit_amount_untaxed, 2)
+        self.amount_total = round(self.credit_amount_total, 2)
 
         self.button_confirm()
 
@@ -840,13 +855,13 @@ class VendorOffer(models.Model):
     def action_cancel_vendor_offer(self):
 
         if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
-            self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
-            self.amount_total = math.floor(round(self.cash_amount_total, 2))
+            self.amount_untaxed = round(self.cash_amount_untaxed, 2)
+            self.amount_total = round(self.cash_amount_total, 2)
             self.offer_type = 'cash'
 
         if self.offer_type == 'credit' :
-            self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
-            self.amount_total = math.floor(round(self.credit_amount_total, 2))
+            self.amount_untaxed = round(self.credit_amount_untaxed, 2)
+            self.amount_total = round(self.credit_amount_total, 2)
             self.offer_type = 'credit'
 
         self.write({'state': 'cancel'})
@@ -859,13 +874,13 @@ class VendorOffer(models.Model):
         purchase = self.env['purchase.order'].search([('id', '=', product_id)])
 
         if purchase.offer_type == 'cash' or (not purchase.offer_type) or 'cashcredit':
-            purchase.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
-            purchase.amount_total = math.floor(round(self.cash_amount_total, 2))
+            purchase.amount_untaxed = round(self.cash_amount_untaxed, 2)
+            purchase.amount_total = round(self.cash_amount_total, 2)
             purchase.offer_type = 'cash'
 
         if purchase.offer_type == 'credit':
-            purchase.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
-            purchase.amount_total = math.floor(round(self.credit_amount_total, 2))
+            purchase.amount_untaxed = round(self.credit_amount_untaxed, 2)
+            purchase.amount_total = round(self.credit_amount_total, 2)
             purchase.offer_type = 'credit'
 
         purchase.button_cancel()
@@ -879,13 +894,13 @@ class VendorOffer(models.Model):
         if (self.vendor_offer_data == True):
 
             if self.offer_type == 'cash' or (not self.offer_type) or 'cashcredit':
-                self.amount_untaxed = math.floor(round(self.cash_amount_untaxed, 2))
-                self.amount_total = math.floor(round(self.cash_amount_total, 2))
+                self.amount_untaxed = round(self.cash_amount_untaxed, 2)
+                self.amount_total = round(self.cash_amount_total, 2)
                 self.offer_type = 'cash'
 
             if self.offer_type == 'credit':
-                self.amount_untaxed = math.floor(round(self.credit_amount_untaxed, 2))
-                self.amount_total = math.floor(round(self.credit_amount_total, 2))
+                self.amount_untaxed = round(self.credit_amount_untaxed, 2)
+                self.amount_total = round(self.credit_amount_total, 2)
                 self.offer_type = 'credit'
 
             self.write({'state': 'cancel'})
