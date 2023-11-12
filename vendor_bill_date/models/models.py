@@ -142,7 +142,14 @@ class AccountMoveLine(models.Model):
         if currency:
             res = {k: currency.round(v) for k, v in res.items()}
         return res
+    def create(self, vals_list):
+        # OVERRIDE
+        lines = super(AccountMoveLine, self).create(vals_list)
+        for line in lines:
+            if line.sale_line_ids:
+                line.price_unit = line.sale_line_ids[0].price_unit
 
+        return lines
 class Memo(models.Model):
     # Via this inherited model, handled an xml condition
     _inherit = "account.payment"
