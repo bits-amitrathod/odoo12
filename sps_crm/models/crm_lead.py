@@ -416,6 +416,8 @@ class Lead(models.Model):
 
         if self.user_id.name == "Sarah Davidson":
             sales_person += ',mdietrick@shopsps.com'
+        if self.user_id.name == "Megan Dietrick":
+            sales_person += ',sarah@shopsps.com'
 
         email ='jtennant@shopsps.com,equipment@surgicalproductsolutions.com,equipment@shopspseq.com'\
             if self.opportunity_type and self.opportunity_type == "eq_acq" else "appraisal@surgicalproductsolutions.com"
