@@ -37,6 +37,9 @@
                 <field name="invoice_date_due" position="after">
                     <field name='due_date_note' attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))]}"></field>
                 </field>
+                <field name="discount" position="replace">
+                    <field name="discount" string="Disc.%"/>
+                </field>
             </field>
         </record>
         <record id="invoice_payment_form_partner_name" model="ir.ui.view">
