@@ -113,16 +113,23 @@ class AccountMoveLine(models.Model):
         res = {}
 
         sale_orders = self.env['sale.order'].search([('name', '=', partner.sale_order)], limit=1)
-        l = [line for line in sale_orders.order_line if line.product_id.id == product.id and line.discount == discount] if sale_orders else False
+        l = [line for line in sale_orders.order_line if
+             line.product_id.id == product.id and line.discount == discount] if sale_orders else False
         price = l[0].price_reduce if sale_orders and l and l[0] else False
 
         # Compute 'price_subtotal'.
         line_discount_price_unit = price_unit * (1 - (discount / 100.0))
         if move_type == 'out_invoice':  # this is customized for SO
             if self.sale_line_ids:
-                line_discount_price_unit = self.sale_line_ids[0].price_reduce
+                so_price_unit = self.sale_line_ids[0].price_reduce
+                difference = line_discount_price_unit - so_price_unit
+                if (round(abs(difference), 2) <= 0.5):
+                    line_discount_price_unit = so_price_unit
+
             elif price:
-                line_discount_price_unit = price
+                difference = line_discount_price_unit - price
+                if (round(abs(difference), 2) <= 0.5):
+                    line_discount_price_unit = price
             else:
                 line_discount_price_unit = round(price_unit * (1 - (discount / 100.0)), 2)
         subtotal = quantity * line_discount_price_unit
@@ -133,7 +140,7 @@ class AccountMoveLine(models.Model):
                                                                              quantity=quantity, currency=currency,
                                                                              product=product, partner=partner,
                                                                              is_refund=move_type in (
-                                                                             'out_refund', 'in_refund'))
+                                                                                 'out_refund', 'in_refund'))
             res['price_subtotal'] = taxes_res['total_excluded']
             res['price_total'] = taxes_res['total_included']
         else:
