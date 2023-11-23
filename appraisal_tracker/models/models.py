@@ -254,7 +254,8 @@ class apprisal_tracker_vendor(models.Model):
         self.ensure_one()
         aml_currency = move and move.currency_id or self.currency_id
         date = move and move.date or fields.Date.today()
-        account_id = self.env['account.account'].search([('code', '=', '50007')], limit=1)
+        account_id = self.env['account.account'].search([('code', '=', '50007'),
+                                                         ('company_id', '=', self.company_id.id)], limit=1)
         res = {
             'sequence': 1,
             'name': 'CREDIT (%s - %s)' % (self.name, self.appraisal_no),
