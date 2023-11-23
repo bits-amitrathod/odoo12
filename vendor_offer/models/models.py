@@ -607,10 +607,18 @@ class VendorOffer(models.Model):
                         order.create_date.date() >= datetime.datetime.strptime('2023-02-12', "%Y-%m-%d").date()):
                     if order.offer_type:
                         if order.offer_type == 'credit':
-                            order.update({
-                                'amount_untaxed': round(credit_amount_untaxed, 2),
-                                'amount_total': round(credit_amount_total, 2)
-                            })
+                            if order.create_date and (
+                                    order.create_date.date() >= datetime.datetime.strptime('2023-11-23',
+                                                                                           "%Y-%m-%d").date()):
+                                order.update({
+                                    'amount_untaxed': round(credit_amount_untaxed, 2),
+                                    'amount_total': round(credit_amount_total, 2)
+                                })
+                            else:
+                                order.update({
+                                    'amount_untaxed': math.floor(round(credit_amount_untaxed, 2)),
+                                    'amount_total': math.floor(round(credit_amount_total, 2))
+                                })
                         else:
                             order.update({
                                 'amount_untaxed': amount_untaxed,
