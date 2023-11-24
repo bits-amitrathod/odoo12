@@ -123,12 +123,12 @@ class AccountMoveLine(models.Model):
             if self.sale_line_ids:
                 so_price_unit = self.sale_line_ids[0].price_reduce
                 difference = line_discount_price_unit - so_price_unit
-                if (round(abs(difference), 2) <= 0.5):
+                if (round(abs(difference), 2) <= 0.01):
                     line_discount_price_unit = so_price_unit
 
             elif price:
                 difference = line_discount_price_unit - price
-                if (round(abs(difference), 2) <= 0.5):
+                if (round(abs(difference), 2) <= 0.01):
                     line_discount_price_unit = price
             else:
                 line_discount_price_unit = round(price_unit * (1 - (discount / 100.0)), 2)
