@@ -302,6 +302,7 @@
                 <field name="user_id" string="Business Development(BD)"/>
                 <field name="account_manager_cust"/>
                 <field name="national_account_rep"/>
+<!--                <field name="customer_success"/>-->
                 <field name="message_bounce"/>
             </xpath>
             <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='misc']/field[@name='ref']" position="after">

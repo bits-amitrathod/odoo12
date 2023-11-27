@@ -56,6 +56,9 @@ class CustomerContract(models.Model):
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
                                            domain="[('active', '=', True), ('share','=',False)]", tracking=True)
 
+    customer_success = fields.Many2one('res.users', string="Customer Success",
+                                           domain="[('active', '=', True), ('share','=',False)]", tracking=True)
+
     order_quota = fields.Float(string="Order Quota", help="Number of transactions", tracking=True,
                                digits=dp.get_precision('Product Price'))
 
