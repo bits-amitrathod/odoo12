@@ -66,3 +66,13 @@ class SaleOrder1(models.Model):
                         self.warning_stock = _("Some products became unavailable and your cart has been updated. We're sorry for the inconvenience.")
                         values['warning'] = self.warning_stock
         return values
+
+    def check_product_qty_before_sale(self):
+        val =[]
+        for lines in self.order_line:
+            warning = lines._onchange_product_id_check_availability()
+            if warning :
+                val.append(warning)
+        flag = True if len(val) > 0 else False
+        return flag
+
