@@ -608,7 +608,7 @@ class VendorOffer(models.Model):
                     if order.offer_type:
                         if order.offer_type == 'credit':
                             if order.create_date and (
-                                    order.create_date.date() >= datetime.datetime.strptime('2023-11-23',
+                                    order.create_date.date() >= datetime.datetime.strptime('2023-11-28',
                                                                                            "%Y-%m-%d").date()):
                                 order.update({
                                     'amount_untaxed': round(credit_amount_untaxed, 2),
