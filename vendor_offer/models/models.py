@@ -437,13 +437,15 @@ class VendorOffer(models.Model):
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
                     per_val = per_val + 10
                     credit_amount_untaxed = product_retail * (per_val / 100)
-                    credit_amount_untaxed_before_qpa = credit_amount_untaxed
+                    credit_amount_untaxed_before_qpa = round(credit_amount_untaxed)
                     # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
                     if flag:
                         credit_amount_qpq_flag = True
-                        credit_amount_qpq = credit_amount_untaxed * 0.03
+                        credit_amount_qpq = math.ceil(credit_amount_untaxed * 0.03)
                         credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                         credit_amount_untaxed_after_qpa = credit_amount_untaxed
+
+                    credit_amount_untaxed = credit_amount_untaxed_before_qpa + credit_amount_qpq
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
                 if order.import_type_ven != 'all_field_import':
@@ -564,16 +566,33 @@ class VendorOffer(models.Model):
                     # IF Vendor Have 'QPA' tag then Extra 3% Amount Added in Credit Amount
                     if order.import_type_ven != 'all_field_import':
                         if flag:
-                            credit_amount_untaxed_before_qpa = credit_amount_untaxed
+                            if order.create_date and (
+                                    order.create_date.date() >= datetime.datetime.strptime('2023-11-28',
+                                                                                           "%Y-%m-%d").date()):
+                                credit_amount_qpq = math.ceil(credit_amount_untaxed * 0.03)
+                                credit_amount_untaxed_before_qpa = round(credit_amount_untaxed)
+                            else:
+                                credit_amount_qpq = credit_amount_untaxed * 0.03
+                                credit_amount_untaxed_before_qpa = credit_amount_untaxed
+
                             credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                             credit_amount_untaxed_after_qpa = credit_amount_untaxed
+                            credit_amount_untaxed = credit_amount_untaxed_before_qpa + credit_amount_qpq
 
                     elif order.offer_type == 'credit' and flag:
                         credit_amount_qpq_flag = True
-                        credit_amount_qpq = credit_amount_untaxed * 0.03
-                        credit_amount_untaxed_before_qpa = credit_amount_untaxed
+                        if order.create_date and (
+                                order.create_date.date() >= datetime.datetime.strptime('2023-11-28',
+                                                                                       "%Y-%m-%d").date()):
+                            credit_amount_qpq = math.ceil(credit_amount_untaxed * 0.03)
+                            credit_amount_untaxed_before_qpa = round(credit_amount_untaxed)
+                        else:
+                            credit_amount_qpq = credit_amount_untaxed * 0.03
+                            credit_amount_untaxed_before_qpa = credit_amount_untaxed
+
                         credit_amount_untaxed = credit_amount_untaxed + (credit_amount_untaxed * 0.03)
                         credit_amount_untaxed_after_qpa = credit_amount_untaxed
+                        credit_amount_untaxed = credit_amount_untaxed_before_qpa + credit_amount_qpq
 
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
