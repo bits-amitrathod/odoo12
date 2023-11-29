@@ -319,11 +319,12 @@ class SaleOrderLinePrioritization(models.Model):
         return result
 
     def get_discount(self):
-        if not (self.product_id and self.product_uom and
-                self.order_id.partner_id and self.order_id.pricelist_id and
-                self.order_id.pricelist_id.discount_policy == 'without_discount' and
-                self.env.user.has_group('sale.group_discount_per_so_line')):
-            return
+        if self.order_id.team_id and self.order_id.team_id.name != 'Rapid Order':
+            if not (self.product_id and self.product_uom and
+                    self.order_id.partner_id and self.order_id.pricelist_id and
+                    self.order_id.pricelist_id.discount_policy == 'without_discount' and
+                    self.env.user.has_group('sale.group_discount_per_so_line')):
+                return
 
         product = self.product_id.with_context(
             lang=self.order_id.partner_id.lang,
