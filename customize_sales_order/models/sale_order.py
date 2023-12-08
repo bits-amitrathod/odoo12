@@ -107,6 +107,8 @@ class sale_order(models.Model):
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success",
+                                       compute="get_customer_success", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
     #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
 
@@ -162,6 +164,9 @@ class sale_order(models.Model):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
 
+    def get_customer_success(self):
+        for so in self:
+            so.customer_success = so.partner_id.customer_success.id
     @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
     @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
     def onchange_client_order_ref(self):

@@ -164,6 +164,7 @@
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="account_manager"/>
                     <field name="national_account"/>
+                    <field name="customer_success"/>
                 </xpath>
             </field>
         </record>
@@ -188,6 +189,7 @@
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="account_manager"/>
                     <field name="national_account"/>
+                    <field name="customer_success"/>
                 </xpath>
             </field>
         </record>
@@ -204,6 +206,7 @@
                 <xpath expr="/search/group/filter[@name='order_month']" position="after">
                     <filter name="account_manager" string="Key Account" domain="[]" context="{'group_by':'account_manager'}"/>
                     <filter name="national_account" string="National Account" domain="[]" context="{'group_by':'national_account'}"/>
+                    <filter name="customer_success" string="Customer Success" domain="[]" context="{'group_by':'customer_success'}"/>
                     <filter name="sales_level" string="Sales Level" domain="[]" context="{'group_by':'sale_margine'}"/>
                     <filter name="is_shared" string="Is Shared" domain="[]" context="{'group_by':'is_share'}"/>
                 </xpath>
@@ -213,6 +216,7 @@
                 <xpath expr="/search" position="inside">
                         <field name="account_manager"/>
                         <field name="national_account"/>
+                        <field name="customer_success"/>
                 </xpath>
                 <xpath expr="//filter[@name='activities_overdue']" position="replace">
                     <separator/>
@@ -246,6 +250,7 @@
                     <field name="user_id" string="Business Development(BD)" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="account_manager" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="national_account" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
+                    <field name="customer_success" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                 </xpath>
                 <xpath expr="//group[@name='sales_person']/field[@name='team_id']"  position="before">
                    <field name="original_team_id" readonly="1" options="{'no_create': True,'no_edit': True,'no_open' : True}"/>
