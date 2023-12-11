@@ -212,6 +212,8 @@ class Customer(models.Model):
                         child_id.write({'account_manager_cust': vals['account_manager_cust']})
                     if 'national_account_rep' in vals:
                         child_id.write({'national_account_rep': vals['national_account_rep']})
+                    if 'customer_success' in vals:
+                        child_id.write({'customer_success': vals['customer_success']})
                     if 'user_id' in vals:
                         child_id.write({'user_id': vals['user_id']})
                     if 'property_product_pricelist' in vals:
