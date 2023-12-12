@@ -108,7 +108,7 @@ class sale_order(models.Model):
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
     customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success",
-                                       compute="get_customer_success", tracking=True)
+                                       compute="get_customer_success", domain="['&',['active','=',True],['share','=',False]]", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
     #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
 
@@ -323,6 +323,11 @@ class sale_order(models.Model):
         elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.national_account_rep \
                 and self.partner_id.commercial_partner_id.national_account_rep.id:
             self.national_account = self.partner_id.commercial_partner_id.national_account_rep.id
+        if self.partner_id and self.partner_id.customer_success and self.partner_id.customer_success.id:
+            self.customer_success = self.partner_id.customer_success.id
+        elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.customer_success \
+                and self.partner_id.commercial_partner_id.customer_success.id:
+            self.customer_success = self.partner_id.commercial_partner_id.customer_success.id
         super(sale_order, self).onchange_partner_id()
 
     def get_chils_parent(self):
