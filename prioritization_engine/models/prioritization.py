@@ -145,7 +145,7 @@ class Customer(models.Model):
                                     'category_id': ml.category_id,
                                     'contract': ml.contract,
                                     'reinstated_date': ml.reinstated_date,
-
+                                    'customer_success': ml.customer_success,
                                     })
 
                     if 'is_broker' in vals:
