@@ -25,5 +25,27 @@
             menu="False"
         />
 
+          <report
+            string="Acceleration Clause New"
+            id="action_report_vendor_offer_acceleration"
+            model="purchase.order"
+            report_type="qweb-pdf"
+            name="vendor_offer.report_vendorofferacceleration"
+            file="vendor_offer.report_vendorofferacceleration"
+            print_report_name="
+                ('Vendor Offer- %s' % (object.name))"
+        />
+
+        <report
+            string="Vendor Offer Not Itemized New"
+            id="action_report_vendor_offer_not_itemized"
+            model="purchase.order"
+            report_type="qweb-pdf"
+            name="vendor_offer.report_vendoroffernotitemized"
+            file="vendor_offer.report_vendoroffernotitemized"
+            print_report_name="
+                ('Vendor Offer- %s' % (object.name))"
+        />
+
     </data>
 </odoo>
