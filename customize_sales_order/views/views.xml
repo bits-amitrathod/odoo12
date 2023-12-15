@@ -56,6 +56,17 @@
             </field>
     </record>
 
+      <record id="view_order_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.tree_ex</field>
+            <field name="model">res.partner</field>
+            <field name="priority">100</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="customer_success"/>
+                </xpath>
+            </field>
+        </record>
       <record id="view_order_form_with_carrier_tracking_ref1" model="ir.ui.view">
             <field name="name">sale.order.form.view.with_carrier_tracking_ref</field>
             <field name="model">sale.order</field>
