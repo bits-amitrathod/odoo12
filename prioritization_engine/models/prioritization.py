@@ -103,6 +103,8 @@ class Customer(models.Model):
         res = super(Customer, self).write(vals)
         if not (len(vals) == 1 and (any(f in vals for f in ne_list))):
             self.copy_parent_date(vals)
+        if self.customer_success.id:
+            self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
         return res
 
     def copy_parent_date(self, vals):
