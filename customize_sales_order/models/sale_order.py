@@ -251,6 +251,9 @@ class sale_order(models.Model):
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
 
+        # For Follower Adding 
+        if self.customer_success.id:
+            self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
     def _get_carrier_tracking_ref(self):
         for so in self:
             stock_picking = self.env['stock.picking'].search([('origin', '=', so.name), ('picking_type_id', '=', 5),
