@@ -63,7 +63,7 @@ class SaleOrderAvailability(models.Model):
 
             price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
             if fixed_price:
-                if (fixed_price - price_reduce) >= 0.5:
+                if abs(fixed_price - price_reduce) >= 0.5:
                     line.price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
                 else:
                     line.price_reduce = fixed_price
