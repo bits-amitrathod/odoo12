@@ -40,6 +40,11 @@
                 <field name="discount" position="replace">
                     <field name="discount" string="Disc.%"/>
                 </field>
+
+                <xpath expr="//page[@id='invoice_tab']//field/tree/field[@name='discount']" position="after">
+                   <field name="price_reduce" optional="show"  attrs="{'column_invisible': [('parent.move_type', '!=', 'out_invoice')]}"/>
+				</xpath>
+
             </field>
         </record>
         <record id="invoice_payment_form_partner_name" model="ir.ui.view">
