@@ -26,7 +26,8 @@
         'demo/data.xml',
         'report/vendor_offer_reports.xml',
         'data/mail_template_data.xml',
-        'report/vendor_offer_quotation_templates.xml'
+        'report/vendor_offer_quotation_templates.xml',
+        'report/vendor_offer_quotation_templates_acceleration.xml'
         # 'views/tree_view_asset.xml'
 
     ],
