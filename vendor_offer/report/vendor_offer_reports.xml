@@ -26,7 +26,7 @@
         />
 
           <report
-            string="Acceleration Clause New"
+            string="Acceleration Clause"
             id="action_report_vendor_offer_acceleration"
             model="purchase.order"
             report_type="qweb-pdf"
@@ -37,7 +37,7 @@
         />
 
         <report
-            string="Vendor Offer Not Itemized New"
+            string="Vendor Offer Not Itemized"
             id="action_report_vendor_offer_not_itemized"
             model="purchase.order"
             report_type="qweb-pdf"
