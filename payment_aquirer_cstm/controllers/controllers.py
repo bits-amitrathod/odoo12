@@ -490,12 +490,65 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                 status = 'danger'
                 message = tx.state_message or _('An error occured during the processing of this payment')
             odoo.addons.payment.controllers.portal.PaymentProcessing.remove_payment_transaction(tx)
-            if tx and tx.reference and tx.reference.startswith("SO"):
-                #_logger.info("***    Reference Start With SO ***")
-                self.action_send_mail_after_payment_final(tx)
+            # if tx and tx.reference and tx.reference.startswith("SO"):
+            #     #_logger.info("***    Reference Start With SO ***")
+            #     self.action_send_mail_after_payment_final(tx)
             return request.render('payment.confirm', {'tx': tx, 'status': status, 'message': message})
         else:
             return request.redirect('/my/home')
+
+    @http.route(['/website_payment/transaction/<string:reference>/<string:amount>/<string:currency_id>',
+                 '/website_payment/transaction/v2/<string:amount>/<string:currency_id>/<path:reference>',
+                 '/website_payment/transaction/v2/<string:amount>/<string:currency_id>/<path:reference>/<int:partner_id>'],
+                type='json', auth='public')
+    def transaction(self, acquirer_id, reference, amount, currency_id, partner_id=False, **kwargs):
+        acquirer = request.env['payment.acquirer'].browse(acquirer_id)
+        order_id = kwargs.get('order_id')
+        invoice_id = kwargs.get('invoice_id')
+
+        reference_values = order_id and {'sale_order_ids': [(4, order_id)]} or {}
+        reference = request.env['payment.transaction']._compute_reference(values=reference_values, prefix=reference)
+
+        values = {
+            'acquirer_id': int(acquirer_id),
+            'reference': reference,
+            'amount': float(amount),
+            'currency_id': int(currency_id),
+            'partner_id': partner_id,
+            'type': 'form_save' if acquirer.save_token != 'none' and partner_id else 'form',
+        }
+
+        render_values = {}
+        if order_id:
+            values['sale_order_ids'] = [(6, 0, [order_id])]
+            order = request.env['sale.order'].sudo().browse(order_id)
+            render_values.update({
+                'billing_partner_id': order.partner_invoice_id.id,
+            })
+        elif invoice_id:
+            values['invoice_ids'] = [(6, 0, [invoice_id])]
+
+        reference_values = order_id and {'sale_order_ids': [(4, order_id)]} or {}
+        reference_values.update(acquirer_id=int(acquirer_id))
+        values['reference'] = request.env['payment.transaction']._compute_reference(values=reference_values,
+                                                                                    prefix=reference)
+        tx = request.env['payment.transaction'].sudo().with_context(lang=None).create(values)
+        secret = request.env['ir.config_parameter'].sudo().get_param('database.secret')
+        token_str = '%s%s%s' % (
+        tx.id, tx.reference, float_repr(tx.amount, precision_digits=tx.currency_id.decimal_places))
+        token = hmac.new(secret.encode('utf-8'), token_str.encode('utf-8'), hashlib.sha256).hexdigest()
+        tx.return_url = '/website_payment/confirm?tx_id=%d&access_token=%s' % (tx.id, token)
+
+        PaymentProcessing.add_payment_transaction(tx)
+        if tx and tx.reference and tx.reference.startswith("SO"):
+            self.action_send_mail_after_payment_final(tx)
+
+        render_values.update({
+            'partner_id': partner_id,
+            'type': tx.type,
+        })
+
+        return acquirer.sudo().render(tx.reference, float(amount), int(currency_id), values=render_values)
 
 class PaymentProcessing(PaymentProcessing):
 
