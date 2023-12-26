@@ -95,6 +95,6 @@ class SaleOrderCstm(models.Model):
         self.ensure_one()
         to = self.partner_id.email
         customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
-        if customer.account_manager_cust and customer.customer_scucces:
-            to = to + ',' + customer.customer_scucces.login
+        if customer.account_manager_cust and customer.customer_success:
+            to = to + ',' + customer.customer_success.login
         return to
