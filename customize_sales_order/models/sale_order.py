@@ -202,6 +202,10 @@ class sale_order(models.Model):
                 vals['national_account'] = res_partner.national_account_rep.id
             elif res_partner and res_partner.parent_id and res_partner.parent_id.national_account_rep and res_partner.parent_id.national_account_rep.id:
                 vals['national_account'] = res_partner.parent_id.national_account_rep.id
+            if res_partner and res_partner.customer_success and res_partner.customer_success.id:
+                vals['customer_success'] = res_partner.customer_success.id
+            elif res_partner and res_partner.parent_id and res_partner.parent_id.customer_success and res_partner.parent_id.customer_success.id:
+                vals['customer_success'] = res_partner.parent_id.customer_success.id
         return super(sale_order, self).create(vals)
 
     @api.depends('order_line.price_total')
