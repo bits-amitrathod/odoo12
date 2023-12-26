@@ -90,3 +90,11 @@ class SaleOrderCstm(models.Model):
             user_id_email = customer.user_id
 
         return user_id_email
+
+    def get_email_to_sendByEmail(self):
+        self.ensure_one()
+        to = self.partner_id.email
+        customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
+        if customer.account_manager_cust and customer.customer_scucces:
+            to = to + ',' + customer.customer_scucces.login
+        return to

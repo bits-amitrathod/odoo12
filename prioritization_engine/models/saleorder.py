@@ -132,6 +132,14 @@ class SaleOrder(models.Model):
         else:
             ctx['email_from'] = None
 
+
+        customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
+        if customer.account_manager_cust and customer.customer_success:
+            if ctx['email_from']:
+                ctx['email_from'] = ctx['email_from'] + ','+ customer.customer_success.login
+            else:
+                ctx['email_from'] = customer.customer_success.login
+
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
