@@ -2,6 +2,8 @@ from odoo import api, fields, models, _
 from odoo.osv import osv
 import warnings
 from odoo.exceptions import UserError, ValidationError
+from odoo import SUPERUSER_ID, _, api, fields, models
+from odoo.tools.float_utils import float_compare, float_is_zero, float_repr, float_round
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -139,3 +141,32 @@ class StockPickingMarkAllButton(models.Model):
                 for lines in self.move_lines:
                     for line_items in lines.move_line_ids:
                         line_items.qty_done = line_items.product_uom_qty
+
+    def action_button_manual_reservation(self):
+        self.ensure_one()
+        package_id = self.env['stock.quant.package']
+        owner_id = self.env['res.partner']
+        quants = None
+        if self.sale_id.id:
+            for lines in self.move_lines:
+                reserved_availability = {move: move.reserved_availability for move in lines}
+                roundings = {move: move.product_id.uom_id.rounding for move in lines}
+                rounding = roundings[lines]
+                missing_reserved_uom_quantity = lines.product_uom_qty - reserved_availability[lines]
+                missing_reserved_quantity = lines.product_uom._compute_quantity(missing_reserved_uom_quantity,
+                                                                               lines.product_id.uom_id,
+                                                                               rounding_method='HALF-UP')
+                forced_package_id = lines.package_level_id.package_id or None
+                available_quantity = lines._get_available_quantity(lines.location_id, package_id=forced_package_id)
+                for line_items in lines.move_line_ids:
+                    if line_items.qty_done != 0:
+                        taken_quantity = lines._update_reserved_quantity(min(line_items.qty_done, missing_reserved_quantity), available_quantity, lines.location_id, lot_id=line_items.lot_id, package_id=forced_package_id,
+                                              owner_id=None, strict=False)
+                        line_items.qty_done = taken_quantity
+                        missing_reserved_quantity -= taken_quantity
+
+
+
+
+
+
