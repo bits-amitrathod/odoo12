@@ -144,9 +144,6 @@ class StockPickingMarkAllButton(models.Model):
 
     def action_button_manual_reservation(self):
         self.ensure_one()
-        package_id = self.env['stock.quant.package']
-        owner_id = self.env['res.partner']
-        quants = None
         if self.sale_id.id:
             for lines in self.move_lines:
                 reserved_availability = {move: move.reserved_availability for move in lines}
@@ -164,6 +161,23 @@ class StockPickingMarkAllButton(models.Model):
                                               owner_id=None, strict=False)
                         line_items.qty_done = taken_quantity
                         missing_reserved_quantity -= taken_quantity
+
+        if self:
+            msgs = "<b>Selected Lot#</b>"
+            for move_id in self:
+                assigned_move = self.move_lines
+                msgs += "<br>-------------------<br>"
+                msgs += "<b>Product :</b> " + str(assigned_move.product_id.display_name)
+                for move_line in assigned_move.move_line_ids:
+                    msgs += "<br>"
+                    if move_line.lot_id.use_date:
+                        msgs += "<b>Expiration Date :</b> " + str(move_line.lot_id.use_date.date()) + \
+                                " <b>Lot# :</b> " + str(move_line.lot_id.name) + \
+                                " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+                    else:
+                        msgs += "<b>Expiration Date :</b> <b>Lot# :</b> " + str(move_line.lot_id.name) + \
+                                " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+            self.message_post(body=msgs)
 
 
 
