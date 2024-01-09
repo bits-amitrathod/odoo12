@@ -104,9 +104,9 @@ class InventoryNotificationScheduler(models.TransientModel):
 
         final_user = users if users else users_sale_person if users_sale_person else super_user
 
-        to_user = picking.sale_id.account_manager if picking.sale_id.account_manager else False
-        if not to_user and picking.sale_id.customer_success:
-            to_user = list(filter(None, [to_user, picking.sale_id.customer_success]))[0]
+        to_user = picking.sale_id.customer_success if picking.sale_id.customer_success else False
+        if not to_user and picking.sale_id.account_manager:
+            to_user = picking.sale_id.account_manager
         final_user = to_user or final_user
 
         sales_order = []
