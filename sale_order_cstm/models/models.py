@@ -98,3 +98,7 @@ class SaleOrderCstm(models.Model):
         if customer.account_manager_cust and customer.customer_success:
             to = to + ',' + customer.customer_success.login
         return to
+
+    def get_from_email(self):
+        # This Email use for Quotation Template (temp_id = email_template_sale_custom_dub)
+        return self.env.user

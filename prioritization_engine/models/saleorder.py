@@ -134,9 +134,15 @@ class SaleOrder(models.Model):
 
 
         customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
-        if customer.account_manager_cust and customer.customer_success:
+        if customer.account_manager_cust:
             if ctx['email_from']:
-                ctx['email_from'] = ctx['email_from'] + ','+ customer.customer_success.login
+                ctx['email_from'] = ctx['email_from'] + ',' + customer.account_manager_cust.login
+            else:
+                ctx['email_from'] = customer.account_manager_cust.login
+
+        if customer.customer_success:
+            if ctx['email_from']:
+                ctx['email_from'] = ctx['email_from'] + ',' + customer.customer_success.login
             else:
                 ctx['email_from'] = customer.customer_success.login
 

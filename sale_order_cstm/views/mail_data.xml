@@ -2,6 +2,7 @@
 <odoo>
     <!-- Template and notification section  Changed According SPS-->
     <data>
+        <!-- Action:- send by Email button on SO,  This Template used for SO Info send After SO Confirmation  -->
         <record id="mail_template_sale_confirmation_cstm1" model="mail.template">
             <field name="name">Sales Order: Confirmation Email</field>
             <field name="model_id" ref="sale.model_sale_order"/>
@@ -181,9 +182,10 @@
         </record>
 
         <!-- Duplicate template in Prioritization  -->
+        <!-- Action:- send by Email button on SO, This Template used for Quotation  before SO Confirmation  -->
         <record id="email_template_sale_custom_dub" model="mail.template">
             <field name="name">Sales Order - Send by Email</field>
-            <field name="email_from">${(object.get_email_so_sendByEmail().email) | safe}</field>
+            <field name="email_from">${(object.get_from_email().email) | safe}</field>
             <field name="subject">${object.company_id.name} ${object.state in ('draft', 'sent') and 'Quotation' or 'Order'} (Ref ${object.name or 'n/a' })</field>
             <field name="partner_to">${object.partner_id.id}</field>
             <field name="email_cc"><![CDATA[${ctx['email_from']}]]></field>
