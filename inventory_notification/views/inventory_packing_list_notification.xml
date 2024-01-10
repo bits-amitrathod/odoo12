@@ -123,7 +123,15 @@
             <field name="email_to">${ctx['email_to']}</field>
             <field name="subject">${ctx['subject']}</field>
             <field name="body_html">
-            <![CDATA[ ]]>
+            <![CDATA[
+                Hi ${ctx['facility_name'] | safe}, Pick Done For ${ctx['so_name'] | safe},
+                <br/><br/>
+                    <center>
+                        <a href="${ctx['access_url'] | safe}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Sale Order</a>
+                        <br/><br/><br/>
+                    </center>
+                 <br/>
+            ]]>
             </field>
         </record>
 </odoo>

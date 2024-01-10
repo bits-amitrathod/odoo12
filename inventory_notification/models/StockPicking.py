@@ -69,10 +69,14 @@ class StockPicking(models.Model):
                 to = am if am else ''
                 if cs:
                     to = f"{to},{cs}" if to else cs
+                base_url = self.env['ir.config_parameter'].get_param('web.base.url')
+                # base_url = base_url + '/my/orders/' + str(self.sale_id.id)
+                base_url = base_url + '/web#id=' + str(self.sale_id.id) + '&action=315&model=sale.order&view_type=form&cids=1%2C3&menu_id=201'
                 template = self.env.ref("inventory_notification.pick_done_ka_and_cs_email_template")
                 context = {'email_from': 'info@surgicalproductsolutions.com',
                            'email_to': to,
                            'subject': 'Pick Done Internal',
-                           'facility_name': self.sale_id.partner_id.name,
-                           'so_name': self.sale_id.name}
+                           'facility_name': self.sale_id.partner_id.display_name,
+                           'so_name': self.sale_id.name,
+                           'access_url': base_url}
                 template.with_context(context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
