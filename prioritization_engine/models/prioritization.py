@@ -103,6 +103,8 @@ class Customer(models.Model):
         res = super(Customer, self).write(vals)
         if not (len(vals) == 1 and (any(f in vals for f in ne_list))):
             self.copy_parent_date(vals)
+        if self.customer_success.id:
+            self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
         return res
 
     def copy_parent_date(self, vals):
@@ -145,7 +147,7 @@ class Customer(models.Model):
                                     'category_id': ml.category_id,
                                     'contract': ml.contract,
                                     'reinstated_date': ml.reinstated_date,
-
+                                    'customer_success': ml.customer_success,
                                     })
 
                     if 'is_broker' in vals:
@@ -212,6 +214,8 @@ class Customer(models.Model):
                         child_id.write({'account_manager_cust': vals['account_manager_cust']})
                     if 'national_account_rep' in vals:
                         child_id.write({'national_account_rep': vals['national_account_rep']})
+                    if 'customer_success' in vals:
+                        child_id.write({'customer_success': vals['customer_success']})
                     if 'user_id' in vals:
                         child_id.write({'user_id': vals['user_id']})
                     if 'property_product_pricelist' in vals:

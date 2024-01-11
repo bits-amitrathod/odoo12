@@ -271,10 +271,16 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             so_name = str(ref.reference.split("-", 1)[0])
             values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
+            email_cc = 'accounting@surgicalproductsolutions.com'
+            email_from = "info@surgicalproductsolutions.com"
+
             sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
             if sale_order:
                 if sale_order.account_manager:
                     user_id_email = sale_order.account_manager.login
+                    if sale_order.customer_success:
+                        email_cc = email_cc + ',' + sale_order.customer_success.login
+
                 elif sale_order.user_id:
                     if sale_order.user_id.name == "National Accounts" and sale_order.national_account:
                         user_id_email = sale_order.national_account.login
@@ -286,10 +292,6 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                     user_id_email = sale_order.user_id.login
 
             email_to = user_id_email
-
-            email_cc = 'accounting@surgicalproductsolutions.com'
-            email_from = "info@surgicalproductsolutions.com"
-
             sales_rep = sale_order.user_id.name if sale_order.user_id else None
 
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
