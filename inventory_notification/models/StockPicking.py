@@ -64,8 +64,8 @@ class StockPicking(models.Model):
     def email_after_pick_validate(self):
         if self.sale_id:
             if self.sale_id.account_manager and self.sale_id.customer_success:
-                am = self.sale_id.account_manager.login if self.sale_id.account_manager else None
-                cs = self.sale_id.customer_success.login if self.sale_id.customer_success else None
+                am = self.sale_id.account_manager.login if self.sale_id.account_manager.login else None
+                cs = self.sale_id.customer_success.login if self.sale_id.customer_success.login else None
                 if cs and am:
                     to = f"{am},{cs}"
                     base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
