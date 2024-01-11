@@ -39,6 +39,13 @@ class SaleOrderAvailability(models.Model):
         """
         for line in self:
             price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            currency = line.order_id.company_id.currency_id
+            if line.product_uom.name == 'Each':
+                price = line.price_unit * (1 - (line.discount or 0.0) / 100.0)
+            else:
+                if line.product_uom.factor_inv > 0:
+                    price = currency.round((line.price_unit / line.product_uom.factor_inv)
+                                           * (1.0 - (line.discount or 0.0) / 100.0)) * line.product_uom.factor_inv
             taxes = line.tax_id.compute_all(price, line.order_id.currency_id, line.product_uom_qty,
                                             product=line.product_id, partner=line.order_id.partner_shipping_id)
             # price2 = line.price_reduce * (1 - (line.discount or 0.0) / 100.0)
@@ -61,14 +68,26 @@ class SaleOrderAvailability(models.Model):
                         if line.product_id.product_tmpl_id.id == x.product_id.id:
                             fixed_price = x.fixed_price
 
-            price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+            currency = line.order_id.company_id.currency_id
+            if line.product_uom.name == 'Each':
+                price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+            else:
+                if line.product_uom.factor_inv > 0:
+                    price_reduce = currency.round((line.price_unit / line.product_uom.factor_inv)
+                                                  * (1.0 - line.discount / 100.0)) * line.product_uom.factor_inv
             if fixed_price:
                 if abs(fixed_price - price_reduce) >= 0.5:
                     line.price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
                 else:
                     line.price_reduce = fixed_price
             else:
-                line.price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+                if line.product_uom.name == 'Each':
+                    line.price_reduce = line.price_unit * (1.0 - line.discount / 100.0)
+                else:
+                    if line.product_uom.factor_inv > 0:
+                        line.price_reduce = currency.round((line.price_unit / line.product_uom.factor_inv)
+                                                           * (1.0 - line.discount / 100.0)) \
+                                            * line.product_uom.factor_inv
 
 class SaleOrderCstm(models.Model):
     _inherit = "sale.order"
