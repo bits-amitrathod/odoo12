@@ -55,6 +55,9 @@ class SaleOrderAvailability(models.Model):
                 'price_total': taxes['total_included'],
                 'price_subtotal': price_subtotal,
             })
+            if line.price_reduce != line.price_unit and line.discount == 0:
+                line.update({'price_unit': price})
+
     @api.depends('price_unit', 'discount')
     def _get_price_reduce(self):
         for line in self:
