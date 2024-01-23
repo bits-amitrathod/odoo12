@@ -21,6 +21,7 @@ from werkzeug.urls import url_encode
 from .fedex_request import FedexRequest
 from dateutil.relativedelta import relativedelta
 
+SUPERUSER_ID_INFO = 2
 _logger = logging.getLogger(__name__)
 # Why using standardized ISO codes? It's way more fun to use made up codes...
 # https://www.fedex.com/us/developer/WebHelp/ws/2014/dvg/WS_DVG_WebHelp/Appendix_F_Currency_Codes.htm
@@ -1942,6 +1943,8 @@ class StockPicking(models.Model):
     @api.model
     def create(self, vals):
         record = super(StockPicking, self).create(vals)
+        if SUPERUSER_ID_INFO != self.env.context['uid']:
+            record.message_unsubscribe(partner_ids=[SUPERUSER_ID_INFO])
         for pick in self:
             purchase_order = self.env['purchase.order'].search([('name', '=', pick.origin)])
             for order in purchase_order:
