@@ -32,7 +32,7 @@
         'views/tier_multiplier.xml',
         'views/vendor_pricing.xml',
         'views/views_app.xml',
-        'views/threshold.xml'
+        'views/threshold.xml',
         'report/vendor_offer_quotation_templates_acceleration.xml'
         # 'views/tree_view_asset.xml'
 
