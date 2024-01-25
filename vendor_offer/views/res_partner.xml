@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+            <record id="acq_manager_form_custom" model="ir.ui.view">
+            <field name="name">res.partner.form.acq</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form" />
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='property_supplier_payment_term_id']" position="before">
+                  <field name="supplier_rank"/>
+                </xpath>
+                <xpath expr="//field[@name='property_supplier_payment_term_id']" position="after">
+                  <field name="acq_manager"/>
+                </xpath>
+                <xpath expr="//sheet/group/group[2]/field[@name='website']" position="before">
+                    <field name="vendor_email" widget="email"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

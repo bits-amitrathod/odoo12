@@ -7,8 +7,13 @@ hide_column_list_method = ['mf_product_description', 'mf_quantity_in_stock', 'mf
                            'mf_offer_price', 'mf_offer_price_total', 'mf_retail_price', 'mf_retail_price_total',
                            'mf_possible_competition', 'mf_multiplier', 'mf_potential_profit_margin', 'mf_max',
                            'mf_accelerator','mf_credit','mf_margin_cost']
+
+hide_column_list_method_app_new = ['mf_multiplier', 'mf_potential_profit_margin', 'mf_max', 'mf_accelerator',
+                                   'mf_offer_price', 'mf_retail_price', 'mf_offer_price_total', 'mf_retail_price_total']
+
 all_field_import = 'all_field_import'
 few_field_import = 'few_field_import'
+new_appraisal = 'new_appraisal'
 
 
 class VendorOfferAutomationTemplateClass(models.Model):

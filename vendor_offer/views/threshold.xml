@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!-- VIEW + MUTI_EDIT -->
+    <record id="vendor_threshold_tree" model="ir.ui.view">
+        <field name="name">vendor.threshold.tree</field>
+        <field name="model">vendor.threshold</field>
+        <field name="arch" type="xml">
+            <tree string="Threshold" multi_edit="1">
+                <field name="name" readonly="1"/>
+                <field name="worth"/>
+                <field name="code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="vendor_threshold_form" model="ir.ui.view">
+        <field name="name">vendor.threshold</field>
+        <field name="model">vendor.threshold</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <form string="Threshold">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="worth"/>
+                            <field name="code"/>
+                        </group>
+                    </group>
+                    </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="vendor_threshold_action" model="ir.actions.act_window">
+        <field name="name">Threshold</field>
+        <field name="res_model">vendor.threshold</field>
+        <field name="view_id" ref="vendor_offer.vendor_threshold_tree"/>
+    </record>
+
+    <menuitem id="menu_vendor_threshold" name="Vendor Threshold"
+                  parent="purchase.menu_purchase_config" action="vendor_offer.vendor_threshold_action"
+                  sequence="16"/>
+    </data>
+</odoo>

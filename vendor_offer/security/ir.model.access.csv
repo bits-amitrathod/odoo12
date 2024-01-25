@@ -15,3 +15,6 @@ access_purchase_order_shipping_popup_manager,purchase.order.shipping.popup_manag
 
 access_vendor_pricing_user,vendor.pricing_user,model_vendor_pricing,purchase.group_purchase_user,1,1,0,0
 access_vendor_pricing_manager,vendor.pricing_manager,model_vendor_pricing,purchase.group_purchase_manager,1,1,1,1
+
+access_vendor_threshold_user,vendor.threshold,model_vendor_threshold,purchase.group_purchase_user,1,1,0,0
+access_vendor_threshold_manager,vendor.threshold,model_vendor_threshold,purchase.group_purchase_manager,1,1,1,1

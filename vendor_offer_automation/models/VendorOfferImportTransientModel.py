@@ -78,9 +78,10 @@ class VendorOfferImportTransientModel(models.TransientModel):
         if 'mf_customer_sku' not in import_fields:
             raise ValueError(_("You must configure Customer SKU field to import"))
 
-        if import_type_ven == all_field_import:
+        if import_type_ven in (all_field_import, new_appraisal):
             if 'mf_quantity' not in import_fields:
                 raise ValueError(_("You must configure 'Quantity' field to import"))
+        if import_type_ven == all_field_import:
             if 'mf_retail_price' not in import_fields:
                 raise ValueError(_("You must configure 'Retail Price' field to import"))
             if 'mf_offer_price' not in import_fields:
@@ -476,7 +477,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
     #     return importable_fields
 
     @api.model
-    def get_fields(self, model, depth=FIELDS_RECURSION_LIMIT):
+    def get_fields(self, model, import_type_ven, depth=FIELDS_RECURSION_LIMIT):
         Model = self.env['sps.vendor_offer_automation.template']
         importable_fields = []
         importable_fields = [{
@@ -491,6 +492,8 @@ class VendorOfferImportTransientModel(models.TransientModel):
         blacklist = models.MAGIC_COLUMNS + [Model.CONCURRENCY_CHECK_FIELD]
         for name, field in model_fields.items():
             if name in blacklist:
+                continue
+            if import_type_ven == 'new_appraisal' and name in hide_column_list_method_app_new:
                 continue
             if field.get('deprecated', False) is not False:
                 continue
