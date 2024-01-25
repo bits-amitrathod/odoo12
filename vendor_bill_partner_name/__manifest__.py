@@ -15,7 +15,8 @@
     'depends': ['base','account','sale'],
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml', 
+        'views/views.xml',
+        'views/email_invoice.xml'
     ],
 
     'application': True,

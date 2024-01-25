@@ -34,6 +34,8 @@ class CustomerContract(models.Model):
                                                 ('lab/_research_center', 'Lab/ Research Center'),
                                                 ('closed1', 'Closed'),
                                                 ('no_surgery', 'No Surgery'),
+                                                ('plastic_center', 'Plastic Center'),
+                                                ('eye_center', 'Eye Center'),
                                                 ],
                                                 tracking=True)
 
@@ -52,6 +54,9 @@ class CustomerContract(models.Model):
                               default=_get_default_user_id, tracking=True)
 
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
+                                           domain="[('active', '=', True), ('share','=',False)]", tracking=True)
+
+    customer_success = fields.Many2one('res.users', string="Customer Success",
                                            domain="[('active', '=', True), ('share','=',False)]", tracking=True)
 
     order_quota = fields.Float(string="Order Quota", help="Number of transactions", tracking=True,
@@ -102,6 +107,8 @@ class sale_order(models.Model):
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success",
+                                       compute="get_customer_success", domain="['&',['active','=',True],['share','=',False]]", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
     #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
 
@@ -157,6 +164,9 @@ class sale_order(models.Model):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
 
+    def get_customer_success(self):
+        for so in self:
+            so.customer_success = so.partner_id.customer_success.id
     @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
     @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
     def onchange_client_order_ref(self):
@@ -192,6 +202,10 @@ class sale_order(models.Model):
                 vals['national_account'] = res_partner.national_account_rep.id
             elif res_partner and res_partner.parent_id and res_partner.parent_id.national_account_rep and res_partner.parent_id.national_account_rep.id:
                 vals['national_account'] = res_partner.parent_id.national_account_rep.id
+            if res_partner and res_partner.customer_success and res_partner.customer_success.id:
+                vals['customer_success'] = res_partner.customer_success.id
+            elif res_partner and res_partner.parent_id and res_partner.parent_id.customer_success and res_partner.parent_id.customer_success.id:
+                vals['customer_success'] = res_partner.parent_id.customer_success.id
         return super(sale_order, self).create(vals)
 
     @api.depends('order_line.price_total')
@@ -241,6 +255,9 @@ class sale_order(models.Model):
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
 
+        # For Follower Adding 
+        if self.customer_success.id:
+            self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
     def _get_carrier_tracking_ref(self):
         for so in self:
             stock_picking = self.env['stock.picking'].search([('origin', '=', so.name), ('picking_type_id', '=', 5),
@@ -313,6 +330,11 @@ class sale_order(models.Model):
         elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.national_account_rep \
                 and self.partner_id.commercial_partner_id.national_account_rep.id:
             self.national_account = self.partner_id.commercial_partner_id.national_account_rep.id
+        if self.partner_id and self.partner_id.customer_success and self.partner_id.customer_success.id:
+            self.customer_success = self.partner_id.customer_success.id
+        elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.customer_success \
+                and self.partner_id.commercial_partner_id.customer_success.id:
+            self.customer_success = self.partner_id.commercial_partner_id.customer_success.id
         super(sale_order, self).onchange_partner_id()
 
     def get_chils_parent(self):

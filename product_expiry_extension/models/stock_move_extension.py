@@ -171,3 +171,4 @@ class StockPicking(models.Model):
 
     short = fields.Html(string="Short")
     extra = fields.Html(string="Extra")
+    short_date = fields.Html(string="Notes")

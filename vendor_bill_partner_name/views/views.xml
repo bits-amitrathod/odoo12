@@ -6,6 +6,7 @@
             <field name="name">account.invoice.supplier.form</field>
             <field name="model">account.move</field>
             <field name="inherit_id" ref="account.view_move_form"></field>
+            <field name="priority">100</field>
             <field name="arch" type="xml">
                 <xpath expr="//group/group/field[@name='partner_id']" position="replace">
 <!--                  <field string="Vendor" name="partner_id"
@@ -34,8 +35,16 @@
 
                 </xpath>
                 <field name="invoice_date_due" position="after">
-                    <field name='due_date_note'  attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund'))]}"></field>
+                    <field name='due_date_note' attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'in_receipt'))]}"></field>
                 </field>
+                <field name="discount" position="replace">
+                    <field name="discount" string="Disc.%"/>
+                </field>
+
+                <xpath expr="//page[@id='invoice_tab']//field/tree/field[@name='discount']" position="after">
+                   <field name="price_reduce" optional="show"  attrs="{'column_invisible': [('parent.move_type', 'not in', ['out_invoice','out_refund'])]}"/>
+				</xpath>
+
             </field>
         </record>
         <record id="invoice_payment_form_partner_name" model="ir.ui.view">
@@ -191,7 +200,8 @@
                                         <li t-if="record.parent_id.raw_value and record.function.raw_value"><field name="function"/> at <field name="parent_id"/></li>
                                         <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
                                         <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li>
-                                        <li t-if="record.city.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
+                                        <li t-if="record.city.raw_value and !record.state_id.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
+                                        <li t-if="record.city.raw_value and record.state_id.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="state_id"/>, <field name="country_id"/></li>
                                         <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li>
                                     </ul>
                                     <div class="oe_kanban_partner_links"/>
@@ -226,7 +236,7 @@
 
         <template id="report_invoice_document_inherited_for_due_dates" inherit_id="account.report_invoice_document">
             <xpath expr="//div[@class='page']/div[@id='informations']/div[@name='due_date']" position="after">
-                <div class="col-auto col-3 mw-100 mb-2" t-if="o.due_date_note and o.move_type == 'out_invoice' and o.state == 'posted'" name="due_dates">
+                <div class="col-auto col-3 mw-100 mb-2" t-if="o.due_date_note and o.move_type in ('in_invoice', 'in_refund', 'in_receipt')" name="due_dates">
                     <strong>Due Dates:</strong>
                     <p t-field="o.due_date_note"/>
                 </div>

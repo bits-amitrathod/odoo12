@@ -20,6 +20,7 @@
         'views/views.xml',
         'views/templates.xml',
         'data/payment_acquirer_cstm_data.xml',
+
     ],
     # only loaded in demonstration mode
     # 'demo': [

@@ -190,15 +190,23 @@ class apprisal_tracker_vendor(models.Model):
             # Invoice values.
             invoice_vals = order._prepare_invoice()
             # Invoice line values (keep only necessary sections).
+            line_item_present = False
+            price_subtotal_all = 0
             for line in order.order_line:
                 if line.display_type == 'line_section':
                     pending_section = line
                     continue
                 if not float_is_zero(line.qty_to_invoice, precision_digits=precision):
+                    line_item_present = True
+                    price_subtotal_all += line.price_subtotal
                     if pending_section:
                         invoice_vals['invoice_line_ids'].append((0, 0, pending_section._prepare_account_move_line()))
                         pending_section = None
                     invoice_vals['invoice_line_ids'].append((0, 0, line._prepare_account_move_line()))
+            if line_item_present and self.offer_type and self.offer_type == 'credit':
+                credit_amount = self.amount_total-price_subtotal_all
+                invoice_vals['invoice_line_ids'].append((0, 0, self.add_credit_line_item_in_PO(credit_amount)))
+
             invoice_vals_list.append(invoice_vals)
 
         if not invoice_vals_list:
@@ -242,7 +250,34 @@ class apprisal_tracker_vendor(models.Model):
 
         return self.action_view_invoice(moves)
 
+    def add_credit_line_item_in_PO(self, credit_amount, move=False):
+        self.ensure_one()
+        aml_currency = move and move.currency_id or self.currency_id
+        date = move and move.date or fields.Date.today()
+        account_id = self.env['account.account'].search([('code', '=', '50007'),
+                                                         ('company_id', '=', self.company_id.id)], limit=1)
+        res = {
+            'sequence': 1,
+            'name': 'CREDIT (%s - %s)' % (self.name, self.appraisal_no),
+            'quantity': 1,
+            'price_unit': credit_amount,
+            'account_id': account_id.id
+        }
+        if not move:
+            return res
 
+        if self.currency_id == move.company_id.currency_id:
+            currency = False
+        else:
+            currency = move.currency_id
+
+        res.update({
+            'move_id': move.id,
+            'currency_id': currency and currency.id or False,
+            'date_maturity': move.invoice_date_due,
+            'partner_id': move.partner_id.id
+        })
+        return res
 
 
 class CustomerAsWholesaler(models.Model):

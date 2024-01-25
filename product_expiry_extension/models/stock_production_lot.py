@@ -64,6 +64,7 @@ class ProductionLot(models.Model):
     # Assign dates according to products data
     @api.model
     def create(self, vals):
+        _logger.info("check_barcode_date stock prod lot create")
         if 'use_date' not in vals:
             vals = self._set_required_vals_to_create_lot(vals)
             # raise UserError(_('Lot expiration date is required.'))
@@ -77,23 +78,40 @@ class ProductionLot(models.Model):
         return super(ProductionLot, self).create(vals)
 
     def _set_required_vals_to_create_lot(self, vals):
+        _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot")
         if 'expiration_date' not in vals:
             vals.update({'use_date': fields.Datetime.add(fields.Datetime.now(), years=50), 'alert_date': False,
                          'expiration_date': fields.Datetime.add(fields.Datetime.now(), years=50),
                          'removal_date': False})
+            _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot 1")
         else:
-            vals.update({'use_date': vals['expiration_date'], 'alert_date': False,
-                         'expiration_date': vals['expiration_date'],
-                         'removal_date': False})
+            if vals['expiration_date'] is not False:
+                _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot 3")
+                _logger.info(vals['expiration_date'])
+                temp_date = fields.Datetime.from_string(vals['expiration_date']) - datetime.timedelta(days=3)
+                str_date = temp_date.strftime('%Y-%m-%d %H:%M:%S')
+                vals.update({'use_date': vals['expiration_date'], 'alert_date': str_date,
+                             'expiration_date': vals['expiration_date'],
+                             'removal_date': vals['expiration_date']})
+                _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot 3 done")
+            else:
+                vals.update({'use_date': vals['expiration_date'], 'alert_date': False,
+                             'expiration_date': vals['expiration_date'], 'removal_date': False})
+            _logger.info("check_barcode_date stock prod lot set_required_vals_to_create_lot 2")
         return vals
 
     def write(self, vals):
+        _logger.info("check_barcode_date stock prod lot  write")
         if 'use_date' in vals and 'alert_date' in vals:
             if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']):
                 raise UserError(_('Alert date should be less than expiration date.'))
+            _logger.info("check_barcode_date stock prod lot  write 1")
         if 'use_date' not in vals and 'alert_date' in vals:
-            if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(self.use_date):
-                raise UserError(_('Alert date should be less than expiration date.'))
+            if vals['alert_date'] is not False:
+                if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(self.use_date):
+                    raise UserError(_('Alert date should be less than expiration date.'))
+                _logger.info("check_barcode_date stock prod lot  write 2")
+            _logger.info("check_barcode_date stock prod lot  write 3")
         if 'product_id' in vals:
             move_lines = self.env['stock.move.line'].search([('lot_id', 'in', self.ids)])
             if move_lines:

@@ -132,6 +132,20 @@ class SaleOrder(models.Model):
         else:
             ctx['email_from'] = None
 
+
+        customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
+        if customer.account_manager_cust:
+            if ctx['email_from']:
+                ctx['email_from'] = ctx['email_from'] + ',' + customer.account_manager_cust.login
+            else:
+                ctx['email_from'] = customer.account_manager_cust.login
+
+        if customer.customer_success:
+            if ctx['email_from']:
+                ctx['email_from'] = ctx['email_from'] + ',' + customer.customer_success.login
+            else:
+                ctx['email_from'] = customer.customer_success.login
+
         return {
             'type': 'ir.actions.act_window',
             'view_mode': 'form',
@@ -319,11 +333,18 @@ class SaleOrderLinePrioritization(models.Model):
         return result
 
     def get_discount(self):
-        if not (self.product_id and self.product_uom and
-                self.order_id.partner_id and self.order_id.pricelist_id and
-                self.order_id.pricelist_id.discount_policy == 'without_discount' and
-                self.env.user.has_group('sale.group_discount_per_so_line')):
-            return
+        if self.order_id.team_id and self.order_id.team_id.name == 'Rapid Order':
+            if not (self.product_id and self.product_uom and
+                    self.order_id.partner_id and self.order_id.pricelist_id and
+                    self.order_id.pricelist_id.discount_policy == 'without_discount'):
+                return
+        else:
+            if not (self.product_id and self.product_uom and
+                    self.order_id.partner_id and self.order_id.pricelist_id and
+                    self.order_id.pricelist_id.discount_policy == 'without_discount' and
+                    self.env.user.has_group('sale.group_discount_per_so_line')):
+                return
+
 
         product = self.product_id.with_context(
             lang=self.order_id.partner_id.lang,

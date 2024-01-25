@@ -62,8 +62,10 @@ class InventoryExe(models.Model):
     def write(self, vals):
         _logger.info("check_barcode_date write")
         record = super(InventoryExe, self).write(vals)
+        _logger.info("check_barcode_date write %s", self.env.context.get('picking_type_code'))
         if self.env.context.get('picking_type_code') and self.env.context.get('picking_type_code') == 'incoming':
             if self.lot_id.id and self.expiration_date:
+                _logger.info("check_barcode_date write exp date")
                 values = {}
                 values = self._get_updated_date(self.expiration_date, values)
                 self.env['stock.production.lot'].search([('id', '=', self.lot_id.id)]).write(values)
