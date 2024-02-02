@@ -50,8 +50,7 @@
         </field>
         <field name="product_uom_id" position="replace" >
             <field name="product_uom_id" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"
-                        attrs="{'readonly': ['|', '|', ('product_uom_qty', '=', 0.0),
-                                                '&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True),
+                        attrs="{'readonly': ['|', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True),
                                                 '&amp;', ('state', '=', 'done'), ('id', '!=', False)]}"/>
         </field>
         <field name="product_uom_qty" position="replace">
