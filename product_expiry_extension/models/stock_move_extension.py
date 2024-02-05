@@ -103,6 +103,22 @@ class StockMoveExtension(models.Model):
                 receipt_moves_to_reassign |= (self - move_to_unreserve).filtered(lambda m: m.location_id.usage == 'supplier' and m.state in ('partially_available', 'assigned'))
         if 'date_deadline' in vals:
             self._set_date_deadline(vals.get('date_deadline'))
+        #  By Pass The Creation Code and Added new Code to Create Record
+        if 'move_line_ids' in vals:
+            result_list = [item for item in vals['move_line_ids'] if '0' in str(item[0])]
+            vals['move_line_ids'] = [item for item in vals['move_line_ids'] if '0' not in str(item[0])]
+            stock_loc = self.env['stock.location'].sudo()
+            stock_lot = self.env['stock.production.lot'].sudo()
+            id_list = self.move_line_ids.ids
+            for rl in result_list:
+                result = self._update_reserved_quantity(rl[2].get('product_uom_qty'), rl[2].get('product_uom_qty'), stock_loc.browse(rl[2].get('location_id')), lot_id=stock_lot.browse(rl[2].get('lot_id'))if stock_lot.browse(rl[2].get('lot_id')).exists() else None, package_id=None, owner_id=None, strict=True)
+                if result:
+                    non_matching_elements = list(set(id_list) ^ set(self.move_line_ids.ids))
+                    for item in self.move_line_ids.filtered(lambda x: x.id in non_matching_elements):
+                        item.state = 'assigned'
+                    self.state = 'assigned'
+
+
         res = super(StockMoveExtension, self).write(vals)
         if receipt_moves_to_reassign:
             receipt_moves_to_reassign._action_assign()
