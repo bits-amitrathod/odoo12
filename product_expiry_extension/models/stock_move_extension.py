@@ -6,13 +6,12 @@ from itertools import groupby
 from operator import itemgetter
 
 from odoo.addons import decimal_precision as dp
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError, ValidationError, Warning
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.tools.float_utils import float_compare, float_round, float_is_zero
 import logging
-
 _logger = logging.getLogger(__name__)
-
+PICKING_TYPE_ID = 1
 
 class StockMoveExtension(models.Model):
     _inherit = "stock.move"
@@ -104,24 +103,33 @@ class StockMoveExtension(models.Model):
         if 'date_deadline' in vals:
             self._set_date_deadline(vals.get('date_deadline'))
         #  By Pass The Creation Code and Added new Code to Create Record
-        if 'move_line_ids' in vals:
-            result_list = [item for item in vals['move_line_ids'] if '0' in str(item[0])]
-            vals['move_line_ids'] = [item for item in vals['move_line_ids'] if '0' not in str(item[0])]
-            stock_loc = self.env['stock.location'].sudo()
-            stock_lot = self.env['stock.production.lot'].sudo()
-            id_list = self.move_line_ids.ids
-            for rl in result_list:
-                result = self._update_reserved_quantity(rl[2].get('product_uom_qty'), rl[2].get('product_uom_qty'), stock_loc.browse(rl[2].get('location_id')), lot_id=stock_lot.browse(rl[2].get('lot_id'))if stock_lot.browse(rl[2].get('lot_id')).exists() else None, package_id=None, owner_id=None, strict=True)
-                if result:
-                    non_matching_elements = list(set(id_list) ^ set(self.move_line_ids.ids))
-                    for item in self.move_line_ids.filtered(lambda x: x.id in non_matching_elements):
-                        item.state = 'assigned'
-                    self.state = 'assigned'
+        if self.picking_type_id.id == PICKING_TYPE_ID:
+            if 'move_line_ids' in vals:
+                result_list = [item for item in vals['move_line_ids'] if '0' in str(item[0])]
+                vals['move_line_ids'] = [item for item in vals['move_line_ids'] if '0' not in str(item[0])]
+                stock_loc = self.env['stock.location'].sudo()
+                stock_lot = self.env['stock.production.lot'].sudo()
+                id_list = self.move_line_ids.ids
+                for rl in result_list:
+                    result = self._update_reserved_quantity(rl[2].get('qty_done'), rl[2].get('qty_done'), stock_loc.browse(rl[2].get('location_id')), lot_id=stock_lot.browse(rl[2].get('lot_id'))if stock_lot.browse(rl[2].get('lot_id')).exists() else None, package_id=None, owner_id=None, strict=True)
+                    if result:
+                        non_matching_elements = list(set(id_list) ^ set(self.move_line_ids.ids))
+                        for item in self.move_line_ids.filtered(lambda x: x.id in non_matching_elements):
+                            item.state = 'assigned'
+                            item.qty_done = item.product_uom_qty
+                        self.state = 'assigned'
 
+                # update Reserved Qty According to done Qty
+                for item in vals['move_line_ids']:
+                    if item[0] == 1:
+                        item[2]['product_uom_qty'] = item[2]['qty_done']
 
         res = super(StockMoveExtension, self).write(vals)
         if receipt_moves_to_reassign:
             receipt_moves_to_reassign._action_assign()
+
+        # if self.product_uom_qty < self.quantity_done:
+        #     raise ValidationError('Reserved Quantity Is More then Demanded Quantity')
         return res
 
     def getParent(self, saleOrder):

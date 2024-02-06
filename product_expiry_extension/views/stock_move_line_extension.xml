@@ -48,14 +48,6 @@
         <field name="result_package_id" position="replace">
             <field name="result_package_id" attrs="{'readonly': [('parent.picking_type_entire_packs', '=', True)]}" groups="stock.group_tracking_lot" domain="['|', '|', ('location_id', '=', False), ('location_id', '=', location_dest_id), ('id', '=', package_id)]" invisible="1"/>
         </field>
-        <field name="product_uom_id" position="replace" >
-            <field name="product_uom_id" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"
-                        attrs="{'readonly': ['|', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True),
-                                                '&amp;', ('state', '=', 'done'), ('id', '!=', False)]}"/>
-        </field>
-        <field name="product_uom_qty" position="replace">
-            <field name="product_uom_qty" invisible="not context.get('show_reserved_quantity')"/>
-        </field>
     </field>
 </record>
 
