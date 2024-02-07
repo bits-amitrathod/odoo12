@@ -318,10 +318,10 @@ class ProductionLotNameAppendDate(models.Model):
                 if record.use_date:
                     name = record.name + ': #Exp Date :' + str(record.use_date)[0:10]\
                            + ':#Qty :' +str(record.product_qty) + ':#Avl Qty :' +str(aval_qty)
-                    result.append((record.id, name)) if aval_qty>0 else None
                 else:
                     name = record.name
-                    result.append((record.id, name))
+
+                result.append((record.id, name)) if aval_qty > 0 else None
 
             elif self.env.context.get('lot_date_display_name_po'):
                 if record.use_date:
