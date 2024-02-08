@@ -629,9 +629,15 @@ class VendorOffer(models.Model):
                             if order.create_date and (
                                     order.create_date.date() >= datetime.datetime.strptime('2023-11-28',
                                                                                            "%Y-%m-%d").date()):
+                                # This is Amount Untaxed cal According to client request
+                                # If the dollar amount is below .50 it should round down,
+                                # if the dollar amount is .50 or above, it should round up to the next dollar.
+                                decimal_value = round(credit_amount_untaxed, 2) - int(round(credit_amount_untaxed, 2))
+                                credit_amount_untaxed_new = float(math.floor(round(credit_amount_untaxed, 2)) if decimal_value <= 0.5 else math.ceil(
+                                    round(credit_amount_untaxed, 2)))
                                 order.update({
-                                    'amount_untaxed': round(credit_amount_untaxed, 2),
-                                    'amount_total': round(credit_amount_total, 2)
+                                    'amount_untaxed': credit_amount_untaxed_new,
+                                    'amount_total': round(credit_amount_untaxed_new + amount_tax, 2)
                                 })
                             else:
                                 order.update({
