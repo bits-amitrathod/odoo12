@@ -300,7 +300,31 @@ class ProductionLotNameAppendDate(models.Model):
     #         result.append((record.id, name))
     #     return result
 
+    # This method override because of lot Search Dropdown Search more potion is not working Proper
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        args = list(args or [])
+        # optimize out the default criterion of ``ilike ''`` that matches everything
+        if not self._rec_name:
+            _logger.warning("Cannot execute name_search, no _rec_name defined on %s", self._name)
+        elif not (name == '' and operator == 'ilike'):
+            args += [(self._rec_name, operator, name)]
+        if self.env.context.get('lot_date_display_name_so'):
+            records = self.browse(self._search(args,access_rights_uid=name_get_uid))
+            record_list = []
+            for record in records:
+                pick_id = self.env.context.get('active_picking_id')
+                stock_move = self.env['stock.move'].sudo().search([('picking_id', '=', pick_id)])
+                aval_qty = self.env['stock.quant'].sudo()._get_available_quantity(record.product_id, stock_move.location_id, lot_id=record, package_id=None,
+                         owner_id=None, strict=False, allow_negative=False)
+                if aval_qty > 0:
+                    record_list.append(record.id)
+                if len(record_list)>=limit:
+                    args.append(['id','in',record_list])
+                    return self._search(args,limit=limit,access_rights_uid=name_get_uid)
+        return self._search(args,limit=limit,access_rights_uid=name_get_uid)
+
     def name_get(self):
+
         result = []
         if self.env.context is None:
             self.env.context = {}
@@ -332,5 +356,6 @@ class ProductionLotNameAppendDate(models.Model):
 
             else:
                 result.append((record.id, name))
+
 
         return result
