@@ -103,8 +103,8 @@ class StockMoveExtension(models.Model):
         if 'date_deadline' in vals:
             self._set_date_deadline(vals.get('date_deadline'))
         #  By Pass The Creation Code and Added new Code to Create Record
-        if self.picking_type_id.id == PICKING_TYPE_ID:
-            if 'move_line_ids' in vals:
+        if 'move_line_ids' in vals:
+            if self.picking_type_id.id == PICKING_TYPE_ID:
                 result_list = [item for item in vals['move_line_ids'] if '0' in str(item[0])]
                 vals['move_line_ids'] = [item for item in vals['move_line_ids'] if '0' not in str(item[0])]
                 stock_loc = self.env['stock.location'].sudo()
