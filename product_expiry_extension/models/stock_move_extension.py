@@ -121,7 +121,7 @@ class StockMoveExtension(models.Model):
 
                 # update Reserved Qty According to done Qty
                 for item in vals['move_line_ids']:
-                    if item[0] == 1:
+                    if item[0] == 1 and 'qty_done' in item[2]:
                         item[2]['product_uom_qty'] = item[2]['qty_done']
 
         res = super(StockMoveExtension, self).write(vals)
