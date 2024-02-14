@@ -546,7 +546,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <p>(412) 643-4597</p>
                                     </td>
                                     <td style="width: 172px; height: 76px;">
-                                    <p><strong>Sasha Khripkov</strong></p>
+                                    <p><strong>Sasha Khripkova</strong></p>
                                     <p>(412) 643-3816</p>
                                     </td>
                                     <td style="width: 156px; height: 76px;">
