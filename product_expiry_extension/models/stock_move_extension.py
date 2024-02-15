@@ -9,6 +9,7 @@ from odoo.addons import decimal_precision as dp
 from odoo.exceptions import UserError, ValidationError, Warning
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT
 from odoo.tools.float_utils import float_compare, float_round, float_is_zero
+from odoo.tools.misc import clean_context, format_date, OrderedSet
 import logging
 _logger = logging.getLogger(__name__)
 PICKING_TYPE_ID = 1
@@ -190,9 +191,40 @@ class StockMoveExtension(models.Model):
                 ),
             }
 
+    def update_qty_done(self):
+        moves_to_unreserve = OrderedSet()
+        for move in self:
+            if move.state == 'cancel' or (move.state == 'done' and move.scrapped):
+                # We may have cancelled move in an open picking in a "propagate_cancel" scenario.
+                # We may have done move in an open picking in a scrap scenario.
+                continue
+            elif move.state == 'done':
+                raise UserError(_("You cannot unreserve a stock move that has been set to 'Done'."))
+            moves_to_unreserve.add(move.id)
+        moves_to_unreserve = self.env['stock.move'].browse(moves_to_unreserve)
+
+        ml_to_update = OrderedSet()
+        moves_not_to_recompute = OrderedSet()
+        for ml in moves_to_unreserve.move_line_ids:
+            if ml.qty_done:
+                ml_to_update.add(ml.id)
+        ml_to_update = self.env['stock.move.line'].browse(ml_to_update)
+        ml_to_update.write({'qty_done': 0})
+
+        moves_not_to_recompute = self.env['stock.move'].browse(moves_not_to_recompute)
+
+        # `write` on `stock.move.line` doesn't call `_recompute_state` (unlike to `unlink`),
+        # so it must be called for each move where no move line has been deleted.
+        (moves_to_unreserve - moves_not_to_recompute)._recompute_state()
+        return True
+
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
     short = fields.Html(string="Short")
     extra = fields.Html(string="Extra")
     short_date = fields.Html(string="Notes")
+
+    def do_unreserve(self):
+        self.move_lines.update_qty_done()
+        super(StockPicking, self).do_unreserve()
