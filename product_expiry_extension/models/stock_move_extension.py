@@ -237,7 +237,7 @@ class StockMoveLineInh(models.Model):
         # Check if move_id exists and has the correct picking type
         if self.move_id and self.move_id.picking_type_id.id == PICKING_TYPE_ID:
             demanded_qty = self.move_id.product_uom_qty
-            total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0)
+            total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and not lm.id.ref)
 
             # Warn if done quantity exceeds demanded quantity
             if demanded_qty and demanded_qty < total_done_qty:
@@ -245,14 +245,18 @@ class StockMoveLineInh(models.Model):
                 res['warning'] = {'title': _('Warning'), 'message': message}
 
         # Warn if qty_done exceeds available quantity in the lot
-        # if self.lot_id and self.env.context.get('default_picking_type_id') == PICKING_TYPE_ID:
-        #     available_qty_for_sale = self.env['stock.quant'].sudo()._get_available_quantity \
-        #         (self.product_id.product_tmpl_id, self.location_id, lot_id=self.lot_id, package_id=None,
-        #          owner_id=None, strict=False, allow_negative=False)
-        #     available_qty = available_qty_for_sale + self.product_uom_qty
-        #     if self.qty_done > available_qty:
-        #         message = _('Your requested Done Qty(%s) is Not Available in Lot(%s)') % (self.qty_done, self.lot_id.name)
-        #         res['warning'] = {'title': _('Warning'), 'message': message}
-        #         self.qty_done = available_qty + self.product_uom_qty
+        if self.lot_id and self.env.context.get('default_picking_type_id') == PICKING_TYPE_ID:
+            old_obj = self._origin.lot_id if self._origin and self._origin.lot_id else None
+            new_obj = self.lot_id
+            flag = True if old_obj and old_obj.id != new_obj.id else False
+
+            available_qty_for_sale = self.env['stock.quant'].sudo()._get_available_quantity \
+                (self.product_id, self.picking_location_id, lot_id=self.lot_id, package_id=None,
+                 owner_id=None, strict=False, allow_negative=False)
+            available_qty = available_qty_for_sale if flag else (available_qty_for_sale + self.product_uom_qty)
+            if self.qty_done > available_qty:
+                message = _('Your requested Done Qty(%s) is Not Available in Lot(%s)') % (self.qty_done, self.lot_id.name)
+                res['warning'] = {'title': _('Warning'), 'message': message}
+                self.qty_done = available_qty
 
         return res
