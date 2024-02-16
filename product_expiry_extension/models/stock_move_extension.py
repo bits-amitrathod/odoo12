@@ -228,3 +228,31 @@ class StockPicking(models.Model):
     def do_unreserve(self):
         self.move_lines.update_qty_done()
         super(StockPicking, self).do_unreserve()
+
+class StockMoveLineInh(models.Model):
+    _inherit = "stock.move.line"
+    @api.onchange('qty_done')
+    def _onchange_qty_done(self):
+        res = {}
+        # Check if move_id exists and has the correct picking type
+        if self.move_id and self.move_id.picking_type_id.id == PICKING_TYPE_ID:
+            demanded_qty = self.move_id.product_uom_qty
+            total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0)
+
+            # Warn if done quantity exceeds demanded quantity
+            if demanded_qty and demanded_qty < total_done_qty:
+                message = _('Done Qty(%s) is More than Demanded Qty(%s)') % (total_done_qty, demanded_qty)
+                res['warning'] = {'title': _('Warning'), 'message': message}
+
+        # Warn if qty_done exceeds available quantity in the lot
+        # if self.lot_id and self.env.context.get('default_picking_type_id') == PICKING_TYPE_ID:
+        #     available_qty_for_sale = self.env['stock.quant'].sudo()._get_available_quantity \
+        #         (self.product_id.product_tmpl_id, self.location_id, lot_id=self.lot_id, package_id=None,
+        #          owner_id=None, strict=False, allow_negative=False)
+        #     available_qty = available_qty_for_sale + self.product_uom_qty
+        #     if self.qty_done > available_qty:
+        #         message = _('Your requested Done Qty(%s) is Not Available in Lot(%s)') % (self.qty_done, self.lot_id.name)
+        #         res['warning'] = {'title': _('Warning'), 'message': message}
+        #         self.qty_done = available_qty + self.product_uom_qty
+
+        return res
