@@ -270,8 +270,14 @@ class StockMoveLineInh(models.Model):
                 (self.product_id, self.picking_location_id, lot_id=self.lot_id, package_id=None,
                  owner_id=None, strict=False, allow_negative=False)
             if self.qty_done != 0 and self.qty_done > available_qty_for_sale:
-                message = _('Your requested Done Qty(%s) is Not Available in Lot(%s)') % (
-                self.qty_done, self.lot_id.name)
+                message = _('Your Changed Lot %s Doest have required Qty %s') % (
+                self.lot_id.name,self.qty_done)
                 res['warning'] = {'title': _('Warning'), 'message': message}
                 self.qty_done = available_qty_for_sale
+            elif self.product_uom_qty !=0 and self.product_uom_qty > available_qty_for_sale:
+                message = _('Your Changed Lot %s Doest have required Qty %s') % (
+                    self.lot_id.name, self.product_uom_qty)
+                res['warning'] = {'title': _('Warning'), 'message': message}
+                self.qty_done = available_qty_for_sale
+
         return res
