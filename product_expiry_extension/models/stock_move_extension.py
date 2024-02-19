@@ -260,3 +260,18 @@ class StockMoveLineInh(models.Model):
                 self.qty_done = available_qty
 
         return res
+
+    @api.onchange('lot_id')
+    def _onchange_lot_id(self):
+        res = {}
+        # Warn if qty_done exceeds available quantity in the lot
+        if self.lot_id and self.move_id.picking_type_id[0].id == PICKING_TYPE_ID:
+            available_qty_for_sale = self.env['stock.quant'].sudo()._get_available_quantity \
+                (self.product_id, self.picking_location_id, lot_id=self.lot_id, package_id=None,
+                 owner_id=None, strict=False, allow_negative=False)
+            if self.qty_done != 0 and self.qty_done > available_qty_for_sale:
+                message = _('Your requested Done Qty(%s) is Not Available in Lot(%s)') % (
+                self.qty_done, self.lot_id.name)
+                res['warning'] = {'title': _('Warning'), 'message': message}
+                self.qty_done = available_qty_for_sale
+        return res
