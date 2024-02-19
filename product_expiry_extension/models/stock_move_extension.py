@@ -231,7 +231,7 @@ class StockPicking(models.Model):
 
 class StockMoveLineInh(models.Model):
     _inherit = "stock.move.line"
-    @api.onchange('qty_done','lot_id')
+    @api.onchange('qty_done')
     def _onchange_qty_done(self):
         res = {}
         # Check if move_id exists and has the correct picking type
