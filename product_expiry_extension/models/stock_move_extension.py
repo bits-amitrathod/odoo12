@@ -245,7 +245,7 @@ class StockMoveLineInh(models.Model):
                 res['warning'] = {'title': _('Warning'), 'message': message}
 
         # Warn if qty_done exceeds available quantity in the lot
-        if self.lot_id and self.env.context.get('default_picking_type_id') == PICKING_TYPE_ID:
+        if self.lot_id and self.move_id.picking_type_id[0].id == PICKING_TYPE_ID:
             old_obj = self._origin.lot_id if self._origin and self._origin.lot_id else None
             new_obj = self.lot_id
             flag = True if old_obj and old_obj.id != new_obj.id else False
