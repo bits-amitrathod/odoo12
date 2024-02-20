@@ -234,31 +234,40 @@ class StockMoveLineInh(models.Model):
     @api.onchange('qty_done')
     def _onchange_qty_done(self):
         res = {}
+        total_done_qty = 0
         # Check if move_id exists and has the correct picking type
-        if self.move_id and self.move_id.picking_type_id.id == PICKING_TYPE_ID:
+        if self.move_id and self.move_id.picking_type_id[0].id == PICKING_TYPE_ID:
             demanded_qty = self.move_id.product_uom_qty
-            total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and not lm.id.ref)
+            total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm.id.origin != False)
+            # Warn if qty_done exceeds available quantity in the lot
+            if self.lot_id:
+                old_obj = self._origin.lot_id if self._origin and self._origin.lot_id else None
+                new_obj = self.lot_id
+                flag = True if old_obj and old_obj.id != new_obj.id else False
+
+                available_qty_for_sale = self.env['stock.quant'].sudo()._get_available_quantity \
+                    (self.product_id, self.picking_location_id, lot_id=self.lot_id, package_id=None,
+                     owner_id=None, strict=False, allow_negative=False)
+                available_qty = available_qty_for_sale if flag else (available_qty_for_sale + self.product_uom_qty)
+                if self.qty_done > available_qty:
+                    message = _('Your requested Done Qty(%s) is Not Available in Lot(%s)') % (
+                    self.qty_done, self.lot_id.name)
+                    res['warning'] = {'title': _('Warning'), 'message': message}
+                    # before Assigning Available qty Check Done Qty not exceeds Demanded Qty
+                    remaining_qty = total_done_qty - self.qty_done
+                    # Calculate the new quantity done based on available quantity and demanded quantity
+                    self.qty_done = max(demanded_qty - remaining_qty,
+                                        0) if remaining_qty + available_qty > demanded_qty else available_qty
+                    return res
 
             # Warn if done quantity exceeds demanded quantity
             if demanded_qty and demanded_qty < total_done_qty:
                 message = _('Done Qty(%s) is More than Demanded Qty(%s)') % (total_done_qty, demanded_qty)
                 res['warning'] = {'title': _('Warning'), 'message': message}
-
-        # Warn if qty_done exceeds available quantity in the lot
-        if self.lot_id and self.move_id.picking_type_id[0].id == PICKING_TYPE_ID:
-            old_obj = self._origin.lot_id if self._origin and self._origin.lot_id else None
-            new_obj = self.lot_id
-            flag = True if old_obj and old_obj.id != new_obj.id else False
-
-            available_qty_for_sale = self.env['stock.quant'].sudo()._get_available_quantity \
-                (self.product_id, self.picking_location_id, lot_id=self.lot_id, package_id=None,
-                 owner_id=None, strict=False, allow_negative=False)
-            available_qty = available_qty_for_sale if flag else (available_qty_for_sale + self.product_uom_qty)
-            if self.qty_done > available_qty:
-                message = _('Your requested Done Qty(%s) is Not Available in Lot(%s)') % (self.qty_done, self.lot_id.name)
-                res['warning'] = {'title': _('Warning'), 'message': message}
-                self.qty_done = available_qty
-
+                remaining_qty = total_done_qty - self.qty_done
+                required_qty = demanded_qty - remaining_qty
+                self.qty_done = required_qty
+                return res
         return res
 
     @api.onchange('lot_id')
@@ -269,15 +278,26 @@ class StockMoveLineInh(models.Model):
             available_qty_for_sale = self.env['stock.quant'].sudo()._get_available_quantity \
                 (self.product_id, self.picking_location_id, lot_id=self.lot_id, package_id=None,
                  owner_id=None, strict=False, allow_negative=False)
+            demanded_qty = self.move_id.product_uom_qty
+            total_done_qty = sum(
+                lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm.id.origin != False)
             if self.qty_done != 0 and self.qty_done > available_qty_for_sale:
-                message = _('Your Changed Lot %s Doest have required Qty %s') % (
+                message = _('Your Changed Lot %s Doesn\'t have required Qty %s') % (
                 self.lot_id.name,self.qty_done)
                 res['warning'] = {'title': _('Warning'), 'message': message}
-                self.qty_done = available_qty_for_sale
+                remaining_qty = total_done_qty - self.qty_done
+                # Calculate the new quantity done based on available quantity and demanded quantity
+                self.qty_done = max(demanded_qty - remaining_qty,
+                                    0) if remaining_qty + available_qty_for_sale > demanded_qty else available_qty_for_sale
+                return res
+
             elif self.product_uom_qty !=0 and self.product_uom_qty > available_qty_for_sale:
-                message = _('Your Changed Lot %s Doest have required Qty %s') % (
+                message = _('Your Changed Lot %s Doesn\'t have required Qty %s') % (
                     self.lot_id.name, self.product_uom_qty)
                 res['warning'] = {'title': _('Warning'), 'message': message}
-                self.qty_done = available_qty_for_sale
-
+                remaining_qty = total_done_qty - self.product_uom_qty
+                # Calculate the new quantity done based on available quantity and demanded quantity
+                self.qty_done = max(demanded_qty - remaining_qty,
+                                    0) if remaining_qty + available_qty_for_sale > demanded_qty else available_qty_for_sale
+                return res
         return res
