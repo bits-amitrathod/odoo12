@@ -2,7 +2,7 @@
         'name': 'Account Pass',
         'description': '',
         'author': 'benchmarkitsolutions',
-        'depends': ['base', 'customize_sales_order'],
+        'depends': ['base', 'customize_sales_order','account_followup'],
         'application': True,
         'version': '14.0.1.0.0',
         'license': 'AGPL-3',
