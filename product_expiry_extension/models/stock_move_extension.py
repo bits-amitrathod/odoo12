@@ -104,6 +104,10 @@ class StockMoveExtension(models.Model):
         if 'date_deadline' in vals:
             self._set_date_deadline(vals.get('date_deadline'))
         #  By Pass The Creation Code and Added new Code to Create Record
+        result_list = []
+        stock_loc = None
+        stock_lot = None
+
         if 'move_line_ids' in vals:
             if self.picking_type_id.id == PICKING_TYPE_ID:
                 result_list = [item for item in vals['move_line_ids'] if '0' in str(item[0])]
@@ -111,14 +115,14 @@ class StockMoveExtension(models.Model):
                 stock_loc = self.env['stock.location'].sudo()
                 stock_lot = self.env['stock.production.lot'].sudo()
                 id_list = self.move_line_ids.ids
-                for rl in result_list:
-                    result = self._update_reserved_quantity(rl[2].get('qty_done'), rl[2].get('qty_done'), stock_loc.browse(rl[2].get('location_id')), lot_id=stock_lot.browse(rl[2].get('lot_id'))if stock_lot.browse(rl[2].get('lot_id')).exists() else None, package_id=None, owner_id=None, strict=True)
-                    if result:
-                        non_matching_elements = list(set(id_list) ^ set(self.move_line_ids.ids))
-                        for item in self.move_line_ids.filtered(lambda x: x.id in non_matching_elements):
-                            item.state = 'assigned'
-                            item.qty_done = item.product_uom_qty
-                        self.state = 'assigned'
+                # for rl in result_list:
+                #     result = self._update_reserved_quantity(rl[2].get('qty_done'), rl[2].get('qty_done'), stock_loc.browse(rl[2].get('location_id')), lot_id=stock_lot.browse(rl[2].get('lot_id'))if stock_lot.browse(rl[2].get('lot_id')).exists() else None, package_id=None, owner_id=None, strict=True)
+                #     if result:
+                #         non_matching_elements = list(set(id_list) ^ set(self.move_line_ids.ids))
+                #         for item in self.move_line_ids.filtered(lambda x: x.id in non_matching_elements):
+                #             item.state = 'assigned'
+                #             item.qty_done = item.product_uom_qty
+                #         self.state = 'assigned'
 
                 # update Reserved Qty According to done Qty
                 for item in vals['move_line_ids']:
@@ -126,6 +130,20 @@ class StockMoveExtension(models.Model):
                         item[2]['product_uom_qty'] = item[2]['qty_done']
 
         res = super(StockMoveExtension, self).write(vals)
+        # Comment
+        for rl in result_list:
+            result = self._update_reserved_quantity(rl[2].get('qty_done'), rl[2].get('qty_done'),
+                                                    stock_loc.browse(rl[2].get('location_id')),
+                                                    lot_id=stock_lot.browse(rl[2].get('lot_id')) if stock_lot.browse(
+                                                        rl[2].get('lot_id')).exists() else None, package_id=None,
+                                                    owner_id=None, strict=True)
+            if result:
+                non_matching_elements = list(set(id_list) ^ set(self.move_line_ids.ids))
+                for item in self.move_line_ids.filtered(lambda x: x.id in non_matching_elements):
+                    item.state = 'assigned'
+                    item.qty_done = item.product_uom_qty
+                self.state = 'assigned'
+
         if receipt_moves_to_reassign:
             receipt_moves_to_reassign._action_assign()
 
@@ -250,8 +268,8 @@ class StockMoveLineInh(models.Model):
                      owner_id=None, strict=False, allow_negative=False)
                 available_qty = available_qty_for_sale if flag else (available_qty_for_sale + self.product_uom_qty)
                 if self.qty_done > available_qty:
-                    message = _('Your requested Done Qty(%s) is Not Available in Lot(%s)') % (
-                    self.qty_done, self.lot_id.name)
+                    message = _('Lot (%s) dose not have (%s) quantity available ') % (
+                    self.lot_id.name, self.qty_done)
                     res['warning'] = {'title': _('Warning'), 'message': message}
                     # before Assigning Available qty Check Done Qty not exceeds Demanded Qty
                     remaining_qty = total_done_qty - self.qty_done
@@ -262,7 +280,7 @@ class StockMoveLineInh(models.Model):
 
             # Warn if done quantity exceeds demanded quantity
             if demanded_qty and demanded_qty < total_done_qty:
-                message = _('Done Qty(%s) is More than Demanded Qty(%s)') % (total_done_qty, demanded_qty)
+                message = _('the requested done Quantity (%s) of is more than total order Demand ((%s))') % (demanded_qty, total_done_qty)
                 res['warning'] = {'title': _('Warning'), 'message': message}
                 remaining_qty = total_done_qty - self.qty_done
                 required_qty = demanded_qty - remaining_qty
@@ -282,9 +300,9 @@ class StockMoveLineInh(models.Model):
             total_done_qty = sum(
                 lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm.id.origin != False)
             if self.qty_done != 0 and self.qty_done > available_qty_for_sale:
-                message = _('Your Changed Lot %s Doesn\'t have required Qty %s') % (
-                self.lot_id.name,self.qty_done)
-                res['warning'] = {'title': _('Warning'), 'message': message}
+                # message = _('Your Changed Lot %s Doesn\'t have required Qty %s') % (
+                # self.lot_id.name,self.qty_done)
+                # res['warning'] = {'title': _('Warning'), 'message': message}
                 remaining_qty = total_done_qty - self.qty_done
                 # Calculate the new quantity done based on available quantity and demanded quantity
                 self.qty_done = max(demanded_qty - remaining_qty,
@@ -292,9 +310,9 @@ class StockMoveLineInh(models.Model):
                 return res
 
             elif self.product_uom_qty !=0 and self.product_uom_qty > available_qty_for_sale:
-                message = _('Your Changed Lot %s Doesn\'t have required Qty %s') % (
-                    self.lot_id.name, self.product_uom_qty)
-                res['warning'] = {'title': _('Warning'), 'message': message}
+                # message = _('Your Changed Lot %s Doesn\'t have required Qty %s') % (
+                #     self.lot_id.name, self.product_uom_qty)
+                # res['warning'] = {'title': _('Warning'), 'message': message}
                 remaining_qty = total_done_qty - self.product_uom_qty
                 # Calculate the new quantity done based on available quantity and demanded quantity
                 self.qty_done = max(demanded_qty - remaining_qty,

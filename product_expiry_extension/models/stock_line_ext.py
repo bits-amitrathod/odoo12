@@ -341,7 +341,7 @@ class ProductionLotNameAppendDate(models.Model):
 
                 if record.use_date:
                     name = record.name + ': #Exp Date :' + str(record.use_date)[0:10]\
-                           + ':#Qty :' +str(record.product_qty) + ':#Avl Qty :' +str(aval_qty)
+                        + ':#Avl Qty :' +str(aval_qty)
                 else:
                     name = record.name
 
