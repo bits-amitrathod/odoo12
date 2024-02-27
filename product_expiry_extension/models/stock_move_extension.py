@@ -256,7 +256,7 @@ class StockMoveLineInh(models.Model):
                      owner_id=None, strict=False, allow_negative=False)
                 available_qty = available_qty_for_sale if flag else (available_qty_for_sale + self.product_uom_qty)
                 if self.qty_done > available_qty:
-                    message = _('Lot (%s) dose not have (%s) quantity available ') % (
+                    message = _('Lot (%s) does not have (%s) quantity available ') % (
                     self.lot_id.name, self.qty_done)
                     res['warning'] = {'title': _('Warning'), 'message': message}
                     # before Assigning Available qty Check Done Qty not exceeds Demanded Qty
@@ -268,7 +268,7 @@ class StockMoveLineInh(models.Model):
 
             # Warn if done quantity exceeds demanded quantity
             if demanded_qty and demanded_qty < total_done_qty:
-                message = _('the requested done Quantity (%s) of is more than total order Demand ((%s))') % (demanded_qty, total_done_qty)
+                message = _('The requested done quantity of (%s) is more than total order demand ((%s))') % (total_done_qty,demanded_qty)
                 res['warning'] = {'title': _('Warning'), 'message': message}
                 remaining_qty = total_done_qty - self.qty_done
                 required_qty = demanded_qty - remaining_qty
