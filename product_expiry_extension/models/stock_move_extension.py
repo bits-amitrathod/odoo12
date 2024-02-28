@@ -268,7 +268,7 @@ class StockMoveLineInh(models.Model):
 
             # Warn if done quantity exceeds demanded quantity
             if demanded_qty and demanded_qty < total_done_qty:
-                message = _('The requested done quantity of (%s) is more than total order demand ((%s))') % (total_done_qty,demanded_qty)
+                message = _('The requested done quantity of (%s) is more than total order demand (%s)') % (total_done_qty,demanded_qty)
                 res['warning'] = {'title': _('Warning'), 'message': message}
                 remaining_qty = total_done_qty - self.qty_done
                 required_qty = demanded_qty - remaining_qty
