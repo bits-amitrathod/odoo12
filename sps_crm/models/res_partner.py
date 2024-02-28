@@ -182,6 +182,8 @@ class Partner(models.Model):
     def pro_search_for_acq_activity_notes(self, operator, value):
         return self.generic_char_search(operator, value, 'acq_activity_notes')
 
+    def pro_search_for_dup_poc_note(self, operator, value):
+        return self.generic_char_search(operator, value, 'dup_poc_note')
     def pro_search_for_phone(self, operator, value):
         records = rec = self.env['res.partner'].browse(self.env['res.partner'].search([]).ids)
         m_val = value
@@ -409,7 +411,8 @@ class Partner(models.Model):
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, search="pro_search_for_acq_activity_notes")
     phone_search = fields.Char('Phone Cust', store=False, search="pro_search_for_phone")
     name_search_cust = fields.Char('Name Cust', store=False, search="pro_search_for_name")
-
+    dup_poc_note = fields.Html("Dup POC", store=False,
+                                       search="pro_search_for_dup_poc_note")
     def _compute_productlist(self):
         self.wishlist_product_ids = None
         l = []
@@ -471,6 +474,7 @@ class Partner(models.Model):
                     # record.acc_cust_parent = partner_link.acc_cust_parent
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
+                    record.dup_poc_note = partner_link.dup_poc_note
                 else:
                     record.gpo =''
 
@@ -480,7 +484,7 @@ class Partner(models.Model):
                   'suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes',
                   'facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract',
                   'mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners',
-                  'intalere_contract','premier','email_opt_out','acq_activity_notes','sales_activity_notes')
+                  'intalere_contract','premier','email_opt_out','acq_activity_notes','sales_activity_notes','dup_poc_note')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -513,7 +517,8 @@ class Partner(models.Model):
                 'competitors_id': self.competitors_id, 'status_id': self.status_id.ids,
                 'acc_cust_parent': self.acc_cust_parent.id,
                 'sales_activity_notes': self.sales_activity_notes,
-                'acq_activity_notes': self.acq_activity_notes
+                'acq_activity_notes': self.acq_activity_notes,
+                'dup_poc_note': self.dup_poc_note
 
             }
 
@@ -815,3 +820,4 @@ class PartnerLinkTracker(models.Model):
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account',domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes")
     acq_activity_notes = fields.Html("Acquisition Activity Notes")
+    dup_poc_note = fields.Html("Dup POC")
