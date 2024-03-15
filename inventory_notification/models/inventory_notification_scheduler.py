@@ -542,14 +542,22 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </tr>
                                     <tr style="height: 76px;">
                                     <td style="width: 156px; height: 76px;">
-                                    <p><strong>Christopher Odell</strong></p>
-                                    <p>412-745-0338</p>
+                                    <p><strong>Carley Fritsch</strong></p>
+                                    <p>(412) 643-4597</p>
+                                    </td>
+                                    <td style="width: 172px; height: 76px;">
+                                    <p><strong>Sasha Khripkova</strong></p>
+                                    <p>(412) 643-3816</p>
+                                    </td>
+                                    <td style="width: 156px; height: 76px;">
+                                    <p><strong>Theresa Carmody</strong></p>
+                                    <p>(412) 286-2212</p>
                                     </td>
                                     <td style="width: 157px; height: 76px;">
                                     <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
                                     <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
                                     </td>
-                                    <td style="width: 123px; height: 76px;">
+                                    <td style="width: 172px; height: 76px;">
                                     <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
                                     <p style="text-align: left;">412-248-1284</p>
                                     </td>
@@ -616,25 +624,33 @@ class InventoryNotificationScheduler(models.TransientModel):
         dayName = today_date.weekday()
         weekday = days[dayName]
 
-        customers = self.env['res.partner'].search(
-            [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-             (weekday, '=', True), ('todays_notification', '=', False)])
+        # customers = self.env['res.partner'].search(
+        #     [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+        #      (weekday, '=', True), ('todays_notification', '=', False)])
 
-        for customer in customers:
-            try:
-                if (customer.start_date == False and customer.end_date == False) \
-                        or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-                    customer.end_date) >= today_start) \
-                        or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
-                    customer.start_date) <= today_start) \
-                        or (
-                        customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-                    customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                    customer.end_date) >= today_start) \
-                        or (customer.end_date is None):
-                    customer.write({'todays_notification': True})
-            except Exception as e:
-                _logger.exception(e)
+        # for customer in customers:
+        #     try:
+        #         if (customer.start_date == False and customer.end_date == False) \
+        #                 or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+        #             customer.end_date) >= today_start) \
+        #                 or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
+        #             customer.start_date) <= today_start) \
+        #                 or (
+        #                 customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+        #             customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+        #             customer.end_date) >= today_start) \
+        #                 or (customer.end_date is None):
+        #             customer.write({'todays_notification': True})
+
+        try:
+            query = """ update res_partner set todays_notification = true where customer_rank >= 1 and is_parent = true
+            and email is not null and active = true and todays_notification = false  and  """+weekday+""" = true  
+            and ( (start_date is null and end_date is null )     or  (end_date is not null and  end_date > CURRENT_DATE)   
+            or  (start_date is not null and  start_date < CURRENT_DATE)    ) 	    """
+
+            self.env.cr.execute(query)
+        except Exception as e:
+            _logger.exception(e)
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)

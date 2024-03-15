@@ -229,8 +229,10 @@ class sale_order(models.Model):
 
     def write(self, val):
         super(sale_order, self).write(val)
-        # Add note in pick delivery
-        if self.state and self.state in 'sale':
+        # Add Sale note in pick,pull,out
+        # Need to optimize the Code
+        #TODO : We can also Move to onChange (sale_note) ,
+        if self.state and self.state in 'sale' and 'sale_note' in val:
             for pick in self.picking_ids:
                 pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
 
@@ -240,8 +242,8 @@ class sale_order(models.Model):
                 if stock_picking and stock_picking.state != 'done' and stock_picking.state != 'cancel' :
                     stock_picking.write({'carrier_id': self.carrier_id.id})
 
-        # if 'sale_note' in val or self.sale_note:
-        if self.sale_note and self.team_id.team_type != 'engine':
+        # sale Note notification would be add in to Pick,Pull,Out
+        if self.sale_note and 'sale_note' in val and self.team_id.team_type != 'engine':
             body = self.sale_note
             for stk_picking in self.picking_ids:
                 stock_picking_val = {
@@ -360,22 +362,26 @@ class StockPicking(models.Model):
         action = super(StockPicking, self).button_validate()
 
         # Note Section code
+        # Is there are Need to set Notification After each Pick, pull ,out Validation
+        # because After SO Confirmation that Notification Also Set and Also on Change of SO Sale Note
+        # TODO: Neet To Optimize the Code, Lot of Duplicate Code
+        # add_note_in_log_section() code committed because of repeated notification Issue
         if self.sale_id:
             if self.picking_type_id.name == "Pick" and self.state == "done":
                 self.note_readonly_flag = 1
-                self.add_note_in_log_section()
+                # self.add_note_in_log_section()
                 for picking_id in self.sale_id.picking_ids:
                     if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned'):
                         picking_id.note = self.note
             elif self.picking_type_id.name == "Pull" and self.state == "done":
                 self.note_readonly_flag = 1
-                self.add_note_in_log_section()
+                # self.add_note_in_log_section()
                 for picking_id in self.sale_id.picking_ids:
                     if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned'):
                         picking_id.note = self.note
             elif self.picking_type_id.name == "Delivery Orders" and self.state == "done":
                 self.note_readonly_flag = 1
-                self.add_note_in_log_section()
+                # self.add_note_in_log_section()
 
         if self.picking_type_id.code == "outgoing":
             if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
@@ -426,6 +432,7 @@ class StockPicking(models.Model):
             # Update the sales order line
             sale_order_line.write({'name': so_description, 'price_unit':price_unit,'product_uom': carrier.product_id.uom_id.id, 'product_id': carrier.product_id.id, 'tax_id': [(6, 0, taxes_ids)]})
 
+    # No Longer Use Of this Code, Need to Remove at Migration
     def add_note_in_log_section(self):
         if self.note:
             body = self.note

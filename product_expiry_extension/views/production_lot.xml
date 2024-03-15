@@ -9,7 +9,7 @@
           <field  name="product_id" position="after">
                 <!--<field name="use_date" string="Expiration Date" />-->
                 <field name="alert_date" invisible="True"  />
-		        <field name="product_qty" />
+		        <field name="product_qty" invisible="context.get('lot_date_display_name_so')"/>
               <field name="available_qty_for_sale" />
           </field>
           <tree  position="attributes" >

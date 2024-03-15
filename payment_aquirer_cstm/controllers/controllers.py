@@ -506,7 +506,7 @@ class PaymentProcessing(PaymentProcessing):
         # Remove product from
         order_id = request.session.sale_order_id
         if order_id:
-            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
+            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1).sudo()
             # order = request.env['sale.order'].sudo().browse(request.session.sale_order_id)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:

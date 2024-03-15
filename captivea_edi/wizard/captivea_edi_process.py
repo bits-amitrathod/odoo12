@@ -740,7 +740,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                                                 })
                                             if len(fields) > 4:
                                                 po_lines[fields[1]].update({
-                                                    'unit_price': float(fields[4])
+                                                    'unit_price': round(float(fields[4]), 2)
                                                 })
                                             if len(fields) > 7:
                                                 product_seg = 7
