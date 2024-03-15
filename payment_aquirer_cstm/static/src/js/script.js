@@ -104,7 +104,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         setTimeout(function(){
                         $payButton.prop('disabled', false);
                         console.log("delay done")
-                        },5000);
+                        },3000);
                         }
                         else{
                         console.log('in gen pay false');
