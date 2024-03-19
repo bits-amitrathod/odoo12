@@ -160,9 +160,9 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 });
                 console.log('In charge_me_for_shipping_radio  161');
                 //$payButton.prop('disabled', true);
-                var disabledReasons = $payButton.data('disabled_reasons') || {};
-                disabledReasons.carrier_selection = true;
-                $payButton.data('disabled_reasons', disabledReasons);
+//                var disabledReasons = $payButton.data('disabled_reasons') || {};
+//                disabledReasons.carrier_selection = true;
+//                $payButton.data('disabled_reasons', disabledReasons);
 
                 ajax.jsonRpc("/shop/get_carrier", 'call', {
                     'delivery_carrier_code': 'fedex_ground'
