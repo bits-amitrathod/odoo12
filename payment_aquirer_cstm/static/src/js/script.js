@@ -129,7 +129,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                    'expedited_shipping': value
                });
-
+               console.log('In my shipper radio 132');
                $payButton.prop('disabled', false);
 
                ajax.jsonRpc("/shop/get_carrier", 'call', {
@@ -158,7 +158,8 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
-                $payButton.prop('disabled', true);
+                console.log('In charge_me_for_shipping_radio  161');
+                //$payButton.prop('disabled', true);
                 var disabledReasons = $payButton.data('disabled_reasons') || {};
                 disabledReasons.carrier_selection = true;
                 $payButton.data('disabled_reasons', disabledReasons);
