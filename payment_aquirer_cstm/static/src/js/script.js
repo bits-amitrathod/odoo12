@@ -74,7 +74,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     $payButton.prop('disabled', false);
                     setTimeout(function(){
                         $payButton.prop('disabled', false);
-                        console.log("delay done")
+                        console.log("delay done");
                         },5000);
                 } else {
                     console.log('In else ***');
@@ -95,7 +95,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         $payButton.prop('disabled', false);
                         setTimeout(function(){
                         $payButton.prop('disabled', false);
-                        console.log("delay done in if blog")
+                        console.log("delay done in if blog");
                         },5000);
                     }else{
                         console.log('in else blog');
@@ -175,6 +175,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     var values = {'carrier_id': carrier_id};
                     dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
                     .then(_handleCarrierUpdateResults);
+                    console.log('In charge_me_for_shipping_radio then 178');
                     $payButton.prop('disabled', false);
 
                });
