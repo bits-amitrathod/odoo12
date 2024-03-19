@@ -75,7 +75,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     setTimeout(function(){
                         $payButton.prop('disabled', false);
                         console.log("delay done")
-                        },3000);
+                        },8000);
                 } else {
                     console.log('In else ***');
                     $("#shipping_options").children().hide();
