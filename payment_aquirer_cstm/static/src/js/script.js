@@ -72,10 +72,10 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     $("#choose_a_delivery_method_label").parent().hide();
                     $("#delivery_method_custom").parent().hide();
                     $payButton.prop('disabled', false);
-//                    setTimeout(function(){
-//                        $payButton.prop('disabled', false);
-//                        console.log("delay done");
-//                        },5000);
+                    setTimeout(function(){
+                        $payButton.prop('disabled', false);
+                        console.log("delay done");
+                        },5000);
                 } else {
                     console.log('In else ***');
                     $("#shipping_options").children().hide();
@@ -93,10 +93,10 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         $carrierBadge.html(data['new_amount_delivery']);
                         $carrierBadge.removeClass('o_wsale_delivery_carrier_error');
                         $payButton.prop('disabled', false);
-//                        setTimeout(function(){
-//                        $payButton.prop('disabled', false);
-//                        console.log("delay done in if blog");
-//                        },5000);
+                        setTimeout(function(){
+                        $payButton.prop('disabled', false);
+                        console.log("delay done in if blog");
+                        },5000);
                     }else{
                         console.log('in else blog');
                         $carrierBadge.addClass('o_wsale_delivery_carrier_error');
