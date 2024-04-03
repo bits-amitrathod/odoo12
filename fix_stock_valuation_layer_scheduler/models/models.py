@@ -18,7 +18,7 @@ class FixStockValuationLayerScheduler(models.Model):
         count_of_prod = 0
         rows_corrected = 0
         if len(prods_sku) == 10 and prods_sku == 'fixallprod':
-            products = self.env['product.product'].search([])
+            products = self.env['product.product'].search([('active', 'in', [True, False])])
         else:
             products = self.env['product.product'].search([('default_code', 'in', prods_sku)])
 
