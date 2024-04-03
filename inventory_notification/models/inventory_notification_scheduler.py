@@ -644,7 +644,8 @@ class InventoryNotificationScheduler(models.TransientModel):
 
         try:
             query = """ update res_partner set todays_notification = true where customer_rank >= 1 and is_parent = true
-            and email is not null and active = true and todays_notification = false  and  """+weekday+""" = true  
+            and email is not null and active = true and ((todays_notification = false) or (todays_notification is Null)) 
+            and  """+weekday+""" = true  
             and ( (start_date is null and end_date is null )     or  (end_date is not null and  end_date > CURRENT_DATE)   
             or  (start_date is not null and  start_date < CURRENT_DATE)    ) 	    """
 
