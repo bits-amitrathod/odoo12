@@ -127,6 +127,9 @@
                     <page name="comment_tab" string="NA or Comments">
                       <group> <field name="comment"/></group>
                    </page>
+                     <page name="dup_poc" string="Dup POC">
+                      <group> <field name="dup_poc_note"/></group>
+                   </page>
                   </xpath>
             </field>
         </record>
@@ -140,6 +143,7 @@
                 <field name="res_model_id" position="after">
                    <field name="sales_activity_notes"/>
                     <field name="acq_activity_notes"/>
+                     <field name="dup_poc_note"/>
                     
                 </field>
             </field>
@@ -223,6 +227,9 @@
                         <!-- studio Changes Added-->
                         <page name="comment_tab" string="NA or Comments">
                             <group> <field name="comment"/></group>
+                        </page>
+                        <page name="dup_poc" string="Dup POC">
+                            <group> <field name="dup_poc_note"/></group>
                         </page>
 
 <!--                    <page name="actnotes" string="Notes">-->
