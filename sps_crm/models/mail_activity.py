@@ -43,7 +43,7 @@ class MailActivityNotesCustom(models.Model):
     # studio field replacement
     tags = fields.Many2many(related="related_partner_activity.category_id", readonly=True, store=False)
     # related field id studio field need to change
-    # direct_line = fields.Char(related="related_partner_activity.x_studio_direct_line", readonly=True, store=False)
+    direct_line = fields.Char(related="related_partner_activity.x_studio_direct_line", readonly=True, store=False)
     time_zone = fields.Selection([
         ('est', 'EST'),
         ('cst', 'CST'),

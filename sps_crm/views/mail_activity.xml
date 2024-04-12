@@ -42,7 +42,7 @@
                                 <field name="email" widget="email"/>
                                 <field name="function" string="Job Title"/>
                                 <field name="phone" widget="phone"/>
-<!--                                <field name="direct_line"/>-->
+                                <field name="direct_line"/>
                                 <field name="mobile" widget="phone"/>
                                 <field name="tags" widget="many2many_tags"/>
                                 <field name="request_partner_id"/>
@@ -242,7 +242,7 @@
                                 <field name="email" widget="email"/>
                                 <field name="function" string="Job Title"/>
                                 <field name="phone" widget="phone"/>
-<!--                                <field name="direct_line"/>-->
+                                <field name="direct_line"/>
                                 <field name="mobile" widget="phone"/>
                                 <field name="tags" widget="many2many_tags"/>
 
