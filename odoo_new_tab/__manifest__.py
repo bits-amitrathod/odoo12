@@ -25,7 +25,7 @@
   "description"          :  """View Records In New Tab""",
   "live_test_url"        :  "",
   "depends"              :  ['web'],
-  "data"                 :  ['views/template.xml'],
+  # "data"                 :  ['views/template.xml'], AHUJA MIGRATION
   "images"               :  ['static/description/Banner.gif'],
   "application"          :  True,
   "installable"          :  True,

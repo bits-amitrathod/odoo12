@@ -70,26 +70,26 @@
                       <!--<field name="lscolor" invisible="1"/>-->
 
                     <field name="currency_id" invisible="1"/>
-                    <field name="message_unread" invisible="1"/>
+<!--                    <field name="message_unread" invisible="1"/>-->
                 </tree>
 
             </field>
         </record>
 
 
-        <record id="appraisal_tracker_offer_form" model="ir.ui.view">
+       <!-- <record id="appraisal_tracker_offer_form" model="ir.ui.view">
             <field name="name">purchase.order.form</field>
             <field name="model">purchase.order</field>
-            <!--<field name="context">[status: 'purchase']</field>-->
+            &lt;!&ndash;<field name="context">[status: 'purchase']</field>&ndash;&gt;
             <field name="arch" type="xml">
 
 
                 <form string="Appraisal Tracker" class="o_sale_order vendor_offer_class" create="false" delete="false"
                       menu="false" print="false">
                     <header>
-                        <button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
-                                string="Add Note"/>
-                        <!--<button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"/>-->
+                        &lt;!&ndash;<button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
+                                string="Add Note"/>&ndash;&gt;
+                        &lt;!&ndash;<button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"/>&ndash;&gt;
                     </header>
                     <sheet>
                         <div class="oe_button_box" name="button_box">
@@ -167,7 +167,7 @@
                                                 <field name="product_sales_count_90"/>
                                                 <field name="product_sales_count_yrs"/>
                                                 <field name="expired_inventory"/>
-                                                <!--<field name="list_price" invisible="1"/>-->
+                                                &lt;!&ndash;<field name="list_price" invisible="1"/>&ndash;&gt;
                                                 <field name="product_unit_price"/>
                                                 <field name="product_offer_price"/>
                                                 <field name="product_retail"/>
@@ -175,8 +175,8 @@
                                                 <field name="margin"/>
                                                 <field name="multiplier"/>
                                                 <field name="product_note" readonly="1"/>
-                                                <!--<field name="date_planned" invisible="1"/>-->
-                                                <!--<field name="product_uom" invisible="1"/>-->
+                                                &lt;!&ndash;<field name="date_planned" invisible="1"/>&ndash;&gt;
+                                                &lt;!&ndash;<field name="product_uom" invisible="1"/>&ndash;&gt;
                                             </group>
                                         </group>
                                     </form>
@@ -196,7 +196,7 @@
                                         <field name="product_sales_count_month"/>
                                         <field name="product_sales_count_90"/>
                                         <field name="product_sales_count_yrs"/>
-                                        <!--<field name="list_price" invisible="1"/>-->
+                                        &lt;!&ndash;<field name="list_price" invisible="1"/>&ndash;&gt;
                                         <field name="expired_inventory"/>
                                            <field name="vendor_offer_data" invisible="1"/>
                                         <field name="product_unit_price"/>
@@ -211,16 +211,16 @@
                                                domain="[('type_tax_use','=','purchase')]"
                                                context="{'default_type_tax_use': 'purchase'}"
                                                options="{'no_create': True}"/>
-                                        <!--    <field name="price_tax"  />
+                                        &lt;!&ndash;    <field name="price_tax"  />
                                           <field name="price_total"   widget="monetary" />
                                           <field name="price_subtotal"   widget="monetary" />
                                        <field name="rt_price_tax"  />
                                           <field name="rt_price_total"   widget="monetary" />
-                                          <field name="rt_price_subtotal"   widget="monetary" />-->
+                                          <field name="rt_price_subtotal"   widget="monetary" />&ndash;&gt;
                                         <field name="margin"/>
                                         <field name="multiplier"/>
-                                        <!--<field name="date_planned" invisible="1"/>-->
-                                        <!--<field name="product_uom" invisible="1"/>-->
+                                        &lt;!&ndash;<field name="date_planned" invisible="1"/>&ndash;&gt;
+                                        &lt;!&ndash;<field name="product_uom" invisible="1"/>&ndash;&gt;
                                         <field name="order_id" invisible="1"/>
 
                                     </tree>
@@ -233,7 +233,7 @@
                                         <field name="amount_untaxed" widget="monetary" string="Untaxed Offer Price"/>
                                         <field name="amount_tax" string="Taxes"/>
                                          <div class="oe_subtotal_footer_separator oe_inline">
-                                            <!--<label for="amount_total"/>-->
+                                            &lt;!&ndash;<label for="amount_total"/>&ndash;&gt;
                                         </div>
                                         <field name="amount_total" widget="monetary" string="Total Offer Price" class="oe_subtotal_footer_separator"/>
 
@@ -243,7 +243,7 @@
                                                string="Untaxed Retail Price"/>
                                         <field name="rt_price_tax_amt" string="Taxes"/>
                                          <div class="oe_subtotal_footer_separator oe_inline">
-                                            <!--<label for="rt_price_total_amt"/>-->
+                                            &lt;!&ndash;<label for="rt_price_total_amt"/>&ndash;&gt;
                                         </div>
                                         <field name="rt_price_total_amt"  widget="monetary" string="Total Retail Price" class="oe_subtotal_footer_separator"/>
                                     </group>
@@ -305,7 +305,7 @@
                     </div>
                 </form>
             </field>
-        </record>
+        </record>-->
 
        <record id="appraisal_tracker.action_window" model="ir.actions.act_window">
 
@@ -318,8 +318,9 @@
             <field name="view_mode">form,tree</field>
             <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'tree', 'view_id': ref('appraisal_tracker.list')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('appraisal_tracker_offer_form')})
+
         ]"/>
+           <!-- TODO:UPG_ODOO16_NOTE       (0, 0, {'view_mode': 'form', 'view_id': ref('appraisal_tracker_offer_form')})-->
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Click to create a request for quotation.
@@ -365,7 +366,7 @@
             <field name="name">res.partner.form.wholesaler</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
-            <field eval="20" name="priority"/>
+            <field name="priority" eval="22"/>
             <field name="arch" type="xml">
                   <field name="on_hold" position="after">
                       <field name="is_wholesaler" />

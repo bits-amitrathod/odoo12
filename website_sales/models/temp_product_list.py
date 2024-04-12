@@ -103,17 +103,17 @@ class TempProductList(models.Model):
                 FROM
                     stock_quant
                 INNER JOIN
-                    stock_production_lot
+                    stock_lot
                 ON
                     (
-                        stock_quant.lot_id = stock_production_lot.id)
+                        stock_quant.lot_id = stock_lot.id)
                 INNER JOIN
                     stock_location
                 ON
                     (
                         stock_quant.location_id = stock_location.id)
                 WHERE
-                    stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+                    stock_location.usage in('internal', 'transit') and stock_lot.product_id  = %s
                     """,
                     (query_result['product_id'],))
                 result = self.env.cr.dictfetchone()
@@ -225,17 +225,17 @@ class TempProductList(models.Model):
                 FROM
                     stock_quant
                 INNER JOIN
-                    stock_production_lot
+                    stock_lot
                 ON
                     (
-                        stock_quant.lot_id = stock_production_lot.id)
+                        stock_quant.lot_id = stock_lot.id)
                 INNER JOIN
                     stock_location
                 ON
                     (
                         stock_quant.location_id = stock_location.id)
                 WHERE
-                    stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+                    stock_location.usage in('internal', 'transit') and stock_lot.product_id  = %s
                     """,
                     (query_result['product_id'],))
                 result = self.env.cr.dictfetchone()

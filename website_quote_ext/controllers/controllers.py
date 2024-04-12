@@ -210,7 +210,7 @@ class WebsiteSale(http.Controller):
                     'model': 'stock.picking',
                     'message_type': 'notification',
                     'no_auto_thread': False,
-                    'subtype_id': request.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'subtype_id': request.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': stk_picking.sale_id.partner_id.id,
                 }
@@ -272,7 +272,7 @@ class WebsiteSale(http.Controller):
                     'model': 'stock.picking',
                     'message_type': 'notification',
                     'no_auto_thread': False,
-                    'subtype_id': request.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'subtype_id': request.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': stk_picking.sale_id.partner_id.id,
                 }

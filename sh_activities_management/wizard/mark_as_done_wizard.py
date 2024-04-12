@@ -30,7 +30,7 @@ class MarkAsDone(models.TransientModel):
                         'feedback': self.feedback,
                         'display_assignee': activity_id.user_id != self.env.user
                     },
-                    subtype_id=self.env['ir.model.data'].xmlid_to_res_id('mail.mt_activities'),
+                    subtype_id=self.env['ir.model.data']._xmlid_to_res_id('mail.mt_activities', raise_if_not_found=True),
                     mail_activity_type_id=activity_id.activity_type_id.id,
                 )
                 messages |= record.sudo().message_ids[0]

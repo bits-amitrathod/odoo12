@@ -7,9 +7,9 @@
     'depends': ['base', 'sale'],
     'data': [
         'security/ir.model.access.csv',
-        'views/groupby_view.xml',
-        'report/group_by_sales_person_report.xml',
-        'report/group_by_sales_person_temp.xml',
+        # 'views/groupby_view.xml',
+        # 'report/group_by_sales_person_report.xml',
+        # 'report/group_by_sales_person_temp.xml',
     ],
     'images': ['static/description/banner.png'],
     'auto_install': False,

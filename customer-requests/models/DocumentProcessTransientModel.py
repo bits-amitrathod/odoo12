@@ -529,7 +529,7 @@ class DocumentProcessTransientModel(models.TransientModel):
             sql_query = sql_query + """ INNER JOIN uom_uom uu ON pt.actual_uom = uu.id """
         sql_query = sql_query + """ where pt.tracking != 'none' and pt.active = true """
         if req['uom'].lower().strip() in ['e', 'ea', 'eac', 'each', 'u', 'un', 'unit', 'unit(s)']:
-            sql_query = sql_query + """ and uu.name in ('Each', 'Unit') """
+            sql_query = sql_query + """ and uu.name->>'en_US' in ('Each', 'Unit') """
         sql_query = sql_query + """ ) as temp_data where lower(sku_code_cleaned) ='""" + product_sku_lower_case + """' or lower(manufacturer_pref_cleaned) = '""" + product_sku_lower_case + """' """
         self.env.cr.execute(sql_query)
         products = self.env.cr.dictfetchall()

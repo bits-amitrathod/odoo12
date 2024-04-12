@@ -13,9 +13,9 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/dormant_customers_report.xml',
-        'report/dormant_customers_report_template.xml'
+        # 'views/views.xml',
+        # 'report/dormant_customers_report.xml',
+        # 'report/dormant_customers_report_template.xml'
     ],
     'auto_install': False,
     'installable': True,

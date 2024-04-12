@@ -18,8 +18,8 @@
     'data': [
         # 'security/ir.model.access.csv',
         'views/views.xml',
-        'views/templates.xml',
-        'data/payment_acquirer_cstm_data.xml',
+        # 'views/templates.xml',
+        # 'data/payment_acquirer_cstm_data.xml',
 
     ],
     # only loaded in demonstration mode

@@ -21,14 +21,21 @@
     'data': [
         'security/res_vendor_offer.xml',
         'security/ir.model.access.csv',
+
+        'views/purchase_notes_activity.xml',
+        'views/res_partner.xml',
+        'views/stock_picking.xml',
+        'views/tier_multiplier.xml',
+        'views/vendor_pricing.xml',
+        'views/threshold.xml',
         'views/views.xml',
+        'views/views_app.xml',
         'views/templates.xml',
-        'demo/data.xml',
+        'report/vendor_offer_quotation_templates.xml',
+        'report/vendor_offer_quotation_templates_acceleration.xml',
         'report/vendor_offer_reports.xml',
         'data/mail_template_data.xml',
-        'report/vendor_offer_quotation_templates.xml',
-        'report/vendor_offer_quotation_templates_acceleration.xml'
-        # 'views/tree_view_asset.xml'
+        'demo/data.xml',
 
     ],
 

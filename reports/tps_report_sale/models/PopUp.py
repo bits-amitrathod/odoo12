@@ -43,7 +43,7 @@ class PopUp(models.TransientModel):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'),(form_view_id, 'form')],
             'view_mode': 'tree,form',
-            'name': _('Total Product Sales'),
+            'nameproduct_tmpl_id': _('Total Product Sales'),
             'res_model': x_res_model,
             'context':margins_context,
             'target': 'main'

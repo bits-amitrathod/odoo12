@@ -13,7 +13,7 @@ class CustomerContract(models.Model):
     _inherit = "res.partner"
 
     exclude_in_stock_product_ids = fields.One2many('exclude.product.in.stock', 'partner_id')
-
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", racking=True)
     def _get_default_user_id(self):
         res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
         if res_users:
@@ -54,9 +54,6 @@ class CustomerContract(models.Model):
                               default=_get_default_user_id, tracking=True)
 
     national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
-                                           domain="[('active', '=', True), ('share','=',False)]", tracking=True)
-
-    customer_success = fields.Many2one('res.users', string="Customer Success",
                                            domain="[('active', '=', True), ('share','=',False)]", tracking=True)
 
     order_quota = fields.Float(string="Order Quota", help="Number of transactions", tracking=True,
@@ -107,9 +104,8 @@ class sale_order(models.Model):
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
-    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success",
-                                       compute="get_customer_success", domain="['&',['active','=',True],['share','=',False]]", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success",racking=True)
     #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
 
     # @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
@@ -164,11 +160,8 @@ class sale_order(models.Model):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
 
-    def get_customer_success(self):
-        for so in self:
-            so.customer_success = so.partner_id.customer_success.id
-    @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
-    @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
+    @api.onchange('client_order_ref')
+    @api.depends('client_order_ref')
     def onchange_client_order_ref(self):
         if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
             records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref),('partner_id', '=', self.get_chils_parent())])
@@ -202,10 +195,6 @@ class sale_order(models.Model):
                 vals['national_account'] = res_partner.national_account_rep.id
             elif res_partner and res_partner.parent_id and res_partner.parent_id.national_account_rep and res_partner.parent_id.national_account_rep.id:
                 vals['national_account'] = res_partner.parent_id.national_account_rep.id
-            if res_partner and res_partner.customer_success and res_partner.customer_success.id:
-                vals['customer_success'] = res_partner.customer_success.id
-            elif res_partner and res_partner.parent_id and res_partner.parent_id.customer_success and res_partner.parent_id.customer_success.id:
-                vals['customer_success'] = res_partner.parent_id.customer_success.id
         return super(sale_order, self).create(vals)
 
     @api.depends('order_line.price_total')
@@ -229,10 +218,8 @@ class sale_order(models.Model):
 
     def write(self, val):
         super(sale_order, self).write(val)
-        # Add Sale note in pick,pull,out
-        # Need to optimize the Code
-        #TODO : We can also Move to onChange (sale_note) ,
-        if self.state and self.state in 'sale' and 'sale_note' in val:
+        # Add note in pick delivery
+        if self.state and self.state in 'sale':
             for pick in self.picking_ids:
                 pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
 
@@ -242,8 +229,8 @@ class sale_order(models.Model):
                 if stock_picking and stock_picking.state != 'done' and stock_picking.state != 'cancel' :
                     stock_picking.write({'carrier_id': self.carrier_id.id})
 
-        # sale Note notification would be add in to Pick,Pull,Out
-        if self.sale_note and 'sale_note' in val and self.team_id.team_type != 'engine':
+        # if 'sale_note' in val or self.sale_note:
+        if self.sale_note and self.team_id.team_type != 'engine':
             body = self.sale_note
             for stk_picking in self.picking_ids:
                 stock_picking_val = {
@@ -251,15 +238,12 @@ class sale_order(models.Model):
                     'model': 'stock.picking',
                     'message_type': 'notification',
                     'no_auto_thread': False,
-                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
 
-        # For Follower Adding 
-        if self.customer_success.id:
-            self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
     def _get_carrier_tracking_ref(self):
         for so in self:
             stock_picking = self.env['stock.picking'].search([('origin', '=', so.name), ('picking_type_id', '=', 5),
@@ -332,12 +316,11 @@ class sale_order(models.Model):
         elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.national_account_rep \
                 and self.partner_id.commercial_partner_id.national_account_rep.id:
             self.national_account = self.partner_id.commercial_partner_id.national_account_rep.id
-        if self.partner_id and self.partner_id.customer_success and self.partner_id.customer_success.id:
-            self.customer_success = self.partner_id.customer_success.id
-        elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.customer_success \
-                and self.partner_id.commercial_partner_id.customer_success.id:
-            self.customer_success = self.partner_id.commercial_partner_id.customer_success.id
-        super(sale_order, self).onchange_partner_id()
+        # TODO: UPG_ODOO16_NOTE
+        # addons/sale/models/sale_order.py line No 339-350
+        # I think That Handled using Depends that's Why this is commented
+        # onchange_partner_id() Removed From parent
+        # super(sale_order, self).onchange_partner_id()
 
     def get_chils_parent(self):
         list = []
@@ -362,26 +345,22 @@ class StockPicking(models.Model):
         action = super(StockPicking, self).button_validate()
 
         # Note Section code
-        # Is there are Need to set Notification After each Pick, pull ,out Validation
-        # because After SO Confirmation that Notification Also Set and Also on Change of SO Sale Note
-        # TODO: Neet To Optimize the Code, Lot of Duplicate Code
-        # add_note_in_log_section() code committed because of repeated notification Issue
         if self.sale_id:
             if self.picking_type_id.name == "Pick" and self.state == "done":
                 self.note_readonly_flag = 1
-                # self.add_note_in_log_section()
+                self.add_note_in_log_section()
                 for picking_id in self.sale_id.picking_ids:
                     if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned'):
                         picking_id.note = self.note
             elif self.picking_type_id.name == "Pull" and self.state == "done":
                 self.note_readonly_flag = 1
-                # self.add_note_in_log_section()
+                self.add_note_in_log_section()
                 for picking_id in self.sale_id.picking_ids:
                     if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned'):
                         picking_id.note = self.note
             elif self.picking_type_id.name == "Delivery Orders" and self.state == "done":
                 self.note_readonly_flag = 1
-                # self.add_note_in_log_section()
+                self.add_note_in_log_section()
 
         if self.picking_type_id.code == "outgoing":
             if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
@@ -432,7 +411,6 @@ class StockPicking(models.Model):
             # Update the sales order line
             sale_order_line.write({'name': so_description, 'price_unit':price_unit,'product_uom': carrier.product_id.uom_id.id, 'product_id': carrier.product_id.id, 'tax_id': [(6, 0, taxes_ids)]})
 
-    # No Longer Use Of this Code, Need to Remove at Migration
     def add_note_in_log_section(self):
         if self.note:
             body = self.note
@@ -442,7 +420,7 @@ class StockPicking(models.Model):
                     'model': 'stock.picking',
                     'message_type': 'notification',
                     'no_auto_thread': False,
-                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': self.env.user.partner_id.id,
                 }

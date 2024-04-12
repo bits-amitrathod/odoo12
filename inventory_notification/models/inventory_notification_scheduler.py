@@ -103,12 +103,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.order_processor.id)])
 
         final_user = users if users else users_sale_person if users_sale_person else super_user
-
-        to_user = picking.sale_id.customer_success if picking.sale_id.customer_success else False
-        if not to_user and picking.sale_id.account_manager:
-            to_user = picking.sale_id.account_manager
-        final_user = to_user or final_user
-
         sales_order = []
         for stock_move in Stock_Moves:
             sale_order = {
@@ -135,16 +129,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                               ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
                              '''
 
-        email_to = picking.sale_id.account_manager.login if picking.sale_id.account_manager else False
-
-        if picking.sale_id.customer_success:
-            email_to = ','.join(filter(None, [email_to, picking.sale_id.customer_success.login]))
-
-        email_to = email_to or final_user.sudo().email
-
-        self.process_common_email_notification_template(super_user, email_to, vals['subject'], vals['description'],
+        self.process_common_email_notification_template(super_user, final_user, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
-                                                        vals['columnProps'], vals['closing_content'], type=True)
+                                                        vals['columnProps'], vals['closing_content'])
 
     def pick_notification_for_user(self, picking):
         Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -542,22 +529,14 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </tr>
                                     <tr style="height: 76px;">
                                     <td style="width: 156px; height: 76px;">
-                                    <p><strong>Carley Fritsch</strong></p>
-                                    <p>(412) 643-4597</p>
-                                    </td>
-                                    <td style="width: 172px; height: 76px;">
-                                    <p><strong>Sasha Khripkova</strong></p>
-                                    <p>(412) 643-3816</p>
-                                    </td>
-                                    <td style="width: 156px; height: 76px;">
-                                    <p><strong>Theresa Carmody</strong></p>
-                                    <p>(412) 286-2212</p>
+                                    <p><strong>Christopher Odell</strong></p>
+                                    <p>412-745-0338</p>
                                     </td>
                                     <td style="width: 157px; height: 76px;">
                                     <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
                                     <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
                                     </td>
-                                    <td style="width: 172px; height: 76px;">
+                                    <td style="width: 123px; height: 76px;">
                                     <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
                                     <p style="text-align: left;">412-248-1284</p>
                                     </td>
@@ -586,8 +565,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                             email_list_cc.append(customr.user_id.email)
                     if customr.account_manager_cust.email:
                         email_list_cc.append(customr.account_manager_cust.email)
-                        if customr.customer_success and customr.customer_success.email:
-                            email_list_cc.append(customr.customer_success.email)
                     sort_col = True
                     self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                    product_list,
@@ -624,34 +601,25 @@ class InventoryNotificationScheduler(models.TransientModel):
         dayName = today_date.weekday()
         weekday = days[dayName]
 
-        # customers = self.env['res.partner'].search(
-        #     [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-        #      (weekday, '=', True), ('todays_notification', '=', False)])
+        customers = self.env['res.partner'].search(
+            [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+             (weekday, '=', True), ('todays_notification', '=', False)])
 
-        # for customer in customers:
-        #     try:
-        #         if (customer.start_date == False and customer.end_date == False) \
-        #                 or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-        #             customer.end_date) >= today_start) \
-        #                 or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
-        #             customer.start_date) <= today_start) \
-        #                 or (
-        #                 customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-        #             customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-        #             customer.end_date) >= today_start) \
-        #                 or (customer.end_date is None):
-        #             customer.write({'todays_notification': True})
-
-        try:
-            query = """ update res_partner set todays_notification = true where customer_rank >= 1 and is_parent = true
-            and email is not null and active = true and ((todays_notification = false) or (todays_notification is Null)) 
-            and  """+weekday+""" = true  
-            and ( (start_date is null and end_date is null )     or  (end_date is not null and  end_date > CURRENT_DATE)   
-            or  (start_date is not null and  start_date < CURRENT_DATE)    ) 	    """
-
-            self.env.cr.execute(query)
-        except Exception as e:
-            _logger.exception(e)
+        for customer in customers:
+            try:
+                if (customer.start_date == False and customer.end_date == False) \
+                        or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.end_date) >= today_start) \
+                        or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.start_date) <= today_start) \
+                        or (
+                        customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                    customer.end_date) >= today_start) \
+                        or (customer.end_date is None):
+                    customer.write({'todays_notification': True})
+            except Exception as e:
+                _logger.exception(e)
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
@@ -1076,8 +1044,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                    header, columnProps, closing_content, email_to_team=None,
                                                    picking=None,
                                                    custom_template="inventory_notification.common_mail_template",
-                                                   is_employee=True,
-                                                   type=False):
+                                                   is_employee=True):
         template = self.env.ref(custom_template)
 
         product_dict = {}
@@ -1102,7 +1069,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     [('id', '=', stock_warehouse_id.lot_stock_id.id), ])
                 if stock_location_id:
                     self.env.cr.execute(
-                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        "SELECT  min(use_date), max (use_date) FROM stock_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
                         (stock_location_id.id, product['id'],))
                     query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
@@ -1156,8 +1123,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'description': descrption,
                 'template': template,
                 'is_employee': is_employee,
-                'closing_content': closing_content,
-                'type': type
+                'closing_content': closing_content
             }
             self.send_email_and_notification(vals, picking)
 
@@ -1165,10 +1131,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         email = ""
         if vals['email_to_team']:
             email = vals['email_to_team']
-        # type check added for pull email notification changes
-        if vals['type']:
-            email = vals['email_to_user']
-        elif vals['email_to_user']:
+        if vals['email_to_user']:
             email = vals['email_to_user'].sudo().email
 
         local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
@@ -1246,7 +1209,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     [('id', '=', stock_warehouse_id.lot_stock_id.id), ])
                 if stock_location_id:
                     self.env.cr.execute(
-                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        "SELECT  min(use_date), max (use_date) FROM stock_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
                         (stock_location_id.id, product['id'],))
                     query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
@@ -1385,7 +1348,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 forecasted_qty = product.virtual_available
                 if stock_location_id:
                     self.env.cr.execute(
-                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        "SELECT  min(use_date), max (use_date) FROM stock_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
                         (stock_location_id.id, product.id,))
                     query_result = self.env.cr.dictfetchone()
                 if query_result and query_result['min']:
@@ -1457,7 +1420,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     [('id', '=', stock_warehouse_id.lot_stock_id.id), ])
                 if stock_location_id:
                     self.env.cr.execute(
-                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        "SELECT  min(use_date), max (use_date) FROM stock_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
                         (stock_location_id.id, product['id'],))
                     query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:

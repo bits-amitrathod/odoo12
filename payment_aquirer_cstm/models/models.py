@@ -5,11 +5,11 @@ from odoo import api, fields, models, tools, SUPERUSER_ID, _
 
 
 class payment_aquirer_cstm(models.Model):
-    _inherit = 'payment.acquirer'
+    _inherit = 'payment.provider'
 
-    provider = fields.Selection(selection_add=[
-        ('purchaseorder', 'Purchase Order')
-    ], ondelete={'purchaseorder': 'set default'})
+    # provider = fields.Selection(selection_add=[
+    #     ('purchaseorder', 'Purchase Order')
+    # ], ondelete={'purchaseorder': 'set default'})
 
     #@api.multi
     def purchaseorder_get_form_action_url(self):
@@ -104,7 +104,7 @@ class Website(models.Model):
             fpos_id = (
                 self.env['account.fiscal.position'].sudo()
                 .with_company(sale_order.company_id.id)
-                .get_fiscal_position(sale_order.partner_id.id, delivery_id=sale_order.partner_shipping_id.id)
+                ._get_fiscal_position(sale_order.partner_id, delivery=sale_order.partner_shipping_id)
             ).id
             if sale_order.fiscal_position_id.id != fpos_id:
                 sale_order = None

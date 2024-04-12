@@ -11,12 +11,12 @@
                         <field name="company_id" invisible="1" />
                         <field name="sh_activity_type_id" />
                         <field name="sh_summary" />
-                        <field name="sh_activity_alarm_ids" widget="many2many_tags" groups="sh_activities_management.group_activity_alarm"/>
+                        <field name="sh_activity_alarm_ids" widget="many2many_tags" />
                         <field name="sh_create_individual_activity" attrs="{'invisible':[('sh_user_ids','=',[])]}" />
                     </group>
                     <group>
                         <field name="sh_date_deadline" />
-                        <field name="sh_reminder_date_deadline" groups="sh_activities_management.group_activity_alarm"/>
+                        <field name="sh_reminder_date_deadline"/>
                         <field name="sh_user_id" />
                         <field name="sh_user_ids" widget="many2many_tags" attrs="{'invisible':[('sh_display_multi_user','=',False)]}" />
                         <field name="sh_supervisor_id" />

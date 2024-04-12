@@ -3,7 +3,7 @@ import datetime
 
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt
@@ -77,7 +77,6 @@ class ReportPrintInStockExport(http.Controller):
         return data
 
     @http.route('/web/export/in_stock_report', type='http', auth="public")
-    @serialize_exception
     def download_document_xl(self, token, **kwargs):
 
         """
@@ -363,18 +362,18 @@ class ReportPrintInStockExport(http.Controller):
         SELECT
           min(use_date) as min_expiration_date,
           max(use_date) as max_expiration_date,
-          stock_production_lot.product_id 
+          stock_lot.product_id 
         FROM
           stock_quant 
           INNER JOIN
-            stock_production_lot 
-            ON ( stock_quant.lot_id = stock_production_lot.id) 
+            stock_lot 
+            ON ( stock_quant.lot_id = stock_lot.id) 
           INNER JOIN
             stock_location 
             ON ( stock_quant.location_id = stock_location.id) 
         WHERE stock_location.usage in ( 'internal', 'transit')
         group by
-          stock_production_lot.product_id;
+          stock_lot.product_id;
 
         select
           * 

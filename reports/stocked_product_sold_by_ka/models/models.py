@@ -53,13 +53,13 @@ class StockedProductSoldByKa(models.Model):
                 FROM public.stock_picking SPS
                 INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
                 INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
-                INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                INNER JOIN public.stock_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
                 WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7) is null THEN SUM(SML.qty_done) ELSE
                 (SUM(SML.qty_done) - (SELECT SUM(SMLS.qty_done)
                 FROM public.stock_picking SPS
                 INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
                 INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
-                INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                INNER JOIN public.stock_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
                 WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7)) END AS qty_done,
 
 
@@ -67,13 +67,13 @@ class StockedProductSoldByKa(models.Model):
                 FROM public.stock_picking SPS
                 INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
                 INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
-                INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                INNER JOIN public.stock_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
                 WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7) is null THEN SUM(SML.qty_done) ELSE
                 (SUM(SML.qty_done) - (SELECT SUM(SMLS.qty_done)
                 FROM public.stock_picking SPS
                 INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
                 INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
-                INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                INNER JOIN public.stock_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
                 WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7)) END * SOL.price_reduce AS total_amount
 
             FROM 
@@ -100,7 +100,7 @@ class StockedProductSoldByKa(models.Model):
                 (
                     SM.id = SML.move_id)
             INNER JOIN 
-                public.stock_production_lot SPL 
+                public.stock_lot SPL 
             ON 
                 (
                     SML.lot_id = SPL.id AND SPL.use_date <= SP.date_done + INTERVAL '6 MONTH')

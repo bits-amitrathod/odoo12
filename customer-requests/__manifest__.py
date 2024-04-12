@@ -13,7 +13,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'fetchmail', 'sale', 'prioritization_engine'],
+    'depends': ['base', 'sale', 'prioritization_engine'],
 
     # always loaded
     'data': [
@@ -23,15 +23,12 @@
         'views/voided_product_template_views.xml',
         'views/views.xml',
     ],
-
-    'qweb': [
-         'static/src/xml/template_import.xml'
-    ],
-
-    'js': [
-         'static/src/js/base_import.js'
-    ],
-
+    'assets': {
+        'web.assets_backend': [
+            'customer-requests/static/src/js/template_import.js',
+            'customer-requests/static/src/xml/template_import.xml',
+        ],
+    },
     'application' : True,
     'installable' : True,
     'auto_install' : True

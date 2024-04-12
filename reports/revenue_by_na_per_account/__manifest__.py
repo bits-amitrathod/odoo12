@@ -18,14 +18,14 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','sale'],
+    'depends': ['base','sale', 'appraisal_tracker'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/revenue_by_na_per_account_report.xml',
-        'report/revenue_by_na_per_account_temp.xml',
+        # 'views/views.xml',
+        # 'report/revenue_by_na_per_account_report.xml',
+        # 'report/revenue_by_na_per_account_temp.xml',
     ],
 
     'installable': True,

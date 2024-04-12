@@ -21,6 +21,12 @@
         'views/res_config_setting_views.xml',
         'views/warning_popup_wizard.xml'
     ],
+    'assets':{
+        'web.assets_backend':[
+            'inventory_extension/static/src/css/pick_popup.css',
+            'inventory_extension/static/src/js/pick_popup.js',
+        ],
+    },
     # only loaded in demonstration mode
     'demo': ['demo/demo.xml', ],
     'installable': True,

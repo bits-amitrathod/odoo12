@@ -15,10 +15,10 @@
     'qweb': ['static/src/xml/*.xml'],
     'data': [
         'security/ir.model.access.csv',
-        'views/in_stock_report.xml',
-        'views/in_stock_report_print.xml',
-        'views/in_stock_report_pdf.xml',
-        'views/tree_view_asset.xml'
+        # 'views/in_stock_report.xml',
+        # 'views/in_stock_report_print.xml',
+        # 'views/in_stock_report_pdf.xml',
+        # 'views/tree_view_asset.xml'
     ],
 
     'installable': True,

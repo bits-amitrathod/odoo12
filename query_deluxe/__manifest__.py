@@ -4,7 +4,7 @@
         'author': 'benchmarkitsolutions',
         'depends': ['base', 'mail'],
         'application': True,
-        'version': '14.0.1.0.0',
+        'version': '16.0.1.0.6',
         'license': 'AGPL-3',
         'support': '',
         'website': '',

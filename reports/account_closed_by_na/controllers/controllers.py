@@ -2,7 +2,7 @@
 import datetime
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt, DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
@@ -80,7 +80,6 @@ class ExportAccountClosedByNa(http.Controller):
         '<string:delivery_start_date>/<string:delivery_end_date>',
         type='http',
         auth="public")
-    @serialize_exception
     def download_document_xl(self, start_date, end_date, national_account_id, delivery_start_date, delivery_end_date,
                              token=1, debug=1, **kw):
 
@@ -193,7 +192,6 @@ class ExportAccountClosedByNa(http.Controller):
     #             '<string:delivery_start_date>/<string:delivery_end_date>',
     #             type='http',
     #             auth="public")
-    # @serialize_exception
     # def download_document_xl(self, start_date, end_date, national_account_id, delivery_start_date, delivery_end_date,
     #                          token=1, debug=1, **kw):
     #

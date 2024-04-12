@@ -24,7 +24,8 @@ class PickTicketReport(models.Model):
     picking_type = fields.Char(string='Type', )
 
     def init(self):
-        self.init_table()
+        # self.init_table()
+        pass
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))

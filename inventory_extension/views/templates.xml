@@ -1,12 +1,12 @@
 <odoo>
     <data>
 
-        <template id="assets_backend" inherit_id="web.assets_backend" name="pick Popup">
+        <!--<template id="assets_backend" inherit_id="web.assets_backend" name="pick Popup">
         <xpath expr='.' position="inside">
             <link type="text/css" rel='stylesheet' href='/inventory_extension/static/src/css/pick_popup.css'/>
             <script type="text/javascript" src="/inventory_extension/static/src/js/pick_popup.js"></script>
         </xpath>
-    </template>
+    </template>-->
 
         <record id="view_picking_form_mark_all_button1" model="ir.ui.view">
             <field name="name">stock.picking.form.mark.all.button</field>
@@ -19,10 +19,6 @@
                         <button name="action_button_mark_all_done"  attrs="{'invisible': [('is_mark_all_button_visible', '=', False)]}"
                                 type="object"
                                 string="Mark All Done" id="warn_btn"/>
-                        <!-- Custome button For Lot reservation -->
-                        <!--<button name="action_button_manual_reservation"  attrs="{'invisible': [('picking_type_id', '!=', 1)]}"
-                                type="object"
-                                string="Manual Reservation" id="warn_btn"/>-->
                     </xpath>
                     <xpath expr="/form/sheet/group/group/field[@name='partner_id']" position="after">
                         <field name="acq_user_id"/>

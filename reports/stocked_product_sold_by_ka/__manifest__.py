@@ -16,14 +16,14 @@
     'category': 'Report',
     'version': '1.0',
 
-    'depends': ['base', 'sale'],
+    'depends': ['product_expiry_extension'],
 
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/product_sold_by_ka_report.xml',
-        'report/product_sold_by_ka_report_template.xml'
+        # 'views/views.xml',
+        # 'report/product_sold_by_ka_report.xml',
+        # 'report/product_sold_by_ka_report_template.xml'
     ],
     'images': ['static/description/banner.png'],
     'installable': True,

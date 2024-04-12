@@ -11,7 +11,7 @@ Goto : Settings > Technical
         "mail",
     ],
     "data"          : [
-        "views/ms_query_view.xml",
+        # "views/ms_query_view.xml",
         "security/ir.model.access.csv",
     ],
     "images"        : [

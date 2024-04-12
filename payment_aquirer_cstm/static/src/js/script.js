@@ -72,10 +72,6 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     $("#choose_a_delivery_method_label").parent().hide();
                     $("#delivery_method_custom").parent().hide();
                     $payButton.prop('disabled', false);
-                    setTimeout(function(){
-                        $payButton.prop('disabled', false);
-                        console.log("delay done");
-                        },5000);
                 } else {
                     console.log('In else ***');
                     $("#shipping_options").children().hide();
@@ -93,10 +89,6 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         $carrierBadge.html(data['new_amount_delivery']);
                         $carrierBadge.removeClass('o_wsale_delivery_carrier_error');
                         $payButton.prop('disabled', false);
-                        setTimeout(function(){
-                        $payButton.prop('disabled', false);
-                        console.log("delay done in if blog");
-                        },5000);
                     }else{
                         console.log('in else blog');
                         $carrierBadge.addClass('o_wsale_delivery_carrier_error');
@@ -133,7 +125,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                    'expedited_shipping': value
                });
-               console.log('In my shipper radio 132');
+
                $payButton.prop('disabled', false);
 
                ajax.jsonRpc("/shop/get_carrier", 'call', {
@@ -162,11 +154,10 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
-                console.log('In charge_me_for_shipping_radio  161');
-//                $payButton.prop('disabled', true);
-//                var disabledReasons = $payButton.data('disabled_reasons') || {};
-//                disabledReasons.carrier_selection = true;
-//                $payButton.data('disabled_reasons', disabledReasons);
+                $payButton.prop('disabled', true);
+                var disabledReasons = $payButton.data('disabled_reasons') || {};
+                disabledReasons.carrier_selection = true;
+                $payButton.data('disabled_reasons', disabledReasons);
 
                 ajax.jsonRpc("/shop/get_carrier", 'call', {
                     'delivery_carrier_code': 'fedex_ground'
@@ -175,8 +166,6 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     var values = {'carrier_id': carrier_id};
                     dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
                     .then(_handleCarrierUpdateResults);
-                    console.log('In charge_me_for_shipping_radio then 178');
-                    $payButton.prop('disabled', false);
 
                });
            }

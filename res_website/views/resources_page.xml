@@ -5,21 +5,21 @@
                 <t t-call="website.layout">
                     <div id="wrap" class="oe_structure oe_empty resource-page">
                         <section class="">
-                                <div class="container padding-60-y">
-                                     <div class="text-center">
-                                         <h1  class="about-header"> Resources</h1>
-                                     </div>
-                                    <div class="section-description text-center">
-                                        <p class="f20 ">Below are a compilation of helpful resources from SPS.</p>
-                                    </div>
+                            <div class="container padding-60-y">
+                                 <div class="text-center">
+                                     <h1  class="about-header"> Resources</h1>
+                                 </div>
+                                <div class="section-description text-center">
+                                    <p class="f20 ">Below are a compilation of helpful resources from SPS.</p>
                                 </div>
-                            </section>
+                            </div>
+                        </section>
                         <section>
                             <div class="container">
                                 <div class="col-md-9 border-separator m-auto"></div>
                             </div>
-                          </section>
-                        <!-- Video Resources  -->
+                        </section>
+                            <!-- Video Resources  -->
                         <section class="video-block padding-60-y">
                             <div class="container">
                                  <div class="text-center">
@@ -66,7 +66,6 @@
                                             </div>
                                           </div>
                                         </div>
-
                                     </t>
                                 </div>
                             </div>
@@ -78,31 +77,33 @@
                                      <h1  class="resource-section-title"> <span>Educational</span> Downloads</h1>
                                  </div>
                                 <div class="col-md-11 m-auto">
-                                <div class="row mt-5">
-                                    <t t-foreach="educational" t-as="e">
-                                        <div class="col-md-4 mb-3 px-3 px-md-4">
-                                        <div class="resource-box h-100 bg-white">
-                                             <div class="images-wrapper m-0 border-0 p-4">
-                                                 <img t-attf-src="/web/image/slide.slide/#{e.id}/image_1024" class="img-fluid img-thumbnail oe_slides_grid_thumbnail" alt="a.name"/>
-                                            </div>
-                                            <div class="resource-detail px-3 pb-3">
-                                                <div class="section-description mb-2">
-                                                    <p class="text-center"><span><t t-esc="e.name"/></span></p>
+                                    <div class="row mt-5">
+                                        <t t-foreach="educational" t-as="e">
+                                            <div class="col-md-4 mb-3 px-3 px-md-4">
+                                                <div class="resource-box h-100 bg-white">
+                                                     <div class="images-wrapper m-0 border-0 p-4">
+                                                         <img t-attf-src="/web/image/slide.slide/#{e.id}/image_1024" class="img-fluid img-thumbnail oe_slides_grid_thumbnail" alt="a.name"/>
+                                                    </div>
+                                                    <div class="resource-detail px-3 pb-3">
+                                                        <div class="section-description mb-2">
+                                                            <p class="text-center"><span><t t-esc="e.name"/></span></p>
 
-                                                </div>
-                                                <div class="btn-wrapper text-center mb-3">
-                                                    <a t-attf-href="/web/content/slide.slide/#{e.id}/datas?download=true" class="btn btn-info btn-sm">Download</a>
-
+                                                        </div>
+                                                        <div class="btn-wrapper text-center mb-3">
+                                                            <a t-attf-href="/web/content/slide.slide/#{e.id}/datas?download=true" class="btn btn-info btn-sm">Download</a>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    </t>
+                                        </t>
                                     </div>
                                 </div>
                             </div>
                         </section>
-                        <div class="seprator"><div class="red"></div><div class="black"></div></div>
+                        <div class="seprator">
+                            <div class="red"></div>
+                            <div class="black"></div>
+                        </div>
                         <!-- Award And Achievements -->
                         <section class="video-block padding-60-y">
                             <div class="container">
@@ -117,19 +118,10 @@
                                                  <div class="images-wrapper m-0 border-0">
                                                     <img t-attf-src="/web/image/slide.slide/#{a.id}/image_1024" class="img-fluid img-thumbnail oe_slides_grid_thumbnail shadow-none border-0" alt="a.name"/>
                                                 </div>
-                                                <!--<div class="resource-detail px-3 pb-3">
-                                                    <div class="section-description mb-2">
-                                                        <p class="text-center"><span><t t-esc="a.name"/></span></p>
-                                                    </div>
-                                                    <div class="btn-wrapper text-center mb-3">
-                                                        <a t-attf-href="/web/content/slide.slide/#{a.id}/datas?download=true"  target="_blank" class="btn btn-info btn-sm">Downloads</a>
-                                                    </div>
-                                                </div>-->
                                             </div>
                                         </div>
                                         </t>
                                     </div>
-
                                 </div>
                             </div>
                         </section>
@@ -137,37 +129,33 @@
                             <div class="container">
                                 <div class="col-md-9 border-separator m-auto"></div>
                             </div>
-                          </section>
+                        </section>
                         <!-- Content library -->
                         <section class="video-block padding-60-y ">
                             <div class="container">
-                                 <div class="text-center">
-                                     <h1  class="resource-section-title"> <span>Content</span> Library</h1>
-                                 </div>
+                                <div class="text-center">
+                                    <h1  class="resource-section-title"> <span>Content</span> Library</h1>
+                                </div>
                                 <div class="row mt-5">
-
-                                        <t t-foreach="blog_post" t-as="c">
-                                            <div class="col-md-4 mb-3 px-3 px-md-4">
-                                                <div class="resource-box content-lib h-100">
-                                             <div class="images-wrapper m-0 border-0 no-shadow">
-                                                  <img t-attf-src="/web/image/blog.post/#{c.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
-                                            </div>
-                                            <div class="resource-detail p-3">
-                                                <div class="section-description">
-                                                    <p class="mb-0"><span><t t-esc="c.name"/></span></p>
-                                                    <p class="mb-0"><t t-esc="c.description_content()"/></p>
+                                    <t t-foreach="blog_post" t-as="c">
+                                        <div class="col-md-4 mb-3 px-3 px-md-4">
+                                            <div class="resource-box content-lib h-100">
+                                                 <div class="images-wrapper m-0 border-0 no-shadow">
+                                                      <img t-attf-src="/web/image/blog.post/#{c.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
                                                 </div>
-                                                 <div class="link-wrapper mb-3 mt-2">
-                                                   <a t-att-href="c.website_url"  class="link-btn">READ MORE ></a>
-                                                 </div>
+                                                <div class="resource-detail p-3">
+                                                    <div class="section-description">
+                                                        <p class="mb-0"><span><t t-esc="c.name"/></span></p>
+                                                        <p class="mb-0"><t t-esc="c.description_content()"/></p>
+                                                    </div>
+                                                     <div class="link-wrapper mb-3 mt-2">
+                                                       <a t-att-href="c.website_url"  class="link-btn">READ MORE ></a>
+                                                     </div>
+                                                </div>
                                             </div>
                                         </div>
-                                            </div>
-
-                            </t>
-
+                                    </t>
                                 </div>
-
                             </div>
                             <div class="js_sale">
                                 <div class="oe_website_sale">
@@ -179,8 +167,7 @@
                                 </div>
                             </div>
                          </section>
-
-                       </div>
+                    </div>
                 </t>
             </t>
         </t>

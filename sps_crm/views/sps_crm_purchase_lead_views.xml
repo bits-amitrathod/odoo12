@@ -48,13 +48,17 @@
                         <field name="partner_id" widget="res_partner_many2one"
                             string='Organization / Vendor'
                             context="{
-                            'res_partner_search_mode': type == 'purchase_opportunity' and 'customer' or False,
-                            'default_name': contact_name or partner_name,
-                            'default_is_company': type == 'purchase_opportunity' and contact_name == False,
-                            'default_company_name': type == 'purchase_opportunity' and partner_name,
-                            'default_phone': phone,
-                            'default_email': email_from,
-                            'show_vat': True}"/>
+                                'res_partner_search_mode': type == 'purchase_opportunity' and 'customer' or False,
+                                'default_name': contact_name or partner_name,
+                                'default_is_company': type == 'purchase_opportunity' and contact_name == False,
+                                'default_company_name': type == 'purchase_opportunity' and partner_name,
+                                'default_type': 'contact',
+                                'default_phone': phone,
+                                'default_email': email_from,
+                                'default_user_id': user_id,
+                                'default_team_id': team_id,
+                                'show_vat': True}"
+                        />
                         <field name="name" placeholder="e.g. Product Pricing" />
                         <field name="email_from" string="Email" />
                         <field name="phone" string="Phone" />
@@ -78,6 +82,7 @@
                         <field name="competitors" invisible="1"/>
                         <field name="company_id" invisible="1"/>
                         <field name="user_id" invisible="1"/>
+                        <field name="user_company_ids" invisible="1"/>
                         <field name="team_id" invisible="1"/>
                         <field name="type" invisible="1"/>
                         <field name="partner_name" invisible="1"/>
@@ -113,7 +118,7 @@
                     <field name="expected_revenue"/>
                     <field name="kanban_state"/>
                     <field name="activity_date_deadline"/>
-                    <field name="user_email"/>
+<!--                    <field name="user_email"/>-->
                     <field name="user_id"/>
                     <field name="partner_id"/>
                     <field name="activity_summary"/>
@@ -187,19 +192,20 @@
                     <field name="create_date" optional="hide"/>
                     <field name="name" string="Opportunity" readonly="1"/>
                     <field name="partner_id" optional="hide"/>
+                    <field name="user_company_ids" invisible="1"/>
                     <field name="contact_name" optional="show"/>
                     <field name="email_from"/>
                     <field name="phone" class="o_force_ltr"/>
-                    <field name="company_id" groups="base.group_multi_company" optional="show"/>
+                    <field name="company_id" optional="show"/>
                     <field name="city" optional="hide"/>
                     <field name="state_id" optional="hide"/>
                     <field name="country_id" optional="hide"/>
                     <field name="user_id" string ="Sales/Acq Person" widget="many2one_avatar_user" optional="show" domain="[('share', '=', False)]"/>
-                    <!--<field name="team_id" optional="show"/>-->
+                    <field name="team_id" optional="show"/>
                     <!--<field name="priority" optional="hide"/>-->
                     <field name="activity_ids" widget="list_activity"/>
                     <field name="activity_user_id" optional="hide" string="Activity by" widget="many2one_avatar_user"/>
-                    <field name="activity_date_deadline_my" string="My Deadline" widget="remaining_days" options="{'allow_order': '1'}"/>
+<!--                    <field name="activity_date_deadline_my" string="My Deadline" widget="remaining_days" options="{'allow_order': '1'}"/>-->
                     <field name="campaign_id" optional="hide"/>
                     <field name="medium_id" optional="hide"/>
                     <field name="source_id" optional="hide"/>
@@ -247,8 +253,8 @@
                             domain="['|', ('team_id', '=', team_id), ('team_id', '=', False)]"
                             attrs="{'invisible': ['|', ('active', '=', False), ('type', '=', 'lead')]}"/>
                     </header>
-                    <div class="text-center alert alert-primary oe_edit_only" role="alert" attrs="{'invisible': ['|', ('ribbon_message', '=', False), ('ribbon_message', '=', '')]}">
-                        <field name="ribbon_message"/>
+                    <div class="text-center alert alert-primary oe_edit_only" role="alert">
+<!--                        <field name="ribbon_message"/>-->
                     </div>
                     <sheet>
                         <field name="active" invisible="1"/>
@@ -258,9 +264,9 @@
                                 context="{'partner_id': partner_id}"
                                 attrs="{'invisible': [('type', '=', 'lead')]}">
                                 <div class="o_stat_info">
-                                    <field name="meeting_count" class="o_stat_value"/>
-                                    <span class="o_stat_text" attrs="{'invisible': [('meeting_count', '&lt;', 2)]}"> Meetings</span>
-                                    <span class="o_stat_text" attrs="{'invisible': [('meeting_count', '&gt;', 1)]}"> Meeting</span>
+                                    <field name="calendar_event_count" class="o_stat_value"/>
+                                    <span class="o_stat_text" attrs="{'invisible': [('calendar_event_count', '&lt;', 2)]}"> Meetings</span>
+                                    <span class="o_stat_text" attrs="{'invisible': [('calendar_event_count', '&gt;', 1)]}"> Meeting</span>
                                 </div>
                             </button>
                         </div>
@@ -474,9 +480,9 @@
                             </group>
 
                             <group name="opportunity_info" attrs="{'invisible': [('type', '=', 'lead')]}">
-                                <field name="lost_reason" attrs="{'invisible': [('active', '=', True)]}"/>
+<!--                                <field name="lost_reason" attrs="{'invisible': [('active', '=', True)]}"/>-->
                                 <field name="date_conversion" invisible="1"/>
-                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="company_id" />
                             </group>
                         </group>
 
@@ -492,7 +498,6 @@
                                     </group>
                                     <group string="Tracking" name="categorization">
                                         <field name="company_id"
-                                            groups="base.group_multi_company"
                                             options="{'no_create': True}"/>
                                         <field name="campaign_id" />
                                         <field name="medium_id"/>
@@ -575,7 +580,7 @@
         </record>
 
         <!-- DASHBOARD VIEW -->
-        <record id="crm_aqu_opportunity_view_dashboard" model="ir.ui.view">
+        <!--<record id="crm_aqu_opportunity_view_dashboard" model="ir.ui.view">
             <field name="name">crm.lead.view.dashboard</field>
             <field name="model">crm.lead</field>
             <field name="mode">primary</field>
@@ -602,7 +607,7 @@
                     <view type="cohort" ref="crm_enterprise.crm_lead_view_cohort"/>
                 </dashboard>
             </field>
-        </record>
+        </record>-->
 
         <!-- MAP VIEW -->
         <record id="crm_aqu_pipeline_view_map1" model="ir.ui.view">
@@ -688,13 +693,13 @@
             <field name="act_window_id" ref="crm_purchase_lead_action_pipeline"/>
         </record>
 
-        <!-- DASHBOARD VIEW WINDOWS ACTION-->
-        <record id="crm_aqu_opportunity_action_dashboard_dashboard" model="ir.actions.act_window.view">
+        <!-- DASHBOARD VIEW WINDOWS ACTION TODO:UPG_ODOO16_NOTE -->
+        <!--<record id="crm_aqu_opportunity_action_dashboard_dashboard" model="ir.actions.act_window.view">
             <field name="sequence" eval="1"/>
             <field name="view_mode">dashboard</field>
             <field name="view_id" ref="crm_aqu_opportunity_view_dashboard"/>
             <field name="act_window_id" ref="crm_purchase_lead_action_pipeline"/>
-        </record>
+        </record>-->
 
         <!-- COHORT VIEW WINDOWS ACTION -->
         <record id="crm_aqu_pipeline_view_cohort_action" model="ir.actions.act_window.view">

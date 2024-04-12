@@ -11,7 +11,7 @@
     'depends': ['base'],
     # always loaded
     'data': [
-        'views/views.xml'
+        # 'views/views.xml'
     ],
     # only loaded in demonstration mode
     'application': True,

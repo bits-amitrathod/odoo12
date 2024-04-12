@@ -15,7 +15,7 @@
             <field class="min_width" name="lot_id" groups="stock.group_production_lot"
                         attrs="{'readonly': ['&amp;', ('package_level_id', '!=', False), ('parent.picking_type_entire_packs', '=', True)]}"
                         invisible="not context.get('show_lot_id_column')"
-                        domain="[('product_qty', '>', 0.0),('available_qty_for_sale', '>', 0.0), ('product_id', '=', parent.product_id), ('company_id', '=', company_id)]"
+                        domain="[('product_qty', '>', 0.0), ('product_id', '=', parent.product_id), ('company_id', '=', company_id)]"
                         context="{
                             'active_picking_id': picking_id,
                             'default_company_id': parent.company_id,

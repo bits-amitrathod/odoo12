@@ -13,6 +13,7 @@
             </field>
       </record>-->
 
+      <!-- is_parent_assigned -->
       <record id="view_form_import_template_stockhawk" model="ir.ui.view">
             <field name="name">Import Template customer form</field>
             <field name="model">res.partner</field>
@@ -20,7 +21,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
                     <page name="InStockNotification" string="Exclude Product From In-Stock Notification"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False), ('customer_rank', '==', 0), ('is_parent_assigned', '==', False)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False), ('customer_rank', '==', 0)]}">
                         <field name="exclude_in_stock_product_ids" mode="tree,form">
                             <form>
                                 <group>
@@ -56,17 +57,6 @@
             </field>
     </record>
 
-      <record id="view_partner_tree_inherit" model="ir.ui.view">
-            <field name="name">res.partner.tree_ex</field>
-            <field name="model">res.partner</field>
-            <field name="priority">100</field>
-            <field name="inherit_id" ref="base.view_partner_tree"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='user_id']" position="after">
-                    <field name="customer_success"/>
-                </xpath>
-            </field>
-        </record>
       <record id="view_order_form_with_carrier_tracking_ref1" model="ir.ui.view">
             <field name="name">sale.order.form.view.with_carrier_tracking_ref</field>
             <field name="model">sale.order</field>
@@ -78,8 +68,8 @@
             </field>
        </record>
 
-
-      <record id="sale_order_view_form_inherit" model="ir.ui.view">
+    <!-- TODO:UPD ODOO16 NOTE -->
+      <!--<record id="sale_order_view_form_inherit" model="ir.ui.view">
         <field name="name">sale.order.form</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="website_sale.sale_order_view_form"/>
@@ -88,7 +78,7 @@
                 <field name="partner_id" widget="res_partner_many2one"  context="{'search_default_customer':1, 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True}"/>
             </field>
         </field>
-    </record>
+    </record>-->
 
 
       <!-- Adding Carrier Tracking Ref field into filter-->
@@ -175,7 +165,6 @@
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="account_manager"/>
                     <field name="national_account"/>
-                    <field name="customer_success"/>
                 </xpath>
             </field>
         </record>
@@ -200,12 +189,11 @@
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="account_manager"/>
                     <field name="national_account"/>
-                    <field name="customer_success"/>
                 </xpath>
             </field>
         </record>
 
-      <!-- Adding Account Manager field into group by and filter-->
+      <!-- TODO: , Adding Account Manager field into group by and filter-->
         <record id="view_sales_order_filter_custom" model="ir.ui.view">
             <field name="name">sale.order.common.search.inherit</field>
             <field name="model">sale.order</field>
@@ -217,7 +205,6 @@
                 <xpath expr="/search/group/filter[@name='order_month']" position="after">
                     <filter name="account_manager" string="Key Account" domain="[]" context="{'group_by':'account_manager'}"/>
                     <filter name="national_account" string="National Account" domain="[]" context="{'group_by':'national_account'}"/>
-                    <filter name="customer_success" string="Customer Success" domain="[]" context="{'group_by':'customer_success'}"/>
                     <filter name="sales_level" string="Sales Level" domain="[]" context="{'group_by':'sale_margine'}"/>
                     <filter name="is_shared" string="Is Shared" domain="[]" context="{'group_by':'is_share'}"/>
                 </xpath>
@@ -227,7 +214,6 @@
                 <xpath expr="/search" position="inside">
                         <field name="account_manager"/>
                         <field name="national_account"/>
-                        <field name="customer_success"/>
                 </xpath>
                 <xpath expr="//filter[@name='activities_overdue']" position="replace">
                     <separator/>
@@ -261,7 +247,6 @@
                     <field name="user_id" string="Business Development(BD)" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="account_manager" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="national_account" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
-                    <field name="customer_success" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                 </xpath>
                 <xpath expr="//group[@name='sales_person']/field[@name='team_id']"  position="before">
                    <field name="original_team_id" readonly="1" options="{'no_create': True,'no_edit': True,'no_open' : True}"/>
@@ -318,7 +303,6 @@
                 <field name="user_id" string="Business Development(BD)"/>
                 <field name="account_manager_cust"/>
                 <field name="national_account_rep"/>
-                <field name="customer_success"/>
                 <field name="message_bounce"/>
             </xpath>
             <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='misc']/field[@name='ref']" position="after">

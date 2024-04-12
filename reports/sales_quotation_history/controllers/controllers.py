@@ -3,7 +3,7 @@ import datetime
 
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt
@@ -77,7 +77,6 @@ class ReportQuotationExport(http.Controller):
         return data
 
     @http.route('/web/export/sale_quotation_export_xl', type='http', auth="public")
-    @serialize_exception
     def download_document_xl(self, token=1, debug=1):
 
         str_functions = """	

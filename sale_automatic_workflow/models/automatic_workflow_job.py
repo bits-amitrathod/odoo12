@@ -56,10 +56,8 @@ class AutomaticWorkflowJob(models.Model):
         sales = sale_obj.search(create_filter)
         _logger.debug('Sale Orders to create Invoice: %s', sales.ids)
         for sale in sales:
-            with savepoint(self.env.cr), force_company(self.env,
-                                                       sale.company_id):
-                payment = self.env['sale.advance.payment.inv'].create(
-                    {'advance_payment_method': 'all'})
+            with savepoint(self.env.cr), force_company(self.env, sale.company_id):
+                payment = self.env['sale.advance.payment.inv'].create({'advance_payment_method': 'all'})
                 payment.with_context(active_ids=sale.ids).create_invoices()
 
     # @api.model

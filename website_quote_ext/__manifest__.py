@@ -20,5 +20,10 @@
         'security/ir.model.access.csv',
         'views/templates.xml',
     ],
+    "assets":{
+        'web.assets_frontend': [
+            'website_quote_ext/static/src/js/website_sale.js',
+        ],
+    },
     
 }

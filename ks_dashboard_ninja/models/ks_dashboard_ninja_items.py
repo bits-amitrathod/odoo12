@@ -36,7 +36,7 @@ def ks_read(self, records):
                     WHERE {where_c} AND {rel}.{id1} IN %s AND {rel}.{id2} = {tbl}.id
                 """.format(rel=self.relation, id1=self.column1, id2=self.column2,
                            tbl=comodel._table, from_c=from_c, where_c=where_c or '1=1',
-                           limit=(' LIMIT %d' % self.limit) if self.limit else '',
+                           limit=(' LIMIT %d' % self.limit) if hasattr(self, 'limit') else '',
                            )
         where_params.append(tuple(records.ids))
 
@@ -77,7 +77,7 @@ def ks_read(self, records):
                     {order_by} {limit} OFFSET {offset}
                 """.format(rel=self.relation, id1=self.column1, id2=self.column2,
                            tbl=comodel._table, from_c=from_c, where_c=where_c or '1=1',
-                           limit=(' LIMIT %d' % self.limit) if self.limit else '',
+                           limit=(' LIMIT %d' % self.limit) if hasattr(self, 'limit') else '',
                            offset=0, order_by=order_by)
         where_params.append(tuple(records.ids))
 

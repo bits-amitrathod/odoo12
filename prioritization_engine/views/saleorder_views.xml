@@ -36,7 +36,8 @@
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
                     <field name="client_order_ref"/>
-                    <field name="x_studio_allow_duplicate_po" widget="boolean_toggle"/>
+<!--        UPG_ODOO16_NOTE below field commented  because not found in the model    -->
+<!--                    <field name="x_studio_allow_duplicate_po" widget="boolean_toggle"/>-->
                     <field name="gl_account"/>
                     <field name="is_share"/>
                     <field name="sale_margine"/>
@@ -154,7 +155,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom']" position="replace">
-                    <field name="product_uom" groups="uom.group_uom" class="oe_inline oe_no_button"
+                    <field name="product_uom" class="oe_inline oe_no_button"
                                                     attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}" options="{'no_create_edit': True, 'no_open': True}"/>
                 </xpath>
             </field>
@@ -228,7 +229,7 @@
             </div>
         </xpath>
 
-        <xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
+        <xpath expr="//table[@class='table table-sm o_main_table table-borderless mt-4']" position="replace">
             <table class="table table-condensed">
                     <thead>
                         <tr>

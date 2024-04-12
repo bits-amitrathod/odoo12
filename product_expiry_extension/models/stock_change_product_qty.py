@@ -9,7 +9,7 @@ class ProductChangeQuantity(models.TransientModel):
     _inherit = "stock.change.product.qty"
     _description = "Change Product Quantity"
 
-    lot_id = fields.Many2one('stock.production.lot', 'Lot/Serial Number', required=True,
+    lot_id = fields.Many2one('stock.lot', 'Lot/Serial Number', required=True,
                              domain="[('product_id','=',product_id)]")
 
     # def change_product_qty(self):

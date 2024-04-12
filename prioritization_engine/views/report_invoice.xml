@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <template id="report_invoice_document_ext" inherit_id="sale.report_invoice_document_inherit_sale">
+        <template id="report_invoice_document_ext" inherit_id="account.report_invoice_document">
            <xpath expr="//div[@name='invoice_date']" position="before">
                  <div class="col-auto mw-100 mb-2" t-if="o.purchase_order">
                    <strong t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Purchase Order #</strong>

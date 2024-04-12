@@ -12,9 +12,9 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/quote_my_report.xml',
-        'views/views.xml',
-        'views/templates.xml',
+        # 'views/quote_my_report.xml',
+        # 'views/views.xml',
+        # 'views/templates.xml',
     ],
     'installable': True,
     # 'application': True,

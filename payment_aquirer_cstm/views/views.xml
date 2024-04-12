@@ -12,23 +12,11 @@
             <input type="hidden" name="txid" t-att-value="tx_id"/>
         </template>
 
-
-        <record id="payment_acquirer_purchaseorder" model="payment.acquirer">
+        <record id="payment_acquirer_purchaseorder" model="payment.provider">
             <field name="name">Purchase Order</field>
-            <field name="view_template_id" ref="default_acquirer_button"/>
+            <field name="display_as">Purchase Order</field>
             <field name="module_id" ref="base.module_payment_aquirer_cstm"/>
-            <field name="journal_id"></field>
-            <field name="provider">purchaseorder</field>
             <field name="company_id" ref="base.main_company"/>
-            <field name="description" type="html">
-                <p>
-                    Payment by Purchase Order
-                </p>
-                <ul class="list-inline">
-                    <li><i class="fa fa-check"/>Online Payment
-                    </li>
-                </ul>
-            </field>
         </record>
 
         <record id="view_delivery_carrier_form_custom" model="ir.ui.view">

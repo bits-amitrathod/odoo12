@@ -103,8 +103,6 @@ class Customer(models.Model):
         res = super(Customer, self).write(vals)
         if not (len(vals) == 1 and (any(f in vals for f in ne_list))):
             self.copy_parent_date(vals)
-        if self.customer_success.id:
-            self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
         return res
 
     def copy_parent_date(self, vals):
@@ -147,7 +145,7 @@ class Customer(models.Model):
                                     'category_id': ml.category_id,
                                     'contract': ml.contract,
                                     'reinstated_date': ml.reinstated_date,
-                                    'customer_success': ml.customer_success,
+
                                     })
 
                     if 'is_broker' in vals:
@@ -214,8 +212,6 @@ class Customer(models.Model):
                         child_id.write({'account_manager_cust': vals['account_manager_cust']})
                     if 'national_account_rep' in vals:
                         child_id.write({'national_account_rep': vals['national_account_rep']})
-                    if 'customer_success' in vals:
-                        child_id.write({'customer_success': vals['customer_success']})
                     if 'user_id' in vals:
                         child_id.write({'user_id': vals['user_id']})
                     if 'property_product_pricelist' in vals:
@@ -577,7 +573,7 @@ class StockMove(models.Model):
                 if available_production_lot_dict.get(int(move.product_id.id)) is not None:
                     for product_lot in available_production_lot_dict.get(int(move.product_id.id)):
                         lot_id = int(product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id'))
-                        lot_object = self.env['stock.production.lot'].search([('id', '=', lot_id)])
+                        lot_object = self.env['stock.lot'].search([('id', '=', lot_id)])
                         available_quantity = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
 
                         # Reserve new quants and create move lines accordingly.
@@ -686,7 +682,7 @@ class StockMove(models.Model):
                             if available_move_lines.get((move_line.location_id, move_line.lot_id, move_line.result_package_id, move_line.owner_id)):
                                 available_move_lines[(move_line.location_id, move_line.lot_id, move_line.result_package_id, move_line.owner_id)] -= move_line.product_qty
                         for (location_id, lot_id, package_id, owner_id), quantity in available_move_lines.items():
-                            need = move.product_qty - sum(move.move_line_ids.mapped('product_qty'))
+                            need = move.product_qty - sum(move.move_line_ids.mapped('reserved_qty'))
                             # `quantity` is what is brought by chained done move lines. We double check
                             # here this quantity is available on the quants themselves. If not, this
                             # could be the result of an inventory adjustment that removed totally of
@@ -720,10 +716,10 @@ class StockMove(models.Model):
                     if move_line.lot_id.use_date:
                         msgs += "<b>Expiration Date :</b> " + str(move_line.lot_id.use_date.date()) + \
                                 " <b>Lot# :</b> " + str(move_line.lot_id.name) + \
-                                " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+                                " <b>Quantity :</b> " + str(move_line.reserved_uom_qty)
                     else:
                         msgs += "<b>Expiration Date :</b> <b>Lot# :</b> " + str(move_line.lot_id.name) + \
-                                " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+                                " <b>Quantity :</b> " + str(move_line.reserved_uom_qty)
             picking_id.message_post(body=msgs)
 
         if picking_id and picking_id is not None:

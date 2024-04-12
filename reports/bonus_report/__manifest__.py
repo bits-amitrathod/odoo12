@@ -10,9 +10,9 @@
     'depends': ['base', 'appraisal_tracker','purchase'],
     'data': [
         'security/ir.model.access.csv',
-        'views/bonus_report_view.xml',
-        'report/bonus_report.xml',
-        'report/bonus_report_temp.xml'
+        # 'views/bonus_report_view.xml',
+        # 'report/bonus_report.xml',
+        # 'report/bonus_report_temp.xml'
     ],
     'auto_install': False,
     'installable': True,

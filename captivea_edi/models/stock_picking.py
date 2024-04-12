@@ -131,7 +131,7 @@ class Picking(models.Model):
     @api.depends('location_id')
     def get_ship_from_warehouse(self):
         for pick in self:
-            pick.ship_from_warehouse = pick.location_id.get_warehouse()
+            pick.ship_from_warehouse = pick.location_id.warehouse_id
 
     def release_available_to_promise(self):
         res = super(Picking, self).release_available_to_promise()
@@ -553,7 +553,7 @@ REF^CN^%s~""" % (self.carrier_tracking_ref or '')
         for rec in self:
             if rec.sale_id:
                 for move in rec.move_line_ids_without_package:
-                    move.initial_product_uom_qty = move.product_uom_qty
+                    move.initial_product_uom_qty = move.reserved_qty
         res = super(Picking, self)._action_done()
         for record in self:
             # if self:

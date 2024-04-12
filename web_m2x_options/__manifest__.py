@@ -16,7 +16,7 @@
     "website": "https://github.com/OCA/web",
     "license": "AGPL-3",
     "depends": ["web"],
-    "data": ["views/view.xml"],
+    # "data": ["views/view.xml"],
     "qweb": ["static/src/xml/base.xml"],
     "installable": True,
 }

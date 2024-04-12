@@ -7,7 +7,7 @@
     'summary': 'Blog Post customization',
     'author': 'BenchmarkItSolutions',
     'description': " Blog Post customization",
-    'depends': ['base_setup', 'mail','website_blog'],
+    'depends': ['website_blog','res_website'],
     'data': [
         'security/ir.model.access.csv',
         'views/blog_post_form.xml',

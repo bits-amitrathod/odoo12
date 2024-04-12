@@ -9,8 +9,8 @@
     'description': "Website Search Autocomplete",
     'depends': ['website_sale'],
     'data': [
-        'views/search.xml',
-        'views/header.xml'
+        # 'views/search.xml',
+        # 'views/header.xml'
     ],
     'installable': True,
 }

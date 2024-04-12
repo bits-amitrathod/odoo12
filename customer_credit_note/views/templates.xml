@@ -19,11 +19,11 @@
            </dl>
          </template>
 
-        <template id="assets_backend" name="mail assets" inherit_id="mail.assets_backend">
+        <!--<template id="assets_backend" name="mail assets" inherit_id="mail.assets_backend">
             <xpath expr="." position="inside">
                 <script type="text/javascript" src="/customer_credit_note/static/src/js/thread.js"></script>
             </xpath>
-        </template>
+        </template>-->
 
         <!-- Migration remaining  need to check again view not match -->
         <!--<record id="invoice_supplier_form_credit_note_label_update" model="ir.ui.view">
@@ -140,7 +140,7 @@
                 <field name="partner_id" operator="child_of"/>
                 <field name="invoice_user_id" />
                 <field name="product_categ_id" filter_domain="[('product_categ_id', 'child_of', self)]"/>
-                <field name="analytic_account_id"/>
+<!--                <field name="analytic_account_id"/>-->
                 <group expand="1" string="Group By">
                     <filter string="Partner" name="partner_id" context="{'group_by':'partner_id','residual_visible':True}"/>
                     <filter string="Business Development" name='user' context="{'group_by':'invoice_user_id'}"/>
@@ -150,7 +150,7 @@
                     <separator orientation="vertical" />
                     <filter name="invoice_date" string="Date" context="{'group_by':'invoice_date'}"/>
                     <filter name="invoice_date_due" string="Due Month" context="{'group_by':'invoice_date_due:month'}"/>
-                    <filter string="Analytic Account" name="analytic_account_id" context="{'group_by':'analytic_account_id'}" groups="analytic.group_analytic_accounting" />
+<!--                    <filter string="Analytic Account" name="analytic_account_id" context="{'group_by':'analytic_account_id'}" groups="analytic.group_analytic_accounting" />-->
                 </group>
             </search>
         </field>
@@ -176,7 +176,7 @@
             </div>
         </xpath>
 
-        <xpath expr="//table[@class='table table-sm']/t[2]" position="replace">
+        <xpath expr="//table[@class='table table-sm table-borderless']/t[2]" position="replace">
             <t t-if="print_with_payments">
                 <t t-if="o.payment_state != 'invoicing_legacy'">
                     <t t-set="payments_vals" t-value="o.sudo()._get_reconciled_info_JSON_values()"/>

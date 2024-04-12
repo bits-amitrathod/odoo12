@@ -18,6 +18,12 @@ def extract_email(email):
     return addresses[0] if addresses else ''
 
 
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+    portal_access_email_sent = fields.Boolean('Portal Access Email Sent', default=False)
+
+
 class PortalAccessScheduler(models.TransientModel):
     _name = 'portal.access.scheduler'
 
@@ -33,8 +39,7 @@ class PortalUserCustom(models.TransientModel):
     custom_portal_access = fields.Boolean('Portal Access for purchasing platform', default=False)
 
     def get_all_partners(self):
-        today_date = date.today()
-        today_start = today_date
+        today_start = date.today()
         customers = self.env['res.partner'].search(
             [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
              ('portal_access_email_sent', '!=', True),
@@ -163,11 +168,6 @@ class PortalUserCustom(models.TransientModel):
         return datetime.strptime(str(datestring), DEFAULT_SERVER_DATE_FORMAT).date()
     
     
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
-
-    portal_access_email_sent = fields.Boolean('Portal Access Email Sent', default=False)
-
 
 
 

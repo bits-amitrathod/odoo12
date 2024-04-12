@@ -14,9 +14,9 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/products_on_order_report.xml',
-        'report/products_on_order_report_template.xml'
+        # 'views/views.xml',
+        # 'report/products_on_order_report.xml',
+        # 'report/products_on_order_report_template.xml'
     ],
     'installable': True,
     'application': True,

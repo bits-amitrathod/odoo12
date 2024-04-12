@@ -115,23 +115,5 @@
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
-    <!-- This email template Used for send email after Pick Operation is done    -->
-    <record id="pick_done_ka_and_cs_email_template" model="mail.template">
-            <field name="name">Pick Notification: Pick Done Email</field>
-            <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">${ctx['email_from']}</field>
-            <field name="email_to">${ctx['email_to']}</field>
-            <field name="subject">${ctx['subject']}</field>
-            <field name="body_html">
-            <![CDATA[
-                Hi ${ctx['facility_name'] | safe}, Pick Done For ${ctx['so_name'] | safe},
-                <br/><br/>
-                    <center>
-                        <a href="${ctx['access_url'] | safe}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Sale Order</a>
-                        <br/><br/><br/>
-                    </center>
-                 <br/>
-            ]]>
-            </field>
-        </record>
+
 </odoo>

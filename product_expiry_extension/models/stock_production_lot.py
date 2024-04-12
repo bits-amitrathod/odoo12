@@ -1,6 +1,5 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
-from odoo.osv import expression
 import datetime
 import logging
 
@@ -8,8 +7,8 @@ _logger = logging.getLogger(__name__)
 
 
 class ProductionLot(models.Model):
-    _inherit = 'stock.production.lot'
-    _name = 'stock.production.lot'
+    _inherit = 'stock.lot'
+    _name = 'stock.lot'
 
     expiration_date = fields.Datetime(string='End of Life Date',
                                 help='This is the date on which the goods with this Serial Number may become dangerous and must not be consumed.')
@@ -23,7 +22,7 @@ class ProductionLot(models.Model):
                                           help="The Alert Date has been reached.")
     product_qty = fields.Float('Quantity', compute='_product_qty', search='_search_qty_available')
 
-    available_qty_for_sale = fields.Float(compute='_compute_available_qty', store=False, readonly=True, search='_search_available_qty_for_sale')
+    available_qty_for_sale = fields.Float(compute='_compute_available_qty', store=False, readonly=True)
 
     def _compute_available_qty(self):
         for lot in self:
@@ -137,25 +136,8 @@ class ProductionLot(models.Model):
            pass
 
     def _search_qty_available_new(self, operator, value):
-        # lot_list = self.env['stock.production.lot'].search([('product_id','=',self._context['default_product_id']),('product_qty','>', value)]).ids
+        # lot_list = self.env['stock.lot'].search([('product_id','=',self._context['default_product_id']),('product_qty','>', value)]).ids
         lot_list = [0]
-        for lot in list(filter(lambda x: (x.product_qty > value), self.env['stock.production.lot'].search([('product_id','=',self._context['default_product_id'])]))):
+        for lot in list(filter(lambda x: (x.product_qty > value), self.env['stock.lot'].search([('product_id','=',self._context['default_product_id'])]))):
              lot_list.append(lot.id)
         return lot_list
-
-    def _search_available_qty_for_sale(self, operator, value):
-        comparison_functions = {
-            '>': lambda x, y: x > y,
-            '<': lambda x, y: x < y,
-            '>=': lambda x, y: x >= y,
-            '<=': lambda x, y: x <= y,
-            '=': lambda x, y: x == y,
-            '!=': lambda x, y: x != y
-            }
-        comparison_function = comparison_functions.get(operator)
-        if comparison_function:
-            record = self.search([('product_id','=',self._context['default_product_id'])], limit=None)
-            filtered_ids = [a.id for a in record if comparison_function(a.available_qty_for_sale, value)]
-            return [('id', 'in', filtered_ids)]
-        else:
-            return expression.FALSE_DOMAIN

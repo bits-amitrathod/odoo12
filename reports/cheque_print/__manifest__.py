@@ -20,7 +20,7 @@
 
     # always loaded
     'data': [
-        'report/print_check.xml',
+        # 'report/print_check.xml',
     ],
     'installable': True,
     'application': True,

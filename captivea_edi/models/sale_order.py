@@ -98,7 +98,7 @@ class SaleOrder(models.Model):
     def _compute_sale_edi_values(self):
         for record in self:
             record.x_edi_accounting_id = record.partner_id and record.partner_id.x_edi_accounting_id or ''
-            record.x_edi_store_number = record.partner_shipping_id and record.partner_shipping_id.x_edi_store_number or ''
+            # record.x_edi_store_number = record.partner_shipping_id and record.partner_shipping_id.x_edi_store_number or ''
 
     @api.model
     def create(self, vals):
@@ -292,7 +292,7 @@ class SaleOrder(models.Model):
 
                     line = sale_line_str.format(line_num=row.line_num or '', quantity= po_line_qty,
                                                 uom=row.uom or '',
-                                                price_unit=round(sale_line.price_unit, 2) or round(sale_line.price_unit_850, 2),
+                                                price_unit=sale_line.price_unit or sale_line.price_unit_850,
                                                 vendor_part_number=vendor_part_number,
                                                 # buyer_part_num=row.buyer_part_number or '',
                                                 vendor_part_description=product.name[

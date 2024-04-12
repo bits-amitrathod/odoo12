@@ -10,11 +10,13 @@ from odoo.osv import expression
 from odoo.addons.portal.controllers.mail import _message_post_helper
 import werkzeug
 from odoo import api, fields, models, tools, SUPERUSER_ID
+from odoo.tools import ustr
+from odoo.tools.translate import _
 from odoo.exceptions import AccessError, MissingError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq, ustr
-from odoo import api, fields, models, _
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq
+from odoo import api, fields, models
 from odoo.tools.float_utils import float_repr
-from odoo.addons.payment.controllers.portal import PaymentProcessing
+from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
 from odoo.addons.payment_paypal.controllers.main import PaypalController
 from odoo.exceptions import UserError, ValidationError
 
@@ -262,7 +264,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         request.session['sales_team_message'] = sales_team_message
 
 
-class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment):
+class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
 
     def action_send_mail_after_payment_final(self, ref=None):
         template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
@@ -271,16 +273,10 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             so_name = str(ref.reference.split("-", 1)[0])
             values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
-            email_cc = 'accounting@surgicalproductsolutions.com'
-            email_from = "info@surgicalproductsolutions.com"
-
             sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
             if sale_order:
                 if sale_order.account_manager:
                     user_id_email = sale_order.account_manager.login
-                    if sale_order.customer_success:
-                        email_cc = email_cc + ',' + sale_order.customer_success.login
-
                 elif sale_order.user_id:
                     if sale_order.user_id.name == "National Accounts" and sale_order.national_account:
                         user_id_email = sale_order.national_account.login
@@ -292,6 +288,10 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                     user_id_email = sale_order.user_id.login
 
             email_to = user_id_email
+
+            email_cc = 'accounting@surgicalproductsolutions.com'
+            email_from = "info@surgicalproductsolutions.com"
+
             sales_rep = sale_order.user_id.name if sale_order.user_id else None
 
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
@@ -446,11 +446,11 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                 ['|', ('country_ids', '=', False), ('country_ids', 'in', [partner.sudo().country_id.id])]
             ])
         if acquirer_id:
-            acquirers = env['payment.acquirer'].browse(int(acquirer_id))
+            acquirers = env['payment.provider'].browse(int(acquirer_id))
         if order_id:
-            acquirers = env['payment.acquirer'].search(acquirer_domain)
+            acquirers = env['payment.provider'].search(acquirer_domain)
         if not acquirers:
-            acquirers = env['payment.acquirer'].search(acquirer_domain)
+            acquirers = env['payment.provider'].search(acquirer_domain)
 
         values['acquirers'] = self._get_acquirers_compatible_with_current_user(acquirers)
         for item in values['acquirers']:
@@ -491,7 +491,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             else:
                 status = 'danger'
                 message = tx.state_message or _('An error occured during the processing of this payment')
-            odoo.addons.payment.controllers.portal.PaymentProcessing.remove_payment_transaction(tx)
+            PaymentPostProcessing.remove_transactions(tx)
             if tx and tx.reference and tx.reference.startswith("SO"):
                 #_logger.info("***    Reference Start With SO ***")
                 self.action_send_mail_after_payment_final(tx)
@@ -499,21 +499,21 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         else:
             return request.redirect('/my/home')
 
-class PaymentProcessing(PaymentProcessing):
+class PaymentProcessing(PaymentPostProcessing):
 
     @http.route()
     def payment_status_page(self, **kwargs):
         # Remove product from
         order_id = request.session.sale_order_id
         if order_id:
-            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1).sudo()
+            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
             # order = request.env['sale.order'].sudo().browse(request.session.sale_order_id)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:
                 if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always',
                                                                                                     'threshold']:
                     product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
-        return super(PaymentProcessing, self).payment_status_page(**kwargs)
+        return super(PaymentProcessing, self).display_status(**kwargs)
 
 
 class PaypalController(PaypalController):

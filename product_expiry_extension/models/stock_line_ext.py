@@ -18,7 +18,7 @@ class InventoryExe(models.Model):
     lot_expired_date = fields.Datetime('Expiration Date')
     lot_use_date = fields.Datetime('Expiration Date', compute='_compute_show_lot_user_date',readOnly=True, required=True)
     lot_id_po = fields.Many2one(
-        'stock.production.lot', 'Lot/Serial Number',
+        'stock.lot', 'Lot/Serial Number',
         domain="[('product_id', '=', product_id), ('company_id', '=', company_id)]", check_company=True)
 
     @api.onchange('lot_id_po')
@@ -36,7 +36,7 @@ class InventoryExe(models.Model):
         if self.lot_id.id and self.lot_use_date:
             values = {}
             values = self._get_updated_date(self.lot_use_date, values)
-            self.env['stock.production.lot'].search([('id', '=', self.lot_id.id)]).write(values)
+            self.env['stock.lot'].search([('id', '=', self.lot_id.id)]).write(values)
 
     @api.onchange('expiration_date')
     def _onchange_lot_use_date2(self):
@@ -44,7 +44,7 @@ class InventoryExe(models.Model):
         if self.lot_id_po.id and self.expiration_date:
             values = {}
             values = self._get_updated_date(self.expiration_date, values)
-            self.env['stock.production.lot'].search([('id', '=', self.lot_id_po.id)]).write(values)
+            self.env['stock.lot'].search([('id', '=', self.lot_id_po.id)]).write(values)
 
     def _get_updated_date(self,lot_use_date,vals):
         params = self.env['ir.config_parameter'].sudo()
@@ -68,7 +68,7 @@ class InventoryExe(models.Model):
                 _logger.info("check_barcode_date write exp date")
                 values = {}
                 values = self._get_updated_date(self.expiration_date, values)
-                self.env['stock.production.lot'].search([('id', '=', self.lot_id.id)]).write(values)
+                self.env['stock.lot'].search([('id', '=', self.lot_id.id)]).write(values)
         return record
 
     @api.onchange('lot_name', 'lot_id','lot_expired_date')
@@ -100,7 +100,7 @@ class InventoryExe(models.Model):
                         message = _(
                             'You cannot use the same serial number twice. Please correct the serial numbers encoded.')
                     elif not self.lot_id:
-                        counter = self.env['stock.production.lot'].search_count([
+                        counter = self.env['stock.lot'].search_count([
                             ('company_id', '=', self.company_id.id),
                             ('product_id', '=', self.product_id.id),
                             ('name', '=', self.lot_name),
@@ -181,14 +181,14 @@ class InventoryExe(models.Model):
                                                 days=production_lot_alert_days)
                                         else:
                                             alert_date = final_date.date() - datetime.timedelta(days=3)
-                                        lot = self.env['stock.production.lot'].create(
+                                        lot = self.env['stock.lot'].create(
                                             {'name': ml.lot_name, 'use_date': ml.lot_expired_date,
                                              'removal_date': ml.lot_expired_date,
                                              'expiration_date': ml.lot_expired_date,
                                              'alert_date': str(alert_date), 'product_id': ml.product_id.id})
                                     # customize code end
                                     else:
-                                        lot = self.env['stock.production.lot'].search([
+                                        lot = self.env['stock.lot'].search([
                                             ('company_id', '=', ml.company_id.id),
                                             ('product_id', '=', ml.product_id.id),
                                             ('name', '=', ml.lot_name),
@@ -234,26 +234,26 @@ class InventoryExe(models.Model):
         for ml in mls_todo:
             if ml.product_id.type == 'product':
                 rounding = ml.product_uom_id.rounding
-
+                # TODO: UPD ODOO16 NOTE Code Commented out for now.
                 # if this move line is force assigned, unreserve elsewhere if needed
-                if not ml._should_bypass_reservation(ml.location_id) and float_compare(ml.qty_done, ml.product_uom_qty,
-                                                                                       precision_rounding=rounding) > 0:
-                    qty_done_product_uom = ml.product_uom_id._compute_quantity(ml.qty_done, ml.product_id.uom_id,
-                                                                               rounding_method='HALF-UP')
-                    extra_qty = qty_done_product_uom - ml.product_qty
-                    ml_to_ignore = self.env['stock.move.line'].browse(ml_ids_to_ignore)
-                    ml._free_reservation(ml.product_id, ml.location_id, extra_qty, lot_id=ml.lot_id,
-                                         package_id=ml.package_id, owner_id=ml.owner_id, ml_to_ignore=ml_to_ignore)
+                # if not ml._should_bypass_reservation() and float_compare(ml.qty_done, ml.product_uom_qty,
+                #                                                                        precision_rounding=rounding) > 0:
+                #     qty_done_product_uom = ml.product_uom_id._compute_quantity(ml.qty_done, ml.product_id.uom_id,
+                #                                                                rounding_method='HALF-UP')
+                #     extra_qty = qty_done_product_uom - ml.product_qty
+                #     ml_to_ignore = self.env['stock.move.line'].browse(ml_ids_to_ignore)
+                #     ml._free_reservation(ml.product_id, ml.location_id, extra_qty, lot_id=ml.lot_id,
+                #                          package_id=ml.package_id, owner_id=ml.owner_id, ml_to_ignore=ml_to_ignore)
                 # unreserve what's been reserved
-                if not ml._should_bypass_reservation(
-                        ml.location_id) and ml.product_id.type == 'product' and ml.product_qty:
-                    try:
-                        Quant._update_reserved_quantity(ml.product_id, ml.location_id, -ml.product_qty,
-                                                        lot_id=ml.lot_id,
-                                                        package_id=ml.package_id, owner_id=ml.owner_id, strict=True)
-                    except UserError:
-                        Quant._update_reserved_quantity(ml.product_id, ml.location_id, -ml.product_qty, lot_id=False,
-                                                        package_id=ml.package_id, owner_id=ml.owner_id, strict=True)
+                # if not ml._should_bypass_reservation(
+                #         ml.location_id) and ml.product_id.type == 'product' and ml.product_qty:
+                #     try:
+                #         Quant._update_reserved_quantity(ml.product_id, ml.location_id, -ml.product_qty,
+                #                                         lot_id=ml.lot_id,
+                #                                         package_id=ml.package_id, owner_id=ml.owner_id, strict=True)
+                #     except UserError:
+                #         Quant._update_reserved_quantity(ml.product_id, ml.location_id, -ml.product_qty, lot_id=False,
+                #                                         package_id=ml.package_id, owner_id=ml.owner_id, strict=True)
 
                 # move what's been actually done
                 quantity = ml.product_uom_id._compute_quantity(ml.qty_done, ml.move_id.product_id.uom_id,
@@ -278,13 +278,13 @@ class InventoryExe(models.Model):
             ml_ids_to_ignore.add(ml.id)
         # Reset the reserved quantity as we just moved it to the destination location.
         mls_todo.with_context(bypass_reservation_update=True).write({
-            'product_uom_qty': 0.00,
+            'reserved_uom_qty': 0.00,
             'date': fields.Datetime.now(),
         })
 
 
 class ProductionLotNameAppendDate(models.Model):
-    _inherit = 'stock.production.lot'
+    _inherit = 'stock.lot'
 
     # def name_get(self):
     #     result = []
@@ -300,31 +300,7 @@ class ProductionLotNameAppendDate(models.Model):
     #         result.append((record.id, name))
     #     return result
 
-    # This method override because of lot Search Dropdown Search more potion is not working Proper
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-        args = list(args or [])
-        # optimize out the default criterion of ``ilike ''`` that matches everything
-        if not self._rec_name:
-            _logger.warning("Cannot execute name_search, no _rec_name defined on %s", self._name)
-        elif not (name == '' and operator == 'ilike'):
-            args += [(self._rec_name, operator, name)]
-        if self.env.context.get('lot_date_display_name_so'):
-            records = self.browse(self._search(args,access_rights_uid=name_get_uid))
-            record_list = []
-            for record in records:
-                pick_id = self.env.context.get('active_picking_id')
-                stock_move = self.env['stock.move'].sudo().search([('picking_id', '=', pick_id)])
-                aval_qty = self.env['stock.quant'].sudo()._get_available_quantity(record.product_id, stock_move.location_id, lot_id=record, package_id=None,
-                         owner_id=None, strict=False, allow_negative=False)
-                if aval_qty > 0:
-                    record_list.append(record.id)
-                if len(record_list)>=limit:
-                    args.append(['id','in',record_list])
-                    return self._search(args,limit=limit,access_rights_uid=name_get_uid)
-        return self._search(args,limit=limit,access_rights_uid=name_get_uid)
-
     def name_get(self):
-
         result = []
         if self.env.context is None:
             self.env.context = {}
@@ -341,11 +317,11 @@ class ProductionLotNameAppendDate(models.Model):
 
                 if record.use_date:
                     name = record.name + ': #Exp Date :' + str(record.use_date)[0:10]\
-                        + ':#Avl Qty :' +str(aval_qty)
+                           + ':#Qty :' +str(record.product_qty) + ':#Avl Qty :' +str(aval_qty)
                 else:
                     name = record.name
 
-                result.append((record.id, name)) if aval_qty > 0 else None
+                result.append((record.id, name))
 
             elif self.env.context.get('lot_date_display_name_po'):
                 if record.use_date:
@@ -356,6 +332,5 @@ class ProductionLotNameAppendDate(models.Model):
 
             else:
                 result.append((record.id, name))
-
 
         return result

@@ -37,23 +37,40 @@ class vendor_offer_automation(models.Model):
     # template_exists = fields.Boolean(default=False)
     template_id = fields.Many2one('sps.vendor_offer_automation.template', string='Template')
 
+    def action_import_order_lines(self):
+        tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
+        action = {
+            'type': 'ir.actions.client',
+            'name': _('Import Vendor Offer'),
+            # 'views': [(tree_view_id, 'form')],
+            'view_mode': 'form',
+            'tag': 'import_offer_template',
+            'params': {'model': 'sps.vendor_offer_automation.template',
+                       'request_model': 'sps.vendor_offer_automation.template',
+                       'offer_id': self.id,
+                       'vendor_id': self.partner_id.id,
+                       'user_type': 'supplier',
+                       'import_type_ven': few_field_import
+                       },
+        }
+        return action
 
-
-    @api.model
-    def create(self, vals):
-        record = super(vendor_offer_automation, self).create(vals)
-
-        if self.env.context.get('disable_export') == None :
-            if 'import_type_ven' in vals:
-                str_val = vals['import_type_ven']
-                if str_val == all_field_import:
-                    record.map_customer_sku_with_catelog_number_all_column(vals)
-                else:
-                    record.map_customer_sku_with_catelog_number(vals)
-            else:
-                record.map_customer_sku_with_catelog_number(vals)
-
-        return record
+    def action_import_order_lines_all_column(self):
+        # tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
+        action = {
+            'type': 'ir.actions.client',
+            # 'views': [(tree_view_id, 'form')],
+            'view_mode': 'form',
+            'tag': 'import_offer_template',
+            'params': {
+                'model': 'sps.vendor_offer_automation.template',
+                'request_model': 'sps.vendor_offer_automation.template',
+                'offer_id': self.id,
+                'vendor_id': self.partner_id.id,
+                'user_type': 'supplier',
+                'import_type_ven': all_field_import},
+        }
+        return action
 
     @api.model
     def map_customer_sku_with_catelog_number(self,vals):
@@ -579,7 +596,7 @@ class vendor_offer_automation(models.Model):
                                         float("{0:.2f}".format(float(order_line_object['offer_price']))),
                                         order_line_object['product_qty'],order_line_object['date_planned'],
                                         order_line_object['order_id'],order_line_object['product_id'],
-                                        order_line_object['qty_in_stock'] ,
+                                        order_line_object['qty_in_stock'],
                                         float("{0:.2f}".format(float(order_line_object['retail_price']))),
                                         float("{0:.2f}".format(float(order_line_object['offer_price']))),
                                         order_line_object['product_sales_count_90']
@@ -602,41 +619,7 @@ class vendor_offer_automation(models.Model):
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
 
-    def action_import_order_lines(self):
-        tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
-        return {
-            'type': 'ir.actions.client',
-            'views': [(tree_view_id, 'form')],
-            'view_mode': 'form',
-            'tag': 'import_offer_template',
-            'params': [
-                {'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id, 'vendor_id': self.partner_id.id,
-                 'user_type': 'supplier','request_model':'sps.vendor_offer_automation.template','import_type_ven': few_field_import}],
-        }
 
-
-    def action_import_order_lines_all_column(self):
-        tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
-        return {
-            'type': 'ir.actions.client',
-            'views': [(tree_view_id, 'form')],
-            'view_mode': 'form',
-            'tag': 'import_offer_template',
-            'params': [
-                {'model': 'sps.vendor_offer_automation.template', 'offer_id': self.id,
-                 'vendor_id': self.partner_id.id,
-                 'user_type': 'supplier', 'import_type_ven': all_field_import}],
-        }
-        # tree_view_id = self.env.ref('vendor_offer_automation.vendor_template_client_action').id
-        # return {
-        #     'type': 'ir.actions.client',
-        #     'views': [(tree_view_id, 'form')],
-        #     'view_mode': 'form',
-        #     'tag': 'importtemplate',
-        #     'params': [
-        #         {'model': 'sps.customer.template', 'customer_id': self.id, 'user_type': 'customer', 'request_model':
-        #             'sps.customer.requests'}],
-        # }
 
     def get_order_line_multiplier(self, order_line_obj, premium):
         multiplier_list = None
@@ -657,7 +640,6 @@ class vendor_offer_automation(models.Model):
             return False
         return multiplier_list.id
 
-    #@api.multi
     def get_product_sales_count(self, product_id):
         product_sales_count = product_sales_count_month = product_sales_count_90 = product_sales_count_yrs = None
         try:
@@ -706,45 +688,6 @@ class vendor_offer_automation(models.Model):
             _logger.error("Error", ex)
         return dict(product_sales_count=product_sales_count, product_sales_count_month=product_sales_count_month,
                     product_sales_count_90=product_sales_count_90, product_sales_count_yrs=product_sales_count_yrs)
-
-    # @staticmethod
-    # def _read_xls_book(self, book, sheet_name,read_data=False):
-    #     sheet = book.sheet_by_name(sheet_name)
-    #     # emulate Sheet.get_rows for pre-0.9.4
-    #     for rowx, row in enumerate(map(sheet.row, range(sheet.nrows)), 1):
-    #         values = []
-    #         for colx, cell in enumerate(row, 1):
-    #             if cell.ctype is xlrd.XL_CELL_NUMBER:
-    #                 is_float = cell.value % 1 != 0.0
-    #                 values.append(
-    #                     str(cell.value)
-    #                     if is_float
-    #                     else str(int(cell.value))
-    #                 )
-    #             elif cell.ctype is xlrd.XL_CELL_DATE:
-    #                 is_datetime = cell.value % 1 != 0.0
-    #                 # emulate xldate_as_datetime for pre-0.9.3
-    #                 dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
-    #                 values.append(
-    #                     dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-    #                     if is_datetime
-    #                     else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
-    #                 )
-    #             elif cell.ctype is xlrd.XL_CELL_BOOLEAN:
-    #                 values.append(u'True' if cell.value else u'False')
-    #             elif cell.ctype is xlrd.XL_CELL_ERROR:
-    #                 raise ValueError(
-    #                     _("Invalid cell value at row %(row)s, column %(col)s: %(cell_value)s") % {
-    #                         'row': rowx,
-    #                         'col': colx,
-    #                         'cell_value': xlrd.error_text_from_code.get(cell.value, _("unknown error code %s", cell.value))
-    #                     }
-    #                 )
-    #             else:
-    #                 values.append(cell.value)
-    #         break
-    #     return values
-
     @staticmethod
     def _read_xls_book(book, pricing_index,flag, read_data=False,expiration_date_index=-1):
         sheet = book.sheet_by_index(pricing_index)
@@ -759,28 +702,7 @@ class vendor_offer_automation(models.Model):
             cell_index = 0
             for cell in row:
                 try:
-                    # if flag == 0:
-                    #     if expiration_date_index == cell_index and not cell.value is None and str(cell.value) != '':
-                    #         is_datetime = cell.value % 1 != 0.0
-                    #         # emulate xldate_as_datetime for pre-0.9.3
-                    #         dt = datetime.datetime(*xlrd.xldate.xldate_as_tuple(cell.value, book.datemode))
-                    #         values.append(
-                    #             dt.strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                    #             if is_datetime
-                    #             else dt.strftime(DEFAULT_SERVER_DATE_FORMAT)
-                    #         )
-                    #     else:
-                    #         if cell.ctype is xlrd.XL_CELL_NUMBER:
-                    #             is_float = cell.value % 1 != 0.0
-                    #             values.append(
-                    #                 pycompat.text_type(cell.value)
-                    #                 if is_float
-                    #                 else pycompat.text_type(int(cell.value))
-                    #             )
-                    #         else:
-                    #             values.append(cell.value)
-                    #     cell_index = cell_index + 1
-                    #else:
+
                     if cell.ctype is xlrd.XL_CELL_NUMBER:
                         is_float = cell.value % 1 != 0.0
                         format = "%d" if (cell.value).is_integer() else "%s"
@@ -802,8 +724,24 @@ class vendor_offer_automation(models.Model):
             row_index = row_index + 1
         return data
 
+    @api.model
+    def create(self, vals):
+        record = super(vendor_offer_automation, self).create(vals)
 
-    #@api.multi
+        if self.env.context.get('disable_export') == None:
+            if 'import_type_ven' in vals:
+                str_val = vals['import_type_ven']
+                if str_val == all_field_import:
+                    record.map_customer_sku_with_catelog_number_all_column(vals)
+                elif str_val == 'new_appraisal':
+                    record.map_customer_sku_with_catelog_number_app_new(vals)
+                else:
+                    record.map_customer_sku_with_catelog_number(vals)
+            else:
+                record.map_customer_sku_with_catelog_number(vals)
+
+        return record
+
     def write(self, vals):
         res = super(vendor_offer_automation, self).write(vals)
         if 'document' in vals:
@@ -811,6 +749,9 @@ class vendor_offer_automation(models.Model):
             if str_val == all_field_import:
                 self.unlink_lines()
                 self.map_customer_sku_with_catelog_number_all_column(vals)
+            elif str_val == 'new_appraisal':
+                self.unlink_lines()
+                self.map_customer_sku_with_catelog_number_app_new(vals)
             else:
                 self.unlink_lines()
                 self.map_customer_sku_with_catelog_number(vals)
@@ -819,17 +760,3 @@ class vendor_offer_automation(models.Model):
     @api.model
     def unlink_lines(self):
         self.env["purchase.order.line"].search([('order_id', '=', self.id)]).unlink()
-
-
-class VendorOfferProductAuto(models.Model):
-    _inherit = "purchase.order.line"
-
-    # def update_product_expiration_date(self):
-    #     if self.order_id.document is None:
-    #         for order in self:
-    #             order.env.cr.execute(
-    #                 "SELECT min(use_date), max(use_date) FROM public.stock_production_lot where product_id =" + str(
-    #                     order.product_id.id))
-    #             query_result = order.env.cr.dictfetchone()
-    #             if query_result['max'] != None:
-    #                 self.expiration_date = fields.Datetime.from_string(str(query_result['max'])).date()

@@ -17,8 +17,8 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/inventory_scrap_print.xml',
-        'views/inventory_scrap_pdf.xml',
+        # 'views/inventory_scrap_print.xml',
+        # 'views/inventory_scrap_pdf.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

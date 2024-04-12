@@ -16,8 +16,8 @@
         "data/data.xml",
         "security/security.xml",
         "security/ir.model.access.csv",
-        "views/templates.xml",
-        "views/mail_message_view.xml"
+        # "views/templates.xml",
+        # "views/mail_message_view.xml"
     ],
     "qweb": [
         "static/src/xml/message_edit.xml"

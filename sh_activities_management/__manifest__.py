@@ -26,17 +26,26 @@
         'wizard/mark_as_done.xml',
         'wizard/mail_activity_popup.xml',
         'views/dynamic_action_view.xml',
-        'views/assets.xml',
+        # 'views/assets.xml',
         'views/activity_views.xml',
         'views/activity_dashboard.xml',
         'data/activity_reminder_mail_template.xml',
         'data/activity_reminder_cron.xml',
         'views/recurring_activities.xml',
     ],
-    'qweb': [
-        'static/src/xml/activity_dashboard.xml',
-        'static/src/xml/systray.xml'
-    ],
+    'assets':{
+        'web.assets_backend':[
+            "sh_activities_management/static/src/css/crm_dashboard.css",
+            "sh_activities_management/static/src/js/activity_dashboard.js",
+            "/sh_activities_management/static/src/js/action_manager_act_window.js",
+            "/sh_activities_management/static/src/js/systray_activity_menu.js",
+
+        ],
+    },
+    # 'qweb': [
+    #     'static/src/xml/activity_dashboard.xml',
+    #     'static/src/xml/systray.xml'
+    # ],
     'images': ['static/description/background.png', ],
     "price": 100,
     "currency": "EUR",
