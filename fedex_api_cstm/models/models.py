@@ -212,7 +212,8 @@ class FedexDelivery(models.Model):
             oauth_token = token_time > datetime.now() and fedex_token.split()[0]
 
         if not oauth_token:
-            fedex = FedexRestApi(prod_environment=self.prod_environment)
+            #fedex = FedexRestApi(prod_environment=self.prod_environment)
+            fedex = FedexRestApi(prod_environment=True)
             oauth_token = fedex.generate_authentication_token(api_key, secret_key)
             token_exp_on = (datetime.now() + timedelta(hours=1)).strftime(tools.misc.DEFAULT_SERVER_DATETIME_FORMAT)
             self.env["ir.config_parameter"].sudo().set_param("fedex.api_request_token", oauth_token + "  " + token_exp_on)
@@ -229,7 +230,8 @@ class FedexDelivery(models.Model):
         for tracking_number in tracking_numbers:
             #is_production_env = self.env['ir.config_parameter'].sudo().get_param('fedex_api_cstm.is_production_env')
             #is_production_env = self.prod_environment
-            fedex = FedexRestApi(prod_environment=self.prod_enviourment)
+            #fedex = FedexRestApi(prod_environment=self.prod_enviourment)
+            fedex = FedexRestApi(prod_environment=True)
             fedex.oauth_token = self.get_fedex_token()
             formatted_response = fedex.process_tracking_request(tracking_number)
             message += formatted_response.get('data','')
