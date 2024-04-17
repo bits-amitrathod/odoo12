@@ -130,7 +130,7 @@
     </record>
 
         <!-- Studio changes-->
-        <!-- UPG ODOO16 NOTE Same view inherited that why this code apply on above view sh_mail_activity_view_form_custom -->
+        <!-- TODO:UPG ODOO16 NOTE Same view inherited that why this code apply on above view sh_mail_activity_view_form_custom -->
         <!--<record id="sh_mail_activity_view_form_n" model="ir.ui.view">
             <field name="name">sh.mail.activity.view.form.add.priority</field>
             <field name="model">mail.activity</field>

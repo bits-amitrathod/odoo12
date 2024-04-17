@@ -626,25 +626,28 @@ class VendorOffer(models.Model):
         This function opens a window to compose an email, with the edi purchase template message loaded by default
         '''
         temp_payment_term = self.payment_term_id.name
-        test = self.super_user_email
         if (temp_payment_term == False):
             temp_payment_term = '0 Days '
         self.ensure_one()
         ir_model_data = self.env['ir.model.data']
         try:
             if self.env.context.get('send_rfq', False):
-                template_id = \
-                ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+                template_id = ir_model_data.check_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done', raise_on_access_error=True)[1]
             else:
-                template_id = \
-                ir_model_data.get_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done')[1]
+                template_id = ir_model_data.check_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done', raise_on_access_error=True)[1]
 
         except ValueError:
             template_id = False
         try:
-            compose_form_id = ir_model_data.get_object_reference('mail', 'email_compose_message_wizard_form')[1]
+            compose_form_id = ir_model_data.check_object_reference('mail', 'email_compose_message_wizard_form', raise_on_access_error=True)[1]
+
         except ValueError:
             compose_form_id = False
+
+        template = self.env.ref('vendor_offer.email_template_edi_vendor_offer_done', False)
+        compose_form = self.env.ref('mail.email_compose_message_wizard_form', False)
+
+
         ctx = dict(self.env.context or {})
 
         ctx.update({
@@ -654,13 +657,13 @@ class VendorOffer(models.Model):
             'default_template_id': template_id,
             'default_composition_mode': 'comment',
             'custom_layout': "vendor_offer.mail_notification_vendor_offer",
-            'force_email': True
+            'force_email': True,
+            'partner_to': self.partner_id.id if not self.partner_id.vendor_email else False,
+            'email_from': self.acq_user_id.partner_id.email if self.acq_user_id.partner_id.email != False else (self.sudo().create_uid.email_formatted or ''),
+            'vendor_email': (self.partner_id.vendor_email or self.partner_id.email) if self.partner_id else False,
+            'email_cc': self.acq_user_id.partner_id.email or ''
         })
 
-        if self.partner_id and self.partner_id.vendor_email:
-            ctx['vendor_email'] = self.partner_id.vendor_email
-        elif self.partner_id and self.partner_id.email:
-            ctx['vendor_email'] = self.partner_id.email
 
         if self.acq_user_id and self.acq_user_id.partner_id and self.acq_user_id.partner_id.email:
             ctx['acq_mgr'] = self.acq_user_id.partner_id.email
@@ -691,7 +694,6 @@ class VendorOffer(models.Model):
             'context': ctx,
         }
 
-    #@api.multi
     def action_print_vendor_offer(self):
         self.temp_payment_term = self.payment_term_id.name
         if (self.payment_term_id.name == False):

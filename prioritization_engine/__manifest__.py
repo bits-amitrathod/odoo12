@@ -8,7 +8,7 @@
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Sale',
-    'version': '1.0',
+    'version': '16.1',
 
     # any module necessary for this one to work correctly
 
@@ -24,7 +24,7 @@
         'views/report_invoice.xml',
         'views/prioritization_views.xml',
         # 'views/web_assets.xml',  Added using assets
-        'views/templates.xml',
+        # 'views/templates.xml',
         'views/prioritization_schedular_views.xml',
         'views/release_product_quantity_scheduler_views.xml',
         'views/process_high_priority_requests.xml',

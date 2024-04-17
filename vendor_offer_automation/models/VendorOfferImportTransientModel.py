@@ -59,7 +59,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
             'template': '/vendor_offer_automation/static/xls/vendor_import.xlsx'
         }]
     @api.model
-    def _convert_import_data(self, fields, options, import_type_ven=False):
+    def _convert_import_data(self, fields, options, import_type_ven):
         """ Extracts the input BaseModel and fields list (with
             ``False``-y placeholders for fields to *not* import) into a
             format Model.import_data can use: a fields list without holes
@@ -130,6 +130,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
         # slicing needs to happen after filtering out empty rows as the
         # data offsets from load are post-filtering
         return rows_data[options.get('skip'):], import_fields, cols
+
     # @api.model
     # def get_fields_tree(self, model, depth=FIELDS_RECURSION_LIMIT):
     #     """
@@ -189,8 +190,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
     #             ]
     #             field_value['comodel_name'] = field['relation']
     #         elif field['type'] == 'one2many':
-    #             field_value['fields'] = self.get_fielhide_column_list_method_app_newds_tree(field['relation'],
-    #                                                                                         depth=depth - 1)
+    #             field_value['fields'] = self.get_fields_tree(field['relation'], depth=depth - 1)
     #             if self.user_has_groups('base.group_no_one'):
     #                 field_value['fields'].append(
     #                     {'id': '.id', 'name': '.id', 'string': _("Database ID"), 'required': False, 'fields': [],
@@ -201,6 +201,7 @@ class VendorOfferImportTransientModel(models.TransientModel):
     #
     #     # TODO: cache on model?
     #     return importable_fields
+
 
     # def parse_preview(self, options, count=10):
     #     """ This method is coppied from odoo base import module and just override to get desired results        """

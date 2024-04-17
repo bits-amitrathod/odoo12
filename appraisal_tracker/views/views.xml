@@ -9,11 +9,6 @@
 
                 <tree create="false" delete="false">
                     <field name="appraisal_no" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <!--<field name="priority" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>-->
-                    <!--<field name="revision" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"-->
-                           <!--class="text-center"/>-->
-                    <!--<field name="revision_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"-->
-                           <!--class="text-center"/>-->
                     <field name="status" invisible="1"/>
                     <field name="state" invisible="1"/>
                     <field name="acq_user_id" string='Acq Manager'
@@ -47,265 +42,14 @@
                     <field name="tier2_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
                     <field name="less_than_40_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
                     <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <!--<field name="tier1_margin"-->
-                           <!--options='{"bg_color": "#f3f397 : t1color"+"==3;"+"#c9fbcf : t1color"+"==2;"+"#ff7098 : t1color"+"==1"}'-->
-                           <!--string="T1 Margin"-->
-                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
-                    <!--<field name="tier2_margin"-->
-                           <!--options='{"bg_color": "#f3f397 : t2color"+"==3;"+"#c9fbcf : t2color"+"==2;"+"#ff7098 : t2color"+"==1"}'-->
-                           <!--string="T2 Margin"-->
-                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
-                     <!--<field name="less_than_40_margin"-->
-                           <!--options='{"bg_color": "#f3f397 : lscolor"+"==3;"+"#c9fbcf : lscolor"+"==2;"+"#ff7098 : lscolor"+"==1"}'-->
-                           <!--string="Broker Margin"-->
-                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
-                    <!--<field name="broker_margin"-->
-                           <!--options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'-->
-                           <!--string="Margin Detail"-->
-                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
+
                     <field name="status_ven_app" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <!--<field name="color" invisible="1"/>-->
-                      <!--<field name="t1color" invisible="1"/>-->
-                      <!--<field name="t2color" invisible="1"/>-->
-                      <!--<field name="lscolor" invisible="1"/>-->
 
                     <field name="currency_id" invisible="1"/>
-<!--                    <field name="message_unread" invisible="1"/>-->
                 </tree>
 
             </field>
         </record>
-
-
-       <!-- <record id="appraisal_tracker_offer_form" model="ir.ui.view">
-            <field name="name">purchase.order.form</field>
-            <field name="model">purchase.order</field>
-            &lt;!&ndash;<field name="context">[status: 'purchase']</field>&ndash;&gt;
-            <field name="arch" type="xml">
-
-
-                <form string="Appraisal Tracker" class="o_sale_order vendor_offer_class" create="false" delete="false"
-                      menu="false" print="false">
-                    <header>
-                        &lt;!&ndash;<button name="%(vendor_offer.action_purchase_order_edit_note)d" type="action" context="{'isFooterInvisible':False}"
-                                string="Add Note"/>&ndash;&gt;
-                        &lt;!&ndash;<button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"/>&ndash;&gt;
-                    </header>
-                    <sheet>
-                        <div class="oe_button_box" name="button_box">
-                            <button type="object"  name="action_view_invoice"
-                            class="oe_stat_button"
-                            icon="fa-pencil-square-o" attrs="{'invisible':['|', ('invoice_count', '=', 0), ('state', 'in', ('ven_draft','draft','sent','to approve'))]}">
-                            <field name="invoice_count" widget="statinfo" string="Vendor Bills"/>
-                            <field name='invoice_ids' invisible="1"/>
-                        </button>
-                            <button type="object"
-                                    name="action_view_picking"
-                                    class="oe_stat_button"
-                                    icon="fa-truck"
-                                    attrs="{'invisible':[('state', 'in', ('draft','sent','to approve')),('picking_ids','=',[])]}">
-                                <field name="picking_count" widget="statinfo" string="Receipt"
-                                       help="Incoming Shipments"/>
-                                <field name="picking_ids" invisible="1"/>
-                            </button>
-
-                        </div>
-                        <div class="oe_title">
-
-                            <label string="Appraisal Tracker" for="name"/>
-                            <h1>
-                                <field name="name" readonly="1"/>
-                            </h1>
-                        </div>
-                        <group>
-                            <group>
-                                <field name="vendor_cust_id_app" readonly="1"/>
-                                <field name="partner_id" string='Facility Name' readonly="1"/>
-                                <field name="acq_user_id" />
-                                <field name="possible_competition" readonly="1"/>
-                                <field name="accelerator" readonly="1"/>
-                                <field name="priority" readonly="1"/>
-                                <field name="offer_type" readonly="1"/>
-                                <field name="potential_profit_margin" readonly="1"/>
-                                <field name="state" invisible="1"/>
-                                <field name="final_billed_offer_total"/>
-                                <field name="final_billed_retail_total"/>
-                            </group>
-                            <group>
-                                <field name="date_offered" string="Offer Date" readonly="1"/>
-                                <field name="appraisal_no" />
-                                <field name="accepted_date" readonly="1"/>
-                                <field name="declined_date" readonly="1"/>
-                                <field name="arrival_date_grp"/>
-                                <field name="max" readonly="1"/>
-                                <field name="new_customer" />
-                                <field name="carrier_id" readonly="1"/>
-                                <field name="shipping_number" readonly="1"/>
-                                <field name="tier1_extra_retail"/>
-                                <field name="tier2_extra_retail"/>
-                                <field name="less_than_40_extra_retail"/>
-                            </group>
-                        </group>
-                        <notebook>
-                            <page string="Product">
-                                <field name="order_line" mode="tree,kanban" attrs="{'readonly': True}">
-                                    <form>
-                                        <group>
-                                            <group>
-                                                <field name="product_id"/>
-                                                <field name="sku_code" readonly="1"/>
-                                                <field name="product_brand_id" readonly="1"/>
-                                                <field name="name" invisible="1"/>
-                                                <field name="product_tier" readonly="1"/>
-                                                <field name="product_qty"/>
-                                                <field name="expiration_date"/>
-                                                <field name="qty_in_stock"/>
-                                                <field name="product_sales_count"/>
-                                                <field name="product_sales_count_month"/>
-                                            </group>
-                                            <group>
-                                                <field name="product_sales_count_90"/>
-                                                <field name="product_sales_count_yrs"/>
-                                                <field name="expired_inventory"/>
-                                                &lt;!&ndash;<field name="list_price" invisible="1"/>&ndash;&gt;
-                                                <field name="product_unit_price"/>
-                                                <field name="product_offer_price"/>
-                                                <field name="product_retail"/>
-                                                <field name="price_subtotal" string="Total Offer Price"/>
-                                                <field name="margin"/>
-                                                <field name="multiplier"/>
-                                                <field name="product_note" readonly="1"/>
-                                                &lt;!&ndash;<field name="date_planned" invisible="1"/>&ndash;&gt;
-                                                &lt;!&ndash;<field name="product_uom" invisible="1"/>&ndash;&gt;
-                                            </group>
-                                        </group>
-                                    </form>
-                                    <tree editable="bottom">
-                                        <field name="currency_id" invisible="1"/>
-                                        <field name="product_id"/>
-                                        <field name="sku_code" readonly="1"/>
-                                        <field name="product_brand_id" readonly="1"/>
-                                        <field name="name" invisible="1"/>
-                                        <field name="product_tier" readonly="1"/>
-                                        <field name="product_qty"/>
-                                        <field name="qty_received" />
-                                        <field name="qty_invoiced" />
-                                        <field name="expiration_date" widget="date"/>
-                                        <field name="qty_in_stock"/>
-                                        <field name="product_sales_count"/>
-                                        <field name="product_sales_count_month"/>
-                                        <field name="product_sales_count_90"/>
-                                        <field name="product_sales_count_yrs"/>
-                                        &lt;!&ndash;<field name="list_price" invisible="1"/>&ndash;&gt;
-                                        <field name="expired_inventory"/>
-                                           <field name="vendor_offer_data" invisible="1"/>
-                                        <field name="product_unit_price"/>
-                                        <field name="product_offer_price"/>
-                                          <field name="delivered_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                                        <field name="delivered_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                                          <field name="billed_product_offer_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                                          <field name="billed_product_retail_price" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" />
-                                        <field name="product_retail"/>
-                                        <field name="price_subtotal" string="Total Offer Price"/>
-                                        <field name="taxes_id" widget="many2many_tags"
-                                               domain="[('type_tax_use','=','purchase')]"
-                                               context="{'default_type_tax_use': 'purchase'}"
-                                               options="{'no_create': True}"/>
-                                        &lt;!&ndash;    <field name="price_tax"  />
-                                          <field name="price_total"   widget="monetary" />
-                                          <field name="price_subtotal"   widget="monetary" />
-                                       <field name="rt_price_tax"  />
-                                          <field name="rt_price_total"   widget="monetary" />
-                                          <field name="rt_price_subtotal"   widget="monetary" />&ndash;&gt;
-                                        <field name="margin"/>
-                                        <field name="multiplier"/>
-                                        &lt;!&ndash;<field name="date_planned" invisible="1"/>&ndash;&gt;
-                                        &lt;!&ndash;<field name="product_uom" invisible="1"/>&ndash;&gt;
-                                        <field name="order_id" invisible="1"/>
-
-                                    </tree>
-
-                                </field>
-                                <group>
-                                       <field name="vendor_offer_data" invisible="1"/>
-                                    <group class="oe_subtotal_footer oe_right">
-
-                                        <field name="amount_untaxed" widget="monetary" string="Untaxed Offer Price"/>
-                                        <field name="amount_tax" string="Taxes"/>
-                                         <div class="oe_subtotal_footer_separator oe_inline">
-                                            &lt;!&ndash;<label for="amount_total"/>&ndash;&gt;
-                                        </div>
-                                        <field name="amount_total" widget="monetary" string="Total Offer Price" class="oe_subtotal_footer_separator"/>
-
-                                    </group>
-                                    <group class="oe_subtotal_footer oe_right">
-                                        <field name="rt_price_subtotal_amt" widget="monetary"
-                                               string="Untaxed Retail Price"/>
-                                        <field name="rt_price_tax_amt" string="Taxes"/>
-                                         <div class="oe_subtotal_footer_separator oe_inline">
-                                            &lt;!&ndash;<label for="rt_price_total_amt"/>&ndash;&gt;
-                                        </div>
-                                        <field name="rt_price_total_amt"  widget="monetary" string="Total Retail Price" class="oe_subtotal_footer_separator"/>
-                                    </group>
-
-                            <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
-                                        <field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>
-                                        <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="billed_offer_total"/>
-                                        </div>
-                                        <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="final_billed_offer_total"/>
-                                        </div>
-                                        <field name="final_billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
-
-                            </group>
-
-                            <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
-                                        <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
-                                        <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="billed_retail_total"/>
-                                        </div>
-                                        <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="final_billed_retail_total"/>
-                                        </div>
-                                        <field name="final_billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
-                            </group>
-                                </group>
-                                <field name="notes" class="oe_inline"
-                                       placeholder="Define your terms and conditions ..."/>
-                                <div class="oe_clear"/>
-                            </page>
-                            <page string="Deliveries">
-                                <group>
-                                    <group>
-                                        <field name="date_planned" readonly="1"/>
-                                        <field name="shipping_label_issued" readonly="1"/>
-                                    </group>
-                                    <group>
-                                        <field name="shipping_date" readonly="1"/>
-                                        <field name="delivered_date" readonly="1"/>
-                                        <field name="expected_date" readonly="1"/>
-                                    </group>
-                                </group>
-                            </page>
-                            <page string="Notes">
-                                <field name="notes_activity"
-                                       attrs="{'readonly': True}"/>
-                            </page>
-                        </notebook>
-                    </sheet>
-                    <div class="oe_chatter">
-                        <field name="message_follower_ids" widget="mail_followers"/>
-                        <field name="activity_ids" widget="mail_activity"/>
-                        <field name="message_ids" widget="mail_thread"/>
-                    </div>
-                </form>
-            </field>
-        </record>-->
 
        <record id="appraisal_tracker.action_window" model="ir.actions.act_window">
 
@@ -313,7 +57,6 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
             <field name="domain">[('state','in',('purchase','cancel','ven_draft','ven_sent','done')),('status','in',('purchase','cancel','ven_draft','ven_sent','done'))]</field>
-            <!--<field name="domain">[('vendor_offer_data','=',True)]</field>-->
             <field name="context">{'vendor_offer_data': True}</field>
             <field name="view_mode">form,tree</field>
             <field name="view_ids" eval="[(5, 0, 0),
@@ -379,29 +122,21 @@
             <field name="model">appraisaltracker.export</field>
             <field name="arch" type="xml">
                 <form string="Export Appraisal Tracker">
-                    <group>
+                    <sheet>
                         <div>Click On ' Export To File ' button to export Appraisal Tracker file</div>
-                    </group>
-                    <footer>
-                        <button name="download_excel_appraisal_tracker" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="download_excel_appraisal_tracker" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
 
-        <!--<act_window name="Export Appraisal Tracker"-->
-                    <!--res_model="appraisaltracker.export"-->
-                    <!--src_model="purchase.order"-->
-                    <!--view_mode="form"-->
-                    <!--target="new"-->
-                    <!--key2="client_action_multi"-->
-                    <!--id="appraisal_tracker_act_window"/>-->
 
         <record id="appraisal_tracker_act_window" model="ir.actions.act_window">
                 <field name="name">Export Appraisal Tracker</field>
-<!--                <field name="type">ir.actions.act_window</field>-->
                 <field name="res_model" >appraisaltracker.export</field>
                 <field name="binding_model_id" ref="purchase.model_purchase_order"/>
                 <field name="view_mode">form</field>

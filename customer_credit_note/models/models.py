@@ -100,6 +100,7 @@ class CustomerCreditNote(models.TransientModel):
             print('not CRN')
             super(CustomerCreditNote, self).action_create_payments()
 
+    # TODO: UPD ODOO16 Note this Method is Not Used anywhere else in this module
     def _get_counterpart_move_line_vals(self, invoice=False):
         if self.payment_type == 'transfer':
             name = self.name

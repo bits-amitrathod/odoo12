@@ -16,6 +16,9 @@ class MailActivityNotesCustom(models.Model):
     def pro_search_for_sales_activity_notes(self, operator, value):
         return self.generic_char_search(operator, value, 'sales_activity_notes')
 
+    def pro_search_for_dup_poc(self, operator, value):
+        return self.generic_char_search(operator, value, 'dup_poc_note')
+
     def pro_search_for_acq_activity_notes(self, operator, value):
         return self.generic_char_search(operator, value, 'acq_activity_notes')
 
@@ -54,22 +57,24 @@ class MailActivityNotesCustom(models.Model):
     function = fields.Char(related="related_partner_activity.function", readonly=True, store=False)
 
     comment = fields.Html(string='Comments')
+    dup_poc_note = fields.Html(string='Dup POC', store=False, compute="_compute_act_note_field",
+                               search="pro_search_for_dup_poc", readonly=False)
 
-    # ordered_online = fields.Boolean(related="related_partner_activity.x_studio_ordered_online", readonly=True,
-    #                                   store=False)
-    # ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True, store=False)
+    ordered_online = fields.Boolean(related="related_partner_activity.x_studio_ordered_online", readonly=True,
+                                    store=False)
+    ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True, store=False)
 
     fiscal_year_end = fields.Selection(related="related_partner_activity.fiscal_year_end", readonly=True,
-                                    store=False)
+                                       store=False)
     top_subspecialties1 = fields.Many2many(related="related_partner_activity.top_subspecialties1", readonly=True,
-                                      store=False)
+                                           store=False)
 
-    # connected_in_ghx = fields.Boolean(related="related_partner_activity.x_studio_connected_in_ghx", readonly=True,
-    #                                        store=False)
-    # ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True,
-    #                                        store=False)
+    connected_in_ghx = fields.Boolean(related="related_partner_activity.x_studio_connected_in_ghx", readonly=True,
+                                      store=False)
+    ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True,
+                                      store=False)
     email_opt_out = fields.Boolean(related="related_partner_activity.email_opt_out", readonly=True,
-                                        store=False)
+                                   store=False)
 
     #date_done = fields.Date("Completed Date", index=True, readonly=False)
 
@@ -104,8 +109,9 @@ class MailActivityNotesCustom(models.Model):
                 if partner_link:
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
+                    record.dup_poc_note = partner_link.dup_poc_note
             # studio field data migration
-            record.comment = record.comment if record.comment else False and record.x_studio_comments
+            record.comment = record.comment if record.comment else record.x_studio_comments
 
     @api.model
     def create(self, val):
@@ -118,7 +124,7 @@ class MailActivityNotesCustom(models.Model):
             record.reference = self.env['res.partner'].search([('id', '=', popup_model_id)], limit=1)
         return record
 
-    @api.onchange('acq_activity_notes', 'sales_activity_notes')
+    @api.onchange('acq_activity_notes', 'sales_activity_notes', 'dup_poc_note')
     def onchange_notes_fields(self):
         for record in self:
             popup_context = self.env.context.get('default_res_model')
@@ -143,13 +149,21 @@ class MailActivityNotesCustom(models.Model):
                                 partner_link.acq_activity_notes = record.acq_activity_notes
                         else:
                             record.acq_activity_notes = partner_link.acq_activity_notes
+
+                        if record.dup_poc_note:
+                            if record.dup_poc_note != '<p><br/></p>':
+                                partner_link.dup_poc_note = record.dup_poc_note
+                        else:
+                            record.dup_poc_note = partner_link.dup_poc_note
                     else:
                         partner_link.sales_activity_notes = record.sales_activity_notes
                         partner_link.acq_activity_notes = record.acq_activity_notes
+                        partner_link.dup_poc_note = record.dup_poc_note
                 else:
                     self.env['partner.link.tracker'].create({'partner_id': record.related_partner_activity.id,
                                                              'sales_activity_notes': record.sales_activity_notes,
-                                                             'acq_activity_notes': record.acq_activity_notes })
+                                                             'acq_activity_notes': record.acq_activity_notes,
+                                                             'dup_poc_note': record.dup_poc_note})
 
     @api.onchange('related_partner_activity')
     def onchange_contact(self):
@@ -162,6 +176,7 @@ class MailActivityNotesCustom(models.Model):
                 if partner_link:
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
+                    record.dup_poc_note = partner_link.dup_poc_note
 
     # Overwritten because Client Does Not want Notes overridden
     @api.onchange('activity_type_id')

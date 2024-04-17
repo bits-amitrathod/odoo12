@@ -286,19 +286,6 @@ class InventoryExe(models.Model):
 class ProductionLotNameAppendDate(models.Model):
     _inherit = 'stock.lot'
 
-    # def name_get(self):
-    #     result = []
-    #     if self.env.context is None:
-    #         self.env.context = {}
-    #     for record in self:
-    #         name = record.name
-    #         if self.env.context.get('lot_date_display_name'):
-    #             if record.use_date:
-    #                 name = record.name + ': #Exp Date :' + str(record.use_date)[0:10] + ':#Qty :' +str(record.product_qty)
-    #             else:
-    #                 name = record.name
-    #         result.append((record.id, name))
-    #     return result
 
     def name_get(self):
         result = []

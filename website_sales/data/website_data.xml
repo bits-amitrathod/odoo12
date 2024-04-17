@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!--<function model="ResConfigSettings" name="_init_settings" />-->
-        <!--<record model="res.config.settings" id="website_sales.expiration_date_settings">-->
-            <!--<field name="website_expiration_date" eval="1"/>-->
-            <!--<field name="module_website_sale_stock" eval="1"/>-->
-            <!--<field name="group_stock_production_lot" eval="1"/>-->
-            <!--<field name="module_product_expiry" eval="1"/>-->
-        <!--</record>-->
-        <!--<function model="website_sales.config.settings" name="execute">-->
-            <!--&lt;!&ndash; ids = &ndash;&gt;-->
-            <!--<value eval="[ref('website_sales.config.settings')]"/>-->
-            <!--&lt;!&ndash; context = &ndash;&gt;-->
-            <!--<value eval="{}"/>-->
-        <!--</function>-->
     </data>
 </odoo>

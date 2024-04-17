@@ -182,6 +182,8 @@ class Partner(models.Model):
     def pro_search_for_acq_activity_notes(self, operator, value):
         return self.generic_char_search(operator, value, 'acq_activity_notes')
 
+    def pro_search_for_dup_poc_note(self, operator, value):
+        return self.generic_char_search(operator, value, 'dup_poc_note')
     def pro_search_for_phone(self, operator, value):
         records = rec = self.env['res.partner'].browse(self.env['res.partner'].search([]).ids)
         m_val = value
@@ -246,67 +248,66 @@ class Partner(models.Model):
 
 
     #  SaleForce_ac Custom Search Imp (Many One Search)
-    #  TODO: UPD ODOO16 NOTE Need to be tested
-    # @api.model
-    # def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-    #     self = self.with_user(name_get_uid or self.env.uid)
-    #     # as the implementation is in SQL, we force the recompute of fields if necessary
-    #     self.recompute(['display_name'])
-    #     self.flush()
-    #     if args is None:
-    #         args = []
-    #     order_by_rank = self.env.context.get('res_partner_search_mode')
-    #     if (name or order_by_rank) and operator in ('=', 'ilike', '=ilike', 'like', '=like'):
-    #         self.check_access_rights('read')
-    #         where_query = self._where_calc(args)
-    #         self._apply_ir_rules(where_query, 'read')
-    #         from_clause, where_clause, where_clause_params = where_query.get_sql()
-    #         from_str = from_clause if from_clause else 'res_partner'
-    #         where_str = where_clause and (" WHERE %s AND " % where_clause) or ' WHERE '
-    #
-    #         # search on the name of the contacts and of its company
-    #         search_name = name
-    #         if operator in ('ilike', 'like'):
-    #             search_name = '%%%s%%' % name
-    #         if operator in ('=ilike', '=like'):
-    #             operator = operator[1:]
-    #
-    #         unaccent = get_unaccent_wrapper(self.env.cr)
-    #
-    #         fields = self._get_name_search_order_by_fields()
-    #
-    #         query = """SELECT res_partner.id
-    #                         FROM {from_str}
-    #                      {where} ({email} {operator} {percent}
-    #                           OR {display_name} {operator} {percent}
-    #                           OR {reference} {operator} {percent}
-    #                           OR {vat} {operator} {percent}
-    #                           OR {saleforce_ac} {operator} {percent}
-    #                           )
-    #                           -- don't panic, trust postgres bitmap
-    #                     ORDER BY {fields} {display_name} {operator} {percent} desc,
-    #                              {display_name}
-    #                    """.format(from_str=from_str,
-    #                               fields=fields,
-    #                               where=where_str,
-    #                               operator=operator,
-    #                               email=unaccent('res_partner.email'),
-    #                               display_name=unaccent('res_partner.display_name'),
-    #                               reference=unaccent('res_partner.ref'),
-    #                               percent=unaccent('%s'),
-    #                               vat=unaccent('res_partner.vat'),
-    #                               saleforce_ac=unaccent('res_partner.saleforce_ac'))
-    #
-    #         where_clause_params += [search_name] * 4  # for email / display_name, reference
-    #         where_clause_params += [re.sub('[^a-zA-Z0-9\-\.]+', '', search_name) or None]  # for vat
-    #         where_clause_params += [search_name]  # for order by
-    #         if limit:
-    #             query += ' limit %s'
-    #             where_clause_params.append(limit)
-    #         self.env.cr.execute(query, where_clause_params)
-    #         return [row[0] for row in self.env.cr.fetchall()]
-    #
-    #     return super(Partner, self)._name_search(name, args, operator=operator, limit=limit, name_get_uid=name_get_uid)
+    @api.model
+    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
+        self = self.with_user(name_get_uid or self.env.uid)
+        # as the implementation is in SQL, we force the recompute of fields if necessary
+        self.recompute(['display_name'])
+        self.flush()
+        if args is None:
+            args = []
+        order_by_rank = self.env.context.get('res_partner_search_mode')
+        if (name or order_by_rank) and operator in ('=', 'ilike', '=ilike', 'like', '=like'):
+            self.check_access_rights('read')
+            where_query = self._where_calc(args)
+            self._apply_ir_rules(where_query, 'read')
+            from_clause, where_clause, where_clause_params = where_query.get_sql()
+            from_str = from_clause if from_clause else 'res_partner'
+            where_str = where_clause and (" WHERE %s AND " % where_clause) or ' WHERE '
+
+            # search on the name of the contacts and of its company
+            search_name = name
+            if operator in ('ilike', 'like'):
+                search_name = '%%%s%%' % name
+            if operator in ('=ilike', '=like'):
+                operator = operator[1:]
+
+            unaccent = get_unaccent_wrapper(self.env.cr)
+
+            fields = self._get_name_search_order_by_fields()
+
+            query = """SELECT res_partner.id
+                            FROM {from_str}
+                         {where} ({email} {operator} {percent}
+                              OR {display_name} {operator} {percent}
+                              OR {reference} {operator} {percent}
+                              OR {vat} {operator} {percent}
+                              OR {saleforce_ac} {operator} {percent}
+                              )
+                              -- don't panic, trust postgres bitmap
+                        ORDER BY {fields} {display_name} {operator} {percent} desc,
+                                 {display_name}
+                       """.format(from_str=from_str,
+                                  fields=fields,
+                                  where=where_str,
+                                  operator=operator,
+                                  email=unaccent('res_partner.email'),
+                                  display_name=unaccent('res_partner.display_name'),
+                                  reference=unaccent('res_partner.ref'),
+                                  percent=unaccent('%s'),
+                                  vat=unaccent('res_partner.vat'),
+                                  saleforce_ac=unaccent('res_partner.saleforce_ac'))
+
+            where_clause_params += [search_name] * 4  # for email / display_name, reference
+            where_clause_params += [re.sub('[^a-zA-Z0-9\-\.]+', '', search_name) or None]  # for vat
+            where_clause_params += [search_name]  # for order by
+            if limit:
+                query += ' limit %s'
+                where_clause_params.append(limit)
+            self.env.cr.execute(query, where_clause_params)
+            return [row[0] for row in self.env.cr.fetchall()]
+
+        return super(Partner, self)._name_search(name, args, operator=operator, limit=limit, name_get_uid=name_get_uid)
 
     def generic_char_search(self, operator, value, field):
         partner_link = self.env['partner.link.tracker']
@@ -373,7 +374,7 @@ class Partner(models.Model):
         ('pst', 'PST'),
         ('ast', 'AST'),
         ('hast', 'HAST')], string='Time Zone', store=False, compute="_compute_time_zone",
-                inverse="_inverse_parent_account", search='pro_search_for_time_zone')
+        inverse="_inverse_parent_account", search='pro_search_for_time_zone')
     facility_type = fields.Selection([
         ('health_system', 'Health System'),
         ('hospital', 'Hospital'),
@@ -405,12 +406,13 @@ class Partner(models.Model):
                                       search='pro_search_for_competitors_id', readonly=False)
     status_id = fields.Many2many('status.tag', string='Status', store=False, search='pro_search_for_status_id', compute="_compute_details_status_field", readonly=False)
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account', store=False, compute="_compute_parent_account_field",
-                                    inverse="_inverse_parent_account" , search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
+                                      inverse="_inverse_parent_account" , search='pro_search_for_parent_account', domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False, search="pro_search_for_sales_activity_notes")
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, search="pro_search_for_acq_activity_notes")
     phone_search = fields.Char('Phone Cust', store=False, search="pro_search_for_phone")
     name_search_cust = fields.Char('Name Cust', store=False, search="pro_search_for_name")
-
+    dup_poc_note = fields.Html("Dup POC", store=False,
+                               search="pro_search_for_dup_poc_note")
     def _compute_productlist(self):
         self.wishlist_product_ids = None
         l = []
@@ -472,6 +474,7 @@ class Partner(models.Model):
                     # record.acc_cust_parent = partner_link.acc_cust_parent
                     record.sales_activity_notes = partner_link.sales_activity_notes
                     record.acq_activity_notes = partner_link.acq_activity_notes
+                    record.dup_poc_note = partner_link.dup_poc_note
                 else:
                     record.gpo =''
 
@@ -481,7 +484,7 @@ class Partner(models.Model):
                   'suture','gynecological','uology','edoscopy','ent','woundcare','bariatric','generalnotes',
                   'facilityERP','description','captis','illucient','capstone_health_aliance','salina_contract',
                   'mha','veteran_affairs','partners_co_operative','magnet_group','fsasc','uspi','surgery_partners',
-                  'intalere_contract','premier','email_opt_out','acq_activity_notes','sales_activity_notes')
+                  'intalere_contract','premier','email_opt_out','acq_activity_notes','sales_activity_notes','dup_poc_note')
     def _onchange_fields_save(self):
         if len(self.ids):
             partner_id = self.ids[0]
@@ -514,7 +517,8 @@ class Partner(models.Model):
                 'competitors_id': self.competitors_id, 'status_id': self.status_id.ids,
                 'acc_cust_parent': self.acc_cust_parent.id,
                 'sales_activity_notes': self.sales_activity_notes,
-                'acq_activity_notes': self.acq_activity_notes
+                'acq_activity_notes': self.acq_activity_notes,
+                'dup_poc_note': self.dup_poc_note
 
             }
 
@@ -567,7 +571,7 @@ class Partner(models.Model):
             partner_link = self.env['partner.link.tracker']
             link_partner_record = partner_link.search([('partner_id', '=', partner_id)], limit=1)
             vals = {'status_id': self.status_id.ids
-            }
+                    }
             link_partner_record.update(vals) if link_partner_record else partner_link.create(vals)
 
     def compute_fiscal_year_end(self):
@@ -618,26 +622,26 @@ class Partner(models.Model):
             self.facilityERP = None
     def _compute_competitors(self):
         for record in self:
-           partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
-           if partner_link:
-               record.competitors_id = partner_link.competitors_id
-           else:
-               record.competitors_id = record.competitors_id.ids
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.competitors_id = partner_link.competitors_id
+            else:
+                record.competitors_id = record.competitors_id.ids
     def _compute_purchase_history_date(self):
         for record in self:
-           partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
-           if partner_link:
-               record.purchase_history_date = partner_link.purchase_history_date
-           else:
-               record.purchase_history_date = record.purchase_history_date
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.purchase_history_date = partner_link.purchase_history_date
+            else:
+                record.purchase_history_date = record.purchase_history_date
 
     def _compute_generalnotes(self):
         for record in self:
-           partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
-           if partner_link:
-               record.generalnotes = partner_link.generalnotes
-           else:
-               record.generalnotes = record.generalnotes
+            partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
+            if partner_link:
+                record.generalnotes = partner_link.generalnotes
+            else:
+                record.generalnotes = record.generalnotes
     def _compute_parent_account_field(self):
         for record in self:
             partner_link = self.env['partner.link.tracker'].search([('partner_id', '=', record.id)], limit=1)
@@ -786,7 +790,7 @@ class PartnerLinkTracker(models.Model):
         ('no_surgery', 'No Surgery'),
         ('plastic_center', 'Plastic Center'),
         ('eye_center', 'Eye Center'),
-        ],string='Facility Type')
+    ],string='Facility Type')
     bed_size = fields.Integer(default=0, string="Bed Size")
     purchase_history_date = fields.Datetime(string="Last Purchase History")
     ordering_day1 = fields.Many2many('day.tag',string='Ordering Day')
@@ -816,3 +820,4 @@ class PartnerLinkTracker(models.Model):
     acc_cust_parent = fields.Many2one('res.partner', string='Parent Account',domain=[('is_company', '=', True)])
     sales_activity_notes = fields.Html("Sales Activity Notes")
     acq_activity_notes = fields.Html("Acquisition Activity Notes")
+    dup_poc_note = fields.Html("Dup POC")

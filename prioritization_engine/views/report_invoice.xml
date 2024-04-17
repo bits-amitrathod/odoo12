@@ -45,6 +45,11 @@
                     <p class="m-0" t-field="o.payment_reference"/>
                 </div>
             </xpath>
+            <xpath expr="//div[@class='clearfix mb-4']" position="after">
+                <p t-if="o.note">
+                    <span t-field="o.note"/>
+                </p>
+            </xpath>
 <!--            <xpath expr="//div[@name='reference'']" position="replace">-->
 <!--                 <div class="col-xs-2" t-if="o.tracking_reference">-->
 <!--                    <strong>Tracking Reference#:</strong>-->

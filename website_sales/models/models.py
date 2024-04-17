@@ -9,7 +9,8 @@ _logger = logging.getLogger(__name__)
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    website_expiration_date = fields.Boolean(string='Lot expiration dates', default_model = 'res.config.settings')
+    # website_expiration_date = fields.Boolean(string='Lot expiration dates', default_model='res.config.settings')
+    website_expiration_date = fields.Boolean(string='Lot expiration dates')
 
     def get_values(self):
         res = super(ResConfigSettings, self).get_values()
@@ -79,24 +80,7 @@ class Website(models.Model):
 
         _logger.info('------- start -----------')
         _logger.info('template_record :')
-        _logger.info(template_record.id)
-        _logger.info('-----------------')
-        _logger.info('name :')
-        _logger.info(name)
-        _logger.info('-----------------')
-        _logger.info('key :')
-        _logger.info(key)
-        _logger.info('-----------------')
-        _logger.info('website_id :')
-        _logger.info(website_id)
-        _logger.info('-----------------')
-        _logger.info('view :')
-        _logger.info(view.id)
-        _logger.info('-----------------')
-        _logger.info('result :')
-        _logger.info(result)
 
-        print('------- end  -----------')
         if add_menu:
             self.env['website.menu'].create({
                 'name': name,

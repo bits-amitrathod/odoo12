@@ -5,7 +5,6 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 import json
 from odoo.http import Controller, request, route
 
-
 class VendorOfferAutomation(http.Controller):
 
     @http.route('/offer_template_import/set_file', methods=['POST'])

@@ -24,7 +24,8 @@
         action="sps_crm.action_your_purchase_pipeline"
         parent="crm_menu_purchase"
         sequence="1"/>
-    <!-- TODO: UPG_ODOO16_NOTE <menuitem
+    <!-- TODO: UPG_ODOO16_NOTE  This is Commented in Vendor Offer Module-->
+    <!--<menuitem
         id="my_vendor_offers_menu"
         name="My Vendor Offers"
         parent="crm_menu_purchase"

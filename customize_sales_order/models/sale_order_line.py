@@ -18,7 +18,7 @@ class SaleOrderLineInherit(models.Model):
             if record.product_id and record.product_id.id:
                 for picking_id in record.order_id.picking_ids:
                     if picking_id.picking_type_id.id == 1 and picking_id.state != 'cancel':
-                        for move_line in picking_id.move_lines:
+                        for move_line in picking_id.move_line_ids:
                             if move_line.state != 'cancel':
                                 if record.product_id.id == move_line.product_id.id:
                                     self.env.cr.execute(

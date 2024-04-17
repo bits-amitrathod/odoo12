@@ -71,6 +71,8 @@
                         <group>
                                    <field name="sales_activity_notes"/>
                                    <field name="acq_activity_notes"/>
+                                    <field name="dup_poc_note"/>
+
                         </group>
                     </page>
                     <page name="wishlist" string="Wishlist">

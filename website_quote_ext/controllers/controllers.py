@@ -339,7 +339,6 @@ class CustomerPortal(CustomerPortal):
         values = self._prepare_portal_layout_values()
         partner = request.env.user.partner_id
         PurchaseOrder = request.env['purchase.order']
-
         domain = [
             '|',
             ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),

@@ -43,7 +43,7 @@
               <field name="qty_done" attrs="{'readonly': ['|', '&amp;', ('state', '=', 'done'), ('is_locked', '=', True), ('parent.picking_type_entire_packs', '=', True)]}"/>
          </field>
         <field name="location_id" position="replace">
-            <field name="location_id" attrs="{'readonly': [('parent.picking_type_entire_packs', '=', True)]}" domain="[('id', 'child_of', parent.location_id)]" groups="stock.group_stock_multi_locations" invisible="1"/>
+            <field name="location_id" attrs="{'readonly': [('parent.picking_type_entire_packs', '=', True)]}" domain="[('id', 'child_of', parent.location_id)]" invisible="1"/>
         </field>
         <field name="result_package_id" position="replace">
             <field name="result_package_id" attrs="{'readonly': [('parent.picking_type_entire_packs', '=', True)]}" groups="stock.group_tracking_lot" domain="['|', '|', ('location_id', '=', False), ('location_id', '=', location_dest_id), ('id', '=', package_id)]" invisible="1"/>
