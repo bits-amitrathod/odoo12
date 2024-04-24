@@ -1,200 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="common_mail_template" model="mail.template">
-            <field name="name">Inventory Notification: Product Availability Email</field>
-            <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">${ctx['email_from']}</field>
-            <field name="email_to">${ctx['email_to']}</field>
-            <field name="subject">${ctx['subject']}</field>
-            <field name="body_html">
-                <![CDATA[
-                % set products = ctx.get('products', [])
-                % set headers =  ctx.get('headers', [])
-                % set columnProps =  ctx.get('columnProps', [])
+        <field name="name">Inventory Notification: Product Availability Email</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="email_from">{{ ctx['email_from'] }}</field>
+        <field name="email_to">{{ ctx['email_to'] }}</field>
+        <field name="subject">{{ ctx['subject'] }}</field>
+        <field name="body_html" type="html">
+            <t t-set="products" t-value="ctx.get('products', [])"/>
+            <t t-set="headers" t-value="ctx.get('headers', [])"/>
+            <t t-set="columnProps" t-value="ctx.get('columnProps', [])"/>
 
-                 <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
-                    <div>
-                        <div >
-                            <p> ${ctx['descrption'] | safe} </p>
+            <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
+                <div>
+                        <div>
+                            <p> <t t-out="ctx['descrption']"/> </p>
                         </div>
                         <center>
                         </center>
                     </div>
-                    <br/>
-                    <div >
+                <br/>
+                <div>
                     <table style="border: 1px solid #efecec;width:100%">
-
-                            <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
-                                <tr style="border: 1px solid black;">
-                                 %for header in  headers
-                                             <th style="text-align: center;">${header} </th>
-                                 % endfor
-                                </tr>
-                            </thead>
-                            <tbody>
-                               % for product in products:
-                                    <tr  style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
-                                         %for column in  columnProps
-                                             <td style="text-align: center;">
-                                                <span>
-                                                    % if product[column] != "False":
-                                                        ${product[column]}
-                                                    % endif
-                                                 </span>
-                                            </td>
-                                         % endfor
-                                     </tr>
-                               % endfor
-                            </tbody>
+                        <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
+                            <tr style="border: 1px solid black;">
+                             <t t-for="headers" t-as="header">
+                                 <th style="text-align: center;"><t t-out="header"/></th>
+                             </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-for="products" t-as="product">
+                                <tr  style='border: 1px solid black;background-color: {{ product.background_color};line-height:25px'>
+                                    <t t-for="columnProps" t-as="column">
+                                         <td style="text-align: center;">
+                                            <span t-if="product[column] != 'False'">
+                                                <t t-out="product[column]"/>
+                                             </span>
+                                        </td>
+                                    </t>
+                                 </tr>
+                            </t>
+                        </tbody>
                     </table>
-                  </div>
-                  <div  style="margin-top:20px">
-                         <p> ${ctx['closing_content'] | safe} </p>
-                  </div>
-                 </div>
-                ]]>
-            </field>
-<!--            <field name="user_signature" eval="False"/>-->
-        </record>
+                </div>
+                <div  style="margin-top:20px">
+                    <p><t t-out="ctx['closing_content']"/></p>
+                </div>
+             </div>
+        </field>
+    </record>
 
     <record id="in_stock_scheduler_template" model="mail.template">
-            <field name="name">Inventory Notification: Product Availability Email</field>
-            <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">${ctx['email_from']}</field>
-            <field name="email_to">${ctx['email_to']}</field>
-            <field name="subject">${ctx['subject']}</field>
-            <field name="email_cc">${ctx['email_cc']}</field>
-            <field name="body_html">
-                <![CDATA[
-                % set products = ctx.get('products', [])
-                %set headers =  ctx.get('headers', [])
-                %set columnProps =  ctx.get('columnProps', [])
+        <field name="name">Inventory Notification: Product Availability Email</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="email_from">{{ ctx['email_from'] }}</field>
+        <field name="email_to">{{ ctx['email_to'] }}</field>
+        <field name="subject">{{ ctx['subject'] }}</field>
+        <field name="email_cc">{{ ctx['email_cc'] }}</field>
+        <field name="body_html" type="html">
+            <t t-set="products" t-value="ctx.get('products', [])"/>
+            <t t-set="headers" t-value="ctx.get('headers', [])"/>
+            <t t-set="columnProps" t-value="ctx.get('columnProps', [])"/>
 
-                 <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
+             <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
+                <div>
                     <div>
-                        <div>
-                            <p> ${ctx['descrption'] | safe} </p>
-                        </div>
-                        <center>
-                        </center>
+                        <p> <t t-out="ctx['descrption']"/> </p>
                     </div>
-                    <br/>
-                    <div >
-                    <table style="border: 1px solid #efecec;width:100%">
-
-                            <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
-                                <tr style="border: 1px solid black;">
-                                 %for header in  headers
-                                             <th style="text-align: center;">${header} </th>
-                                  % endfor
-                                </tr>
-                            </thead>
-                            <tbody>
-                               % for product in products:
-                                    <tr  style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
-                                         %for column in  columnProps
-                                             <td style="text-align: center;">
-                                                <span>
-                                                    % if product[column] != "False":
-                                                        ${product[column]}
-                                                    % endif
-                                                 </span>
-                                            </td>
-                                          % endfor
-                                     </tr>
-                                   % endfor
-                            </tbody>
-                    </table>
-                  </div>
-                  <div  style="margin-top:20px">
-                        <p> ${ctx['closing_content'] | safe} </p>
-                  </div>
-                 </div>
-                ]]>
-            </field>
-<!--            <field name="user_signature" eval="False"/>-->
-        </record>
+                    <center>
+                    </center>
+                </div>
+                <br/>
+                <div >
+                <table style="border: 1px solid #efecec;width:100%">
+                    <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
+                        <tr style="border: 1px solid black;">
+                             <t t-for="headers" t-as="header">
+                                 <th style="text-align: center;"><t t-out="header"/></th>
+                             </t>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-for="products" t-as="product">
+                            <tr  t-attf-style='border: 1px solid black;background-color: {{product.background_color}};line-height:25px'>
+                                <t t-for="columnProps" t-as="column">
+                                     <td style="text-align: center;">
+                                        <span t-if="product[column] != 'False'">
+                                            <t t-out="product[column]"/>
+                                         </span>
+                                    </td>
+                                </t>
+                             </tr>
+                        </t>
+                    </tbody>
+                </table>
+              </div>
+                <div  style="margin-top:20px">
+                    <p><t t-out="ctx['closing_content']"/></p>
+                </div>
+             </div>
+        </field>
+    </record>
 
     <record id="mail_template_acquisitions_manager" model="mail.template">
-            <field name="name">Inventory Notification: Product Availability Email</field>
-            <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">${ctx['email_from']}</field>
-            <field name="email_to">${ctx['email_to']}</field>
-            <field name="subject">${ctx['subject']}</field>
-            <field name="body_html">
-                <![CDATA[
-                % set products = ctx.get('products', [])
-                % set headers =  ctx.get('headers', [])
-                % set columnProps =  ctx.get('columnProps', [])
-
-                 <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
-                    <div>
-                        <div >
-                            <p> ${ctx['descrption'] | safe} </p>
-                        </div>
-                        <center>
-                        </center>
+        <field name="name">Inventory Notification: Product Availability Email</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="email_from">{{ ctx['email_from'] }}</field>
+        <field name="email_to">{{ ctx['email_to'] }}</field>
+        <field name="subject">{{ ctx['subject'] }}</field>
+        <field name="body_html" type="html">
+            <t t-set="products" t-value="ctx.get('products', [])"/>
+            <t t-set="headers" t-value="ctx.get('headers', [])"/>
+            <t t-set="columnProps" t-value="ctx.get('columnProps', [])"/>
+            <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
+                <div>
+                   <div>
+                        <p> <t t-out="ctx['descrption']"/> </p>
                     </div>
-                    <br/>
-                    <div >
+                    <center>
+                    </center>
+                </div>
+                <br/>
+                <div>
                     <table style="border: 1px solid #efecec;width:100%">
 
-                            <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
-                                <tr style="border: 1px solid black;">
-                                 %for header in  headers
-                                             <th style="text-align: center;">${header} </th>
-                                 % endfor
-                                </tr>
-                            </thead>
-                            <tbody>
-                               % for product in products:
-                                    <tr  style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
-                                         %for column in  columnProps
-                                             <td style="text-align: center;">
-                                                <span>
-                                                    % if product[column] != "False":
-                                                        ${product[column]| safe}
-                                                    % endif
-                                                 </span>
-                                            </td>
-                                         % endfor
-                                     </tr>
-                               % endfor
-                            </tbody>
+                        <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
+                            <tr style="border: 1px solid black;">
+                                 <t t-for="headers" t-as="header">
+                                     <th style="text-align: center;"><t t-out="header"/></th>
+                                 </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <t t-for="products" t-as="product">
+                                <tr  t-attf-style="border: 1px solid black;background-color: {{product.background_color}};line-height:25px">
+                                    <t t-for="columnProps" t-as="column">
+                                         <td style="text-align: center;">
+                                            <span t-if="product[column] != 'False'">
+                                                <t t-out="product[column]"/>
+                                             </span>
+                                        </td>
+                                    </t>
+                                 </tr>
+                            </t>
+                        </tbody>
                     </table>
-                  </div>
-                  <div  style="margin-top:20px">
-                         <p> ${ctx['closing_content'] | safe} </p>
-                  </div>
-                 </div>
-                ]]>
-            </field>
-<!--            <field name="user_signature" eval="False"/>-->
-        </record>
+                </div>
+                <div  style="margin-top:20px">
+                    <p><t t-out="ctx['closing_content']"/></p>
+                </div>
+            </div>
+        </field>
+    </record>
 
     <record id="mail_template_vendor_offer_acceptance" model="mail.template">
-            <field name="name">Vendor Offer Notification: Vendor Offer Acceptance</field>
-            <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">${ctx['email_from']}</field>
-            <field name="email_to">${ctx['email_to']}</field>
-            <field name="subject">${ctx['subject']}</field>
-            <field name="body_html">
-                <![CDATA[
-                <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;"/>
+        <field name="name">Vendor Offer Notification: Vendor Offer Acceptance</field>
+        <field name="model_id" ref="base.model_res_users"/>
+        <field name="email_from">{{ ctx['email_from'] }}</field>
+        <field name="email_to">{{ ctx['email_to'] }}</field>
+        <field name="subject">{{ ctx['subject'] }}</field>
+        <field name="body_html" type="html">
+            <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
+                <div>
                     <div>
-                        <div >
-                            <p> ${ctx['descrption'] | safe} </p>
-                        </div>
-                        <center>  </center>
+                        <p><t t-out="ctx['descrption']"/></p>
                     </div>
-                    <br/>
-                    <div  style="margin-top:20px">
-                         <p> ${ctx['closing_content'] | safe} </p>
-                    </div>
+                    <center>  </center>
                 </div>
-                ]]>
-            </field>
-<!--            <field name="user_signature" eval="False"/>-->
-        </record>
+                <br/>
+                <div  style="margin-top:20px">
+                    <p><t t-out="ctx['closing_content']"/></p>
+                </div>
+            </div>
+        </field>
+    </record>
 
 </odoo>

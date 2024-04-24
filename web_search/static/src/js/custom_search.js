@@ -10,7 +10,7 @@ odoo.define("website_search_autocomplete.custom_search", function (require) {
 //    });
 });
 
-odoo.define('website_sale.website_sale', function (require) {
+odoo.define('web_search.website_sale', function (require) {
 'use strict';
 
 var core = require('web.core');

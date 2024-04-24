@@ -2,8 +2,8 @@
 <odoo>
     <data>
 
-         <record model="ir.ui.view" id="vendor_offer.list2">
-            <field name="name">purchase.order list2</field>
+         <record model="ir.ui.view" id="vendor_offer.list_view2">
+            <field name="name">vendor.offer.purchase.order.list_view2</field>
             <field name="model">purchase.order</field>
             <field name="arch" type="xml">
                 <tree default_order="id desc">
@@ -28,9 +28,9 @@
             </field>
         </record>
 
-        <record id="view_vendor_offer_form" model="ir.ui.view">
+        <record id="view_vendor_offer_form_main" model="ir.ui.view">
 
-            <field name="name">purchase.order.form</field>
+            <field name="name">vendor.offer.purchase.order.form.main</field>
             <field name="model">purchase.order</field>
             <field name="arch" type="xml">
                 <form string="Vendor Offer" class="o_sale_order vendor_offer_class" duplicate="false"   attrs="{'delete': [('state', 'in', ('draft', 'ven_draft','ven_sent'))],
@@ -322,8 +322,8 @@
             <field name="context">{'vendor_offer_data': True}</field>
             <field name="view_mode">form,tree</field>
             <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('vendor_offer.list2')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_form')})
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('vendor_offer.list_view2')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_form_main')})
         ]"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">

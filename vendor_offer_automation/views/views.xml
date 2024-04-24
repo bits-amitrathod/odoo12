@@ -9,11 +9,11 @@
             </field>
         </record>
 
-          <record model="ir.ui.view" id="purchase_order_line_file_field_vendor_import">
-            <field name="name">Vendor Offer File Field</field>
+          <record model="ir.ui.view" id="purchase_order_line_file_field_vendor_import_view">
+            <field name="name">Vendor Offer Import File Buttons View</field>
             <field name="model">purchase.order</field>
             <field eval="40" name="priority"/>
-            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>
+            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form_main"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[@name='action_send_offer_email']" position="after">
                     <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary"  />

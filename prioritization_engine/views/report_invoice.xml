@@ -2,44 +2,40 @@
 <odoo>
     <data>
         <template id="report_invoice_document_ext" inherit_id="account.report_invoice_document">
-           <xpath expr="//div[@name='invoice_date']" position="before">
+
+            <!-- NOTE:- ODOO16_MIG :- Working -->
+            <xpath expr="//div[@name='invoice_date']" position="before">
                  <div class="col-auto mw-100 mb-2" t-if="o.purchase_order">
-                   <strong t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Purchase Order #</strong>
-                    <strong t-if="o.move_type == 'in_invoice'">Sale Order #</strong>
-                     <strong t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Purchase Order #</strong>
-                     <strong t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Purchase Order #</strong>
-                     <strong t-if="o.move_type == 'out_refund'">Purchase Order #</strong>
-                     <strong t-if="o.move_type == 'in_refund'">Sale Order #</strong>
-                    <p t-field="o.purchase_order"/>
+                     <t t-if="o.move_type == 'out_invoice'
+                          and o.state in ['posted','draft','cancel']"><strong>Purchase Order #</strong></t>
+                     <t t-if="o.move_type == 'in_invoice'"><strong>Sale Order #</strong></t>
+                     <t t-if="o.move_type == 'out_refund'"><strong>Purchase Order #</strong></t>
+                     <t t-if="o.move_type == 'in_refund'"><strong>Sale Order #</strong></t>
+                     <p t-field="o.purchase_order"/>
                 </div>
             </xpath>
             <xpath expr="//div[@name='invoice_date']" position="replace">
                  <div class="col-auto mw-100 mb-2" t-if="o.invoice_date">
-                    <strong t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Invoice Date</strong>
-                    <strong t-if="o.move_type == 'in_invoice'">Bill Date</strong>
-                    <strong t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Invoice Date</strong>
-                    <strong t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Invoice Date</strong>
-                    <strong t-if="o.move_type == 'out_refund'">Credit Note Date</strong>
-                    <strong t-if="o.move_type == 'in_refund'">Vendor Credit Note Date</strong>
-                    <p t-field="o.invoice_date"/>
+                     <t t-if="o.move_type == 'out_invoice'
+                        and o.state in ['posted','draft','cancel']"><strong>Invoice Date</strong></t>
+                     <t t-if="o.move_type == 'in_invoice'"><strong>Bill Date</strong></t>
+                     <t t-if="o.move_type == 'out_refund'"><strong>Credit Note Date</strong></t>
+                     <t t-if="o.move_type == 'in_refund'"><strong>Vendor Credit Note Date</strong></t>
+                     <p t-field="o.invoice_date"/>
                  </div>
             </xpath>
             <xpath expr="//div[@name='origin']" position="replace">
                  <div class="col-auto mw-100 mb-2" t-if="o.invoice_origin">
-                    <strong t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Sale Order #</strong>
-                    <strong t-if="o.move_type == 'in_invoice'">Purchase Order #</strong>
-                     <strong t-if="o.move_type == 'out_invoice' and o.state == 'draft'">Sale Order #</strong>
-                     <strong t-if="o.move_type == 'out_invoice' and o.state == 'cancel'">Sale Order #</strong>
-                     <strong t-if="o.move_type == 'out_refund'">Sale Order #</strong>
-                     <strong t-if="o.move_type == 'in_refund'">Purchase Order #</strong>
+                     <t t-if="o.move_type == 'out_invoice'
+                                    and o.state in ['posted','draft','cancel']"><strong>Sale Order #</strong></t>
+                     <t t-if="o.move_type == 'in_invoice'"><strong>Purchase Order #</strong></t>
+                     <t t-if="o.move_type == 'out_refund'"><strong>Sale Order #</strong></t>
+                     <t t-if="o.move_type == 'in_refund'"><strong >Purchase Order #</strong></t>
                      <p t-field="o.invoice_origin"/>
                  </div>
             </xpath>
+
             <xpath expr="//div[@name='reference']" position="replace">
-                <!--<div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">
-                    <strong>Purchase Order#:</strong>
-                    <p class="m-0" t-field="o.ref"/>
-                </div>-->
                 <div class="col-auto col-3 mw-100 mb-2" t-if="o.ref" name="reference">
                     <strong>Reference:</strong>
                     <p class="m-0" t-field="o.payment_reference"/>
@@ -50,37 +46,51 @@
                     <span t-field="o.note"/>
                 </p>
             </xpath>
-<!--            <xpath expr="//div[@name='reference'']" position="replace">-->
-<!--                 <div class="col-xs-2" t-if="o.tracking_reference">-->
-<!--                    <strong>Tracking Reference#:</strong>-->
-<!--                    <p t-field="o.tracking_reference"/>-->
-<!--                 </div>-->
-<!--            </xpath>-->
-             <xpath expr="//div[@class='row']" position="attributes">
-                  <attribute name="style">margin:0px;margin-top:0;padding-top:40px;margin-bottom: 5%</attribute>
-            </xpath>
-<!--             <xpath expr="//t[@t-set='address']" position="attributes">-->
-<!--            <attribute name="groups">!sale.group_delivery_invoice_address</attribute>-->
-<!--        </xpath>-->
 
-         <xpath expr="//t[@t-set='address']" position="replace">
-             <div style="margin-bottom:40px;">
-                <div class="col-md-6 mw-100 mb-3" style="margin-top: 21px;margin-bottom: 30px;border: 1px solid #ddd;display:inline-block;width:50%;vertical-align: top;"  groups="sale.group_delivery_invoice_address">
-                    <strong >Bill To:</strong>
-                    <div t-field="o.partner_id"
-                        t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
-                    <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></div>
+
+            <!-- NOTE:- ODOO16_MIG :- Working -->
+            <!-- Show in Invoice PDF :- Bill To and Ship To Address -->
+            <xpath expr="//div[hasclass('row')]" position="replace">
+                <div class="row" style="margin:0px;margin-top:0;padding-top:40px;margin-bottom: 5%">
+                    <t t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
+                        <div class="col-6"  style="margin-top: 21px;margin-bottom: 30px;border: 1px solid #ddd;display:inline-block;width:50%;vertical-align: top;">
+                            <strong >Bill To:</strong>
+                            <div t-field="o.partner_id"
+                                 t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                            <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></div>
+                        </div>
+                        <div class="col-6" style="margin-top: 21px;margin-bottom: 30px;border: 1px solid #ddd;margin-left:5px;width:49%;display:inline-block;">
+                            <div t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
+                                <strong>Ship To:</strong>
+                                <div t-field="o.partner_shipping_id"
+                                     t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                            </div>
+                        </div>
+                    </t>
+                    <t t-elif="o.partner_shipping_id and (o.partner_shipping_id == o.partner_id)">
+                        <div class="offset-col-6 col-6" name="address_same_as_shipping">
+                            <t t-set="address">
+                                <address class="mb-0" t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                                <div t-if="o.partner_id.vat" id="partner_vat_address_same_as_shipping">
+                                    <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-esc="o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>
+                                    <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-else="">
+                        <div class="offset-col-6 col-6" name="no_shipping">
+                            <t t-set="address">
+                                <address class="mb-0" t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                                <div t-if="o.partner_id.vat" id="partner_vat_no_shipping">
+                                    <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-esc="o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>
+                                    <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
                 </div>
-                <div class="col-md-6 mw-100 mb-3" style="margin-top: 21px;margin-bottom: 30px;border: 1px solid #ddd;margin-left:5px;width:49%;display:inline-block;" groups="sale.group_delivery_invoice_address">
-                    <div t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
-                        <strong>Ship To:</strong>
-                        <div t-field="o.partner_shipping_id"
-                            t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
-                    </div>
-                </div>
-             </div>
          </xpath>
-
         </template>
 
     </data>

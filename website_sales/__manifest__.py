@@ -12,10 +12,16 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/quote_my_report.xml',
-        # 'views/views.xml',
-        # 'views/templates.xml',
+        'data/data_views.xml',
+        'views/quote_my_report.xml',
+        'views/views.xml',
+        'views/templates.xml',
     ],
+    'assets': {
+        'web.assets_frontend': [
+            'website_sales/static/src/js/quote_my_report.js',
+        ],
+    },
     'installable': True,
     # 'application': True,
 }

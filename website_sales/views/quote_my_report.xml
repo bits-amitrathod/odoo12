@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <template id="assets_frontend" inherit_id="website.assets_frontend" name="Shop">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/website_sales/static/src/js/quote_my_report.js"></script>
-            </xpath>
-        </template>
-
         <template id="quote_my_report" name="Quote My Report">
             <t t-call="website.layout">
                 <section id="quote" class="report">
@@ -152,7 +146,6 @@
             </section>
             </t>
         </template>
-
         <template id="my_in_stock_report_link" name="Link to frontend portal" inherit_id="portal.user_dropdown">
             <xpath expr="//a[@id='o_logout']" position="before">
                 <a href="/shop/my_in_stock_report" role="menuitem" class="dropdown-item">In-Stock Report</a>
@@ -163,43 +156,6 @@
             <a t-attf-href="/shop/product/#{ slug(product_list.get(product[0])['product'].product_tmpl_id) }">
                 <t t-raw="0"/>
             </a>
-        </template>
-
-        <template id="add_new_column" inherit_id="website_sale.cart_lines">
-            <xpath expr="//th[@class='text-center td-qty']" position="before">
-                <th class="text-center td-available-qty">Available Quantity</th>
-            </xpath>
-            <xpath expr="//td[@class='text-center td-qty']" position="before">
-                <td t-if="line.product_id.actual_quantity" class="text-center td-available-qty">
-                    <div>
-                        <strong t-field="line.product_id.actual_quantity" t-options='{"widget": "integer"}'/>
-                    </div>
-                </td>
-                <td t-else="1" class="text-center td-available-qty">
-                    <div>
-                        <span>-</span>
-                    </div>
-                </td>
-               
-            </xpath>
-        </template>
-
-        <template id="continue_shopping_button_custom" inherit_id="website_sale.cart">
-            <xpath expr="//div/a[@class='btn btn-secondary mb32 d-none d-xl-inline-block']" position="replace">
-                <a t-if="request.params.get('flag')" role="button" t-att-href="'/shop/quote_my_report/%s' % request.params.get('partner')" class="btn btn-secondary mb32 d-none d-xl-inline-block">
-                                        <span class="fa fa-chevron-left" />
-                                        <span class="">Continue Shopping</span>
-                </a>
-                <a t-else="" role="button" href="/shop" class="btn btn-secondary mb32 d-none d-xl-inline-block">
-                                        <span class="fa fa-chevron-left" />
-                                        <span class="">Continue Shopping</span>
-                </a>
-                 <div id="loader_in_stock" style="width: 100%; height: 100%;
-                     position: absolute; background-color: #b3b6b9;  z-index: 1; opacity: 50%;top: 0%;">
-                         <img src="/website_sales/static/src/images/loader1.gif" class="img-fluid" style="width: 120px;
-                            height: 120px; display: block;position: absolute;top: 25%;left: 50%; z-index: 1;"></img>
-                      </div>
-            </xpath>
         </template>
     </data>
 </odoo>

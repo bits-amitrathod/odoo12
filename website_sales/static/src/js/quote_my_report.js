@@ -11,7 +11,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
     var Widget = require('web.Widget');
     var Dialog = require('web.Dialog');
     //var framework = require('web.framework');
-    require("web.zoomodoo");
+//    require("web.zoomodoo");
     var _t = core._t;
 
     $(document).ready(function() {
@@ -27,9 +27,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
                     history.back();
                     window.onpopstate = () => history.forward();
                      $('#loader_in_stock').hide();
-
                 }
-
                 }
                 window.onload = disableBack();
                 window.onpageshow = function(e) {
@@ -167,7 +165,6 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             }else{
                $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'', 'color':'#3d9cca'});
             }
-
         });
 
         $(engine).on('click', 'input:checkbox', function (ev) {
@@ -217,14 +214,6 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
                     $('#selectAll').prop('checked', false);
                 }
 
-               /* ajax.jsonRpc("/shop/quote_my_report/update_json", 'call', {
-                            'partner_id': partner_id,
-                            'product_id': product_id,
-                            'select': val
-                        }).then(function (data) {
-                            console.log('return');
-                            console.log(data);
-                });*/
             }
         });
 

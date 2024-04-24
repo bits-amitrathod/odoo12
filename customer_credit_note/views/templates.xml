@@ -19,37 +19,6 @@
            </dl>
          </template>
 
-        <!--<template id="assets_backend" name="mail assets" inherit_id="mail.assets_backend">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/customer_credit_note/static/src/js/thread.js"></script>
-            </xpath>
-        </template>-->
-
-        <!-- Migration remaining  need to check again view not match -->
-        <!--<record id="invoice_supplier_form_credit_note_label_update" model="ir.ui.view">
-            <field name="name">account.move.form</field>
-            <field name="model">account.move</field>
-            <field name="inherit_id" ref="account.view_move_form"></field>
-            <field name="arch" type="xml">
-                <xpath expr="//form/sheet/div" position="replace">
-                  <div>
-                        <label for="draft_vendor_bill" string="Draft Vendor Bill" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_invoice')]}"/>
-                        <label for="first_number" string="- First Number:" attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}"/>
-                        <label for="draft_vendor_credit_note" string="Draft Vendor Credit Note" attrs="{'invisible': ['|',('state','!=','draft'), ('type','!=','in_refund')]}"/>
-                        <label for="vendor_bill_payment" string="Vendor Bill Payment" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_invoice')]}"/>
-                        <label for="vendor_credit_note" string="Vendor Credit Note" attrs="{'invisible': ['|',('state', '=', 'draft'), ('type','!=','in_refund')]}"/>
-                        <h1 class="mt0">
-                            <field name="number" class="oe_inline"  attrs="{'invisible': [('state', '=', 'draft')]}"/>
-                            <div  attrs="{'invisible': [('sequence_number_next_prefix','=',False)]}">
-                                <field name="sequence_number_next_prefix" class="oe_inline"/>
-                                <field name="sequence_number_next" class="oe_inline"/>
-                            </div>
-                        </h1>
-                    </div>
-                </xpath>
-            </field>
-        </record>-->
-
         <record id="invoice_form_credit_note_label_update" model="ir.ui.view">
             <field name="name">account.invoice.form</field>
             <field name="model">account.move</field>
@@ -157,6 +126,7 @@
     </record>
 
     <template id="report_invoice_document_inherited" inherit_id="account.report_invoice_document">
+        <!-- NOTE:- ODOO16_MIG :- Working -->
         <xpath expr="//div[@class='page']/h2" position="replace">
             <h2>
                 <span t-if="o.move_type == 'out_invoice' and o.state == 'posted'">Customer Invoice</span>
@@ -170,9 +140,9 @@
             </h2>
         </xpath>
         <xpath expr="//div[@class='page']/div[@id='informations']" position="inside">
-            <div class="col-xs-2" t-if="o.preferred_method">
+            <div class="col-auto col-3 mw-100 mb-2" t-if="o.preferred_method" name="Preferred Method">
                 <strong>Preferred Invoice Delivery Method:</strong>
-                <p t-field="o.preferred_method"/>
+                <p class="m-0" t-field="o.preferred_method"/>
             </div>
         </xpath>
 

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+        <record id="website_order_placed" model="mail.template">
+            <field name="name">Email Notification: Product Purchase Details</field>
+            <field name="model_id" ref="website_sale.model_sale_order"/>
+            <field name="email_to">{{object.user_id.login}</field>
+            <field name="email_cc">{{('info@surgicalproductsolutions.com' | safe)}}</field>
+            <field name="subject">Please find the sales order that was placed online at shopsps.com from {{object.partner_id.name}}.</field>
+            <field name="body_html" type="html">
+                <link href="css/bootstrap.min.css" rel="stylesheet"/>
+                 <div style="margin:auto;width:100%;padding-left: 60px;" class="container"/>
+                 <div style="margin-top: 50px;">
+                    <div>
+                       <p>Hello <span>Team</span>,</p>
+                       <p>A new sales order is placed online. Please see details below:</p>
+                       <p><b>Customer :    </b> <t t-out="object.partner_id.name"/> </p>
+                       <p><b>Sale Order# : </b> <t t-out="object.name"/> </p>
+                       <p><b>SF A/C No# : </b> <t t-out="object.partner_id.saleforce_ac"/> </p>
+                    </div>
+                 </div>
+                <table style="border: 1px solid #efecec;width:100%">
+                        <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
+                            <tr style="border: 1px solid black;">
+                                 <!--<th style="text-align: center;">Sales No</th>-->
+                                 <th style="text-align: center;width:10%">SKU</th>
+                                 <th style="text-align: center;width:50%">Product Name</th>
+                                 <th style="text-align: center;width:10%">Quantity</th>
+                                 <th style="text-align: center;width:10%">UOM</th>
+                                 <th style="text-align: center;width:10%">Unit Price</th>
+                                 <th style="text-align: center;width:10%">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                             <t t-for="object.order_line" t-as=" product">
+                                 <tr style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
+                                         <!--<td align="center">${product.order_id.name}</td>-->
+                                         <t t-if="product.product_id.product_tmpl_id.default_code == False">
+                                              <td><span></span></td>
+                                         </t>
+                                         <t t-else="">
+                                             <td style="text-align: center;width:10%"><span><t t-out="product.product_id.product_tmpl_id.default_code"/></span></td>
+                                         </t>
+                                         <td style="text-align: center;width:50%"><span><t t-out="product.name"/></span></td>
+                                         <td style="text-align: center;width:10%"><span><t t-out="'%.0f'%(product.product_uom_qty)"/></span></td>
+                                         <td style="text-align: center;width:10%"><span><t t-out="product.product_uom.name"/></span></td>
+                                         <td style="text-align: center;width:10%"><span><t t-out="product.price_unit"/></span></td>
+                                         <td style="text-align: center;width:10%"><span><t t-out="product.price_subtotal"/></span></td>
+                                </tr>
+                             </t>
+                        </tbody>
+                </table>
+
+                 <t t-if ="object.carrier_id">
+                     <div style="margin: 0px; padding: 0px;">
+                        <table style="border: 1px solid #efecec;width:100%" width="100%"  align="right">
+                            <tr>
+                                <td style="width: 60%"/>
+                                <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><strong>Delivery:</strong></td>
+                                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right"><t t-out="format_amount(object.amount_delivery, object.currency_id)"/></td>
+                            </tr>
+                            <tr>
+                                <td style="width: 60%"/>
+                                <td style="width: 30%;" align="right"><strong>SubTotal:</strong></td>
+                                <td style="width: 10%;" align="right"><t t-out="format_amount(object.amount_untaxed, object.currency_id)"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                 </t>
+                <t t-else="">
+                    <div style="margin: 0px; padding: 0px;">
+                        <table width="100%" style="color: #454748; border-spacing: 0px 4px;" align="right">
+                            <tr>
+                                <td style="width: 60%"/>
+                                <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><strong>SubTotal:</strong></td>
+                                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right"><t t-out="format_amount(object.amount_untaxed, object.currency_id)"/></td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+                <div style="margin: 0px; padding: 0px;">
+                    <table width="100%" style="color: #454748; border-spacing: 0px 4px;" align="right">
+                        <tr>
+                            <td style="width: 60%"/>
+                            <td style="width: 30%;" align="right"><strong>Taxes:</strong></td>
+                            <td style="width: 10%;" align="right"><t t-out="format_amount(object.amount_tax, object.currency_id)"/></td>
+                        </tr>
+                        <tr>
+                            <td style="width: 60%"/>
+                            <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><strong>Total:</strong></td>
+                            <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right"><t t-out="format_amount(object.amount_total, object.currency_id)"/></td>
+                        </tr>
+                    </table>
+                </div>
+                <t t-set="transaction" t-value="object.get_portal_last_transaction()"/>
+                <t t-if ="object.partner_invoice_id">
+                    <div style="margin: 0px; padding: 0px;">
+                        <table width="100%" style="color: #454748;">
+                            <tr>
+                                <td style="padding-top: 10px;">
+                                    <strong>Bill to:</strong>
+                                    <t t-out="object.partner_invoice_id.street or ''"/>
+                                    <t t-out="object.partner_invoice_id.city or ''"/>
+                                    <t t-out="partner_invoice_id.state_id.name or ''"/>
+                                    <t t-out="object.partner_invoice_id.zip or ''"/>
+                                    <t t-out="object.partner_invoice_id.country_id.name or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Payment Method:</strong>
+                                    <t t-if="transaction.payment_token_id">
+                                         <t t-out="transaction.payment_token_id.name"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-out="transaction.acquirer_id.name"/>
+                                    </t>
+                                    (<t t-out="format_amount(transaction.amount, object.currency_id)"/>)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+                <t t-if ="object.partner_shipping_id and not object.only_services">
+                    <div style="margin: 0px; padding: 0px;">
+                        <table width="100%" style="color: #454748;">
+                            <tr>
+                                <td>
+                                    <br/>
+                                    <strong>Ship to:</strong>
+                                    <t t-out="object.partner_shipping_id.street or ''"/>
+                                    <t t-out="object.partner_shipping_id.city or ''"/>
+                                    <t t-out="object.partner_shipping_id.state_id.name or ''"/>
+                                    <t t-out="object.partner_shipping_id.zip or ''"/>
+                                    <t t-out="object.partner_shipping_id.country_id.name or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <t t-if ="object.carrier_id">
+                            <table width="100%" style="color: #454748;">
+                                <tr>
+                                    <td>
+                                        <strong>Shipping Method:</strong>
+                                        <t t-out="object.carrier_id.name"/>
+                                        <t t-if ="object.carrier_id.fixed_price > 0.0">
+                                            (<t t-out="format_amount(object.carrier_id.fixed_price, object.currency_id)"/>)
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </t>
+                    </div>
+                    <div style="margin-top:20px">
+                        <p>Thanks &amp; Regards,</p>
+                        <p> SPS Team </p>
+                    </div>
+                </t>
+            </field>
+        </record>
+    </data>
+</odoo>

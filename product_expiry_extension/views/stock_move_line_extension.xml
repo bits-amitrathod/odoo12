@@ -66,26 +66,4 @@
         </field>
     </record>
 
-<!--          <record id="view_extension_move_stock_line_operation_detailed_op" model="ir.ui.view">-->
-<!--                <field name="name">stock.move.line.inherit.new.lotid</field>-->
-<!--                <field name="model">stock.move.line</field>-->
-<!--                <field name="inherit_id" ref="stock.view_stock_move_line_detailed_operation_tree"/>-->
-<!--                <field name="arch" type="xml">-->
-
-<!--                        <field name="lot_id" position="replace">-->
-<!--                            <field  name="lot_id" groups="stock.group_production_lot"-->
-<!--                                   attrs="{'column_invisible': [('parent.show_lots_text', '=', True)],-->
-<!--                                   'invisible': [('lots_visible', '=', False)]}"-->
-<!--                                   context="{'default_product_id': product_id, 'default_company_id':-->
-<!--                                   company_id, 'active_picking_id': picking_id , 'lot_date_display_name': True }" optional="show"/>-->
-
-
-<!--                    </field>-->
-<!--                      <field name="lot_id" position="after">-->
-<!--                    <field name="lot_use_date" attrs="{'readonly': [('lot_use_date', '!=', False)]}"  groups="stock.group_production_lot"-->
-<!--                         string="Lot Expiration Date"  context="{'default_product_id': parent.product_id, 'active_picking_id': picking_id}" />-->
-<!--            </field>-->
-<!--                </field>-->
-<!--                </record>-->
-
 </odoo>

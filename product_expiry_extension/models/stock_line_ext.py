@@ -204,7 +204,7 @@ class InventoryExe(models.Model):
                             # checkboxes on the picking type, he's allowed to enter tracked
                             # products without a `lot_id`.
                             continue
-                    elif ml.move_id.inventory_id:
+                    elif ml.move_id.is_inventory:
                         # If an inventory adjustment is linked, the user is allowed to enter
                         # tracked products without a `lot_id`.
                         continue

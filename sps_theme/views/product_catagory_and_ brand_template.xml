@@ -20,14 +20,6 @@
                         <t t-call="website.pager">
                             <t t-set="_classes">ml-2</t>
                         </t>
-                        <!--<div class="btn-group btn-group-toggle mt-2 ml-md-2 d-none d-sm-inline-flex o_wsale_apply_layout" data-toggle="buttons">
-                            <label t-attf-class="btn btn-secondary #{'active' if layout_mode != 'list' else None} fa fa-th-large o_wsale_apply_grid" title="Grid">
-                                <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode != 'list' else None"/>
-                            </label>
-                            <label t-attf-class="btn btn-secondary #{'active' if layout_mode == 'list' else None} fa fa-th-list o_wsale_apply_list" title="List">
-                                <input type="radio" name="wsale_products_layout" t-att-checked="'checked' if layout_mode == 'list' else None"/>
-                            </label>
-                        </div>-->
                        <t t-set="list_price_desc_label">Catalog Price: High to Low</t>
                         <t t-set="list_price_asc_label">Catalog Price: Low to High</t>
                         <t t-set="name_asc_label">Name - A to Z</t>
@@ -81,71 +73,27 @@
     <template id="products_item_cstm" name="Products item" inherit_id="website_sale.products">
 
         <xpath expr="//table" position="replace">
-            <!-- new odoo 14 Structure -->
-<!--           <table class="table table-borderless m-0" t-att-data-ppg="ppg" t-att-data-ppr="ppr">-->
-<!--                                    <colgroup t-ignore="true">-->
-<!--                                        &lt;!&ndash; Force the number of columns (useful when only one row of (x < ppr) products) &ndash;&gt;-->
-<!--                                        <col t-foreach="ppr" t-as="p"/>-->
-<!--                                    </colgroup>-->
-<!--                                    <tbody>-->
-<!--                                        <tr t-foreach="bins" t-as="tr_product">-->
-<!--                                            <t t-foreach="tr_product" t-as="td_product">-->
-<!--                                                <t t-if="td_product">-->
-<!--                                                    <t t-set="product" t-value="td_product['product']" />-->
-<!--                                                    &lt;!&ndash; We use t-attf-class here to allow easier customization &ndash;&gt;-->
-<!--                                                    <td t-att-colspan="td_product['x'] != 1 and td_product['x']"-->
-<!--                                                        t-att-rowspan="td_product['y'] != 1 and td_product['y']"-->
-<!--                                                        t-attf-class="oe_product"-->
-<!--                                                        t-att-data-ribbon-id="td_product['ribbon'].id">-->
-<!--                                                        <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']}">-->
-<!--                                                            <t t-call="website_sales.products_item">-->
-<!--                                                                <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] &gt; 2"/>-->
-<!--                                                            </t>-->
-<!--                                                        </div>-->
-<!--                                                    </td>-->
-<!--                                                </t>-->
-<!--                                                <td t-else=""/>-->
-<!--                                            </t>-->
-<!--                                        </tr>-->
-<!--                                    </tbody>-->
-<!--                                </table>-->
-    <div class="" t-att-data-ppg="ppg" t-att-data-ppr="ppr">
-            <div class="row" t-foreach="bins" t-as="tr_product">
-                    <t t-foreach="tr_product" t-as="td_product">
-                        <t t-if="td_product">
-                            <t t-set="product" t-value="td_product['product']" />
-                            <!-- We use t-attf-class here to allow easier customization -->
-                            <div t-att-colspan="td_product['x'] != 1 and td_product['x']"
-                                t-att-rowspan="td_product['y'] != 1 and td_product['y']"
-                                t-attf-class="oe_product col-md-3"
-                                t-att-data-ribbon-id="td_product['ribbon'].id">
-                                <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']} h-100">
-                                    <t t-call="website_sales.products_item">
-                                        <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] > 2"/>
-                                    </t>
+            <div class="" t-att-data-ppg="ppg" t-att-data-ppr="ppr">
+                <div class="row" t-foreach="bins" t-as="tr_product">
+                        <t t-foreach="tr_product" t-as="td_product">
+                            <t t-if="td_product">
+                                <t t-set="product" t-value="td_product['product']" />
+                                <!-- We use t-attf-class here to allow easier customization -->
+                                <div t-att-colspan="td_product['x'] != 1 and td_product['x']"
+                                    t-att-rowspan="td_product['y'] != 1 and td_product['y']"
+                                    t-attf-class="oe_product col-md-3"
+                                    t-att-data-ribbon-id="td_product['ribbon'].id">
+                                    <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']} h-100">
+                                        <t t-call="website_sales.products_item">
+                                            <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] > 2"/>
+                                        </t>
+                                    </div>
                                 </div>
-                            </div>
+                            </t>
+                            <div t-else=""/>
                         </t>
-                        <div t-else=""/>
-                    </t>
+                </div>
             </div>
-        </div>
-
-            <!-- odoo 12 Structure -->
-            <!--<div class="row" t-foreach="porductRows" t-as="tr_product">
-                <t t-foreach="tr_product" t-as="td_product">
-                    <t t-if="td_product">
-                        <t t-set="product" t-value="td_product"/>
-                        <div t-attf-class="col-md-6 col-xl-4">
-                            <div class="oe_product_cart"
-                                 t-att-data-publish="product.website_published and 'on' or 'off'">
-                                <t t-call="website_sales.products_item"/>
-                            </div>
-                        </div>
-                    </t>
-                    <div t-if="not td_product" class="oe-height-2 col-md-3 col-sm-6"/>
-                </t>
-            </div>-->
         </xpath>
         <!-- already Awalable in odoo 14  -->
         <!--<xpath expr="//h3[hasclass('css_editable_display')]" position="replace">
@@ -168,20 +116,7 @@
             <t t-set="product_variant" t-value="product.env['product.product'].browse(combination_info['product_id'])"/>
 
             <div itemscope="itemscope" itemtype="http://schema.org/Product">
-<!--               <div class="oe_product_image" style="position: relative;left: 0;">-->
-<!--                    <a itemprop="url"-->
-<!--                       t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">-->
-<!--                        &lt;!&ndash; OLD Code&ndash;&gt;-->
-<!--                        &lt;!&ndash;<span itemprop="image"-->
-<!--                              t-attf-content="{{request.httprequest.url_root}}web/image/product.template/{{product.id}}/image"-->
-<!--                              t-field="product.image"-->
-<!--                              t-options="{'widget': 'image', 'resize': '300x300', 'zoom': 'image'}"-->
-<!--                              t-att-alt="product.name" style="position: relative;"/>&ndash;&gt;-->
-<!--                            <span t-field="product.image_1920"-->
-<!--                            t-options="{'widget': 'image', 'preview_image': 'image_1024' if product_image_big else 'image_256'}"-->
-<!--                            class="d-flex h-100 justify-content-center align-items-center"/>-->
-<!--                    </a>-->
-<!--                </div>-->
+
                 <t t-if="show_publish">
                     <div id="website_published_button" class="" groups="sales_team.group_sale_manager">
                         <t t-call="website.publish_management">
@@ -209,17 +144,6 @@
                          style="position: relative;">
                         <t t-if="combination_info['price'] &gt; 0">
                             <strong>
-                                <!-- OLD Code-->
-                                <!--<t t-if="product.website_price_difference and website.get_current_pricelist().discount_policy=='without_discount'">
-                                    <del class="text-danger mr8" style="white-space: nowrap;"
-                                         t-esc="compute_currency(product.website_public_price)"
-                                         t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
-                                </t>-->
-                                <!-- OLD Code-->
-                                <!--<span t-esc="combination_info['price']"
-                                      t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
-                                <span itemprop="price" style="display:none;" t-esc="combination_info['price']"/>
-                                <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/> -->
                                <span t-attf-class="text-danger oe_default_price {{'' if combination_info['has_discounted_price'] else 'd-none'}}" style="text-decoration: line-through; white-space: nowrap;"
                   t-esc="combination_info['list_price_custom']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"
               />
@@ -231,15 +155,6 @@
                         <t t-else="">
                             <span>Call for Pricing 412-564-1280</span>
                         </t>
-
-                        <!--<button type="button" class="btn btn-xs"
-                                data-toggle="modal"
-                                style="background: transparent;"
-                                t-att-data-target="'#product_view'+str(product.id)">
-                            <i class="fa fa-search-plus" style="color:  #666666; font-size: 15px;" data-toggle="tooltip"
-                               data-placement="right" title="Quick Shop"/>
-                        </button>-->
-
                     </div>
                     <!-- Show Actual Quantity on shop page -->
                     <t t-if="product.actual_quantity &gt; 0">
@@ -256,13 +171,7 @@
                         <i class="fa fa-exclamation-triangle"/>
                         Temporarily out of stock
                     </div>
-                    <!-- Buy Now button  -->
-                    <!--<div t-if="product.actual_quantity &gt; 0"
-                         t-attf-class="availability_message_#{product_template} linkCstm mt16">
-                        <a class="btn btn-info js_check_product a-submit"
-                           t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">BUY NOW</a>
-                    </div>-->
-                    <!-- Add to Cart Button  -->
+
                     <div t-if="product.actual_quantity &gt; 0">
                         <form action="/shop/cart/update" class="js_add_cart_variants" method="POST">
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -333,19 +242,19 @@
     <template id="product_price_custom_web_cart_page" inherit_id="website_sale.cart_lines">
         <xpath expr="//td[@class='text-center td-price']" position="replace">
             <td class="text-center td-price" name="price">
-                                    <t t-set="combination" t-value="line.product_id.product_template_attribute_value_ids + line.product_no_variant_attribute_value_ids"/>
-                                    <t t-set="combination_info" t-value="line.product_id.product_tmpl_id._get_combination_info(combination, pricelist=website_sale_order.pricelist_id)"/>
+                <t t-set="combination" t-value="line.product_id.product_template_attribute_value_ids + line.product_no_variant_attribute_value_ids"/>
+                <t t-set="combination_info" t-value="line.product_id.product_tmpl_id._get_combination_info(combination, pricelist=website_sale_order.pricelist_id)"/>
 
-                                    <t t-set="list_price_converted" t-value="website.currency_id._convert(combination_info['list_price_custom'], website_sale_order.currency_id, website_sale_order.company_id, date)"/>
-                                    <t groups="account.group_show_line_subtotals_tax_excluded" t-if="(website_sale_order.pricelist_id.discount_policy == 'without_discount' and website_sale_order.currency_id.compare_amounts(list_price_converted, line.price_reduce_taxexcl) == 1) or website_sale_order.currency_id.compare_amounts(line.price_unit, line.price_reduce) == 1" name="order_line_discount">
-                                        <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="list_price_converted" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" />
-                                    </t>
-                                    <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_excluded" />
-                                    <t groups="account.group_show_line_subtotals_tax_included" t-if="(website_sale_order.pricelist_id.discount_policy == 'without_discount' and website_sale_order.currency_id.compare_amounts(list_price_converted, line.price_reduce_taxinc) == 1) or website_sale_order.currency_id.compare_amounts(line.price_unit, line.price_reduce) == 1" name="order_line_discount">
-                                        <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="list_price_converted" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" />
-                                    </t>
-                                    <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_included" />
-                                </td>
+                <t t-set="list_price_converted" t-value="website.currency_id._convert(combination_info['list_price_custom'], website_sale_order.currency_id, website_sale_order.company_id, date)"/>
+                <t groups="account.group_show_line_subtotals_tax_excluded" t-if="(website_sale_order.pricelist_id.discount_policy == 'without_discount' and website_sale_order.currency_id.compare_amounts(list_price_converted, line.price_reduce_taxexcl) == 1) or website_sale_order.currency_id.compare_amounts(line.price_unit, line.price_reduce) == 1" name="order_line_discount">
+                    <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="list_price_converted" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" />
+                </t>
+                <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_excluded" />
+                <t groups="account.group_show_line_subtotals_tax_included" t-if="(website_sale_order.pricelist_id.discount_policy == 'without_discount' and website_sale_order.currency_id.compare_amounts(list_price_converted, line.price_reduce_taxinc) == 1) or website_sale_order.currency_id.compare_amounts(line.price_unit, line.price_reduce) == 1" name="order_line_discount">
+                    <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="list_price_converted" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" />
+                </t>
+                <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_included" />
+            </td>
         </xpath>
     </template>
 
@@ -360,20 +269,7 @@
             <div itemscope="itemscope" itemtype="http://schema.org/Product" id="wrap" class="js_sale">
                 <section t-attf-class="container padding-60-y oe_website_sale #{'discount' if combination_info['has_discounted_price'] else ''}" id="product_detail">
                     <div class="row pb-5">
-<!--                        <div class="col-sm-4">
-                            <ol class="breadcrumb">
-                                <li>
-                                <a t-att-href="keep(category=0)">Products</a>
-                                </li>
-                                <li t-if="category">
-                                <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)"
-                                t-field="category.name"/>
-                                </li>
-                                <li class="active">
-                                <span t-field="product.name"/>
-                                </li>
-                            </ol>
-                        </div>-->
+
                         <div class="col-sm-4 mb8">
                             <div class=" w-75 m-auto">
                                 <t t-call="website_sale.search"/>
@@ -387,8 +283,7 @@
                     </div>
                     <div class="row">
                         <div class="col-md-4">
-<!--                            <t t-set="variant_img" t-value="product_variant and product_variant.image_variant"/>-->
-<!--                            <t t-set="image_ids"  t-value="product.product_image_ids"/>-->
+
                             <t t-set="product_images" t-value="product_variant._get_images() if product_variant else product._get_images()"/>
                             <div id="o-carousel-product" class="carousel slide" data-ride="carousel" data-interval="0">
                                 <div class="carousel-outer">
@@ -411,45 +306,15 @@
                                         </a>
                                     </t>
 
-                                    <!--<div class="carousel-inner">
-                                        <div t-if="variant_img" class="carousel-item active" t-field="product_variant.image" t-options="{'widget': 'image', 'class': 'product_detail_img js_variant_img', 'alt-field': 'name', 'zoom': 'image', 'unique': str(product['__last_update']) + (str(product_variant['__last_update']) or ''), 'itemprop': 'image'}"/>
-                                        <div t-if="product_variant" t-field="product_variant.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded shadow o_alternative_product o_image_64_max' }" />
-                                        <div t-else="" t-field="alt_product.image_128" t-options="{'widget': 'image', 'qweb_img_responsive': False, 'class': 'rounded shadow o_alternative_product o_image_64_max' }" />
-&lt;!&ndash;                                        <div t-attf-class="carousel-item#{'' if variant_img else ' active'}" t-field="product.image" t-options="{'widget': 'image', 'class': 'product_detail_img', 'alt-field': 'name', 'zoom': 'image', 'unique': product['__last_update'], 'itemprop': 'image'}"/>&ndash;&gt;
-                                       &lt;!&ndash; <t t-if="len(image_ids)" t-foreach="image_ids" t-as="pimg">
-                                            <div class="carousel-item" t-field="pimg.image" t-options='{"widget": "image", "class": "product_detail_img", "alt-field": "name", "zoom": "image", "itemprop": "image"}'/>
-                                        </t>
-                                        <t t-if="len(image_ids) or variant_img">
-                                            <a class="carousel-control-prev" href="#o-carousel-product" role="button" data-slide="prev" >
-                                                <span class="fa fa-chevron-left" role="img" aria-label="Previous" title="Previous"/>
-                                            </a>
-                                            <a class="carousel-control-next" href="#o-carousel-product" role="button" data-slide="next">
-                                                <span class="fa fa-chevron-right" role="img" aria-label="Next" title="Next"/>
-                                            </a>
-                                        </t>
-                                        <ol class="carousel-indicators" t-if="len(image_ids) or variant_img">
-                                            <li t-if="variant_img" data-target="#o-carousel-product" data-slide-to="0" class="active">
-                                                <img class="img img-fluid js_variant_img_small" t-attf-src="/website/image/product.product/{{product_variant.id}}/image/90x90" t-att-alt="product.name"/>
-                                            </li>
-                                            <li data-target="#o-carousel-product" t-att-data-slide-to="1 if variant_img else '0'" t-att-class="'' if variant_img else 'active'">
-                                                <img class="img img-fluid" t-attf-src="/website/image/product.template/{{product.id}}/image/90x90" t-att-alt="product.name"/>
-                                            </li>
-                                            <t t-if="len(image_ids)" t-foreach="image_ids" t-as="pimg">
-                                                <li data-target="#o-carousel-product" t-att-data-slide-to="pimg_index + (variant_img and 2 or 1)">
-                                                    <img class="img img-fluid" t-attf-src="/website/image/product.image/{{pimg.id}}/image/90x90" t-att-alt="pimg.name"/>
-                                                </li>
-                                            </t>
-                                        </ol>&ndash;&gt;
-                                    </div>-->
                                 </div>
                                 <div t-ignore="True" class="d-none d-md-block text-center">
-                <ol t-if="len(product_images) > 1" class="carousel-indicators d-inline-block position-static mx-auto my-0 p-1 text-left">
-                    <t t-foreach="product_images" t-as="product_image"><li t-attf-class="d-inline-block m-1 align-top {{'active' if product_image_first else ''}}" data-target="#o-carousel-product" t-att-data-slide-to="str(product_image_index)">
-                        <div t-field="product_image.image_128" t-options='{"widget": "image", "qweb_img_responsive": False, "class": "o_image_64_contain", "alt-field": "name"}'/>
-                        <i t-if="product_image._name == 'product.image' and product_image.embed_code" class="fa fa-2x fa-play-circle-o o_product_video_thumb"/>
-                    </li></t>
-                </ol>
-            </div>
+                                <ol t-if="len(product_images) > 1" class="carousel-indicators d-inline-block position-static mx-auto my-0 p-1 text-left">
+                                    <t t-foreach="product_images" t-as="product_image"><li t-attf-class="d-inline-block m-1 align-top {{'active' if product_image_first else ''}}" data-target="#o-carousel-product" t-att-data-slide-to="str(product_image_index)">
+                                        <div t-field="product_image.image_128" t-options='{"widget": "image", "qweb_img_responsive": False, "class": "o_image_64_contain", "alt-field": "name"}'/>
+                                        <i t-if="product_image._name == 'product.image' and product_image.embed_code" class="fa fa-2x fa-play-circle-o o_product_video_thumb"/>
+                                    </li></t>
+                                </ol>
+                            </div>
                             </div>
                         </div>
                         <div class="col-md-8 product-detail" id="product_details" >
@@ -467,13 +332,7 @@
                             <form action="/shop/cart/update" class="js_add_cart_variants" method="POST">
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                                 <div class="js_product" t-if="product.product_variant_ids">
-                                    <!--<t t-placeholder="select">
-                                        <input type="hidden" class="product_id" name="product_id"
-                                               t-att-value="product.product_variant_id.id if len(product.product_variant_ids) == 1 else '0'"/>
-                                        &lt;!&ndash;<t t-call="sale.variants">
-                                            <t t-set="ul_class" t-value="'nav-stacked'"/>
-                                        </t>&ndash;&gt;
-                                    </t>-->
+
                                     <t t-placeholder="select">
                                         <input type="hidden" class="product_id" name="product_id" t-att-value="product_variant.id" />
                                         <input type="hidden" class="product_template_id" name="product_template_id" t-att-value="product.id" />
@@ -496,8 +355,6 @@
                                        class="css_not_available_msg bg-danger" style="padding: 15px;">This combination
                                         does not exist.
                                     </p>
-
-
                                     <t t-if="product.actual_quantity &gt; 0">
                                         <div t-attf-class="availability availability_message_#{product_template}">
                                             <t t-esc="product.actual_quantity"/>
@@ -550,7 +407,6 @@
                                     </t>
                             </div>
 
-<!--                            <hr class="mb8 mt12"/>-->
                             <div class="o_not_editable">
                                 <p t-field="product.description_sale" class="text-muted"/>
                             </div>
