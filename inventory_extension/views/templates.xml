@@ -31,10 +31,10 @@
                     </xpath>
                     <xpath expr="//div[hasclass('oe_title')]" position="after">
                         <div class="center mt8" attrs="{'invisible': [('picking_warn_msg', '=', False)]}">
-                        <h3 style="text-align: left; color: #c4262e;">
-                          <field name="picking_warn_msg"></field>
-                        </h3>
-                    </div>
+                            <h3 style="text-align: left; color: #c4262e;">
+                                <field name="picking_warn_msg"></field>
+                            </h3>
+                        </div>
                     </xpath>
                 </data>
             </field>

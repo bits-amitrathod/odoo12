@@ -2,14 +2,14 @@
 <odoo>
 
     <record id="view_production_lot_tree_cstm" model="ir.ui.view">
-        <field name="name">stock.production.lot.tree</field>
+        <field name="name">stock.lot.tree</field>
         <field name="model">stock.lot</field>
         <field name="inherit_id" ref="stock.view_production_lot_tree" />
         <field name="arch" type="xml">
           <field  name="product_id" position="after">
                 <!--<field name="use_date" string="Expiration Date" />-->
                 <field name="alert_date" invisible="True"  />
-		        <field name="product_qty" />
+		        <field name="product_qty" invisible="context.get('lot_date_display_name_so')" />
               <field name="available_qty_for_sale" />
           </field>
           <tree  position="attributes" >
@@ -19,7 +19,7 @@
     </record>
 
     <record id="search_product_lot_filter_inherit_product_Quantity" model="ir.ui.view">
-        <field name="name">stock.production.lot.search.inherit.Quantity</field>
+        <field name="name">stock..lot.search.inherit.Quantity</field>
         <field name="model">stock.lot</field>
         <field name="inherit_id" ref="stock.search_product_lot_filter"/>
         <field name="arch" type="xml">
@@ -31,7 +31,7 @@
      </record>
 
     <record id="stock_production_lot_view_form_notebook_attr" model="ir.ui.view">
-        <field name="name">stock.production.lot.notebook.form</field>
+        <field name="name">stock.lot.notebook.form</field>
         <field name="model">stock.lot</field>
         <field name="inherit_id" ref="product_expiry.view_move_form_expiry"/>
         <field name="arch" type="xml">

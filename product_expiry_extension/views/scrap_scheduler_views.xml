@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-      <record id="ir_cron_scheduler_scrap_action" forcecreate="True" model="ir.cron">
-            <field name="name">Scrap Scheduler</field>
-            <field name="user_id" ref="base.user_root"/>
-            <field name="interval_number">1</field>
-            <field name="interval_type">hours</field>
-            <field name="model_id" ref="model_stock_scrap_scheduler"/>
-            <field name="state">code</field>
-            <field name="code">model.process_scrap_scheduler(process_records=50)</field>
-            <field name="numbercall">-1</field>
-            <field name="active" eval="True"/>
-            <field name="doall" eval="False"/>
-            <field name="priority">1</field>
-      </record>
+    <record id="ir_cron_scheduler_scrap_action" forcecreate="True" model="ir.cron">
+        <field name="name">Scrap Scheduler</field>
+        <field name="user_id" ref="base.user_root"/>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="model_id" ref="model_stock_scrap_scheduler"/>
+        <field name="state">code</field>
+        <field name="code">model.process_scrap_scheduler(process_records=50)</field>
+        <field name="numbercall">-1</field>
+        <field name="active" eval="True"/>
+        <field name="doall" eval="False"/>
+        <field name="priority">1</field>
+    </record>
 
-      <record id="scrap_run_schedular_views" model="ir.ui.view">
+    <record id="scrap_run_schedular_views" model="ir.ui.view">
         <field name="name">Run Schedulers Manually</field>
         <field name="model">stock.scrap.scheduler</field>
         <field name="arch" type="xml">
             <form string="Parameters">
                 <p>
-                Running this scheduler will remove all expire product from lot and will add it in scrap location.
+                    Running this scheduler will remove all expire product from lot and will add it in scrap location.
                 </p>
                 <footer>
                     <button name="process_manual_scrap_scheduler" string="Run Schedulers" type="object" class="btn-primary"/>
@@ -33,11 +33,11 @@
     <record id="scrap_run_scheduler" model="ir.actions.act_window">
         <field name="name">Run Scheduler</field>
         <field name="res_model">stock.scrap.scheduler</field>
-<!--      <field name="view_type">form</field> -->
+        <!--      <field name="view_type">form</field> -->
         <field name="view_mode">form</field>
-          <field name="target">new</field>
+        <field name="target">new</field>
     </record>
-       <menuitem id="menu_scheduler_config" name="Schedulers" parent="stock.menu_stock_config_settings" groups="stock.group_stock_manager" sequence="1"/>
-       <menuitem name="Scrap Scheduler" id="menu_stock_config_form_ext" action="scrap_run_scheduler"
-          parent="menu_scheduler_config" sequence="1"/>
+    <menuitem id="menu_scheduler_config" name="Schedulers" parent="stock.menu_stock_config_settings" groups="stock.group_stock_manager" sequence="1"/>
+    <menuitem name="Scrap Scheduler" id="menu_stock_config_form_ext" action="scrap_run_scheduler"
+              parent="menu_scheduler_config" sequence="1"/>
 </odoo>

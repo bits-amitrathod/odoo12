@@ -169,7 +169,7 @@ class sale_order(models.Model):
                 for record in records:
                     if self.name != record.name and (self.x_studio_allow_duplicate_po is False or
                                                  record.x_studio_allow_duplicate_po is False):
-                        raise Warning(_("Duplicate PO number is not allowed.\n"
+                        raise Warning(("Duplicate PO number is not allowed.\n"
                                         "The PO number of this Sales Order is already present on Sales Order %s.\n "
                                         "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
                                         "setting ON for both Sales Order.") % record.name)
