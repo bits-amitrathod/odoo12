@@ -268,24 +268,25 @@
 <!--        </xpath>-->
 <!--    UPG_ODOO16_NOTE-->
     </template>
-
-    <template id="checkout_cstm_address" name="Invoice Address updated" inherit_id="website_sale.checkout">
-        <xpath expr="//div[@id='wrap']//div[hasclass('oe_cart')]/div[@class='row']/div[@class='col-lg-6 one_kanban']" position="replace">
-            <div class="col-lg-6 one_kanban">
-                <t t-call="website_sale.address_kanban">
-                    <t t-set='contact' t-value="order.partner_id"/>
-                    <t t-set='selected' t-value="1"/>
-                    <t t-set='readonly' t-value="1"/>
-                    <t t-set='allow_edit' t-value="1"/>
-                </t>
-                <t t-call="website_sale.address_kanban">
-                    <t t-set='contact' t-value="order.partner_invoice_id"/>
-                    <t t-set='selected' t-value="1"/>
-                    <t t-set='readonly' t-value="1"/>
-                </t>
-            </div>
-        </xpath>
-    </template>
+    
+<!--    UPG_ODOO16_NOTE-->
+<!--    <template id="checkout_cstm_address" name="Invoice Address updated" inherit_id="website_sale.checkout">-->
+<!--        <xpath expr="//div[@id='wrap']//div[hasclass('oe_cart')]/div[@class='row']/div[@class='col-lg-6 one_kanban']" position="replace">-->
+<!--            <div class="col-lg-6 one_kanban">-->
+<!--                <t t-call="website_sale.address_kanban">-->
+<!--                    <t t-set='contact' t-value="order.partner_id"/>-->
+<!--                    <t t-set='selected' t-value="1"/>-->
+<!--                    <t t-set='readonly' t-value="1"/>-->
+<!--                    <t t-set='allow_edit' t-value="1"/>-->
+<!--                </t>-->
+<!--                <t t-call="website_sale.address_kanban">-->
+<!--                    <t t-set='contact' t-value="order.partner_invoice_id"/>-->
+<!--                    <t t-set='selected' t-value="1"/>-->
+<!--                    <t t-set='readonly' t-value="1"/>-->
+<!--                </t>-->
+<!--            </div>-->
+<!--        </xpath>-->
+<!--    </template>-->
 
      <template id="add_new_column" inherit_id="website_sale.cart_lines">
         <xpath expr="//th[@class='text-center td-qty']" position="before">
