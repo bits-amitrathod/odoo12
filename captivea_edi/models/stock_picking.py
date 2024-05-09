@@ -184,10 +184,12 @@ class Picking(models.Model):
              ('instance_of', '=', self.sale_order_of)])
         if sftp_conf:
             ftpdpath = sftp_conf['ftp_shipack_dpath']
-            file_name = '/tmp/' + str(DOC_PREFIX_ASN) + '_' + \
-                        str(order.name) + 'OUT' + str(self.id) + '_' + str(order.partner_id.name) \
-                        + '.csv' if self.sale_order_of == 'true' else '/tmp/' + str(
-                DOC_PREFIX_ASN) + '_' + 'message_id' + str(datetime.now()) + '.txt'  # mayBe x_edi_reference is better
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            file_name = f"/tmp/{DOC_PREFIX_ASN}_"
+            if self.sale_order_of == 'true':
+                file_name += f"OUT_{self.id}_{order.partner_id.name}.csv"
+            else:
+                file_name += f"message_id_{timestamp}.txt"
             with open(file_name, 'w') as file_pointer:
                 if self.sale_order_of == 'true':
                     cvs_rows = []
