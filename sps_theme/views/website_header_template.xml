@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
      <template id="headerNavbar_template" name="Main layout" inherit_id="website.template_header_default">
-        <xpath expr="//header//nav//div[@id='top_menu_collapse']"  position="before">
-
-            <div class="top-header collapse navbar-collapse" id="top_menu_collapse">
+        <xpath expr="//div[@id='top_menu_container']"  position="before">
+            <div class="top-header collapse navbar-collapse" id="">
                 <ul class="contact-detail">
                     <li>
                         <a href="#">Contact Our Sales Team Today: <span>412.564.1280</span></a>
@@ -23,10 +22,10 @@
         </xpath>
     </template>
 
-    <template id="template_header_default_oe_structure_header_default_1" inherit_id="website.template_header_default_oe_structure_header_default_1" name="Template Header Default (oe_structure_header_default_1)">
-        <xpath expr="//*[hasclass('oe_structure')][@id='oe_structure_header_default_1']" position="replace">
-        </xpath>
-    </template>
+<!--    <template id="template_header_default_oe_structure_header_default_1" inherit_id="website.template_header_default_oe_structure_header_default_1" name="Template Header Default (oe_structure_header_default_1)">-->
+<!--        <xpath expr="//*[hasclass('oe_structure')][@id='oe_structure_header_default_1']" position="replace">-->
+<!--        </xpath>-->
+<!--    </template>-->
 
 
 </odoo>

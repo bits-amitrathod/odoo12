@@ -464,10 +464,13 @@ N1^VN^{str(vendor_ref)}^92^{str(vendor_id)}~"""
         @return: log_ids:
         """
         log_ids = self.env['setu.edi.log']
+        #  self[0].company_id.id if self else self.company_id.id
+        #  above condition added because of some time self contains the multiple records of sale order.
+        #  or sometime it contains nothing
         sftp_conf = self.env['setu.sftp'].search(
-            [('company_id', '=', self[0].company_id.id),
+            [('company_id', '=', self[0].company_id.id if self else self.company_id.id),
              ('instance_active', '=', True),
-             ('instance_of', '=', self[0].order_of)])
+             ('instance_of', '=', self[0].order_of if self else self.order_of)])
         if sftp_conf:
             sftp, status = sftp_conf.test_connection()
             for sale in self:

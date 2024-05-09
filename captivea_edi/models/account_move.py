@@ -64,7 +64,7 @@ class AccountMove(models.Model):
     x_studio_edi_reference = fields.Char('EDI Reference', copy=False)
     x_edi_accounting_id = fields.Char('Accounting ID', copy=False)
     x_edi_store_number = fields.Char('Store number', copy=False)
-    invn_sent = fields.Boolean('Invoice Notification Sent?', copy=False)
+    invn_sent = fields.Boolean('Invoice Notification Sent?', copy=False, default=False)
     edi_log_id = fields.Many2one('setu.edi.log', copy=False)
     sale_order_of = fields.Selection([('true', 'Truecommerce'), ('ghx', 'GHX')])
 

@@ -318,7 +318,7 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
 
-    def _compute_average_price(self, qty_invoiced, qty_to_invoice, stock_moves):
+    def _compute_average_price(self, qty_invoiced, qty_to_invoice, stock_moves, is_returned=False):
         """Go over the valuation layers of `stock_moves` to value `qty_to_invoice` while taking
         care of ignoring `qty_invoiced`. If `qty_to_invoice` is greater than what's possible to
         value with the valuation layers, use the product's standard price.
