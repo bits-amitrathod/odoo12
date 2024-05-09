@@ -136,9 +136,9 @@ class PaymentAquirerCstm(http.Controller):
 
 
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
-    @http.route(['/shop/payment'], type='http', auth="public", website=True)
-    def payment(self, **post):
-        responce = super(WebsiteSalesPaymentAquirerCstm, self).payment(**post)
+    # @http.route(['/shop/payment'], type='http', auth="public", website=True)
+    def shop_payment(self, **post):
+        responce = super(WebsiteSalesPaymentAquirerCstm, self).shop_payment(**post)
 
         if 'expedited_shipping' not in request.session:
             request.session['expedited_shipping'] = "Ground"
@@ -181,20 +181,15 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         return responce
 
-    @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
-    def payment_confirmation(self, **post):
-        responce = super(WebsiteSalesPaymentAquirerCstm, self).payment_confirmation(**post)
+    # @http.route(['/shop/confirmation'], type='http', auth="public", website=True, sitemap=False)
+    def shop_payment_confirmation(self, **post):
+        responce = super(WebsiteSalesPaymentAquirerCstm, self).shop_payment_confirmation(**post)
         order = responce.qcontext['order']
         sale_note = ""
         if 'sales_team_message' in request.session:
             if request.session['sales_team_message']:
                 sale_note = request.session['sales_team_message']
                 request.session.pop('sales_team_message')
-                # order_sudo = order.sudo()
-                # body = _(sale_note)
-                # _message_post_helper(res_model='sale.order', res_id=order_sudo.id, message=body,
-                #                      message_type='notification', subtype="mail.mt_note",
-                #                      **({'token': order.access_token} if order.access_token else {}))
 
         if order.carrier_id.code == "my_shipper_account" and 'expedited_shipping' in request.session:
             if request.session['expedited_shipping']:

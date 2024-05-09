@@ -8,14 +8,14 @@
     'sequence': 59,
     'category': 'e-commerce',
     'version': '1.0',
-    'depends': ['website_sale','payment_aquirer_cstm','vendor_offer'],
+    'depends': ['website_sale','sale_product_configurator', 'payment_aquirer_cstm','vendor_offer'],
     # always loaded
     'data': [
         'security/ir.model.access.csv',
         'data/data_views.xml',
-        'views/quote_my_report.xml',
         'views/views.xml',
         'views/templates.xml',
+        'views/quote_my_report.xml',
     ],
     'assets': {
         'web.assets_frontend': [

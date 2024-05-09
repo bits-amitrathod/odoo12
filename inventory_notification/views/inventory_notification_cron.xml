@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate = "1">
+            <record id="ir_cron_scheduler_notification_action" forcecreate="True" model="ir.cron">
+            <field name="name">Notification Scheduler Every Minute</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">minutes</field>
+            <field name="model_id" ref="model_inventory_notification_scheduler"/>
+            <field name="state">code</field>
+            <field name="code">model.process_notification_scheduler(limit=40)</field>
+            <field name="numbercall">-1</field>
+            <field name="priority">0</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="False"/>
+        </record>
+        <record id="ir_cron_scheduler_todays_notification_flag_action" forcecreate="True" model="ir.cron">
+            <field name="name">Notification Scheduler Everyday</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="model_id" ref="model_inventory_notification_scheduler"/>
+            <field name="state">code</field>
+            <field name="code">model.process_notification_scheduler_everyday(custom_date=None)</field>
+            <field name="numbercall">-1</field>
+            <field name="priority">0</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="False"/>
+        </record>
+    </data>
+
+     <record id="product_notification_form_inherit" model="ir.ui.view">
+        <field name="name">product.product..notification.form_ex</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="purchase.view_product_account_purchase_ok_form"/>
+        <field name="arch" type="xml">
+             <xpath expr="//div[@name='options']" position="inside">
+                 <span class="d-inline-block">
+                    <field name="notify"/>
+                    <label for="notify"/>
+                </span>
+             </xpath>
+        </field>
+    </record>
+
+    <record id="run_purchase_notification_views" model="ir.ui.view">
+        <field name="name">Run Schedulers Manually</field>
+        <field name="model">inventory.notification.scheduler</field>
+        <field name="arch" type="xml">
+            <form string="Parameters">
+                <p>
+                    Running this scheduler will send noitification to purchase team for the product which are in red.
+                </p>
+                <footer>
+                    <button name="process_manual_notification_scheduler" string="Run Schedulers" type="object"
+                            class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+     <record id="ir_cron_scheduler_set_on_off_outgoing_scheduler_ne_flag_action" forcecreate="True" model="ir.cron">
+            <field name="name">ON OFF outgoing server Scheduler Everyday</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">6</field>
+            <field name="interval_type">hours</field>
+            <field name="model_id" ref="model_inventory_notification_scheduler"/>
+            <field name="state">code</field>
+            <field name="code">model.process_outgoing_server_scheduler()</field>
+            <field name="numbercall">-1</field>
+            <field name="priority">0</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="False"/>
+        </record>
+
+    <record id="run_purchase_notification" model="ir.actions.act_window">
+        <field name="name">Run Scheduler</field>
+        <field name="res_model">inventory.notification.scheduler</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

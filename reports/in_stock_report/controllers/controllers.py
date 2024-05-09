@@ -409,9 +409,7 @@ class ReportPrintInStockExport(http.Controller):
             product_id = request.env['product.product'].browse(line['product_id'])
             if product_id:
                 if partner_id.property_product_pricelist.id:
-                    line['list_price'] = partner_id.property_product_pricelist.get_product_price(product_id, line[
-                        'actual_quantity'],
-                                                                                                 partner_id)
+                    line['list_price'] = partner_id.property_product_pricelist._get_product_price(product_id, line['actual_quantity'])
             data[line['id']] = line
 
         for line in data.values():
@@ -420,9 +418,7 @@ class ReportPrintInStockExport(http.Controller):
             #     product_id = request.env['product.product'].browse(line['product_id'])
             #     if product_id:
             #         if partner_id.property_product_pricelist.id:
-            #             line['list_price'] = partner_id.property_product_pricelist.get_product_price(product_id, line[
-            #                 'actual_quantity'],
-            #                                                                                          partner_id)
+            #             line['list_price'] = partner_id.property_product_pricelist._get_product_price(product_id, line['actual_quantity'])
             records.append([line['res_partner'], line['product_brand'], line['sku_code'], line['product_template'],
                             "$" + " {0:.2f}".format(line['list_price']), line['actual_quantity'], line['product_uom'],
                             line['min_expiration_date'], line['max_expiration_date']])

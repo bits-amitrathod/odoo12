@@ -671,7 +671,7 @@ class StockMove(models.Model):
                                 qty_done += ml.product_uom_id._compute_quantity(ml.qty_done, ml.product_id.uom_id)
                             grouped_move_lines_out[k] = qty_done
                         for k, g in groupby(sorted(move_lines_out_reserved, key=_keys_out_sorted), key=itemgetter(*keys_out_groupby)):
-                            grouped_move_lines_out[k] = sum(self.env['stock.move.line'].concat(*list(g)).mapped('product_qty'))
+                            grouped_move_lines_out[k] = sum(self.env['stock.move.line'].concat(*list(g)).mapped('reserved_qty'))
                         available_move_lines = {key: grouped_move_lines_in[key] - grouped_move_lines_out.get(key, 0) for key in grouped_move_lines_in.keys()}
                         # pop key if the quantity available amount to 0
                         available_move_lines = dict((k, v) for k, v in available_move_lines.items() if v)

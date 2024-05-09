@@ -21,8 +21,7 @@ class SalesOrder(models.Model):
     _inherit = 'sale.order'
 
 
-
-    def _check_carrier_quotation(self, force_carrier_id=None):
+    def _check_carrier_quotation(self, force_carrier_id=None, keep_carrier=False):
         self.ensure_one()
         DeliveryCarrier = self.env['delivery.carrier']
 
@@ -33,7 +32,7 @@ class SalesOrder(models.Model):
         else:
             self = self.with_company(self.company_id)
             # attempt to use partner's preferred carrier
-            if not force_carrier_id and self.partner_shipping_id.property_delivery_carrier_id:
+            if not force_carrier_id and self.partner_shipping_id.property_delivery_carrier_id and not keep_carrier:
                 force_carrier_id = self.partner_shipping_id.property_delivery_carrier_id.id
 
             carrier = force_carrier_id and DeliveryCarrier.browse(force_carrier_id) or self.carrier_id
@@ -48,7 +47,7 @@ class SalesOrder(models.Model):
             if force_carrier_id or not carrier or carrier not in available_carriers:
                 verified_carrier = False
                 for delivery in available_carriers:
-                    if delivery.code == "my_shipper_account":
+                    if delivery.code == "my_shipper_account" and  self.partner_id.having_carrier and self.partner_id.carrier_acc_no:
                         if self.partner_id.having_carrier and self.partner_id.carrier_acc_no:
                             verified_carrier = delivery._match_address(self.partner_shipping_id)
                     else:
@@ -70,7 +69,6 @@ class SalesOrder(models.Model):
                     self.delivery_message = res['error_message']
 
         return bool(carrier)
-
 
 class Website(models.Model):
     _inherit = "website"

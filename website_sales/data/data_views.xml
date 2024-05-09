@@ -33,7 +33,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                             <t t-for="object.order_line" t-as=" product">
+                             <t t-foreach="object.order_line" t-as=" product">
                                  <tr style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
                                          <!--<td align="center">${product.order_id.name}</td>-->
                                          <t t-if="product.product_id.product_tmpl_id.default_code == False">

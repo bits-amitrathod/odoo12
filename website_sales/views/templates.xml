@@ -155,6 +155,17 @@
 
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~SHOP PAGE Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+
+    <template id="loader_in_stock" name="Loader In Stock">
+        <div id="loader_in_stock" style="width: 100%; height: 100%; position: absolute; background-color: #b3b6b9;  z-index: 1000; opacity: 50%;top: 0%;">
+             <img src="/website_sales/static/src/images/loader1.gif" class="img-fluid" style="
+             width: 120px;height: 120px; display: block;
+             position: absolute;top: 50%;left: 50%; transform: translate(-50%, -50%); z-index: 1;"></img>
+        </div>
+    </template>
+
+
     <template id="productExpirationDate" name="Product Expiration Date">
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
             <div class="expiration-section">
@@ -270,23 +281,23 @@
     </template>
     
 <!--    UPG_ODOO16_NOTE-->
-<!--    <template id="checkout_cstm_address" name="Invoice Address updated" inherit_id="website_sale.checkout">-->
-<!--        <xpath expr="//div[@id='wrap']//div[hasclass('oe_cart')]/div[@class='row']/div[@class='col-lg-6 one_kanban']" position="replace">-->
-<!--            <div class="col-lg-6 one_kanban">-->
-<!--                <t t-call="website_sale.address_kanban">-->
-<!--                    <t t-set='contact' t-value="order.partner_id"/>-->
-<!--                    <t t-set='selected' t-value="1"/>-->
-<!--                    <t t-set='readonly' t-value="1"/>-->
-<!--                    <t t-set='allow_edit' t-value="1"/>-->
-<!--                </t>-->
-<!--                <t t-call="website_sale.address_kanban">-->
-<!--                    <t t-set='contact' t-value="order.partner_invoice_id"/>-->
-<!--                    <t t-set='selected' t-value="1"/>-->
-<!--                    <t t-set='readonly' t-value="1"/>-->
-<!--                </t>-->
-<!--            </div>-->
-<!--        </xpath>-->
-<!--    </template>-->
+    <template id="checkout_cstm_address" name="Invoice Address updated" inherit_id="website_sale.checkout">
+        <xpath expr="//div[@id='wrap']//div[hasclass('oe_cart')]/div[@class='row']/div[@class='col-lg-6 one_kanban']" position="replace">
+            <div class="col-lg-6 one_kanban">
+                <t t-call="website_sale.address_kanban">
+                    <t t-set='contact' t-value="order.partner_id"/>
+                    <t t-set='selected' t-value="1"/>
+                    <t t-set='readonly' t-value="1"/>
+                    <t t-set='allow_edit' t-value="1"/>
+                </t>
+                <t t-call="website_sale.address_kanban">
+                    <t t-set='contact' t-value="order.partner_invoice_id"/>
+                    <t t-set='selected' t-value="1"/>
+                    <t t-set='readonly' t-value="1"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
 
      <template id="add_new_column" inherit_id="website_sale.cart_lines">
         <xpath expr="//th[@class='text-center td-qty']" position="before">
@@ -306,24 +317,20 @@
         </xpath>
     </template>
 
-<!--    UPG_ODOO16_NOTE-->
-<!--    <template id="continue_shopping_button_custom" inherit_id="website_sale.cart">-->
-<!--        <xpath expr="//div/a[@class='btn btn-secondary mb32 d-none d-xl-inline-block']" position="replace">-->
-<!--            <a t-if="request.params.get('flag')" role="button" t-att-href="'/shop/quote_my_report/%s' % request.params.get('partner')" class="btn btn-secondary mb32 d-none d-xl-inline-block">-->
-<!--                                    <span class="fa fa-chevron-left" />-->
-<!--                                    <span class="">Continue Shopping</span>-->
-<!--            </a>-->
-<!--            <a t-else="" role="button" href="/shop" class="btn btn-secondary mb32 d-none d-xl-inline-block">-->
-<!--                                    <span class="fa fa-chevron-left" />-->
-<!--                                    <span class="">Continue Shopping</span>-->
-<!--            </a>-->
-<!--             <div id="loader_in_stock" style="width: 100%; height: 100%;-->
-<!--                 position: absolute; background-color: #b3b6b9;  z-index: 1; opacity: 50%;top: 0%;">-->
-<!--                     <img src="/website_sales/static/src/images/loader1.gif" class="img-fluid" style="width: 120px;-->
-<!--                        height: 120px; display: block;position: absolute;top: 25%;left: 50%; z-index: 1;"></img>-->
-<!--                  </div>-->
-<!--        </xpath>-->
-<!--    </template>-->
-<!--    UPG_ODOO16_NOTE-->
+    <template id="continue_shopping_button_custom" inherit_id="website_sale.cart">
+        <xpath expr="//div/a[@class='btn btn-secondary mb32']" position="replace">
+            <a t-if="request.params.get('flag')" role="button" t-att-href="'/shop/quote_my_report/%s' % request.params.get('partner')" class="btn btn-secondary mb32">
+                <span class="fa fa-chevron-left" />
+                <span>Continue<span class="d-none d-md-inline"> Shopping</span></span>
+            </a>
+            <a t-else="" role="button" href="/shop" class="btn btn-secondary mb32">
+                <span class="fa fa-chevron-left" />
+                <span>Continue<span class="d-none d-md-inline"> Shopping</span></span>
+            </a>
+        </xpath>
+         <xpath expr="//div[@id='wrap']" position="inside">
+             <t t-call="website_sales.loader_in_stock"/>
+         </xpath>
+    </template>
 
 </odoo>

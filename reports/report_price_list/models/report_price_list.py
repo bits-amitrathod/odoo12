@@ -50,7 +50,7 @@ class CustomerPriceList(models.Model):
         if not customer_list is None and product_ids and not product_ids is None:
             for part in customer_list:
                 for product in product_ids:
-                    product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
+                    product_price = part.property_product_pricelist._get_product_price(product, 1.0)
                     values = "(%s,%s,%s,%s,%s,%s,%s)"
                     final_query = insert_query + " " + values
                     # self._cr.execute(final_query, (
@@ -88,7 +88,7 @@ class CustomerPriceList(models.Model):
                         [('id', 'in', product_ids)])
                 _logger.info("res_partner : %r", part)
                 for product in products:
-                    product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
+                    product_price = part.property_product_pricelist._get_product_price(product, 1.0)
                     values="(%s,%s,%s,%s,%s,%s,%s)"
                     final_query=insert_query + " " + values
                     #self._cr.execute(final_query,(str(part.display_name),str(product.product_tmpl_id.sku_code),str(product.product_tmpl_id.name),str(product_price),str(product.product_tmpl_id.company_id.currency_id.id),str(product.product_tmpl_id.company_id.currency_id.symbol),str(product.product_tmpl_id.id)))

@@ -120,7 +120,7 @@ class TempProductList(models.Model):
 
                 if partner.property_product_pricelist.id and product:
                     price_list_without_round_off = partner.property_product_pricelist._get_product_price(
-                        product, product.product_tmpl_id.actual_quantity, partner)
+                        product, product.product_tmpl_id.actual_quantity)
                     #price_list = float("{0:.2f}".format(price_list_without_round_off))
                     price_list = round(price_list_without_round_off,2)
                 else:
@@ -242,7 +242,7 @@ class TempProductList(models.Model):
 
                 if partner.property_product_pricelist.id and product:
                     price_list_without_round_off = partner.property_product_pricelist._get_product_price(
-                        product, product.product_tmpl_id.actual_quantity, partner)
+                        product, product.product_tmpl_id.actual_quantity)
                     #price_list = float("{0:.2f}".format(price_list_without_round_off))
                     price_list = round(price_list_without_round_off,2)
                 else:

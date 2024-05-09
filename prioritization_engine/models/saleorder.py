@@ -97,7 +97,7 @@ class SaleOrder(models.Model):
             # template_id = int(self.env['ir.config_parameter'].sudo().get_param('sale.default_confirmation_template'))
             # template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
             if not template_id:
-                template_id = self.env['ir.model.data']._xmlid_to_res_id('sale_order_cstm.mail_template_sale_confirmation_cstm1', raise_if_not_found=True)
+                template_id = self.env['ir.model.data']._xmlid_to_res_id('sale_order_cstm.mail_template_sale_confirmation_cstm', raise_if_not_found=True)
         if not template_id:
             template_id = self.env['ir.model.data']._xmlid_to_res_id('sale_order_cstm.email_template_sale_custom_dub', raise_if_not_found=True)
         return template_id
@@ -192,7 +192,7 @@ class SaleOrder(models.Model):
                     'body': body,
                     'model': 'stock.picking',
                     'message_type': 'notification',
-                    'no_auto_thread': False,
+                    'reply_to_force_new': False,
                     'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': self.env.user.partner_id.id,

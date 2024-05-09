@@ -35,13 +35,6 @@ class WebsiteSales(WebsiteSale):
             (product_id,))
         return request.env.cr.dictfetchone()
 
-    # def _shop_get_query_url_kwargs(self, category, search, min_price, max_price, attrib=None, order=None, **post):
-    #     respnse = super(WebsiteSales,self)._shop_get_query_url_kwargs(category, search, min_price, max_price, attrib=attrib, order=order, **post)
-    #     if 'brand' in post:
-    #         respnse.update({'brand':post['brand']})
-    #
-    #     return respnse
-
 
     @http.route([
         '/shop',
@@ -215,24 +208,6 @@ class WebsiteSales(WebsiteSale):
             request.session.pop('my_in_stock_report_sales_channel')
 
         return response
-
-
-
-
-    def payment_confirmation(self, **post):
-        """ End of checkout process controller. Confirmation is basically seing
-        the status of a sale.order. State at this point :
-
-         - should not have any context / session info: clean them
-         - take a sale.order id, because we request a sale.order and are not
-           session dependant anymore
-        """
-        sale_order_id = request.session.get('sale_last_order_id')
-        if sale_order_id:
-            order = request.env['sale.order'].sudo().browse(sale_order_id)
-            return request.render("website_sale.confirmation", {'order': order})
-        else:
-            return request.redirect('/shop')
 
     def payment_confirmation(self, **post):
 

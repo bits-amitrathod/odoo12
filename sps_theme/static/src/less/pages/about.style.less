@@ -882,18 +882,12 @@ background: #fafafa;
             content: '\f056';
             font-family: 'FontAwesome';
             display: inline-block;
-            margin: 0 .5em 0 .75em;
-            color: #6c757d;
             font-size: 30px;
-            color: @red;
-            position: relative;
-            top: 3px;
+            color: @red !important;
+            margin-left: -35px !important;
             }
-            &.collapsed{
-               &:before{
+            &.collapsed:before{
                 content: '\f055';
-                font-family: 'FontAwesome';
-                }
             }
         }
         .card-body{

@@ -64,7 +64,7 @@ class PricingRule(models.Model):
                     i=0
                     pricelist = self.env['product.pricelist']
                     for product in products:
-                        product_price = part.property_product_pricelist.get_product_price(product, 1.0, part)
+                        product_price = part.property_product_pricelist._get_product_price(product, 1.0)
                         # product_price = 1.2
                         values="(%s,%s,%s,%s,%s,%s)"
                         final_query=insert_query + " " + values

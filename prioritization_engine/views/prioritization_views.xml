@@ -449,17 +449,16 @@
             </field>
         </record>
 
-        <record id="set_log_gl_account_response" model="mail.template">
+        <!-- TODO: ODOO16_UPD Need Check -->
+        <!--record id="set_log_gl_account_response" model="mail.template">
             <field name="name">Logs For GL Account</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">
-                <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="subject">
-                <![CDATA[GL Account No Response for user <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html">${ctx['body']}</field>
-<!--            <field name="user_signature" eval="False"/>-->
-        </record>
+            <field name="email_from">{{object.company_id.name}}{{(object.company_id.email or user.email)}}</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="subject">GL Account No Response for user {{(object.company_id.email or user.email)}}</field>
+            <field name="body_html" type="">{{ctx.get('body')}}</field>
+&lt;!&ndash;            <field name="user_signature" eval="False"/>&ndash;&gt;
+        </record>-->
 
         <record id="action_send_prioritization_credential_email" model="ir.actions.server">
             <field name="name">Send Prioritization API Credential Email</field>
@@ -521,22 +520,22 @@
         <record id="send_prioritization_credential_email" model="mail.template">
             <field name="name">Send Prioritization API Credentials</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="email_from"><![CDATA[<${(object.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="subject"><![CDATA[Prioritization Engine API Credentials]]></field>
-            <field name="body_html"><![CDATA[
-            <p>Hello <small>${object.name|safe},</small></p>
+            <field name="email_from">{{(object.email or user.email)}}</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="subject">Prioritization Engine API Credentials</field>
+            <field name="body_html" type="html">
+                <p>Hello <small>{{object.name}},</small></p>
                 <p>
                     Prioritization Engine API Credential with required fields are as follows.
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
-                    <b>User Name</b> : ${ctx['username']}
+                    <b>User Name</b> : {{ctx.get('username')}}
                 </p>
                 <p>
-                    <b>Password</b> : ${ctx['password']}
+                    <b>Password</b> : {{ctx.get('password')}}
                 </p>
                 <p>
-                    <b>Url</b> : ${ctx['url']}
+                    <b>Url</b> : {{ctx.get('url')}}
                 </p>
                 <p>
                     <b>Template Type</b> : 'Requirement / Inventory'
@@ -547,8 +546,7 @@
                 <p>
                     Thanks.
                 </p>
-
-            ]]></field>
+            </field>
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 

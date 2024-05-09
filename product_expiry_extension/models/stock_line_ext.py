@@ -316,8 +316,11 @@ class ProductionLotNameAppendDate(models.Model):
             for record in records:
                 pick_id = self.env.context.get('active_picking_id')
                 stock_move = self.env['stock.move'].sudo().search([('picking_id', '=', pick_id)])
-                aval_qty = self.env['stock.quant'].sudo()._get_available_quantity(record.product_id, stock_move.location_id, lot_id=record, package_id=None,
-                                                                                  owner_id=None, strict=False, allow_negative=False)
+                aval_qty = self.env['stock.quant'].sudo()._get_available_quantity(record.product_id,
+                                                                                  stock_move.location_id,
+                                                                                  lot_id=record, package_id=None,
+                                                                                  owner_id=None, strict=False,
+                                                                                  allow_negative=False)
                 if aval_qty > 0:
                     record_list.append(record.id)
                 if len(record_list)>=limit:
@@ -335,15 +338,13 @@ class ProductionLotNameAppendDate(models.Model):
             if self.env.context.get('lot_date_display_name_so'):
 
                 pick_id = self.env.context.get('active_picking_id')
-                pick_obj = request.env['stock.picking'].search([('id', '=', pick_id)])
-                stock_move = request.env['stock.move'].search([('picking_id', '=', pick_id)])
+                stock_move = request.env['stock.move'].search([('picking_id', '=', pick_id)], limit=1)
                 aval_qty = request.env['stock.quant']._get_available_quantity \
                     (record.product_id,stock_move.location_id,lot_id=record,package_id=None,
                      owner_id=None, strict=False,allow_negative=False)
 
                 if record.use_date:
-                    name = record.name + ': #Exp Date :' + str(record.use_date)[0:10] \
-                           + ':#Avl Qty :' +str(aval_qty)
+                    name = f"{record.name}: #Exp Date: {str(record.use_date)[:10]} #Avl Qty: {aval_qty}"
                 else:
                     name = record.name
 
@@ -351,7 +352,7 @@ class ProductionLotNameAppendDate(models.Model):
 
             elif self.env.context.get('lot_date_display_name_po'):
                 if record.use_date:
-                    name = record.name + ': #Exp Date :' + str(record.use_date)[0:10] + ':#Qty :' + str(record.product_qty)
+                    name = f"{record.name}: #Exp Date: {str(record.use_date)[:10]} #Qty: {record.product_qty}"
                 else:
                     name = record.name
                 result.append((record.id, name))

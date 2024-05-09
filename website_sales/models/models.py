@@ -90,3 +90,10 @@ class Website(models.Model):
                 'website_id': website.id,
             })
         return result
+
+# class ResPartnerWebsite(models.Model):
+#     _inherit = "res.partner"
+#
+#     def _compute_quantity(self, qty, to_unit, round=True, rounding_method='UP', raise_if_failure=True):
+#         for record in self:
+#             record.name = record.name
