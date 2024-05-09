@@ -9,7 +9,6 @@
                             </div>
                         </t>
                         <t t-if="mode == ('edit', 'billing')">
-                            <!--<h2 class="o_page_header mt8">Your Address</h2>-->
                             <div class="text-center">
                                 <h1  class="about-header"> Your Address </h1>
                              </div>

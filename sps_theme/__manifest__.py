@@ -13,6 +13,7 @@
         'security/ir.model.access.csv',
         'views/website_template.xml',
         'data/theme_data.xml',
+        'data/ir_asset.xml',
         'views/about_page.xml',
         'views/career_page.xml',
         'views/our_team_page.xml',
@@ -24,7 +25,7 @@
         'views/vendor_list_page.xml',
         'views/notify_me_template.xml',
         'views/faqs_page.xml',
-        # 'views/cart_page.xml',
+        'views/cart_page.xml',
         'views/login_page.xml',
         'views/equipment_repair_and_service_page.xml',
         'views/quality_assurance_page.xml',
@@ -32,12 +33,12 @@
         'views/equipment_sell_page.xml',
         'views/request_a_quote_page.xml',
         'views/thank_you_page.xml',
-        # 'views/surgical_products_sell_page.xml',
-        # 'views/cart_lines_page.xml',
+        'views/surgical_products_sell_page.xml',
+        'views/cart_lines_page.xml',
         # 'views/website_header_template.xml',
         'views/website_footer_template.xml',
         # 'views/product_catagory_and_ brand_template.xml',
-        # 'views/porduct_catalog_page.xml',
+        'views/porduct_catalog_page.xml',
         'views/terms_and_conditions_page.xml',
         'views/policy_page.xml',
         'views/terms_of_sale_page.xml',
@@ -45,31 +46,11 @@
         'views/menu.xml'
     ],
 
-    "assets":{
-        'web.assets_frontend': [
-                "sps_theme/static/src/less/common/variable.style.less",
-                "sps_theme/static/src/less/common/font.style.less",
-                "sps_theme/static/src/less/pages/about.style.less",
-                "sps_theme/static/src/less/theme.style.less",
-                "sps_theme/static/src/scss/sps.scss",
-
-                "sps_theme/static/src/js/script.js",
-                "sps_theme/static/src/js/notify_me.js",
-
-        ],
-        'web.assets_backend': [
-            "sps_theme/static/src/scss/sps.scss"
-        ],
-        'web_editor.assets_wysiwyg': [
-            "sps_theme/static/src/scss/ui_test.scss",
-        ],
-    },
-
     'images': [
 
     ],
 
     # 'auto_install': True,
-    # 'application': True,
+    'application': True,
     'installable': True,
 }
