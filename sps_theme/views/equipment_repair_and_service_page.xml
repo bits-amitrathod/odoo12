@@ -8,6 +8,7 @@
                         <section class="padding-80-y">
                             <div class="container">
                                 <div class="text-center pb32">
+<!--                                    <h1  class="about-header"> Equipment <span class="black-font">Repair &amp; Service</span> </h1>-->
                                     <h1  class="about-header">Medical Equipment Repair Service</h1>
                                 </div>
                                 <div class="banner-wrapper">
@@ -224,6 +225,11 @@
                                   </div>
                             </div>
                          </section>
+
+<!--                         <div class="seprator">-->
+<!--                              <div class="red"></div>-->
+<!--                              <div class="black"></div>-->
+<!--                         </div>-->
                     </div>
                 </t>
             </t>

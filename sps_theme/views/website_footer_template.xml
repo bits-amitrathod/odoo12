@@ -1,108 +1,110 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="footer_template" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
         <xpath expr="//div[@id='footer']" position="replace">
              <div class="seprator">
-                  <div class="red"></div>
-                  <div class="black"></div>
-             </div>
+                          <div class="red"></div>
+                          <div class="black"></div>
+                     </div>
             <footer class="padding-100-y" t-if="not no_footer">
-                <div id="footer" class="container hidden-print " >
-                    <div class="row border-bottom pb-4 mb-4">
-                        <div class="col-md newsletter">
-                            <div class="footer-logo">
-                                <img src="/sps_theme/static/src/images/SPS_White.png" class="img-fluid"/>
-                            </div>
+
+            <div id="footer" class="container hidden-print " >
+                <div class="row border-bottom pb-4 mb-4">
+                    <div class="col-md newsletter">
+                        <div class="footer-logo">
+                            <img src="/sps_theme/static/src/images/SPS_White.png" class="img-fluid"/>
                         </div>
-                        <div class="col-md" id="info">
-                            <h6 class="footer-title">ABOUT</h6>
-                            <ul class="footer-menu">
-                                <li>
-                                    <a href="/aboutus" title="Home">OUR STORY</a>
-                                </li>
-                                <li>
-                                    <a href="/careers" title="Catalog">CAREERS</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md">
-                            <h6 class="footer-title">SURGICAL PRODUCTS</h6>
-                            <ul class="footer-menu">
-                                <li>
-                                    <a href="/shop"
-                                       title="Surgical product Shop">SHOP
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/surgical-products-sell" title="Surgical product Sell">SELL</a>
-                                </li>
-                                <li>
-                                    <a href="/shop/featured" title="Surgical product Sale">SALE ITEMS</a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="col-md">
-                            <h6 class="footer-title">SURGICAL EQUIPMENT</h6>
-                             <ul class="footer-menu">
-                                <li>
-                                    <a href="/shop/capital-equipment"
-                                       title="Surgical Equipment Shop">SHOP
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="/equipment-sell" title="Surgical Equipment Sell">SELL</a>
-                                </li>
-                                 <li>
-                                    <a href="/equipment-repair" title="Surgical Equipment Repair">REPAIR</a>
-                                </li>
-                                <li>
+                    </div>
+                    <div class="col-md" id="info">
+                        <h6 class="footer-title">ABOUT</h6>
+                        <ul class="footer-menu">
+                            <li>
+                                <a href="/aboutus" title="Home">OUR STORY</a>
+                            </li>
+                            <li>
+                                <a href="/careers" title="Catalog">CAREERS</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md">
+                        <h6 class="footer-title">SURGICAL PRODUCTS</h6>
+                        <ul class="footer-menu">
+                            <li>
+                                <a href="/shop"
+                                   title="Surgical product Shop">SHOP
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/surgical-products-sell" title="Surgical product Sell">SELL</a>
+                            </li>
+                            <li>
+                                <a href="/shop/featured" title="Surgical product Sale">SALE ITEMS</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md">
+                        <h6 class="footer-title">SURGICAL EQUIPMENT</h6>
+                         <ul class="footer-menu">
+                            <li>
+                                <a href="/shop/capital-equipment"
+                                   title="Surgical Equipment Shop">SHOP
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/equipment-sell" title="Surgical Equipment Sell">SELL</a>
+                            </li>
+                             <li>
+                                <a href="/equipment-repair" title="Surgical Equipment Repair">REPAIR</a>
+                            </li>
+                              <li>
                                     <a href="/terms_of_sale" title="TERMS OF SALE">TERMS OF SALE</a>
                                 </li>
                                 <li>
                                     <a href="/terms_of_purchase" title="TERMS OF PURCHASE">TERMS OF PURCHASE</a>
                                 </li>
-                            </ul>
-                        </div>
-                         <div class="col-md">
-                             <ul class="footer-menu titles">
-                                 <li>
-                                    <a href="/stockhawk" title="Resources">STOCKHAWK</a>
+                        </ul>
+                    </div>
+                     <div class="col-md">
+                         <ul class="footer-menu titles">
+                             <li>
+                                <a href="/stockhawk" title="Resources">STOCKHAWK</a>
+                            </li>
+                            <li>
+                                <a href="/resource" title="Resources">RESOURCES</a>
+                            </li>
+                             <li>
+                                <a href="/faqs" title="FAQ's">FAQ</a>
+                            </li>
+                             <li>
+                                <a href="/contact-us" title="Contact">CONTACT</a>
+                            </li>
+                             <li>
+                                <a href="/web/login" title="Sign In">SIGN IN</a>
+                            </li>
+                             <li>
+                                <a href="/downloadCatalog" title="Download catalog">DOWNLOAD CATALOG</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-8 px-3 px-md-0">
+                        <div class="copy-right">
+                            <ul>
+                                <li>
+                                    <a href="#" title=""> <![CDATA[&copy;]]> 2021 Surgical Product Solutions.</a>
                                 </li>
                                 <li>
-                                    <a href="/resource" title="Resources">RESOURCES</a>
+                                    <a href="/terms-and-condition" title=""> Terms and Conditions</a>
                                 </li>
-                                 <li>
-                                    <a href="/faqs" title="FAQ's">FAQ</a>
+                                <li>
+                                    <a href="/policy" title=""> Privacy Policy</a>
                                 </li>
-                                 <li>
-                                    <a href="/contact-us" title="Contact">CONTACT</a>
-                                </li>
-                                 <li>
-                                    <a href="/web/login" title="Sign In">SIGN IN</a>
-                                </li>
-                                 <li>
-                                    <a href="/downloadCatalog" title="Download catalog">DOWNLOAD CATALOG</a>
-                                </li>
+
                             </ul>
+
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-8 px-3 px-md-0">
-                            <div class="copy-right">
-                                <ul>
-                                    <li>
-                                        <a href="#" title=""> <![CDATA[&copy;]]> 2021 Surgical Product Solutions.</a>
-                                    </li>
-                                    <li>
-                                        <a href="/terms-and-condition" title=""> Terms and Conditions</a>
-                                    </li>
-                                    <li>
-                                        <a href="/policy" title=""> Privacy Policy</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="col-4 px-3 px-md-0">
+                    <div class="col-4 px-3 px-md-0">
                             <div class="social-media">
                                 <div class="link">
                                     <a href="https://www.facebook.com/surgicalproductsolutions/?ti=as" target='_blank'><i class="icon-facebook-square-filled"></i></a>
@@ -119,26 +121,33 @@
                                     </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                     <div class="row">
-                        <div class="col-md-8 col-sm-8 px-3 px-md-0">
-                            <div class="contact-detail">
-                                <div class="detail">
-                                    <a href="javascript:void(0)" title=""> info@surgicalproductsolutions.com</a>
-                                </div>
-                                <div class="detail">
-                                    <a href="javascript:void(0)" title=""> 412.564.1280 </a>
-                                </div>
 
-                            </div>
-                        </div>
-                        <div class="col-md-4 col-sm-4 px-3 px-md-0 align-self-end">
-                            <img src="/sps_theme/static/src/images/Credit_Cards.png" class="img-fluid"/>
-                        </div>
                     </div>
                 </div>
-            </footer>
+                 <div class="row">
+                    <div class="col-md-8 col-sm-8 px-3 px-md-0">
+                        <div class="contact-detail">
+                            <div class="detail">
+                                <a href="javascript:void(0)" title=""> info@surgicalproductsolutions.com</a>
+                            </div>
+                            <div class="detail">
+                                <a href="javascript:void(0)" title=""> 412.564.1280 </a>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-4 px-3 px-md-0 align-self-end">
+                        <img src="/sps_theme/static/src/images/Credit_Cards.png" class="img-fluid"/>
+                    </div>
+                </div>
+            </div>
+        </footer>
         </xpath>
     </template>
+
+   <!-- <template id="layout_footer_copyright_template" inherit_id="website.layout" name="Footer Copyright">
+        <xpath expr="//footer//div[hasclass('o_footer_copyright')]" position="replace">
+
+        </xpath>
+    </template>-->
 </odoo>

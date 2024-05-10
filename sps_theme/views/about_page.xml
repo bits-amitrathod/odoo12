@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="about_page_template" name="About Page">
         <t name="About Page" t-name="sps_theme.about_page">
@@ -7,22 +6,27 @@
                     <div id="wrap" class="oe_structure oe_empty">
                         <section>
                             <div class="container">
-                                <div class="text-center pt32 pb32">
-                                    <h1 class="about-header"> About SPS Surgical </h1>
-                                </div>
+                                    <div class="text-center pt32 pb32">
+                                        <h1 class="about-header"> About SPS Surgical </h1>
+                                    </div>
+<!--                                <div class="banner-wrapper">-->
+<!--                                    <img src="/sps_theme/static/src/images/our-story.png" class="img-fluid"/>-->
+<!--                                </div>-->
+
                                 <div class="section-description pb32">
                                     <div class="row">
                                         <div class="col-md-9 m-auto">
-                                            <div class="video-section-wrapper mt-0">
-                                                <div class="video-wrapper">
-                                                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/P10W72mLfGM?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                                </div>
-                                            </div>
+                                               <div class="video-section-wrapper mt-0">
+										<div class="video-wrapper">
+											<iframe width="100%" height="315" src="https://www.youtube.com/embed/P10W72mLfGM?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
+										</div>
+									</div>
                                             <h2 class="sub-title">We Provide High-Quality, Cost-Saving Surgical Solutions.</h2>
                                             <p>
                                                SPS is a leader in providing cost-saving solutions for healthcare facilities across the United States who choose to save money without sacrificing quality of care.
-                                                    We accomplish this by <span> presenting hospitals and surgery centers with two ways to save </span> on their high-volume surgical disposables.
+                                                We accomplish this by <span> presenting hospitals and surgery centers with two ways to save </span> on their high-volume surgical disposables.
                                             </p>
+
                                             <div class="story-list">
                                                 <div class="bulleted-list">
                                                     <div>1</div></div>
@@ -37,14 +41,21 @@
                                                     <p><span>SPS acts as an independent distributor</span> of un-used, in date surgical disposables. We sell the same high-volume products that your facility is currently buying from vendors, at an even greater discount than top tier pricing. We also provide the flexibility to purchase individual items in "eaches," rather than in cases, which helps in the unique case of a preferential product that is outside your normal buying patterns (Physician Preference Item)—and avoids disrupting any contract compliances.</p>
                                                 </div>
                                             </div>
+
+
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </section>
+
                     </div>
                     <section class="our-mission padding-60-y">
                         <div class="container">
+                            <!--<div class="banner-wrapper">
+                                <img src="/sps_theme/static/src/images/our-mission.jpg" class="img-fluid"/>
+                            </div>-->
                             <p class ="pt-0">
                                 OUR MISSION is to bring revenue back to hospitals for
                                 their surplus, un-used surgical products, while offering
@@ -65,29 +76,30 @@
                                     <p>We have successfully eliminated hundreds of thousands of dollars from our customer’s costs by buying and selling the surgical surplus they would have otherwise thrown away.</p>
                                 </div>
                             </div>
-                            <div class="row pt-5">
-                                <div class="col-md-4 mb-3">
-                                    <div class="help-box">
-                                        <p class="box-title">WE PROVIDE PERSONALIZED SERVICE AT EVERY LEVEL</p>
-                                        <p class="box-content">
-                                            We cater our solution to serve
-                                            the entire spectrum of healthcare
-                                            facilities-from large health systems
-                                            to small surgical centers. At each
-                                            level, our services are personalized
-                                            to fit our customers’ needs.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4  mb-3">
-                                    <div class="help-box">
-                                        <p class="box-title">WE HELP YOU SAVE MONEY WITHOUT SACRIFICING QUALITY</p>
-                                        <p class="box-content">
-                                            Our business model allows our customers to save money, without interrupting surgeon preferences or hospital contracts. We accomplish this by providing hospitals, not one, but two cost-savings solutions for their high-volume surgical disposables.
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="col-md-4 mb-3">
+                              <div class="row pt-5">
+                                  <div class="col-md-4 mb-3">
+                                      <div class="help-box">
+                                          <p class="box-title">WE PROVIDE PERSONALIZED SERVICE AT EVERY LEVEL</p>
+                                          <p class="box-content">
+                                                We cater our solution to serve
+                                                the entire spectrum of healthcare
+                                                facilities-from large health systems
+                                                to small surgical centers. At each
+                                                level, our services are personalized
+                                                to fit our customers’ needs.
+                                          </p>
+                                      </div>
+                                  </div>
+                                   <div class="col-md-4  mb-3">
+                                      <div class="help-box">
+                                          <p class="box-title">WE HELP YOU SAVE MONEY WITHOUT SACRIFICING QUALITY</p>
+                                          <p class="box-content">
+                                                Our business model allows our customers to save money, without interrupting surgeon preferences or hospital contracts. We accomplish this by providing hospitals, not one, but two cost-savings solutions for their high-volume surgical disposables.
+
+                                          </p>
+                                      </div>
+                                  </div>
+                                   <div class="col-md-4 mb-3">
                                       <div class="help-box">
                                           <p class="box-title">WE INCREASE EFFICIENCY AND REDUCE WASTE</p>
                                           <p class="box-content">
@@ -98,8 +110,9 @@
                                                 increasing their quality of care.
                                           </p>
                                       </div>
-                                </div>
-                            </div>
+                                  </div>
+
+                              </div>
                         </div>
                     </section>
                 </t>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="quality_assurance_template" name="Quality Assurance Page">
         <t name="Quality Assurance Page" t-name="website.qualityassurance_page">
@@ -218,6 +217,7 @@
                             </div>
                         </div>
                     </section>
+
                 </t>
             </t>
         </t>

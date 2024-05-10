@@ -1,108 +1,107 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="vendor_list_template" name="Vendor List Page">
-      <t t-name="website.vendor-list">
-        <t t-call="website.layout">
-          <div id="wrap" class="oe_structure oe_empty">
-            <section class="pt32 pb32">
-              <div class="container">
-                 <div class="text-center">
-                      <h1  class="about-header">Vendor List</h1>
-                  </div>
-              </div>
-            </section>
-            <section class="bg-white oe_custom_bg" style="">
-              <div class="container">
-                <div class="row text-center border-bottom pb-2">
-                    <h3 class="section-title mt-0  w-100 text-center  regular-font">Sub Specialty / &amp;nbsp;Vendor List</h3>
-                </div>
-              </div>
-            </section>
-            <section class="s_text_block pt32 pb32 bg-white oe_custom_bg" style="">
-              <div class="container">
-                <div class="row">
-                  <div class="pt32 pb32 col-md-6 order-listing">
-                    <p class="hawk-title mb-3">ENDO / FIXATION</p>
-                    <ul>
-                      <li>Auto Suture / Covidien</li>
-                      <li>Ethicon</li>
-                      <li>Applied Medical</li>
-                      <li>Bard</li>
-                    </ul>
-                    <p class="hawk-title mb-3">ORTHO</p>
-                    <ul>
-                      <li>Arthrex</li>
-                      <li>Arthrocare</li>
-                      <li>Dyonics</li>
-                      <li>Linvatec</li>
-                      <li>Mitek</li>
-                      <li>Smith &amp;amp; Nephew</li>
-                      <li>Stryker</li>
-                    </ul>
-                    <p class="hawk-title mb-3">ENERGY</p>
-                    <ul>
-                      <li>Ethicon</li>
-                      <li>Gyrus</li>
-                      <li>Covidien (Valleylab)</li>
-                    </ul>
-                    <p class="hawk-title mb-3">HERNIA</p>
-                    <ul>
-                      <li>Atrium</li>
-                      <li>Covidien / Parietex</li>
-                      <li>Bard / Davol</li>
-                      <li>Ethicon</li>
-                    </ul>
-                    <p  class="hawk-title mb-3">GASTRIC BANDS</p>
-                    <ul>
-                      <li>Allergan Lapband</li>
-                      <li>Ethicon Realize</li>
-                    </ul>
-                  </div>
-                  <div class="pt32 pb32 col-md-6  order-listing">
-                    <p class="hawk-title mb-3">WOUND</p>
-                    <ul>
-                      <li>Dermabond</li>
-                      <li>Surgicel</li>
-                    </ul>
-                    <p  class="hawk-title mb-3">GYN / WOMEN’S HEALTH</p>
-                    <ul>
-                      <li>Bard (Avaulta)</li>
-                      <li>Ethicon (Gynecare)</li>
-                      <li>Gyrus</li>
-                      <li>Hologic (Novasure &amp;amp; Adiana)</li>
-                    </ul>
-                    <p  class="hawk-title mb-3">ENT</p>
-                    <ul>
-                      <li>Acclarent</li>
-                      <li>Arthrocare</li>
-                      <li>Gyrus</li>
-                      <li>Medtronic</li>
-                    </ul>
-                    <p class="hawk-title mb-3">TRAUMA</p>
-                    <ul>
-                      <li>Synthes</li>
-                    </ul>
-                    <p class="hawk-title mb-3">POWERED INSTRUMENTATION</p>
-                    <ul>
-                      <li>3M</li>
-                      <li>Dyonics</li>
-                      <li>Linvatec</li>
-                      <li>Stryker</li>
-                      <li>Synthes</li>
-                    </ul>
-                    <p class="hawk-title mb-3">UROLOGY</p>
-                    <ul>
-                      <li>Boston Scientific</li>
-                      <li>Cook</li>
-                      <li>Karl Storz</li>
-                      <li>Bard</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </section>
+<t t-name="website.vendor-list">
+  <t t-call="website.layout">
+    <div id="wrap" class="oe_structure oe_empty">
+      <section class="pt32 pb32">
+        <div class="container">
+           <div class="text-center">
+                <h1  class="about-header">Vendor List</h1>
+            </div>
+        </div>
+      </section>
+      <section class="bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row text-center border-bottom pb-2">
+              <h3 class="section-title mt-0  w-100 text-center  regular-font">Sub Specialty / &amp;nbsp;Vendor List</h3>
           </div>
-        </t>
-      </t>
+        </div>
+      </section>
+      <section class="s_text_block pt32 pb32 bg-white oe_custom_bg" style="">
+        <div class="container">
+          <div class="row">
+            <div class="pt32 pb32 col-md-6 order-listing">
+              <p class="hawk-title mb-3">ENDO / FIXATION</p>
+              <ul>
+                <li>Auto Suture / Covidien</li>
+                <li>Ethicon</li>
+                <li>Applied Medical</li>
+                <li>Bard</li>
+              </ul>
+              <p class="hawk-title mb-3">ORTHO</p>
+              <ul>
+                <li>Arthrex</li>
+                <li>Arthrocare</li>
+                <li>Dyonics</li>
+                <li>Linvatec</li>
+                <li>Mitek</li>
+                <li>Smith &amp;amp; Nephew</li>
+                <li>Stryker</li>
+              </ul>
+              <p class="hawk-title mb-3">ENERGY</p>
+              <ul>
+                <li>Ethicon</li>
+                <li>Gyrus</li>
+                <li>Covidien (Valleylab)</li>
+              </ul>
+              <p class="hawk-title mb-3">HERNIA</p>
+              <ul>
+                <li>Atrium</li>
+                <li>Covidien / Parietex</li>
+                <li>Bard / Davol</li>
+                <li>Ethicon</li>
+              </ul>
+              <p  class="hawk-title mb-3">GASTRIC BANDS</p>
+              <ul>
+                <li>Allergan Lapband</li>
+                <li>Ethicon Realize</li>
+              </ul>
+            </div>
+            <div class="pt32 pb32 col-md-6  order-listing">
+              <p class="hawk-title mb-3">WOUND</p>
+              <ul>
+                <li>Dermabond</li>
+                <li>Surgicel</li>
+              </ul>
+              <p  class="hawk-title mb-3">GYN / WOMEN’S HEALTH</p>
+              <ul>
+                <li>Bard (Avaulta)</li>
+                <li>Ethicon (Gynecare)</li>
+                <li>Gyrus</li>
+                <li>Hologic (Novasure &amp;amp; Adiana)</li>
+              </ul>
+              <p  class="hawk-title mb-3">ENT</p>
+              <ul>
+                <li>Acclarent</li>
+                <li>Arthrocare</li>
+                <li>Gyrus</li>
+                <li>Medtronic</li>
+              </ul>
+              <p class="hawk-title mb-3">TRAUMA</p>
+              <ul>
+                <li>Synthes</li>
+              </ul>
+              <p class="hawk-title mb-3">POWERED INSTRUMENTATION</p>
+              <ul>
+                <li>3M</li>
+                <li>Dyonics</li>
+                <li>Linvatec</li>
+                <li>Stryker</li>
+                <li>Synthes</li>
+              </ul>
+              <p class="hawk-title mb-3">UROLOGY</p>
+              <ul>
+                <li>Boston Scientific</li>
+                <li>Cook</li>
+                <li>Karl Storz</li>
+                <li>Bard</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </t>
+</t>
     </template>
 </odoo>

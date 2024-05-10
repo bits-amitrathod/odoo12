@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="thank_you_page_template" name="Thank You">
         <t t-name="website.thank-you">
@@ -14,6 +13,9 @@
                             </div>
                         </div>
                     </section>
+                    <!--<div class="seprator"><div class="red"></div><div class="black"></div></div>-->
+
+
                </div>
             </t>
         </t>

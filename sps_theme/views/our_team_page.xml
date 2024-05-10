@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="our_team_page_template" name="Our Team Page">
         <t name="OUR TEAM Page" t-name="sps_theme.our_team_page">

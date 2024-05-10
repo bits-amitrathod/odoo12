@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="website_sale_stock_cart_lines" inherit_id="website_sale.cart_lines" name="Shopping Cart Lines CSTM">
         <xpath expr="//input[@type='text'][hasclass('quantity')]" position="attributes">

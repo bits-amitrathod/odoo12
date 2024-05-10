@@ -206,31 +206,37 @@
 								<div class="col-md-6" id="requestform2">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="First Name *" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
+<!--										<label class="control-label" for="first_name">First Name</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="Last Name *" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
+<!--										<label class="control-label" for="last_name">Last Name</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="Phone *" id="phone" class="form-control o_website_form_input" name="phone" required=""/>
+<!--										<label class="control-label" for="phone">Phone</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="Email *" id="email" class="form-control o_website_form_input" name="email" required=""/>
+<!--										<label class="control-label" for="email">Email</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="Company Name *" id="Company" class="form-control o_website_form_input" name="Company" required=""/>
+<!--										<label class="control-label" for="Company">Company Name</label>-->
 									</div>
 								</div>
 								<div class="col-md-6">
 									<div class="form-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="# of Reps *" id="Reps" class="form-control o_website_form_input" name="Reps" required=""/>
+<!--										<label class="control-label" for="Reps"># of Reps</label>-->
 									</div>
 								</div>
 								<div class="col-12 text-center btn-wrapper mt-5">
@@ -244,7 +250,7 @@
 					</section>
 					<section class="padding-100-y contact-us-section">
                             <div class="container">
-								<h3 class="section-title mt-0 mb-5">Do you have questions about Stockhawk? </h3>
+									<h3 class="section-title mt-0 mb-5">Do you have questions about Stockhawk? </h3>
                                 <div class="row">
                                     <div class="col-xl-5 col-md-6 col-sm-6 mb48 mt8">
                                        <div class="contact-info">
@@ -260,39 +266,44 @@
 												</div>
 											</div>
 										   <div class="text-left btn-wrapper">
-											  <a itemprop="url" href="/request-a-quote" class="btn btn-info btn-sm" >Request a Quote</a>
-											  <a itemprop="url" href="/faqs" class="btn btn-info btn-sm" >Read our FAQ</a>
-										  </div>
+                                                  <a itemprop="url" href="/request-a-quote" class="btn btn-info btn-sm" >Request a Quote</a>
+                                                  <a itemprop="url" href="/faqs" class="btn btn-info btn-sm" >Read our FAQ</a>
+                                              </div>
 									   </div>
                                     </div>
                                    <div class="col-xl-7 col-md-6 col-sm-6 mb48 mt8">
-										<div class="get-in-touch">
-											<h3 class="title">GET IN TOUCH</h3>
-											<span class="sub-title">Use the form below to get in touch with us, and we’ll respond as soon as possible. </span>
-											<form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
-												<div class="col-md-8">
+								<div class="get-in-touch">
+									<h3 class="title">GET IN TOUCH</h3>
+									<span class="sub-title">Use the form below to get in touch with us, and we’ll respond as soon as possible. </span>
+									<form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
+										<div class="col-md-8">
 
-													<div class="form-group has-float-label form-field o_website_form_required_custom">
-														<input type="text" class="form-control o_website_form_input" placeholder="Name *" id="contact_name" name="contact_name" t-att-value="request.params.get('contact_name', '')" required=""/>
-													</div>
-												</div>
-												<div class="col-md-8">
-													<div class="form-group has-float-label form-field o_website_form_required_custom">
-														<input placeholder="Email *"  type="text" id="email_form" class="form-control o_website_form_input" name="email_from" required="" t-att-value="request.params.get('email_from', '')"/>
-														<input type="hidden" class="form-control o_website_form_input" name="name" required="True" value="Website Contact Us" />
-													</div>
-												</div>
-												<div class="col-12">
-													<div class="form-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
-														<textarea id="description" placeholder="Message *" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
-												  </div>
-												</div>
-												<div class="col-md-12 text-center btn-wrapper">
-													<button class="btn btn-info btn-sm action_button o_website_form_send">Send Message</button>
-												</div>
-											</form>
+											<div class="form-group has-float-label form-field o_website_form_required_custom">
+												<input type="text" class="form-control o_website_form_input" placeholder="Name *" id="contact_name" name="contact_name" t-att-value="request.params.get('contact_name', '')" required=""/>
+<!--												<label class="control-label" for="contact_name">Name</label>-->
+											</div>
 										</div>
-									</div>
+										<div class="col-md-8">
+											<div class="form-group has-float-label form-field o_website_form_required_custom">
+												<input placeholder="Email *"  type="text" id="email_form" class="form-control o_website_form_input" name="email_from" required="" t-att-value="request.params.get('email_from', '')"/>
+<!--												<label class="control-label" for="email_form">Email</label>-->
+												<input type="hidden" class="form-control o_website_form_input" name="name" required="True" value="Website Contact Us" />
+											</div>
+										</div>
+										<div class="col-12">
+											<div class="form-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
+                                                <textarea id="description" placeholder="Message *" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
+<!--                                                <label class="control-label" for="description">Message</label>-->
+                                          </div>
+										</div>
+										<div class="col-md-12 text-center btn-wrapper">
+									        <button class="btn btn-info btn-sm action_button o_website_form_send">Send Message</button>
+										</div>
+									</form>
+								</div>
+							</div>
+
+
                                 </div>
                             </div>
 					</section>

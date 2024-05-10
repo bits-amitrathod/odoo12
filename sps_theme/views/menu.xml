@@ -7,18 +7,21 @@
             <field name="name">Our Story</field>
             <field name="url">/aboutus</field>
             <field name="parent_id" ref="website.main_menu"/>
+<!--            <field name="sequence" type="int">50</field>-->
         </record>
 
         <record id="our_team_page_link" model="website.menu">
             <field name="name">Our Team</field>
             <field name="url">/our-team</field>
             <field name="parent_id" ref="website.main_menu"/>
+<!--            <field name="sequence" type="int">50</field>-->
         </record>
 
         <record id="careers_page_link" model="website.menu">
             <field name="name">Careers</field>
             <field name="url">/careers</field>
             <field name="parent_id" ref="website.main_menu"/>
+<!--            <field name="sequence" type="int">50</field>-->
         </record>
 
         <!--Stockhawk menus -->
@@ -96,5 +99,8 @@
             <field name="parent_id" ref="website.main_menu"/>
             <field name="sequence" type="int">40</field>
         </record>
+
+
+
     </data>
 </odoo>

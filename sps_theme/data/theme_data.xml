@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-   <data>
+   <!-- <data>
 
-   </data>
+        <record id="category_1" model="slide.category">
+            <field name="name">Award</field>
+            <field name="channel_id" ref="website_slides.channel_public"/>
+&lt;!&ndash;            <field name="sequence">10</field>&ndash;&gt;
+        </record>
+        <record id="category_2" model="slide.category">
+            <field name="name">Educational</field>
+            <field name="channel_id" ref="website_slides.channel_public"/>
+&lt;!&ndash;            <field name="sequence">20</field>&ndash;&gt;
+        </record>
+
+        <record id="category_all" model="product.public.category">
+            <field name="name">All</field>
+&lt;!&ndash;            <field name="sequence">0</field>&ndash;&gt;
+        </record>
+
+
+
+    </data>-->
 </odoo>

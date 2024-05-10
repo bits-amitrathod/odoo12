@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 
@@ -9,6 +8,7 @@
             <field name="res_model">sps_theme.product_instock_notify</field>
             <field name="view_mode">tree,form</field>
         </record>
+
 
         <menuitem id="menu_product_instock_notification" name="Website Product Notification"
                   action="action_product_instock_notification"
@@ -29,111 +29,53 @@
 
         <!-- Email template -->
         <record id="mail_template_product_instock_notification_email" model="mail.template">
-            <field name="name">eCommerce: Product Availability Email</field>
-            <field name="model_id" ref="website_sale.model_product_template"/>
-            <field name="email_from">{{ object.company_id.name | user.company_id.name }}></field>
-            <field name="email_to">{{ ctx['email'] }}</field>
-            <field name="subject">Your product is available</field>
-            <field name="body_html" type="html">
-                <t t-set="products"  t-value="ctx.get('products', [])"/>
-                <div style="margin:auto;width:100%;background-color: #f6f6f6;  padding-left: 60px;">
-                    <img src="/sps_theme/static/src/images/logo.png" style="height: auto; width: 80px; margin-top:30px;" t-attr-alt="user.company_id.name"/>
-                    <br/>
-                    <br/>
-                    <p>Your item is back in stock! Click on the product below to complete your purchase.</p>
-                    <table width="100%">
-                        <t t-foreach="products" t-as="product">
+                <field name="name">eCommerce: Product Availability Email</field>
+                <field name="model_id" ref="website_sale.model_product_template"/>
+                <field name="email_from">
+                    <![CDATA["${object.company_id.name|user.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+                <field name="email_to">${ctx['email']}</field>
+                <field name="subject">Your product is available</field>
+                <field name="body_html">
+                    <![CDATA[
+                    % set products = ctx.get('products', [])
+                    <div style="margin:auto;width:100%;background-color: #f6f6f6;  padding-left: 60px;">
+                        <!--<img src="/web/image/res.company/${user.company_id.id}/logo"-->
+                        <img src="/sps_theme/static/src/images/logo.png"
+                             style="height: auto; width: 80px; margin-top:30px;" alt="${user.company_id.name}"/>
+                        <br/>
+                        <br/>
+                        <p>Your item is back in stock! Click on the product below to complete your purchase.</p>
+
+                        <table width="100%">
+                         % for product in products:
                             <tr>
-                                <td style="width:50px;padding-top: 16px;"></td>
-                                <td valign="top">
-                                    <a t-attf-href="/shop/product/{{product.product_tmpl_id.id}}" target="_blank">
-                                        <t t-out="product.product_tmpl_id.product_variant_id.name"/>
-                                    </a>
-                                </td>
+                                    <td style="width:50px;padding-top: 16px;">
+                                        <!--<img src="/web/image/product.product/${object.product_variant_id.id}/image"-->
+                                        <!--<img src="/website_cstm/static/src/img/product-image.jpg"
+                                             height="50px"
+                                             width="50px"></img>-->
+                                    </td>
+                                    <td valign="top">
+                                        <a href="/shop/product/${product.product_tmpl_id.id}" target="_blank">
+                                            <!--<strong>${object.product_variant_id.display_name}</strong>-->
+                                            <br/>${product.product_tmpl_id.product_variant_id.name}
+                                        </a>
+                                    </td>
                             </tr>
-                        </t>
-                    </table>
-                    <br/>
-                    <br/>
-                    <center style="padding-bottom: 60px;">
-                        <p>
-                            <b>Thank you for shopping with <t t-out="user.company_id.name"/>!</b>
-                        </p>
-                    </center>
-                </div>
-            </field>
-        </record>
-
-
-        <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-        <record id="website_order_placed_mail_template" model="mail.template">
-            <field name="name">Email Notification: Online Product Purchase Details</field>
-            <field name="model_id" ref="website_sale.model_sale_order"/>
-            <field name="email_to">{{ object.user_id.login }}</field>
-            <field name="email_cc">{{ 'info@surgicalproductsolutions.com' }}</field>
-            <field name="subject">Please find the sales order that was placed online at shopsps.com</field>
-            <field name="body_html" type="html">
-                <link href="css/bootstrap.min.css" rel="stylesheet"/>
-                <div style="margin:auto;width:100%;" class="container">
-                    <div style="margin-top: 50px;">
-                        <div>
-                           <p>Hi Team</p>
-                           <p>Please find below a listing of orders that have been placed online:</p>
-                        </div>
-                        <center>
+                             % endfor
+                        </table>
+                        <br/>
+                        <br/>
+                        <center style="padding-bottom: 60px;">
+                            <p>
+                                <b>Thank you for shopping with ${user.company_id.name}!</b>
+                            </p>
                         </center>
                     </div>
-                    <br/>
-                    <table width="80%" class="table  table-condensed  table-bordered " style="margin:auto">
-                        <thead style='background-color:#D6DBDF;'>
-                            <tr>
-                                 <th style="text-align: center;">Sales No</th>
-                                 <th style="text-align: center;">SKU</th>
-                                 <th style="text-align: center;">Product Name</th>
-                                 <th style="text-align: center;">Quantity</th>
-                                  <th style="text-align: center;">UOM</th>
-                                 <th style="text-align: center;">Unit Price</th>
-                                 <th style="text-align: center;">Subtotal</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                         <t t-foreach="object.order_line" t-as="product">
-                              <tr>
-                                <td align="center"><t t-out="product.order_id.name"/></td>
-                                <t t-if="product.product_id.product_tmpl_id.default_code == False">
-                                    <td></td>
-                                </t>
-                                <t t-else="">
-                                    <td align="center">
-                                        <t t-out="product.product_id.product_tmpl_id.default_code"/>
-                                    </td>
-                                </t>
-                                <td align="center">
-                                    <t t-out="product.name"/>
-                                </td>
-                                <td align="center">
-                                    <t t-out="'%.0f' % product.product_uom_qty"/>
-                                </td>
-                                <td align="center">
-                                    <t t-out="product.product_uom.name"/>
-                                </td>
-                                <td align="center">
-                                    <t t-out="product.price_unit"/>
-                                </td>
-                                <td align="center">
-                                    <t t-out="product.price_subtotal"/>
-                                </td>
-                              </tr>
-                        </t>
-                        </tbody>
-                    </table>
-                 </div>
-                  <div  style="margin-top:20px">
-                    <p>Thanks &amp; Regards,</p>
-                    <p> SPS Team </p>
-                  </div>
-            </field>
-        </record>
+                    ]]>
+                </field>
+<!--                <field name="user_signature" eval="False"/>-->
+            </record>
 
          <!-- CRON -->
         <record id="product_in_stock_notification" model="ir.cron">
@@ -145,5 +87,25 @@
             <field name='interval_type'>minutes</field>
             <field name="numbercall">-1</field>
         </record>
+
+        <!--<record id="product_template_form_view_custom" model="ir.ui.view">
+            <field name="name">product.template.form.inherit.email.template</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product_email_template.product_template_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email_template_id']" position="replace">
+                    <field name="email_template_id" string="Email Template" help="Send a product-specific email once the invoice is validated"
+                        domain="[('model','=','product.template'), ('name', '!=', 'eCommerce: Product Availability Email')]"
+                        context="{
+                            'form_view_ref':'product_email_template.email_template_form_simplified',
+                            'default_model': 'product.template',
+                            'default_subject': name,
+                            'default_name': name,
+                        }"/>
+                </xpath>
+            </field>
+        </record>
+-->
+
     </data>
 </odoo>
