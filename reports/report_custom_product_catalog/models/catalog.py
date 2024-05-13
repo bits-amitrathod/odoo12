@@ -63,7 +63,7 @@ class InventoryCustomProductPopUp(models.TransientModel):
                 (" l.product_id = " + str(self.sku_code.id) if self.sku_code else " 1=1 ") + \
                 (" and l.use_date >  to_date('" + str(self.start_date) + "','YYYY-MM-DD')" if self.start_date
                  else " and 1=1 ") + (" and l.use_date < to_date('" + str(self.end_date) + "','YYYY-MM-DD')" if
-                                      self.end_date else " and 1=1 ") + \
+                                                      self.end_date else " and 1=1 ") + \
                 " and s.company_id != 0.0 group by l.product_id ) a inner join (SELECT p.product_tmpl_id,p.id, " \
                 "pt.name,pt.actual_quantity ,pt.list_price, sku_code as sku," \
                 " b.name as manufacture , '"+str(user_id)+"' as user_id FROM product_product p " \
