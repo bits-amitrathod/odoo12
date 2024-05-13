@@ -43,19 +43,34 @@ class InventoryCustomProductPopUp(models.TransientModel):
         # form_view_id = self.env.ref('product.custom_form_view').id
         form_view_id = self.env.ref('report_custom_product_catalog.custom_form_view').id
         user_id =self._context.get('uid')
-        print("----------------  user id  ---------------")
-        print(user_id)
+        today_date = datetime.datetime.now().date()
+        #print("----------------  user id  ---------------")
+        #print(user_id)
 
         sql_query = " DELETE FROM  cust_pro_catalog WHERE user_id = '"+str(user_id)+"'; "
 
         self._cr.execute(sql_query)
 
-        insert = "INSERT INTO cust_pro_catalog (product_tmpl_id,sku,manufacture,name,qty,list_price,min_date,max_date,user_id )"
-        part1 = insert + " SELECT  product_tmpl_id , sku, Manufacture, name, actual_quantity, list_price, min, max, user_id FROM (SELECT   min(l.use_date), max(l.use_date), sum(s.quantity), l.product_id FROM public.stock_lot as l  inner join  stock_quant  as s  on l.id = s.lot_id where " + (
-            " l.product_id = " + str(self.sku_code.id) if self.sku_code  else " 1=1 ") + (
-                    " and l.use_date > to_date('" + str(self.start_date) + "','YYYY-MM-DD')" if self.start_date else " and 1=1 ") + (
-                    " and l.use_date < to_date('" + str(
-                        self.end_date ) + "','YYYY-MM-DD')" if self.end_date else " and 1=1 ") + " and s.company_id != 0.0 group by l.product_id ) a left join (SELECT p.product_tmpl_id,p.id, pt.name,pt.actual_quantity ,pt.list_price, sku_code as sku, b.name as manufacture , '"+str(user_id)+"' as user_id FROM product_product p Inner join product_template pt ON  p.product_tmpl_id = pt.id INNER join product_brand b ON b.id = pt.product_brand_id) b ON a.product_id = b.id"
+        insert = "INSERT INTO cust_pro_catalog (product_tmpl_id,sku,manufacture,name,qty,list_price," \
+                 "min_date,max_date,user_id )"
+        part1 = insert + " SELECT  product_tmpl_id , sku, Manufacture, name, actual_quantity, list_price, min, max," \
+                         " user_id " \
+                         " FROM " \
+                         " (" \
+                         "      SELECT   min(l.use_date), max(l.use_date), sum(s.quantity), l.product_id " \
+                         "      FROM public.stock_production_lot as l inner join  stock_quant  as s  " \
+                         "      on l.id = s.lot_id where l.use_date > '" + str(today_date) + "'  and  " + \
+                (" l.product_id = " + str(self.sku_code.id) if self.sku_code else " 1=1 ") + \
+                (" and l.use_date >  to_date('" + str(self.start_date) + "','YYYY-MM-DD')" if self.start_date
+                 else " and 1=1 ") + (" and l.use_date < to_date('" + str(self.end_date) + "','YYYY-MM-DD')" if
+                                      self.end_date else " and 1=1 ") + \
+                " and s.company_id != 0.0 group by l.product_id ) a inner join (SELECT p.product_tmpl_id,p.id, " \
+                "pt.name,pt.actual_quantity ,pt.list_price, sku_code as sku," \
+                " b.name as manufacture , '"+str(user_id)+"' as user_id FROM product_product p " \
+                                                          "Inner join product_template pt ON  " \
+                                                          "p.product_tmpl_id = pt.id INNER join product_brand b" \
+                                                          " ON b.id = pt.product_brand_id where p.active = true " \
+                                                          " ) b ON a.product_id = b.id"
         # print(part1)
         self._cr.execute(part1)
 
