@@ -34,20 +34,17 @@
         'views/request_a_quote_page.xml',
         'views/thank_you_page.xml',
         'views/surgical_products_sell_page.xml',
+        'views/product_catagory_and_brand_template.xml',
         'views/cart_lines_page.xml',
-        # 'views/website_header_template.xml',
+        'views/website_header_template.xml',
         'views/website_footer_template.xml',
-        # 'views/product_catagory_and_ brand_template.xml',
+        'views/website_shop_templates.xml',
         'views/porduct_catalog_page.xml',
         'views/terms_and_conditions_page.xml',
         'views/policy_page.xml',
         'views/terms_of_sale_page.xml',
         'views/terms_of_purchase_page.xml',
         'views/menu.xml'
-    ],
-
-    'images': [
-
     ],
 
     # 'auto_install': True,

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
      <template id="modalCSTM" name="Optional Products cstm">
         <div id="modal_optional_products" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
             <div class="modal-dialog modal-lg">
@@ -153,9 +152,7 @@
         </div>
     </template>
 
-
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~SHOP PAGE Product Expiration Lot~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-
 
     <template id="loader_in_stock" name="Loader In Stock">
         <div id="loader_in_stock" style="width: 100%; height: 100%; position: absolute; background-color: #b3b6b9;  z-index: 1000; opacity: 50%;top: 0%;">
@@ -281,7 +278,7 @@
     </template>
     
 <!--    UPG_ODOO16_NOTE-->
-    <template id="checkout_cstm_address" name="Invoice Address updated" inherit_id="website_sale.checkout">
+    <template id="checkout_cstm_address" name="Invoice Address updated" inherit_id="website_sale.checkout" priority="5">
         <xpath expr="//div[@id='wrap']//div[hasclass('oe_cart')]/div[@class='row']/div[@class='col-lg-6 one_kanban']" position="replace">
             <div class="col-lg-6 one_kanban">
                 <t t-call="website_sale.address_kanban">
@@ -317,8 +314,9 @@
         </xpath>
     </template>
 
-    <template id="continue_shopping_button_custom" inherit_id="website_sale.cart">
-        <xpath expr="//div/a[@class='btn btn-secondary mb32']" position="replace">
+    <!--    UPG_ODOO16_NOTE need to check this inherit again -->
+    <template id="sps_continue_shopping_button_custom" inherit_id="website_sale.cart" priority="5">
+        <a class="btn btn-secondary mb32" position="replace">
             <a t-if="request.params.get('flag')" role="button" t-att-href="'/shop/quote_my_report/%s' % request.params.get('partner')" class="btn btn-secondary mb32">
                 <span class="fa fa-chevron-left" />
                 <span>Continue<span class="d-none d-md-inline"> Shopping</span></span>
@@ -327,7 +325,7 @@
                 <span class="fa fa-chevron-left" />
                 <span>Continue<span class="d-none d-md-inline"> Shopping</span></span>
             </a>
-        </xpath>
+        </a>
          <xpath expr="//div[@id='wrap']" position="inside">
              <t t-call="website_sales.loader_in_stock"/>
          </xpath>

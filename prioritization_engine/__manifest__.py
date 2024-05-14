@@ -8,7 +8,7 @@
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Sale',
-    'version': '16.4',
+    'version': '16.6',
 
     # any module necessary for this one to work correctly
 

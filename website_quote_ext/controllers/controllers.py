@@ -175,7 +175,7 @@ class WebsiteSale(http.Controller):
                     break
 
         if access_token != Order.access_token:
-            return request.render('website.404')
+            return request.render('http_routing.404')
         if Order.state != 'sent':
             return request.redirect(order_sudo.get_portal_url(query_string=query_string))
 
