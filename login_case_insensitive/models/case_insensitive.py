@@ -131,7 +131,7 @@ class LoginCaseInsensitive(models.Model):
             partner = self.env['res.partner']._signup_retrieve_partner(token, check_validity=True, raise_exception=True)
             # invalidate signup token
             partner.sudo().write({'signup_token': False, 'signup_type': False, 'signup_expiration': False,
-                           'supplier_rank': 1})
+                           'supplier_rank': 1}).sudo()
 
             account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'),
                                                                             ('active', '=', True)])
