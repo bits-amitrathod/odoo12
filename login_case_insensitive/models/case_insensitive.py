@@ -130,8 +130,8 @@ class LoginCaseInsensitive(models.Model):
             # signup with a token: find the corresponding partner id
             partner = self.env['res.partner']._signup_retrieve_partner(token, check_validity=True, raise_exception=True)
             # invalidate signup token
-            partner.sudo().write({'signup_token': False, 'signup_type': False, 'signup_expiration': False,
-                           'supplier_rank': 1}).sudo()
+            partner.write({'signup_token': False, 'signup_type': False, 'signup_expiration': False,
+                           'supplier_rank': 1})
 
             account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'),
                                                                             ('active', '=', True)])
@@ -581,7 +581,12 @@ class CustomerPortal(Controller):
             'archive_groups': [],
         }
 
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
 
+    signup_token = fields.Char(copy=False)
+    signup_type = fields.Char(string='Signup Token Type', copy=False)
+    signup_expiration = fields.Datetime(copy=False)
 # class WebsiteSale(http.Controller):
 #
 #     def _get_mandatory_billing_fields(self):
