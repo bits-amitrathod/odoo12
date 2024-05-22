@@ -1411,7 +1411,8 @@ class ProductTemplateTire(models.Model):
             reserved_quantity = 0
             if len(stock_quant) > 0:
                 for lot in stock_quant:
-                    if lot.lot_id.expiration_date.date() > datetime.datetime.now().date():
+                    if lot.lot_id and lot.lot_id.expiration_date and \
+                            lot.lot_id.expiration_date.date() > datetime.datetime.now().date():
                         reserved_quantity += lot.reserved_quantity
 
             template.update({'actual_quantity': template.qty_available - reserved_quantity})
