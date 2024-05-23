@@ -54,11 +54,12 @@ class PporoductTemplate(models.Model):
 
         """
         res = super(PporoductTemplate,self)._compute_qty_available()
-        if self.actual_quantity == 0:
-            StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
-            subcribers = StockNotifcation.search([('product_tmpl_id', '=', self.id),('x_studio_reoccuring', '=', 'True')])
-            for sub in subcribers:
-                sub.status = 'pending'
+        for temp in self:
+            if temp.actual_quantity == 0:
+                StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
+                subcribers = StockNotifcation.search([('product_tmpl_id', '=', temp.id),('x_studio_reoccuring', '=', 'True')])
+                for sub in subcribers:
+                    sub.status = 'pending'
         return res
 
 class SaleOrder1(models.Model):
