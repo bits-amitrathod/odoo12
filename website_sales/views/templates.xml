@@ -166,19 +166,18 @@
     <template id="productExpirationDate" name="Product Expiration Date">
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
             <div class="expiration-section">
-                <p class="expiration-title">Expiration :</p>
-                <p>
+                <b><p class="expiration-title m-0">Expiration :</p></b>
+                <p class="m-0">
                     <span>Min -</span>
                     <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">
                         <span t-esc="productExpiration[product.product_variant_id.id]['min']"
-                              t-options="{'widget': 'date'}"/>
+                      t-options="{'widget': 'date'}"/>
                     </t>
-
                     <t t-else="">
                        <span> N/A</span>
                     </t>
                 </p>
-                <p>
+                <p class="m-0">
                     <span>Max -</span>
                     <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">
                         <span t-esc="productExpiration[product.product_variant_id.id]['max']"
@@ -190,12 +189,6 @@
                 </p>
             </div>
         </t>
-    </template>
-
-    <template id="products_item" name="Products item" inherit_id="website_sale.products_item">
-        <xpath expr="//div[@class='product_price']" position="before">
-           <t t-call="website_sales.productExpirationDate"/>
-        </xpath>
     </template>
 
 <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~SHOP PAGE products categories Filter ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
@@ -315,20 +308,20 @@
     </template>
 
     <!--    UPG_ODOO16_NOTE need to check this inherit again -->
-    <template id="sps_continue_shopping_button_custom" inherit_id="website_sale.cart" priority="5">
-        <a class="btn btn-secondary mb32" position="replace">
-            <a t-if="request.params.get('flag')" role="button" t-att-href="'/shop/quote_my_report/%s' % request.params.get('partner')" class="btn btn-secondary mb32">
-                <span class="fa fa-chevron-left" />
-                <span>Continue<span class="d-none d-md-inline"> Shopping</span></span>
-            </a>
-            <a t-else="" role="button" href="/shop" class="btn btn-secondary mb32">
-                <span class="fa fa-chevron-left" />
-                <span>Continue<span class="d-none d-md-inline"> Shopping</span></span>
-            </a>
-        </a>
-         <xpath expr="//div[@id='wrap']" position="inside">
-             <t t-call="website_sales.loader_in_stock"/>
-         </xpath>
-    </template>
+<!--    <template id="sps_continue_shopping_button_custom" inherit_id="website_sale.cart" priority="5">-->
+<!--        <a class="btn btn-secondary mb32" position="replace">-->
+<!--            <a t-if="request.params.get('flag')" role="button" t-att-href="'/shop/quote_my_report/%s' % request.params.get('partner')" class="btn btn-secondary mb32">-->
+<!--                <span class="fa fa-chevron-left" />-->
+<!--                <span>Continue<span class="d-none d-md-inline"> Shopping</span></span>-->
+<!--            </a>-->
+<!--            <a t-else="" role="button" href="/shop" class="btn btn-secondary mb32">-->
+<!--                <span class="fa fa-chevron-left" />-->
+<!--                <span>Continue<span class="d-none d-md-inline"> Shopping</span></span>-->
+<!--            </a>-->
+<!--        </a>-->
+<!--         <xpath expr="//div[@id='wrap']" position="inside">-->
+<!--             <t t-call="website_sales.loader_in_stock"/>-->
+<!--         </xpath>-->
+<!--    </template>-->
 
 </odoo>

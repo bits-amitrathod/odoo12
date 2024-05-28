@@ -129,15 +129,14 @@
                          <button name="action_cancel_vendor_offer" states="ven_draft,ven_sent" string="Cancel"
                                 type="object"/>
                     </header>
-                        <sheet>
+                    <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button type="object"
                                     name="action_view_picking"
                                     class="oe_stat_button"
                                     icon="fa-truck"
                                     attrs="{'invisible':[('state', 'in', ('ven_draft','ven_sent','draft','sent','to approve')),('picking_ids','=',[])]}">
-                                <field name="incoming_picking_count" widget="statinfo" string="Shipment"
-                                       help="Incoming Shipments"/>
+                                <field name="incoming_picking_count" widget="statinfo" string="Shipment" help="Incoming Shipments"/>
                                 <field name="picking_ids" invisible="1"/>
                             </button>
                             <button type="object" name="action_view_invoice"
@@ -150,14 +149,12 @@
                         </div>
                             <div class="oe_title">
                             <label string="Vendor Offer" for="name"/>
-                            <h1>
-                                <field name="name" readonly="1"/>
-                            </h1>
+                            <h1> <field name="name" readonly="1"/> </h1>
                         </div>
                         <group>
                             <group>
-                                 <field name="acq_manager_email"  invisible="1"/>
-                                 <field name="acq_manager_phone" invisible="1" />
+                                <field name="acq_manager_email"  invisible="1"/>
+                                <field name="acq_manager_phone" invisible="1" />
                                 <field name="vendor_cust_id"/>
 <!--                                UPG_ODOO16_NOTE below field commented due to error&ndash;&gt;-->
 <!--                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />-->
@@ -186,10 +183,9 @@
                                 <field name="shipping_number"/>
                             </group>
                         </group>
-                             <notebook>
-                                 <page string="Product">
-                                <field name="order_line" mode="tree,form"
-                                       attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft','ven_sent'))]}">
+                         <notebook>
+                             <page string="Product">
+                                <field name="order_line" mode="tree,form" attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft','ven_sent'))]}">
                                     <form duplicate="false">
                                         <group>
                                             <group>
@@ -200,9 +196,7 @@
                                                 <field name="product_tier" readonly="1"/>
                                                 <field name="product_qty"/>
                                                 <field name="uom_str"/>
-                                                <field name="expiration_date_str">
-
-                                                </field>
+                                                <field name="expiration_date_str"/>
                                                 <field name="qty_in_stock"/>
                                                 <field name="product_sales_count"/>
                                                 <field name="product_sales_count_month"/>
@@ -211,7 +205,6 @@
                                                 <field name="product_sales_count_90"/>
                                                 <field name="product_sales_count_yrs"/>
                                                 <field name="expired_inventory"/>
-                                                <!--<field name="list_price" invisible="1"/>-->
                                                 <field name="price_unit" invisible="1"/>
                                                 <field name="product_unit_price"/>
                                                 <field name="product_offer_price"/>
@@ -229,15 +222,13 @@
                                     <!--editable="bottom"-->
                                     <tree editable="bottom">
                                         <control>
-                                        <create name="add_product_control" string="Add a product"/>
-                                        <!--<create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>-->
-                                        <!--<create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>-->
-                                    </control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                            <!--<create name="add_section_control" string="Add a section" context="{'default_display_type': 'line_section'}"/>-->
+                                            <!--<create name="add_note_control" string="Add a note" context="{'default_display_type': 'line_note'}"/>-->
+                                        </control>
                                         <field name="currency_id" invisible="1"/>
-                                        <field name="sku_code" readonly="1"/>
-                                        <field name="product_id"
-                                               attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
-
+                                        <field name="sku_code" readonly="1" />
+                                        <field name="product_id" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
                                         <field name="product_brand_id" readonly="1"/>
                                         <field name="name" invisible="1"/>
                                         <field name="product_tier" readonly="1"/>
@@ -250,10 +241,8 @@
                                         <field name="product_sales_count_90" />
                                         <field name="product_sales_count_yrs" />
                                         <field name="price_unit" invisible="1"/>
-                                        <!--<field name="list_price" invisible="1"/>-->
                                         <field name="expired_inventory"/>
                                         <field name="product_unit_price" />
-                                        <!--<field name="product_offer_price" attrs="{'readonly': False}" />-->
                                         <field name="product_offer_price"  />
                                         <field name="import_type_ven_line" invisible="1"/>
                                         <field name="product_retail"/>
@@ -274,7 +263,6 @@
                                 </field>
                                 <group>
                                      <group class="oe_subtotal_footer oe_right" style=" margin-left: 20px;">
-
                                         <field name="credit_amount_qpq_flag" invisible="1"/>
                                         <field name="credit_amount_untaxed_before_qpa" widget="monetary"
                                                string="Credit Offer Price"  attrs="{'invisible': [('credit_amount_qpq_flag', '=', False)]}"/>
@@ -327,7 +315,7 @@
                                        attrs="{'readonly': True}"/>
                             </page>
                         </notebook>
-                        </sheet>
+                    </sheet>
 
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>

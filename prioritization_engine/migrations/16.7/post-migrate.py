@@ -10,4 +10,8 @@ def migrate(cr, version):
             update ir_ui_view set active = true where name = 'purchase.order.form' and id = 1953
         """)
 
+    cr.execute("""
+            update ir_ui_view set active = true where id in (4942,3239,2558);
+        """)
+
     _logger.info(" ------- Post-Migration Ended -------" + "\n" * 20)

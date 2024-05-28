@@ -45,6 +45,22 @@ class PporoductTemplate(models.Model):
                                              "Shop > Customize and enable 'E-commerce categories' to view all e-commerce categories.",
                                         default=_default_public_categ_ids)
 
+    def _compute_qty_available(self):
+        """
+            This method is overridden from "vendor offer module on field actual_quantity"
+            And when ever actual_quantity of product goes to 0 then it set the website_stock_notify status of that product to pending
+            for reoccuring entries only so that when cron runs it will sent the notification only once not every 15 mint
+            for that we have to disable the automated action on field 'x_studio_reoccuring' which is created by client with studio on DB
+
+        """
+        res = super(PporoductTemplate,self)._compute_qty_available()
+        if self.actual_quantity == 0:
+            StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
+            subcribers = StockNotifcation.search([('product_tmpl_id', '=', self.id),('x_studio_reoccuring', '=', 'True')])
+            for sub in subcribers:
+                sub.status = 'pending'
+        return res
+
 class SaleOrder1(models.Model):
     _inherit = 'sale.order'
     def _cart_lines_stock_update(self, values, **kwargs):

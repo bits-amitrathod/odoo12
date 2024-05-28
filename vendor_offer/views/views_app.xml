@@ -59,7 +59,7 @@
                                 type="object"/>
 
                     </header>
-                        <sheet>
+                    <sheet>
                         <div class="oe_button_box" name="button_box">
                             <button type="object"
                                     name="action_view_picking"
@@ -90,7 +90,7 @@
                                  <field name="acq_manager_phone" invisible="1" />
                                 <field name="vendor_cust_id"/>
 <!--                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />-->
-                                <field name="company_id" options="{'no_create': True}" invisible="1" />
+                                <field name="company_id" options="{'no_create': True}"/>
                                 <field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}" string="Facility Name" placeholder="Name, TIN, Email, or Reference"  />
                                 <field name="acq_user_id"/>
                                 <field name="possible_competition"
@@ -120,33 +120,30 @@
 
                             </group>
                         </group>
-                            <span style="color:green;" attrs="{'invisible': [('offer_contain_equipment', '!=', True)]}">
-                                Equipment is present in product list </span>
-                            <br/> <br/> <br/>
-                             <button name="action_recalculate_vendor_offer" class="btn-primary"
-                                     string="Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': [('import_type_ven', '==', 'all_field_import')]}" type="object"/>
-
-                            <button name="action_manual_recalculate_vendor_offer" class="btn-primary"
+                        <span style="color:green;" attrs="{'invisible': [('offer_contain_equipment', '!=', True)]}">
+                            Equipment is present in product list </span>
+                        <br/> <br/> <br/>
+                        <button name="action_recalculate_vendor_offer" class="btn-primary"
+                                     string="Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': ['|', ('import_type_ven', '==', 'all_field_import'),('import_type_ven', '=', False)]}" type="object"/>
+                        <button name="action_manual_recalculate_vendor_offer" class="btn-primary"
                                      string="Manual Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': ['|',('import_type_ven', '=', 'new_appraisal'),('import_type_ven', '=', False)]}" type="object"/>
 
-                             <notebook>
-                                 <page string="Product">
+                        <notebook>
+                             <page string="Product">
                                 <field name="order_line" mode="tree,form"
                                        attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft','ven_sent'))]}">
                                     <form duplicate="false">
                                         <group>
                                             <group>
-                                                <field name="product_id"/>
+                                                <field name="product_id" style="min-width:90px;"/>
                                                 <field name="product_qty_app_new"/>
-                                                <field name="sku_code" readonly="1"/>
+                                                <field name="sku_code" readonly="1" string="Product SKU"/>
                                                 <field name="product_brand_id" readonly="1"/>
                                                 <field name="name" invisible="1"/>
                                                 <field name="product_tier" readonly="1"/>
                                                 <field name="product_qty_app_new"/>
                                                 <field name="uom_str"/>
-                                                <field name="expiration_date_str">
-
-                                                </field>
+                                                <field name="expiration_date_str"/>
                                                 <field name="qty_in_stock"/>
                                                 <field name="product_sales_count"/>
                                                 <field name="product_sales_count_month"/>
@@ -169,46 +166,42 @@
                                             </group>
                                         </group>
                                     </form>
-                                    <tree editable="bottom" decoration-info="product_multiple_matches == True"
-                                    decoration-success="list_contains_equip == True"  >
+                                    <tree editable="bottom" decoration-info="product_multiple_matches == True" decoration-success="list_contains_equip == True"  >
                                         <control>
-                                        <create name="add_product_control" string="Add a product"/>
-                                    </control>
+                                            <create name="add_product_control" string="Add a product"/>
+                                        </control>
                                         <field name="product_multiple_matches" invisible="1" />
                                         <field name="list_contains_equip" invisible="1" />
                                         <field name="currency_id" invisible="1"/>
-                                        <field name="sku_code" readonly="1"/>
-                                        <field name="original_sku" readonly="1"/>
-                                        <field name="product_id"
-                                               attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
+                                        <field name="sku_code" readonly="1" string="Product SKU"/>
+                                        <field name="original_sku" readonly="1" string="Imported SKU"/>
+                                        <field name="product_id" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}" string="Product"/>
 
-                                        <field name="open_quotations_of_prod"/>
-                                        <field name="average_aging"/>
-                                        <field name="product_sales_amount_yr"/>
+                                        <field name="open_quotations_of_prod" optional="hide"/>
+                                        <field name="average_aging" optional="hide"/>
+                                        <field name="product_sales_amount_yr" optional="hide"/>
                                         <field name="inv_ratio_90_days" widget="percentage"/>
                                         <field name="premium_product"/>
                                         <field name="consider_dropping_tier"/>
                                         <field name="average_retail_last_year" widget="percentage"/>
-
                                         <field name="product_qty_app_new"/>
                                         <field name="product_brand_id" readonly="1"/>
-                                        <field name="name" invisible="1"/>
+                                        <field name="name" invisible="1" />
                                         <field name="product_tier" readonly="1"/>
-<!--                                        <field name="product_qty" />-->
-                                        <field name="uom_str"/>
+                                        <field name="uom_str" optional="hide"/>
                                         <field name="expiration_date_str"  />
                                         <field name="qty_in_stock" />
-                                        <field name="product_sales_count" />
-                                        <field name="product_sales_count_month" />
-                                        <field name="product_sales_count_90" />
-                                        <field name="product_sales_count_yrs" />
-                                        <field name="price_unit" invisible="1"/>
-                                        <field name="expired_inventory"/>
-                                        <field name="dont_recalculate_offer_price" />
-                                        <field name="product_unit_price" />
-                                        <field name="product_offer_price"  />
+                                        <field name="product_sales_count"  optional="hide"/>
+                                        <field name="product_sales_count_month" optional="hide"/>
+                                        <field name="product_sales_count_90" optional="hide"/>
+                                        <field name="product_sales_count_yrs" optional="hide"/>
+                                        <field name="price_unit" invisible="1" />
+                                        <field name="expired_inventory" optional="hide"/>
+                                        <field name="dont_recalculate_offer_price" optional="hide"/>
+                                        <field name="product_unit_price"  optional="hide"/>
+                                        <field name="product_offer_price"  optional="hide" />
                                         <field name="import_type_ven_line" invisible="1"/>
-                                        <field name="product_retail"/>
+                                        <field name="product_retail" optional="hide"/>
                                         <field name="price_subtotal" string="Total Offer Price"/>
                                         <field name="taxes_id" widget="many2many_tags"
                                                domain="[('type_tax_use','=','purchase')]"
@@ -219,7 +212,7 @@
                                         <field name="is_pddo"/>
                                         <field name="multiplier"
                                                attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
-                                        <field name="product_note" string="Note"/>
+                                        <field name="product_note" string="Note" optional="hide"/>
                                         <field name="date_planned" invisible="1"/>
                                         <field name="order_id" invisible="1"/>
 

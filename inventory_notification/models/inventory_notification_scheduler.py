@@ -62,7 +62,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         _logger.info("process_notification_scheduler called")
         if limit is None:
             limit = 40
-        self.process_in_stock_scheduler(1)
+        self.process_in_stock_scheduler(limit)
 
     def pick_notification_for_customer(self, picking):
         """
@@ -553,6 +553,11 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     # @api.multi
     def process_notification_scheduler_everyday(self, custom_date=None):
+        """
+            This is Everyday scheduler
+        :param custom_date:
+        :return:
+        """
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()

@@ -45,6 +45,7 @@ For the full details look at static/description/index.html
         "static/description/main.png"
     ],
     "price": "37.0",
+    'license': 'LGPL-3',
     "currency": "EUR",
     "live_test_url": "https://faotools.com/my/tickets/newticket?&url_app_id=37&ticket_version=14.0&url_type_id=3",
 }

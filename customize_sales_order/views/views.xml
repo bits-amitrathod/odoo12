@@ -1,19 +1,8 @@
+<?xml version="1.0"?>
 <odoo>
   <data>
 
-       <!--<record id="view_partner_form_charity_field" model="ir.ui.view">
-            <field name="name">View Partner form for charity</field>
-            <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form"/>
-            <field name="priority" eval="21"/>
-            <field name="arch" type="xml">
-                <field name="is_broker" position="after">
-                    <field name="charity"/>
-                </field>
-            </field>
-      </record>-->
-
-      <!-- is_parent_assigned -->
+      <!-- sale order Views -->
       <record id="view_form_import_template_stockhawk" model="ir.ui.view">
             <field name="name">Import Template customer form</field>
             <field name="model">res.partner</field>
@@ -68,31 +57,18 @@
             </field>
        </record>
 
-    <!-- TODO:UPD ODOO16 NOTE -->
-      <!--<record id="sale_order_view_form_inherit" model="ir.ui.view">
+
+      <record id="sale_order_view_form_inherit" model="ir.ui.view">
         <field name="name">sale.order.form</field>
         <field name="model">sale.order</field>
-        <field name="inherit_id" ref="website_sale.sale_order_view_form"/>
+        <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
             <field name="partner_id" position="replace">
                 <field name="partner_id" widget="res_partner_many2one"  context="{'search_default_customer':1, 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True}"/>
             </field>
         </field>
-    </record>-->
+    </record>
 
-
-      <!-- Adding Carrier Tracking Ref field into filter-->
-        <!--<record id="view_sales_order_filter_carrier_tracking_ref" model="ir.ui.view">
-            <field name="name">sale.order.common.search.inherit</field>
-            <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
-            <field name="arch" type="xml">
-		    <xpath expr="/search" position="inside">
-                <field name="carrier_track_ref"/>
-		        <filter name="carrier" string="Carrier Tracking Ref" domain="[]"/>
-		    </xpath>
-            </field>
-        </record>-->
 
       <record id="view_order_form_with_carrier_inherited" model="ir.ui.view">
             <field name="name">delivery.sale.order.form.view.with_carrier</field>
@@ -193,11 +169,11 @@
             </field>
         </record>
 
-      <!-- TODO: , Adding Account Manager field into group by and filter-->
+      <!-- Adding Account Manager field into group by and filter-->
         <record id="view_sales_order_filter_custom" model="ir.ui.view">
             <field name="name">sale.order.common.search.inherit</field>
             <field name="model">sale.order</field>
-            <field name="inherit_id" ref="sale.sale_order_view_search_inherit_sale"/>
+            <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
                 <xpath expr="/search/group/filter[@name='salesperson']" position="replace">
 		            <filter string="Business Development" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>
@@ -254,6 +230,7 @@
             </field>
       </record>
 
+      <!-- Res partner Views -->
       <record id="view_res_partner_filter_inherit" model="ir.ui.view">
             <field name="name">res.partner.select</field>
             <field name="model">res.partner</field>

@@ -95,11 +95,13 @@
                         <group name="group_general">
                             <field name="tier"></field>
                             <field name="class_code"></field>
-                    </group>
-                    </group>
-                        <group string="Internal Notes">
-                                <field name="description" nolabel="1" placeholder="This note is only for internal purposes."/>
                         </group>
+                    </group>
+                     <group>
+                        <group string="Internal Notes">
+                            <field name="description" nolabel="1" placeholder="This note is only for internal purposes." />
+                        </group>
+                    </group>
                 </page>
             </field>
         </record>

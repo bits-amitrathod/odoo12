@@ -24,19 +24,18 @@
         action="sps_crm.action_your_purchase_pipeline"
         parent="crm_menu_purchase"
         sequence="1"/>
-    <!-- TODO: UPG_ODOO16_NOTE  This is Commented in Vendor Offer Module-->
-    <!--<menuitem
+    <menuitem
         id="my_vendor_offers_menu"
         name="My Vendor Offers"
         parent="crm_menu_purchase"
         action="vendor_offer.action_window"
-        sequence="2"/>-->
-    <!--<menuitem
+        sequence="2"/>
+    <menuitem
         id="purchase_order_menu"
         name="My Purchase Orders"
         parent="crm_menu_purchase"
         action="vendor_offer.purchase_form_action_vendor"
-        sequence="3"/>-->
+        sequence="3"/>
     <menuitem
         id="crm_lead_menu_my_activities"
         name="My Activities"

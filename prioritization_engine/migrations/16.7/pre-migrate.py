@@ -39,4 +39,7 @@ def migrate(cr, version):
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'website_sales%' and type = 'qweb';""")
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'website_quote_ext%' and type = 'qweb';""")
 
+    # client wants to remove this stage ref shared DOC
+    cr.execute("""DELETE FROM crm_stage WHERE name->>'en_US' IN ('Qualified', 'Proposition', 'Won');""")
+
     _logger.info(" ------- Pri-Migration Ended -------" + "\n" * 20)

@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-<!--    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">-->
-<!--        <xpath expr="//link[last()]" position="after">-->
-<!--            &lt;!&ndash; Font  &ndash;&gt;-->
-<!--            <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800" rel="stylesheet"/>-->
-<!--            <link href="https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900" rel="stylesheet"/>-->
-<!--        </xpath>-->
-<!--    </template>-->
-
     <template id="user_dropdown" inherit_id="portal.user_dropdown">
         <xpath expr="//li/a" position="replace">
             <a href="#" role="button" data-toggle="dropdown" t-attf-class="nav-link dropdown-toggle #{_link_class}">

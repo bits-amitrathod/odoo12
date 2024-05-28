@@ -164,7 +164,14 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
             <field name="arch" type="xml">
+                <!-- translated_display_name and display_name  fields is computed
+                that's why they can't provide default sorting fun and client want to sort-->
+                <xpath expr="//field[@name='translated_display_name']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="name"/>
                     <field name="company_type"/>
                 </xpath>
             </field>
