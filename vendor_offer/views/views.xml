@@ -886,6 +886,9 @@
                     <span style="font-size: 18px;color: #F44336;font-weight: bold; margin-left: -4px;">:
                         <field name="actual_quantity" widget="statinfo" nolabel="1"/>
                     </span>
+<!--                    <field name="actual_quantity_temp" invisible="1"></field>-->
+                    <button name="action_test_prod" string="Test" type="object" />
+
                     <div/>
                 </field>
             </field>
