@@ -17,8 +17,8 @@ class FixStockValuationLayerScheduler(models.Model):
         start_time = time.time()
         count_of_prod = 0
         rows_corrected = 0
-        if len(prods_sku) == 1 and prods_sku[0] == 'fixallprod':
-            products = self.env['product.product'].search([])
+        if len(prods_sku) == 10 and prods_sku == 'fixallprod':
+            products = self.env['product.product'].search([('active', 'in', [True, False])])
         else:
             products = self.env['product.product'].search([('default_code', 'in', prods_sku)])
 
@@ -79,7 +79,36 @@ class FixStockValuationLayerScheduler(models.Model):
                     rows_corrected = rows_corrected+1
                     svl.write(new_vals)
 
-        #print("--- %s seconds ---" % (time.time() - start_time))
+            groups_rem = self.env['stock.valuation.layer'].read_group(domain, ['remaining_value:sum', 'remaining_qty:sum'], ['product_id'])
+
+            for group_re in groups_rem:
+                value_re = round(self.env.company.currency_id.round(group_re['remaining_value']), 2)
+                quantity_re = group_re['remaining_qty']
+
+            if groups_rem != []:
+                unit_cost = product.standard_price
+                value_at_prod = round(product.qty_available * product.standard_price, 2)
+                vals_re = {
+                    'product_id': prod_id,
+                    'unit_cost': unit_cost,
+                    'quantity': 0,
+                    'value': 0,
+                    'remaining_qty': 0,
+                    'company_id': company.id,
+                    'description': 'SPS : fix stock valuation layer remaining qty',
+                }
+                if quantity_re != product.qty_available:
+                    new_quantity_re = product.qty_available - quantity_re
+                    vals_re["remaining_qty"] = new_quantity_re
+
+                # if value_re != value_at_prod:
+                #     new_value_re = value_at_prod - value_re
+                #     vals_re["remaining_value"] = new_value_re
+
+                if (quantity_re != product.qty_available) or (value_re != value_at_prod):
+                    count_of_prod = count_of_prod + 1
+                    adjustment_value_re = self.env['stock.valuation.layer'].sudo().create(vals_re)
+
         _logger.info("--- %s seconds ---", (time.time() - start_time))
         _logger.info('count_of_prod %s ', count_of_prod)
         _logger.info('rows_corrected %s ', rows_corrected)
