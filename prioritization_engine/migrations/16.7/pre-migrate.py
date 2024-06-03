@@ -33,7 +33,7 @@ def migrate(cr, version):
     cr.execute("""DELETE FROM ir_asset where name ilike 'website_sales%';""")
     cr.execute("""DELETE FROM ir_asset where name ilike 'payment_aquirer_cstm%';""")
     cr.execute("""DELETE FROM ir_asset where name ilike 'product_expiry_extension%';""")
-    cr.execute("""DELETE FROM ir_asset where bundle ilike 'web.assets_frontend;""")
+    cr.execute("""DELETE FROM ir_asset where bundle ilike 'web.assets_frontend';""")
 
 
 
