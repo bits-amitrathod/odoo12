@@ -29,8 +29,8 @@ class ResConfigSettings(models.TransientModel):
 class Website(models.Model):
     _inherit = "website"
 
-    def _prepare_sale_order_values(self, partner, pricelist):
-        values = super(Website, self)._prepare_sale_order_values(partner, pricelist)
+    def _prepare_sale_order_values(self, partner):
+        values = super(Website, self)._prepare_sale_order_values(partner)
         address = partner.address_get(['invoice'])
         if address['invoice']:
             values['partner_invoice_id'] = address['invoice']

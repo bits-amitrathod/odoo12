@@ -183,7 +183,7 @@ class VendorOfferProductLineNew(models.Model):
             average_aging = po_line.average_aging
             inv_ratio_90_days = po_line.inv_ratio_90_days
             product_sales_total_amount_yr = po_line.product_sales_amount_yr
-            multiplier = 'TIER 3'
+            multiplier = None
             if qty_in_stock == 0 and product_sales_count == 0:
                 if 0 < open_quotations_cnt < 5:
                     multiplier = 'TIER 3'
@@ -204,7 +204,10 @@ class VendorOfferProductLineNew(models.Model):
 
             # Change TIER 3 To multiplier this is for only testing purpose
             # multiplier = 'TIER 3'
-            po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
+            if multiplier is not None:
+                po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multiplier)], limit=1)
+            else:
+                po_line.no_tier_multiplier_adjustment_criteria()
 
     def no_tier_multiplier_adjustment_criteria(self):
         for po_line in self:
@@ -223,7 +226,7 @@ class VendorOfferProductLineNew(models.Model):
             t2_threshold = t3.worth if t3 else 0
 
             premium = po_line.product_id.premium
-            multi = 'OUT OF SCOPE'
+            multi = None
 
             if tier:
                 if product_sales_count == 0:
@@ -241,10 +244,8 @@ class VendorOfferProductLineNew(models.Model):
                     multi = "T 2 GOOD - 35 PRCT"
                 else:
                     multi = "OUT OF SCOPE"
-            else:
-                multi = "OUT OF SCOPE"
-
-            po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multi)], limit=1)
+            if multi is not None:
+                po_line.multiplier = self.env['multiplier.multiplier'].search([('name', '=', multi)], limit=1)
 
     # @profile
     def set_values(self):
@@ -284,3 +285,13 @@ class VendorOfferProductLineNew(models.Model):
 
         if threshold2 and (last_year_sales_qty * threshold2.worth) > qty_in_stock and 'T 2' in self.multiplier:
             self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'TIER 3')], limit=1)
+
+    def set_default_multiplier(self):
+        if self.product_id and self.product_id.tier and self.product_id.tier.code == 1:
+            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'T 1 GOOD - 45 PRCT')], limit=1)
+        elif self.product_id and self.product_id.tier and self.product_id.tier.code == 2:
+            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'T 2 GOOD - 35 PRCT')], limit=1)
+        elif self.product_id and self.product_id.tier and self.product_id.tier.code == 3:
+            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'TIER 3')], limit=1)
+        else:
+            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'OUT OF SCOPE')], limit=1)

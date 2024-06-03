@@ -19,8 +19,8 @@
     # Views
    
     'data': [
-      #     'views/product_template.xml',
-	  # 'views/product_public_category.xml',
+          'views/product_template.xml',
+	        'views/product_public_category.xml',
 	],
    
    # Odoo Store Specific

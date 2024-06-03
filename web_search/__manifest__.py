@@ -10,7 +10,8 @@
     'depends': ['website_sale'],
     'data': [
         # 'views/search.xml',
-        # 'views/header.xml'
+        # 'views/header.xml',
+        'data/ir_asset.xml',
     ],
     'installable': True,
 }

@@ -327,9 +327,9 @@
         </record>
 
 
-        <record id="purchase_order_form_inherit_3" model="ir.ui.view">
+        <record id="sps_purchase_order_form_inherit_3" model="ir.ui.view">
 
-            <field name="name">purchase.order.form.vendor.offer.inherit</field>
+            <field name="name">purchase.order.form.vendor.offer.inherit_3</field>
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"></field>
             <field name="arch" type="xml">
@@ -577,8 +577,6 @@
         <menuitem
                 id="menu_product_in_config_purchase_setting" name="Setting" sequence="99"
                 parent="purchase.menu_purchase_root"/>
-
-
         <menuitem
                 id="menu_product_in_config_purchase_multiplier" name="Multiplier"
                 action="vendor_offer.action_window_multiplier"

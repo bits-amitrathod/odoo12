@@ -67,9 +67,9 @@
             <field name="res_model">multiplier.multiplier</field>
             <field name="view_mode">tree,form</field>
             <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('listmultiplier')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_multiplier')})
-        ]"/>
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('listmultiplier')},),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_multiplier')})
+            ]"/>
 
         </record>
 
@@ -78,9 +78,9 @@
             <field name="res_model">competition.competition</field>
             <field name="view_mode">tree,form</field>
             <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('listcompetition')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_competition')})
-        ]"/>
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('listcompetition')},),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_competition')})
+            ]"/>
 
         </record>
 
@@ -111,9 +111,9 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-                     <xpath expr="//page[@name='general_information']/group[2]" position="attributes">
-                            <attribute name="attrs">{'invisible':1}</attribute>
-                     </xpath>
+                 <xpath expr="//page[@name='general_information']/group[2]" position="attributes">
+                    <attribute name="attrs">{'invisible':1}</attribute>
+                 </xpath>
             </field>
          </record>
 
@@ -124,8 +124,8 @@
             <field name="arch" type="xml">
                 <field name="sale_ok" position="before">
                     <label for="actual_quantity" style="font-size: 18px;color: #F44336;"/>
-                    <span style="font-size: 18px;color: #F44336;font-weight: bold; margin-left: -4px;">:
-                        <field name="actual_quantity" widget="statinfo" nolabel="1"/>
+                    <span style="font-size: 18px;color: #F44336;font-weight: bold;">
+                        : <field name="actual_quantity" widget="statinfo" nolabel="1"/>
                     </span>
                     <div/>
                 </field>
@@ -137,15 +137,14 @@
             <field name="model">product.template</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
-            <xpath expr="//page[@name='invoicing']" position="after">
-                            <page name="note" string="Note">
-                                <group>
-                                    <field name="product_note"/>
-                                </group>
-                            </page>
-                    </xpath>
+                <xpath expr="//page[@name='invoicing']" position="after">
+                        <page name="note" string="Note">
+                            <group>
+                                <field name="product_note"/>
+                            </group>
+                        </page>
+                </xpath>
             </field>
         </record>
-
     </data>
 </odoo>

@@ -145,6 +145,7 @@ class VendorOfferProduct(models.Model):
 
                 line.qty_in_stock = line.product_id.qty_available
                 if line.order_id.import_type_ven != 'new_appraisal':
+                    line.set_default_multiplier()
                     if line.order_id.is_dynamic_tier_adjustment:
                         line.multiplier_adjustment_criteria()
                     else:

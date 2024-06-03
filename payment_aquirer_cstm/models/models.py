@@ -125,8 +125,7 @@ class Website(models.Model):
         # cart creation was requested (either explicitly or to configure a promo code)
         if not sale_order:
             # TODO cache partner_id session
-            pricelist = self.env['product.pricelist'].browse(pricelist_id).sudo()
-            so_data = self._prepare_sale_order_values(partner, pricelist)
+            so_data = self._prepare_sale_order_values(partner)
             sale_order = self.env['sale.order'].with_company(request.website.company_id.id).with_user(SUPERUSER_ID).create(so_data)
 
             # set fiscal position

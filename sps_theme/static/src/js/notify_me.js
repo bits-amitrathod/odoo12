@@ -14,16 +14,16 @@ odoo.define('WebsiteCstm.WebsiteCstm', function(require) {
         );
     });
 
-    $(document).ready(function() {
-        $('.search_autocomplete').devbridgeAutocomplete({
-            appendTo: $('.o_website_sale_search'),
-            serviceUrl: '/shop/get_suggest',
-            onSelect: function(suggestion) {
-                window.location.replace(window.location.origin +
-                    '/shop/product/' + suggestion.data.id + '?search=' + suggestion.value);
-            }
-        });
-    });
+//    $(document).ready(function() {
+//        $('.search_autocomplete').devbridgeAutocomplete({
+//            appendTo: $('.o_website_sale_search'),
+//            serviceUrl: '/shop/get_suggest',
+//            onSelect: function(suggestion) {
+//                window.location.replace(window.location.origin +
+//                    '/shop/product/' + suggestion.data.id + '?search=' + suggestion.value);
+//            }
+//        });
+//    });
 
 
     var ajax = require('web.ajax');

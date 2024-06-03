@@ -7,7 +7,7 @@
     'sequence': 57,
     'version': '0.1',
     'category': 'Theme/Creative',
-    'depends': ['website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','vendor_offer','website_crm','mass_mailing','website_slides','blog_cstm'],
+    'depends': ['website_sale', 'website_sales','website_product_brand','web_search','auth_signup','prioritization_engine','vendor_offer','website_crm','mass_mailing','website_slides','blog_cstm'],
 
     'data': [
         'security/ir.model.access.csv',
@@ -35,6 +35,7 @@
         'views/thank_you_page.xml',
         'views/surgical_products_sell_page.xml',
         'views/product_catagory_and_brand_template.xml',
+        'views/website_product_page.xml',
         'views/cart_lines_page.xml',
         'views/website_header_template.xml',
         'views/website_footer_template.xml',

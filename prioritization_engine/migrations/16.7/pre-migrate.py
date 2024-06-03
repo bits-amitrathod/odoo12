@@ -27,17 +27,28 @@ def migrate(cr, version):
     cr.execute("""ALTER TABLE payment_transaction DROP CONSTRAINT IF EXISTS payment_transaction_acquirer_id_fkey;""")
     cr.execute("""DELETE FROM ir_asset where id=94;""")
 
+    # DELETE THE Assets
     cr.execute("""DELETE FROM ir_asset where name ilike 'sps_theme%';""")
     cr.execute("""DELETE FROM ir_asset where name ilike 'website_quote_ext%';""")
     cr.execute("""DELETE FROM ir_asset where name ilike 'website_sales%';""")
     cr.execute("""DELETE FROM ir_asset where name ilike 'payment_aquirer_cstm%';""")
     cr.execute("""DELETE FROM ir_asset where name ilike 'product_expiry_extension%';""")
+    cr.execute("""DELETE FROM ir_asset where bundle ilike 'web.assets_frontend;""")
+
+
 
     cr.execute("""DELETE FROM mail_template WHERE id in (13, 14, 134);""")
     cr.execute("""DELETE FROM ir_model_data WHERE name in ('email_template_edi_purchase', 'email_template_edi_purchase_done', 'email_template_edi_purchase_reminder')""")
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'sps_theme%' and type = 'qweb' and id not in (5508);""")
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'website_sales%' and type = 'qweb';""")
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'website_quote_ext%' and type = 'qweb';""")
+
+    # active the inactive views
+    cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'product.product.form_monitor_ex';""")
+    cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'vendor.offer.purchase.order.form.main';""")
+    cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'purchase.order.form.vendor.offer.inherit_3';""")
+
+
 
     # client wants to remove this stage ref shared DOC
     cr.execute("""DELETE FROM crm_stage WHERE name->>'en_US' IN ('Qualified', 'Proposition', 'Won');""")

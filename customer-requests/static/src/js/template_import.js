@@ -112,7 +112,7 @@ var DataImport = AbstractAction.extend({
              this.template_type = this.$('#template_type_list').val();
         },
         'change .oe_import_file': 'loaded_file',
-        'change input.oe_import_has_header, .js_import_options input': 'settings_changed',
+        'change input.oe_import_has_header, .oe_import_sheet': 'settings_changed',
         'change input.oe_import_advanced_mode': function (e) {
             this.do_not_change_match = true;
             this['settings_changed']();
@@ -213,6 +213,7 @@ var DataImport = AbstractAction.extend({
                 if(self.user_type== 'supplier'){self.$('#template_type_container').hide();}
                 else{self.$('#template_type_container').show();}
 
+                // Fetch the customer details using the post request and assign them to the dropdown
                 $.post( "/userslist", 'input_data='+self.user_type, function( data ) {
                     var jsonArray = JSON.parse(JSON.stringify(data));
                     self.$('#customers_list').append("<option value='0'></option>");
@@ -245,6 +246,8 @@ var DataImport = AbstractAction.extend({
                 kwargs: {context: session.user_context},
             });
     },
+
+    // this function is called at the time of loading the template, check start()
     renderButtons: function() {
         var self = this;
         this.$buttons = $(QWeb.render("ImportTemplateViewInnerStockhawk.buttons", this));
@@ -816,7 +819,7 @@ var DataImport = AbstractAction.extend({
         });
     },
 
-        _cleanFieldComments: function (changedField, fieldRemovedId) {
+    _cleanFieldComments: function (changedField, fieldRemovedId) {
             // Check that the column was not mapped to same field than another column
             if (fieldRemovedId) {
                 var $sameMappedFields = this.$(`.oe_import_comment_cell[field=\"${fieldRemovedId}\"]`).find('.oe_import_same_mapped_field');
@@ -829,7 +832,7 @@ var DataImport = AbstractAction.extend({
             var $fieldRow = $(changedField).closest('tr.oe_import_grid-row');
             $fieldRow.find('.oe_import_comments_div').empty();
             $fieldRow.find('.oe_import_options_div').addClass("d-none");
-        },
+    },
     _cleanFieldComments: function (changedField, fieldRemovedId) {
         // Check that the column was not mapped to same field than another column
         if (fieldRemovedId) {

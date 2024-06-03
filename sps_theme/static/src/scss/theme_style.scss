@@ -136,6 +136,18 @@ section {
 
 }
 
+.btn{
+    text-wrap: nowrap;
+    &.btn-info,  &.btn-secondary, &.o_add_wishlist{
+//         font-size: 15px ;
+//         line-height: 18px;
+        font-family: 'robotomedium';
+        background: #3d9cca !important;
+        border-color: #3d9cca !important;
+        color:white;
+    }
+}
+
 header{
     border-bottom: 0 !important;
     .navbar{
@@ -217,7 +229,7 @@ header{
             display: block !important;
             .navbar-brand{
                 &.logo{
-                    margin-top: 24px;
+//                     margin-top: 24px;
                     width: 15%;
                     margin-right: 0px !important;
                     float: left;
@@ -1215,32 +1227,55 @@ li > * > li > ol {
     padding-left: 70px !important;
 }
 
-#wsale_products_categories_collapse{
-    font-size: 17px;
-//         line-height: 18px;
-    color: #394a58;
-    font-family: 'robotoregular';
-    text-transform: capitalize;
-}
-
 .nav-pills .nav-link.active, .nav-pills .nav > li > a.active, .nav-pills .show > .nav-link, .nav-pills .nav > li.show > a {
     color: #ffffff  !important;
     background: #c42624;
     border-color: #c42624;
 }
-
-#o_shop_collapse_category li a {
-    display: inline-block;
-    width: 80%;
-    padding-left: 3px;
+.o_shop_collapse_category{
+    font-size: 17px;
     color: black;
-}
+    font-family: 'robotoregular';
+    text-transform: capitalize;
+    .form-check{
+        padding-left: 16px;
+        padding-right: 30px;
+        border-radius: 0.25rem;
+        padding: 2px 15px;
+        &:has(input:checked){
+            background-color:red;
+            color: white;
+        }
+    }
+    .form-check-input{
+        display:none;
+    }
+    ul{
+        ul{
+           margin-left: 30px;
+        }
+    }
+    .accordion-header{
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        align-items: center;
+        .accordion-button{
+            width: unset !important;
+            margin: 0px;
+            flex-grow: unset !important;
+        }
+    }
 
-#o_shop_collapse_category li i.fa {
-    cursor: pointer;
-    color: #c42624 !important;
-}
-
-#o_shop_collapse_category li:first-child{
-    display:none;
+    li{
+        a{
+            display: inline-block;
+            width: 80%;
+            padding-left: 3px;
+            color: black;
+        }
+        i.fa{
+            cursor: pointer;
+            color: #c42624 !important;
+        }
+    }
 }

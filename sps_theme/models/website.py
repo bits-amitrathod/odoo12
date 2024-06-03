@@ -22,3 +22,17 @@ class Website(models.Model):
             ('list_price asc', _('Catalog Price: Low to High')),
             ('list_price desc', _('Catalog Price: High to Low')),
         ]
+
+    def _get_product_page_proportions(self):
+        """
+        Returns the number of columns (css) that both the images and the product details should take.
+        """
+        self.ensure_one()
+
+        # return {
+        #     'none': (0, 12),
+        #     '50_pc': (6, 6),
+        #     '66_pc': (8, 4),
+        #     '100_pc': (12, 12),
+        # }.get(self.product_page_image_width)
+        return (4, 8)

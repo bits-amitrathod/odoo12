@@ -6,7 +6,7 @@
             <field name="inherit_id" ref="website_sale.product_template_form_view"/>
             <field name="model">product.template</field>
             <field name="arch" type="xml">
-                <page name="shop" position="after">
+                <xpath expr="//notebook" position="inside">
                     <page name='seo' string="SEO">
                     	<group name="seo">
 	                        <group string="SEO Information">
@@ -18,7 +18,7 @@
                     		<field name="website_meta_description"/>
                     	</group>
                     </page>
-                </page>
+                </xpath>
             </field>
         </record>
     </data>
