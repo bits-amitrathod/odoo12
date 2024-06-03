@@ -4,6 +4,7 @@ import odoo
 
 from odoo import http, _
 from odoo.addons.auth_signup.models.res_users import SignupError
+from odoo import models, fields, api
 from odoo.exceptions import UserError
 from odoo.addons.web.controllers.home import ensure_db, Home
 from odoo.exceptions import ValidationError
