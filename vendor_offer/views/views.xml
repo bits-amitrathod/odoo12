@@ -348,6 +348,10 @@
                             groups="stock.group_stock_user"/>
 
                 </xpath>
+                <label for="date_planned" position="replace">
+                    <label for="date_planned" string="Receipt Date"/>
+                </label>
+
                 <!-- This Button Added After Set to Draft button -->
                 <xpath expr="//header/button[@name='button_draft']" position="after">
                     <button name="button_vendor_offer" states="cancel" string="Set to Vendor Offer" type="object"/>
@@ -355,12 +359,13 @@
                 <xpath expr="//group/group/field[@name='origin']" position="replace">
                     <field name="origin" string="Sale Order#"/>
                 </xpath>
-                <xpath expr="//group/group/field[@name='company_id']" position="after">
+                <field name="user_id" position="replace">
+                    <field name="user_id" string="Purchase Representative" domain="[('share', '=', False)]" widget="many2one_avatar_user"/>
+                </field>
+                <xpath expr="//group[@name='other_info']" position="inside">
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
                     <field name="shipping_terms"/>
-
-
                 </xpath>
                 <xpath expr="//group/group/field[@name='partner_ref']" position="after">
                     <field name="offer_type" readonly="1"
@@ -408,7 +413,7 @@
                             <field name="product_qty" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>
                             <field name="qty_received" invisible="not context.get('show_purchase', True)"/>
                             <field name="qty_invoiced" invisible="not context.get('show_purchase', True)"/>
-                            <field name="product_uom" groups="product.group_uom"
+                            <field name="product_uom"
                                    attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}"
                                    force_save="1"/>
                             <field name="price_unit" attrs="{'readonly': [('vendor_offer_data', '=', True)]}"/>

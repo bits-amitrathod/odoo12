@@ -40,7 +40,7 @@ class FedexDelivery(models.Model):
         srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
         srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
         srm.transaction_detail(order.id)
-        package_type = popup.product_packaging.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
+        package_type = popup.product_packaging.package_type_id.shipper_package_code or self.fedex_default_package_type_id.shipper_package_code
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
         srm.shipment_request_email(order)
@@ -247,7 +247,7 @@ class FedexDelivery(models.Model):
             srm.transaction_detail(picking.id)
 
             package_type = picking.package_ids and picking.package_ids[
-                0].packaging_id.shipper_package_code or self.fedex_default_packaging_id.shipper_package_code
+                0].packaging_id.package_type_id.shipper_package_code or self.fedex_default_package_type_id.shipper_package_code
             srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type,
                                  self.fedex_weight_unit, self.fedex_saturday_delivery)
             srm.set_currency(_convert_curr_iso_fdx(picking.company_id.currency_id.name))
@@ -332,10 +332,10 @@ class FedexDelivery(models.Model):
                     _add_customer_references_so(srm, order)
                     srm._add_package(
                         package_weight,
-                        package_code=packaging.shipper_package_code,
-                        package_height=packaging.height,
-                        package_width=packaging.width,
-                        package_length=packaging.length,
+                        package_code=packaging.package_type_id.shipper_package_code,
+                        package_height=packaging.package_type_id.height,
+                        package_width=packaging.package_type_id.width,
+                        package_length=packaging.package_type_id.length,
                         sequence_number=sequence,
                         po_number=po_number,
                         dept_number=dept_number,
@@ -412,13 +412,13 @@ class FedexDelivery(models.Model):
                 srm.add_package(net_weight)
                 _add_customer_references_so(srm, order)
 
-                # packaging = picking.package_ids[:1].packaging_id or picking.carrier_id.fedex_default_packaging_id
+                # packaging = picking.package_ids[:1].packaging_id or picking.carrier_id.fedex_default_package_type_id
                 # srm._add_package(
                 #     net_weight,
-                #     package_code=packaging.shipper_package_code,
-                #     package_height=packaging.height,
-                #     package_width=packaging.width,
-                #     package_length=packaging.length,
+                #     package_code=packaging.package_type_id.shipper_package_code,
+                #     package_height=packaging.package_type_id.height,
+                #     package_width=packaging.package_type_id.width,
+                #     package_length=packaging.package_type_id.length,
                 #     po_number=po_number,
                 #     dept_number=dept_number,
                 # )

@@ -362,7 +362,6 @@ class VendorOfferNewAppraisalImport(models.Model):
                             for order_line_object in order_list_list:
                                 exp_date = exp_date_str = None
                                 try:
-
                                     today_date = datetime.datetime.now()
                                     last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
                                     last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
@@ -492,7 +491,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                                 sql_query = insert
                                 val = (order_line_object['prod_name'], order_line_object['product_uom'],
                                        float("{0:.2f}".format(float(order_line_object['offer_price']))),
-                                       order_line_object['product_qty'],  order_line_object['product_qty_app_new'],
+                                       int(order_line_object['product_qty']),  order_line_object['product_qty_app_new'],
                                        order_line_object['date_planned'],
                                        order_line_object['order_id'], order_line_object['product_id'],
                                        order_line_object['qty_in_stock'],
@@ -514,7 +513,6 @@ class VendorOfferNewAppraisalImport(models.Model):
                                        order_line_object['list_contains_equip'],
                                        order_line_object['original_sku'],
                                        order_line_object['product_sales_amount_yr'],
-
                                        order_line_object['open_quotations_of_prod'],
                                        order_line_object['inv_ratio_90_days'],
                                        order_line_object['consider_dropping_tier'])

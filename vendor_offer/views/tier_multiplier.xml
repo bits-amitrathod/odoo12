@@ -97,10 +97,8 @@
                             <field name="class_code"></field>
                         </group>
                     </group>
-                     <group>
-                        <group string="Internal Notes">
-                            <field name="description" nolabel="1" placeholder="This note is only for internal purposes." />
-                        </group>
+                    <group string="Internal Notes">
+                        <field name="description" nolabel="1" placeholder="This note is only for internal purposes." />
                     </group>
                 </page>
             </field>

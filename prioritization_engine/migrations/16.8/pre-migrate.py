@@ -42,9 +42,10 @@ def migrate(cr, version):
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'sps_theme%' and type = 'qweb' and id not in (5508);""")
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'website_sales%' and type = 'qweb';""")
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'website_quote_ext%' and type = 'qweb';""")
+    cr.execute("""DELETE FROM ir_ui_view WHERE name ilike 'product.product.form_monitor_ex';""")
+
 
     # active the inactive views
-    cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'product.product.form_monitor_ex';""")
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'vendor.offer.purchase.order.form.main';""")
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'purchase.order.form.vendor.offer.inherit_3';""")
 

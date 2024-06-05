@@ -197,9 +197,9 @@ class VendorOfferProductLineNew(models.Model):
             elif tier and tier.code == '2' and inv_ratio_90_days < 1:
                 if open_quotations_cnt >= 10 or (qty_in_stock == 0 and qty_sold_90_days > 0):
                     multiplier = 'T 1 GOOD - 45 PRCT'
-            elif qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 and product_sales_count == 0 and average_aging > 30:
+            elif qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 and product_sales_count != 0 and average_aging > 30:
                 multiplier = 'TIER 3'
-            elif qty_in_stock == 0 and qty_sold_yr == 0 and product_sales_count == 0 and open_quotations_cnt < 5:
+            elif qty_in_stock == 0 and qty_sold_yr == 0 and product_sales_count != 0 and open_quotations_cnt < 5:
                 multiplier = 'TIER 3'
 
             # Change TIER 3 To multiplier this is for only testing purpose
@@ -287,11 +287,10 @@ class VendorOfferProductLineNew(models.Model):
             self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'TIER 3')], limit=1)
 
     def set_default_multiplier(self):
-        if self.product_id and self.product_id.tier and self.product_id.tier.code == 1:
-            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'T 1 GOOD - 45 PRCT')], limit=1)
-        elif self.product_id and self.product_id.tier and self.product_id.tier.code == 2:
-            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'T 2 GOOD - 35 PRCT')], limit=1)
-        elif self.product_id and self.product_id.tier and self.product_id.tier.code == 3:
-            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'TIER 3')], limit=1)
-        else:
-            self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'OUT OF SCOPE')], limit=1)
+        if self.multiplier is None:
+            if self.product_id and self.product_id.tier and self.product_id.tier.code == '1':
+                self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'T 1 GOOD - 45 PRCT')], limit=1)
+            elif self.product_id and self.product_id.tier and self.product_id.tier.code == '2':
+                self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'T 2 GOOD - 35 PRCT')], limit=1)
+            elif self.product_id and self.product_id.tier and self.product_id.tier.code == '3':
+                self.multiplier = self.env['multiplier.multiplier'].search([('name', '=', 'TIER 3')], limit=1)
