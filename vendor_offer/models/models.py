@@ -1400,20 +1400,6 @@ class ProductTemplateTire(models.Model):
     tier = fields.Many2one('tier.tier', string="Tier")
     class_code = fields.Many2one('classcode.classcode', string="Class Code")
     actual_quantity = fields.Float('Qty Available For Sale', compute="_compute_qty_available", search='_search_qty_available', compute_sudo=False, digits='Product Unit of Measure', store=True)
-    actual_quantity_temp = fields.Float('Qty Available For Sale Temp', compute="_compute_qty_available_temp",
-                                        store=False)
-
-    def _compute_qty_available_temp(self):
-        for template in self:
-            stock_quant = self.env['stock.quant'].search([('product_tmpl_id', '=', template.id)])
-            reserved_quantity = 0
-            if len(stock_quant) > 0:
-                for lot in stock_quant:
-                    if lot.lot_id and lot.lot_id.expiration_date and \
-                            lot.lot_id.expiration_date.date() > datetime.datetime.now().date():
-                        reserved_quantity += lot.reserved_quantity
-            template.actual_quantity_temp = template.qty_available - reserved_quantity
-            template.update({'actual_quantity': template.qty_available - reserved_quantity})
 
     def action_test_prod(self):
         start_time = time.time()
