@@ -12,5 +12,6 @@ def migrate(cr, version):
 
     cr.execute("""update ir_ui_view set active = true where id in (4942,3239,2558);""")
     cr.execute("""update ir_ui_view set active = true where id in (4938,4936,4937);""")
+    cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'sps_crm%';""")
 
     _logger.info(" ------- Post-Migration Ended -------" + "\n" * 20)

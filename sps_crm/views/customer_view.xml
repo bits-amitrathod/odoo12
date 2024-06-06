@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
                     <page name="externalfields" string="Details"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False), ('customer_rank', '==', 0)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False), ('customer_rank', '==', 0)]}">
 <!--                            <field name="partner_id"/>-->
                         <group>
                             <group>
@@ -66,7 +66,7 @@
                         </group>
                     </page>
                     <page name="activitynotesfields" string="Activity Notes"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False), ('customer_rank', '==', 0)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False), ('customer_rank', '==', 0)]}">
 
                         <group>
                                    <field name="sales_activity_notes"/>
