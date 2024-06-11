@@ -3,17 +3,6 @@
 
         <!-- Menu -->
 
-        <record id="action_product_instock_notification" model="ir.actions.act_window">
-            <field name="name">Product In-stock Notification</field>
-            <field name="res_model">sps_theme.product_instock_notify</field>
-            <field name="view_mode">form,tree</field>
-             <field name="view_ids" eval="[(5, 0, 0),
-        (0, 0, {'view_mode': 'tree', 'view_id': ref('sps_theme.list')},),
-        (0, 0, {'view_mode': 'form', 'view_id': ref('sps_theme.noti_form')})
-        ]"/>
-        </record>
-
-
         <menuitem id="menu_product_instock_notification" name="Website Product Notification"
                   action="action_product_instock_notification"
                   parent="stock.menu_stock_warehouse_mgmt" sequence="10"/>
@@ -53,6 +42,18 @@
                 </form>
             </field>
         </record>
+
+
+        <record id="action_product_instock_notification" model="ir.actions.act_window">
+            <field name="name">Product In-stock Notification</field>
+            <field name="res_model">sps_theme.product_instock_notify</field>
+            <field name="view_mode">form,tree</field>
+             <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('sps_theme.list')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('sps_theme.noti_form')})
+        ]"/>
+        </record>
+
 
         <!-- Email template -->
         <record id="mail_template_product_instock_notification_email" model="mail.template">
