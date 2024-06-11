@@ -76,8 +76,7 @@
             <field name="inherit_id" ref="delivery.view_order_form_with_carrier"/>
             <field name="arch" type="xml">
                 <data>
-                  <xpath expr="//div[@class='oe_right']" position="replace">
-                      <div class="oe_right">
+                    <xpath expr="//button[@name='action_open_delivery_wizard'][1]" position="replace">
                             <field name="delivery_method_readonly_flag" invisible="1"/>
                             <button
                                 string="Add shipping"
@@ -85,23 +84,26 @@
                                 type="object"
                                 attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('order_line', '=', []), ('delivery_set', '=', True)]}"
                             />
-                            <button
-                                string="Update shipping cost"
-                                name="action_open_delivery_wizard"
-                                context="{'carrier_recompute':True}"
-                                type="object"
-                                class="text-warning btn-secondary"
-                                attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('recompute_delivery_price', '=', False), ('delivery_set', '=', False)]}"
-                            />
-                            <button
-                                string="Update shipping cost"
-                                name="action_open_delivery_wizard"
-                                context="{'carrier_recompute':True}"
-                                type="object"
-                                attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('recompute_delivery_price', '=', True), ('delivery_set', '=', False)]}"
-                            />
-                        </div>
-                  </xpath>
+                    </xpath>
+                    <xpath expr="//button[@name='action_open_delivery_wizard'][2]" position="replace">
+                        <button
+                               string="Update shipping cost"
+                               name="action_open_delivery_wizard"
+                               context="{'carrier_recompute':True}"
+                               type="object"
+                               class="text-warning btn-secondary"
+                               attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('recompute_delivery_price', '=', False), ('delivery_set', '=', False)]}"
+                           />
+                    </xpath>
+                    <xpath expr="//button[@name='action_open_delivery_wizard'][3]" position="replace">
+                        <button
+                            string="Update shipping cost"
+                            name="action_open_delivery_wizard"
+                            context="{'carrier_recompute':True}"
+                            type="object"
+                            attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('recompute_delivery_price', '=', True), ('delivery_set', '=', False)]}"
+                        />
+                    </xpath>
                 </data>
             </field>
       </record>

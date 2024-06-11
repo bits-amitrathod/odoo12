@@ -23,9 +23,9 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/views.xml',
-        # 'report/revenue_by_na_per_account_report.xml',
-        # 'report/revenue_by_na_per_account_temp.xml',
+        'views/views.xml',
+        'report/revenue_by_na_per_account_report.xml',
+        'report/revenue_by_na_per_account_temp.xml',
     ],
 
     'installable': True,

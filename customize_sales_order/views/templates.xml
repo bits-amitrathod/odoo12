@@ -4,10 +4,10 @@
           <xpath expr="//div[hasclass('table-responsive')]" position="replace">
                <div>
                       <table class="o_account_reports_table report_financial_table">
-                          <t t-call="{{model._get_templates()['main_table_header_template']}}"/>
+                          <t t-call="{{report.main_table_header_template}}"/>
                           <tbody>
-                              <t t-if="lines.get('lines')">
-                                  <t t-call="{{model._get_templates()['line_template']}}"/>
+                              <t t-if="lines">
+                                  <t t-call="{{report.line_template}}"/>
                               </t>
                           </tbody>
                       </table>

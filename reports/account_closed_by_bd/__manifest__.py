@@ -14,9 +14,9 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/views.xml',
-        # 'report/account_closed_by_bd_report.xml',
-        # 'report/account_closed_by_bd_temp.xml',
+        'views/views.xml',
+        'report/account_closed_by_bd_report.xml',
+        'report/account_closed_by_bd_temp.xml',
     ],
     'installable': True,
     'application': True,
