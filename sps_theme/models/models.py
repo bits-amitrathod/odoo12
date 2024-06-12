@@ -17,7 +17,7 @@ class website_cstm(models.Model):
     def send_email_product_instock(self):
         StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
         subcribers = StockNotifcation.search([
-            ('status', '=', 'pending'),
+            ('status', '=', 'pending'), ('x_studio_reoccuring', '=', 'True')
         ])
         notificationList = {}
         template = self.env.ref('sps_theme.mail_template_product_instock_notification_email')
@@ -57,7 +57,7 @@ class PporoductTemplate(models.Model):
         for temp in self:
             if temp.actual_quantity == 0:
                 StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
-                subcribers = StockNotifcation.search([('product_tmpl_id', '=', temp.id),('x_studio_reoccuring', '=', 'True')])
+                subcribers = StockNotifcation.search([('product_tmpl_id', '=', temp.id)])
                 for sub in subcribers:
                     sub.status = 'pending'
         return res
