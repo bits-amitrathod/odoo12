@@ -114,9 +114,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     var values = {'carrier_id': carrier_id};
                     dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
                     .then(_handleCarrierUpdateResults);
-
                });
-
            }
         });
 

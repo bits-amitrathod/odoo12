@@ -2,13 +2,13 @@
      <data>
 
 
-<!--        <record id="payment_aquirer_cstm.payment_frontend_assets" model="ir.asset">-->
-<!--            <field name="name">Payment Provider CSTM Frontend Assets</field>-->
-<!--            <field name="bundle">web.assets_frontend</field>-->
-<!--            <field name="directive">append</field>-->
-<!--            <field name="path">/payment_aquirer_cstm/static/src/js/script.js</field>-->
-<!--            <field name="sequence" eval="16"/>-->
-<!--        </record>-->
+        <record id="payment_aquirer_cstm.payment_frontend_assets" model="ir.asset">
+            <field name="name">Payment Provider CSTM Frontend Assets</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">/payment_aquirer_cstm/static/src/js/script.js</field>
+            <field name="sequence" eval="16"/>
+        </record>
 
 
         <record id="email_after_payment_done" model="mail.template">

@@ -36,8 +36,7 @@
                     <field name="carrier_info"/>
                     <field name="carrier_acc_no"/>
                     <field name="client_order_ref"/>
-<!--        UPG_ODOO16_NOTE below field commented  because not found in the model    -->
-<!--                    <field name="x_studio_allow_duplicate_po" widget="boolean_toggle"/>-->
+                    <field name="x_studio_allow_duplicate_po" widget="boolean_toggle"/>
                     <field name="gl_account"/>
                     <field name="is_share"/>
                     <field name="sale_margine"/>
