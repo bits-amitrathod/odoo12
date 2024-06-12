@@ -2,29 +2,24 @@
 import werkzeug
 import logging
 from collections import OrderedDict
-from odoo import fields as odoo_fields, tools, _
-from odoo import exceptions, http, _
+from odoo import fields as odoo_fields, _
+from odoo import http
 from odoo.http import request
 from odoo.tools import consteq
-from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.osv import expression
 from odoo.exceptions import AccessError
-from odoo.addons.portal.controllers.portal import get_records_pager, pager as portal_pager, CustomerPortal
+# from odoo.addons.sale.controllers.portal import CustomerPortal
 from datetime import datetime
 from odoo.exceptions import AccessError, MissingError
-from odoo.addons.payment.controllers.portal import PaymentProcessing
+# from odoo.addons.payment.controllers.portal import PaymentProcessing
 from odoo.addons.portal.controllers.mail import _message_post_helper
 from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager, get_records_pager
 _logger = logging.getLogger(__name__)
 SUPERUSER_ID = 2
-
-
 _logger = logging.getLogger(__name__)
-
 SUPERUSER_ID = 2
 
-
-class WebsiteSale(http.Controller):
+class SPSCustomerPortal(CustomerPortal):
     def _document_check_access(self, model_name, document_id, access_token=None):
         document = request.env[model_name].browse([document_id])
         document_sudo = document.sudo().exists()
@@ -112,19 +107,17 @@ class WebsiteSale(http.Controller):
         if order_sudo.company_id:
             values['res_company'] = order_sudo.company_id
 
-        if order_sudo.has_to_be_paid():
+        if order_sudo._has_to_be_paid():
             domain = expression.AND([
                 [('company_id', '=', order_sudo.company_id.id)], # '&', ('website_published', '=', True),
-                [('country_ids', 'in', [order_sudo.partner_id.country_id.id])] #'|', ('specific_countries', '=', False),
+                [('available_country_ids', 'in', [order_sudo.partner_id.country_id.id])] #'|', ('specific_countries', '=', False),
             ])
-            acquirers = request.env['payment.acquirer'].sudo().search(domain)
+            providers = request.env['payment.provider'].sudo().search(domain)
 
-            values['acquirers'] = acquirers.filtered(
-                lambda acq: (acq.payment_flow == 'form' and acq.view_template_id) or
-                            (acq.payment_flow == 's2s' and acq.registration_view_template_id))
+            values['acquirers'] = providers.filtered(lambda acq: (acq.payment_flow == 'form' and acq.view_template_id) or (acq.payment_flow == 's2s' and acq.registration_view_template_id))
             values['pms'] = request.env['payment.token'].search(
                 [('partner_id', '=', order_sudo.partner_id.id),
-                 ('acquirer_id', 'in', acquirers.filtered(lambda acq: acq.payment_flow == 's2s').ids)])
+                 ('acquirer_id', 'in', providers.filtered(lambda acq: acq.payment_flow == 's2s').ids)])
 
         if order_sudo.state in ('draft', 'sent', 'cancel'):
             history = request.session.get('my_quotations_history', [])
@@ -162,9 +155,8 @@ class WebsiteSale(http.Controller):
             return request.redirect('/my')
 
         message = post.get('accept_message')
-
         flag = False
-        query_string=False
+        query_string = False
         Order = request.env['sale.order'].sudo().browse(order_id)
         SaleOrderLines = request.env['sale.order.line'].sudo().search([('order_id', '=', Order.id)])
         for SaleOrderLine in SaleOrderLines:
@@ -183,11 +175,11 @@ class WebsiteSale(http.Controller):
             Order.action_cancel()
             Order.action_draft()
             Order.action_confirm()
-
             # picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
             # picking.write({'state': 'assigned'})
             # stock_move = request.env['stock.move'].sudo().search([('picking_id', '=', picking.id)])
             # stock_move.write({'state': 'assigned'})
+
         else:
             Order.write({'state': 'sale'})  # , 'confirmation_date': datetime.now()
 
@@ -285,16 +277,23 @@ class WebsiteSale(http.Controller):
 
 class CustomerPortal(CustomerPortal):
 
-    def _prepare_portal_layout_values(self):
-        # get customer sales rep
-        values = super(CustomerPortal, self)._prepare_portal_layout_values()
+
+    def _prepare_home_portal_values(self, counters):
+        values = super()._prepare_home_portal_values(counters)
         PuchaseOrder = request.env['purchase.order']
-        sales_user = False
         partner = request.env.user.partner_id
         vendor_count = PuchaseOrder.search_count([
             ('message_partner_ids', 'child_of', [partner.commercial_partner_id.id]),
             ('state', 'in', ['ven_sent', 'cancel'])
         ])
+        values['vendor_count'] = vendor_count
+        return values
+
+    def _prepare_portal_layout_values(self):
+        # get customer sales rep
+        values = super(CustomerPortal, self)._prepare_portal_layout_values()
+        sales_user = False
+        partner = request.env.user.partner_id
 
         if partner.account_manager_cust and not partner.account_manager_cust._is_public():
             sales_user = partner.account_manager_cust
@@ -311,7 +310,6 @@ class CustomerPortal(CustomerPortal):
             'sales_user': sales_user,
             'page_name': 'home',
             'archive_groups': [],
-            'vendor_count':vendor_count,
         })
         return values
 
@@ -420,41 +418,21 @@ class CustomerPortal(CustomerPortal):
         else:
             return request.render("website_quote_ext.portal_my_vendor_offer", values)
 
-    @http.route(['/my/orders/<int:order_id>'], type='http', auth="public", website=True)
-    def portal_order_page(self, order_id, report_type=None, access_token=None, message=False, download=False, **kw):
-        try:
-            order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
-        except (AccessError, MissingError):
-            return request.redirect('/my')
-
-        if report_type in ('html', 'pdf', 'text'):
-            return self._show_report(model=order_sudo, report_type=report_type,
-                                     report_ref='sale.action_report_saleorder', download=download)
-
-        # use sudo to allow accessing/viewing orders for public user
-        # only if he knows the private token
-        # Log only once a day
-        # if order_sudo:
-        #     # store the date as a string in the session to allow serialization
-        #     now = odoo_fields.Date.today().isoformat()
-        #     session_obj_date = request.session.get('view_quote_%s' % order_sudo.id)
-        #     if session_obj_date != now and request.env.user.share and access_token:
-        #         request.session['view_quote_%s' % order_sudo.id] = now
-        #         body = _('Quotation viewed by customer %s', order_sudo.partner_id.name)
-        #         _message_post_helper(
-        #             "sale.order",
-        #             order_sudo.id,
-        #             body,
-        #             token=order_sudo.access_token,
-        #             message_type="notification",
-        #             subtype_xmlid="mail.mt_note",
-        #             partner_ids=order_sudo.user_id.sudo().partner_id.ids,
-        #         )
-
-        values = self._order_get_page_view_values(order_sudo, access_token, **kw)
-        values['message'] = message
-
-        return request.render('sale.sale_order_portal_template', values)
+    # @http.route(['/my/orders/<int:order_id>'], type='http', auth="public", website=True)
+    # def portal_order_page(self, order_id, report_type=None, access_token=None, message=False, download=False, **kw):
+    #     try:
+    #         order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
+    #     except (AccessError, MissingError):
+    #         return request.redirect('/my')
+    #
+    #     if report_type in ('html', 'pdf', 'text'):
+    #         return self._show_report(model=order_sudo, report_type=report_type,
+    #                                  report_ref='sale.action_report_saleorder', download=download)
+    #
+    #     values = self._order_get_page_view_values(order_sudo, access_token, **kw)
+    #     values['message'] = message
+    #
+    #     return request.render('sale.sale_order_portal_template', values)
 
     @http.route(['/my/invoices/<int:invoice_id>'], type='http', auth="public", website=True)
     def portal_my_invoice_detail(self, invoice_id, access_token=None, report_type=None, download=False, **kw):
@@ -469,17 +447,15 @@ class CustomerPortal(CustomerPortal):
 
         values = self._invoice_get_page_view_values(invoice_sudo, access_token, **kw)
         pay_ids = []
-        for item in values['acquirers']:
+        for item in values['providers']:
             if item.display_name != 'Purchase Order':
                 pay_ids.append(item.id)
-        acquirers = request.env['payment.acquirer'].search([('id', 'in', pay_ids)])
-        values['acquirers'] = acquirers
-        #acquirers = values.get('acquirers')
+        providers = request.env['payment.provider'].search([('id', 'in', pay_ids)])
+        values['providers'] = providers
 
-        if acquirers:
-            country_id = values.get('partner_id') and values.get('partner_id')[0].country_id.id
-            values['acq_extra_fees'] = acquirers.get_acquirer_extra_fees(invoice_sudo.amount_residual,
-                                                                         invoice_sudo.currency_id, country_id)
+        # if providers:
+        #     country_id = values.get('partner_id') and values.get('partner_id')[0].country_id.id
+        #     values['acq_extra_fees'] = providers.get_acquirer_extra_fees(invoice_sudo.amount_residual, invoice_sudo.currency_id, country_id)
 
         pay_link = request.env['sale.pay.link.cust'].search([('invoice_id', '=', invoice_id)])
         if pay_link:

@@ -594,7 +594,7 @@ class vendor_offer_automation(models.Model):
                                 sql_query = insert
                                 val = ( order_line_object['prod_name'],order_line_object['product_uom'],
                                         float("{0:.2f}".format(float(order_line_object['offer_price']))),
-                                        order_line_object['product_qty'],order_line_object['date_planned'],
+                                        int(order_line_object['product_qty']),order_line_object['date_planned'],
                                         order_line_object['order_id'],order_line_object['product_id'],
                                         order_line_object['qty_in_stock'],
                                         float("{0:.2f}".format(float(order_line_object['retail_price']))),
@@ -612,8 +612,7 @@ class vendor_offer_automation(models.Model):
 
                                 self._cr.execute(sql_query,val)
                                 line_obj = self._cr.fetchone()
-                                line_order_model = self.env['purchase.order.line'].search(
-                                    [('id', 'in', line_obj)])
+                                line_order_model = self.env['purchase.order.line'].search([('id', 'in', line_obj)])
                                 line_order_model.price_subtotal = float(order_line_object['offer_price_total'])
 
             except UnicodeDecodeError as ue:
@@ -708,11 +707,7 @@ class vendor_offer_automation(models.Model):
                         format = "%d" if (cell.value).is_integer() else "%s"
                         converted_val = format % cell.value
                         values.append(converted_val)
-                        # values.append(
-                        #     str(cell.value)
-                        #     if is_float
-                        #     else str(cell.value)
-                        # )
+
                     else:
                         values.append(cell.value)
                     cell_index = cell_index + 1

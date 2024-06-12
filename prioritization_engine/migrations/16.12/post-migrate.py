@@ -17,5 +17,12 @@ def migrate(cr, version):
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'prioritization_engine%';""")
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'account_pass%';""")
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'captivea_edi%';""")
+    cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'appraisal_tracker%';""")
+    cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'customer_credit_note%';""")
+    cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'inventory_monitor%';""")
+    cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'product_brand%';""")
+    cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'product_expiry_extension%';""")
+    cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'vendor_offer%';""")
+    cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'product_seo_backend%';""")
 
 _logger.info(" ------- Post-Migration Ended -------" + "\n" * 20)

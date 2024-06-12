@@ -1,0 +1,50 @@
+<odoo>
+     <data>
+
+
+<!--        <record id="payment_aquirer_cstm.payment_frontend_assets" model="ir.asset">-->
+<!--            <field name="name">Payment Provider CSTM Frontend Assets</field>-->
+<!--            <field name="bundle">web.assets_frontend</field>-->
+<!--            <field name="directive">append</field>-->
+<!--            <field name="path">/payment_aquirer_cstm/static/src/js/script.js</field>-->
+<!--            <field name="sequence" eval="16"/>-->
+<!--        </record>-->
+
+
+        <record id="email_after_payment_done" model="mail.template">
+            <field name="name">Email Template After Payment</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from">{{ctx['email_from']}}</field>
+            <field name="email_to">{{ctx['email_to']}}</field>
+            <field name="email_cc">{{ctx['email_cc']}}</field>
+            <field name="subject">Payment Done </field>
+            <field name="body_html" type="html">
+                <t t-set="tx" t-value="ctx.get('tx')"/>
+                <p>
+                    Dear Team,<br/>
+                    Payment Done for the following Sale Order :  <br/>
+                </p>
+                <t t-if="ctx.get('sale_order')">
+                    <p>
+                        Reference : <t t-out="ctx['sale_order']"></t>
+                        <br/>
+                    </p>
+                    <p>
+                        Customer name : <t t-out="ctx['cust_name']"></t>
+                        <br/>
+                    </p>
+                </t>
+
+                <t t-if="ctx.get('sales_rep')">
+                    <p> Sales Rep : <t t-out="ctx['sales_rep']"></t> <br/></p>
+                </t>
+
+                <t t-if="ctx.get('amount')">
+                    <p> Amount : <t t-out="format_amount(tx.amount,tx.currency_id)"></t><br/></p>
+                </t>
+
+                <p> Thank you <br/> </p>
+            </field>
+        </record>
+     </data>
+</odoo>

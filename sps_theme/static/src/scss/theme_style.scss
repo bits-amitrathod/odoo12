@@ -1279,3 +1279,29 @@ li > * > li > ol {
         }
     }
 }
+
+
+.pagination {
+    .page-item {
+        margin: 0 5px;
+        a{
+            &.page-link{
+               line-height: 10px;
+               font-size: 14px;
+               font-family: $medium-font;
+               color: $white;
+               background: #616e79;
+               border-color: #616e79;
+               padding: 0.5rem 0.5rem;
+            }
+        }
+        &.active{
+            a{
+                &.page-link{
+                    background:#c42624;
+                    border-color: #c42624;
+                }
+            }
+        }
+    }
+}

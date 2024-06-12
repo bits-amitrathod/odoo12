@@ -15,6 +15,7 @@ class SaleOrderLineInherit(models.Model):
 
     def _calculate_max_min_lot_expiration(self):
         for record in self:
+            product_min_max_exp_date = None
             if record.product_id and record.product_id.id:
                 for picking_id in record.order_id.picking_ids:
                     if picking_id.picking_type_id.id == 1 and picking_id.state != 'cancel':
@@ -42,26 +43,19 @@ class SaleOrderLineInherit(models.Model):
                                             stock_lot.id in (select lot_id from public.stock_move_line sml where move_id = %s )
                                             """, (move_line.product_id.id, move_line.id))
                                     query_result = self.env.cr.dictfetchone()
-                                    if query_result['min'] is not None and query_result['max'] is not None and \
-                                            query_result['min'] == query_result['max']:
-                                        record.product_min_max_exp_date = str(
-                                            datetime.datetime.strptime(str(query_result['min']),
-                                                                       '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
-                                    elif query_result['min'] is not None and query_result['max'] is not None and \
-                                            query_result['min'] and query_result['max']:
-                                        record.product_min_max_exp_date = str(datetime.datetime.strptime(str(query_result['min']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y')) \
+                                    if query_result['min'] is not None and query_result['max'] is not None and  query_result['min'] == query_result['max']:
+                                        product_min_max_exp_date = str(datetime.datetime.strptime(str(query_result['min']),'%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
+                                    elif query_result['min'] is not None and query_result['max'] is not None and query_result['min'] and query_result['max']:
+                                        product_min_max_exp_date = str(datetime.datetime.strptime(str(query_result['min']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y')) \
                                             + str("-") + str(datetime.datetime.strptime(str(query_result['max']), '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y'))
                                     else:
-                                        record.product_min_max_exp_date = None
+                                        product_min_max_exp_date = None
                                 else:
-                                    if record.product_min_max_exp_date:
-                                        record.product_min_max_exp_date = record.product_min_max_exp_date
-                                    else:
-                                        record.product_min_max_exp_date = None
-                            else:
-                                record.product_min_max_exp_date = None
-                    else:
-                        record.product_min_max_exp_date = None
+                                    product_min_max_exp_date = record.product_min_max_exp_date
+
+
+            record.product_min_max_exp_date = product_min_max_exp_date
+
 
     def unlink(self):
         if self.filtered(lambda line: line.state in ('sale', 'done') and (line.invoice_lines or not line.is_downpayment)):

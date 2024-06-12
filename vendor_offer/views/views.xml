@@ -184,7 +184,7 @@
                             </group>
                         </group>
                          <notebook>
-                             <page string="Product">
+                             <page string="Products">
                                 <field name="order_line" mode="tree,form" attrs="{'readonly': [('state', 'not in', ('draft', 'ven_draft','ven_sent'))]}">
                                     <form duplicate="false">
                                         <group>

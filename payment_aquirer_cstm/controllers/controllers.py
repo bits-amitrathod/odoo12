@@ -73,8 +73,7 @@ class PaymentAquirerCstm(http.Controller):
         # request.session.set('sale_transaction_id', request.session.get('__website_sale_last_tx_id'))
         return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
 
-    @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True,
-                csrf=False)
+    @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def cart_update(self, purchase_order, **kw):
         order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
         order.client_order_ref = purchase_order
@@ -105,16 +104,6 @@ class PaymentAquirerCstm(http.Controller):
                 res_currency = request.env.user.company_id.currency_id
                 if res_currency:
                     currency = res_currency
-            # return {
-            #     'carrier_acc_no': False,
-            #     'status': order.delivery_rating_success,
-            #     'error_message': order.delivery_message,
-            #     'is_free_delivery': not bool(order.amount_delivery),
-            #     'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}),
-            #     'new_amount_untaxed': Monetary.value_to_html(order.amount_untaxed, {'display_currency': currency}),
-            #     'new_amount_tax': Monetary.value_to_html(order.amount_tax, {'display_currency': currency}),
-            #     'new_amount_total': Monetary.value_to_html(order.amount_total, {'display_currency': currency}),
-            # }
 
             gen_pay = False
             if order.id:
@@ -128,15 +117,7 @@ class PaymentAquirerCstm(http.Controller):
 
             return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}), 'status': order.delivery_rating_success, 'gen_pay_link': gen_pay}
 
-    # def _format_amount(self, amount, currency):
-    #     fmt = "%.{0}f".format(currency.decimal_places)
-    #     lang = request.env['res.lang']._lang_get(request.env.context.get('lang') or 'en_US')
-    #     return lang.format(fmt, currency.round(amount), grouping=True, monetary=True)\
-    #         .replace(r' ', u'\N{NO-BREAK SPACE}').replace(r'-', u'-\N{ZERO WIDTH NO-BREAK SPACE}')
-
-
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
-    # @http.route(['/shop/payment'], type='http', auth="public", website=True)
     def shop_payment(self, **post):
         responce = super(WebsiteSalesPaymentAquirerCstm, self).shop_payment(**post)
 
@@ -207,7 +188,9 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         # remove Product from Product Process
         product_process = request.env['product.process.list'].sudo()
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # UPG_ODOO16_NOTE  line.product_id.inventory_availability "inventory_availability" field is missing on product.product model
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product':
                 product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
 
         return responce
@@ -263,7 +246,6 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
 
     def action_send_mail_after_payment_final(self, ref=None):
         template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
-
         if ref:
             so_name = str(ref.reference.split("-", 1)[0])
             values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}

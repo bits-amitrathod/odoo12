@@ -9,13 +9,13 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
     var $carrierBadge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .o_wsale_delivery_badge_price');
     //var $compute_badge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .o_delivery_compute');
     var salesTeamMessage = $('textarea[name="sales_team_message"]');
-    var $payButton = $('#o_payment_form_pay');
+    var $payButton = $('#o_payment_submit_button');
     var concurrency = require('web.concurrency');
     var dp = new concurrency.DropPrevious();
 
     var _handleCarrierUpdateResults = function(result) {
 //        _handleCarrierUpdateResultBadge(result);
-        var $payButton = $('#o_payment_form_pay');
+        var $payButton = $('#o_payment_submit_button');
         var $amountDelivery = $('#order_delivery .monetary_field');
         var $amountUntaxed = $('#order_total_untaxed .monetary_field');
         var $amountTax = $('#order_total_taxes .monetary_field');
@@ -37,27 +37,6 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
             $amountTotal.html(result.new_amount_total);
         }
     };
-
-    /**
-     * @private
-     * @param {Object} result
-     */
-    /*var _handleCarrierUpdateResultBadge = function (result) {
-        var $carrierBadge = $('#delivery_carrier input[name="delivery_type"][value=' + result.carrier_id + '] ~ .o_wsale_delivery_badge_price');
-
-        if (result.status === true) {
-             // if free delivery (`free_over` field), show 'Free', not '$0'
-             if (result.is_free_delivery) {
-                 $carrierBadge.text(_t('Free'));
-             } else {
-                 $carrierBadge.html(result.new_amount_delivery);
-             }
-             $carrierBadge.removeClass('o_wsale_delivery_carrier_error');
-        } else {
-            $carrierBadge.addClass('o_wsale_delivery_carrier_error');
-            $carrierBadge.text(result.error_message);
-        }
-    };*/
 
     $(document).ready(function() {
         ajax.jsonRpc("/checkHavingCarrierWithAccountNo", 'call', {

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="stockhawk_sales_order_confirm_email_response" model="mail.template">
+            <field name="name">final email response on uploaded documents</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="email_from">{{object.company_id.name}}, {{(object.company_id.email or user.email)}}</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="email_cc">{{ctx['salesperson_email']}}, {{ctx['key_account_email']}}</field>
+            <field name="subject">Sales Order Confirm {{ctx['sales_order_name']}}</field>
+            <field name="body_html">{{ctx['body']}}</field>
+            <field name="body_html" type="html">
+                <p> Hi Administrator,</p>
+                <p style="text-align: left; margin-top: 10px;">
+                    A new Stockhawk order has been confirmed. Please see the below details.
+                </p>
+                <table style="width:100%;border:1px solid black;border-collapse:collapse;">
+                    <tr>
+                        <th style="border:1px solid black;border-collapse:collapse;">Customer Name</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Sale Order</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Upload Type</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Date</th>
+                        <th style="border:1px solid black;border-collapse:collapse;">Note</th>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid black;border-collapse:collapse;"><t t-out="ctx['customer_name']"/></td>
+                        <td style="border:1px solid black;border-collapse:collapse;text-align:center;"><t t-out="ctx['sales_order_name']"/></td>
+                        <td style="border:1px solid black;border-collapse:collapse;text-align:center;"><t t-out="ctx['upload_type']"/></td>
+                        <td style="border:1px solid black;border-collapse:collapse;text-align:center;"><t t-out="ctx['date']"/></td>
+                        <td style="border:1px solid black;border-collapse:collapse;"><t t-out="ctx['note']"/></td>
+                    </tr>
+                </table>
+                <P style="text-align: left; margin-top: 10px;">
+                    Thanks &amp; Regards,<br/>
+                    Odoo
+                </P>
+            </field>
+        </record>
+    </data>
+</odoo>
+

@@ -558,39 +558,6 @@
         </record>
 
         <!-- Stockhawk Sales Order Export -->
-        <record id="view_stockhawk_sales_order" model="ir.ui.view">
-<!--            <field name="sequence" eval="1"/>-->
-            <field name="name">Sales Order</field>
-            <field name="model">sale.order.line</field>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-                <tree create="false">
-                    <field name="ex_sale_order_customer" string="Customer Name"/>
-                    <field name="ex_sale_order_name" string="Sale Order#"/>
-                    <field name="ex_product_oem" string="Product OEM"/>
-                    <field name="default_code" string="Product Code"/>
-                    <field name="ex_product_desc" string="Product Description"/>
-                    <field name="product_uom_qty" string="Ordered Quantity"/>
-                    <field name="qty_delivered" string="Delivered Quantity"/>
-                    <field name="price_unit" string="Unit Price"/>
-                    <field name="price_subtotal" string="Total"/>
-<!--                    <field name="ex_sale_order_confirm_date" string="Date Sold"/>-->
-                </tree>
-            </field>
-        </record>
-
-        <record id="sale_order_line_filter" model="ir.ui.view">
-            <field name="name">sale.order.line.filter</field>
-            <field name="model">sale.order.line</field>
-            <field name="arch" type="xml">
-                <search string="Order">
-                    <field name="order_id" string="Order"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Order" name="group_by_order_id" domain="[]" context="{'group_by':'order_id'}" help="Group by Order"/>
-                    </group>
-                </search>
-            </field>
-        </record>
 
         <record id="view_stockhawk_sale_order" model="ir.actions.act_window">
             <field name="name">STOCKHAWK Sales Order</field>
