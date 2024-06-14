@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <record id="ir_cron_scheduler_expire_old_vendor_offers" model="ir.cron">
+            <field name="name">Update Vendor Offer Expired Checkbox</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="model_id" ref="model_purchase_order"/>
+            <field name="state">code</field>
+            <field name="code">model.set_expiration_flag_old_offer()</field>
+            <field name="numbercall">-1</field>
+            <field name="priority">0</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="False"/>
+        </record>
+
+        <record model="ir.module.category" id="approval_vendor_offer">
+             <field name="name">OfferApproval</field>
+             <field name="description">User access levels for Vendor offer for approval</field>
+             <field name="sequence">10</field>
+        </record>
+        <record id="offerapproval_user_access" model="res.groups">
+            <field name="name">User</field>
+            <field name="category_id" ref="approval_vendor_offer"/>
+        </record>
 
         <record id="view_purchase_order_edit_note_form" model="ir.ui.view">
             <field name="name">purchase.notes.activity.edit</field>
@@ -231,6 +254,10 @@
                                 <!--context="{'vendor_offer_data': True}" string="Offer Accept As Credit" type="object"/>-->
                         <button name="action_confirm_offer_both" states="ven_draft,ven_sent"
                                 context="{'vendor_offer_data': True}" string="Offer Accepted" type="object"/>
+                        <button name="action_approve_offer" states="ven_draft,ven_sent"
+                                context="{'vendor_offer_data': True}" string="Approve" type="object"
+                                groups="vendor_offer.offerapproval_user_access"
+                                attrs="{'invisible':[('offer_expired', '=', False)]}" />
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
                         <field name="vendor_offer_data" invisible="1"/>
@@ -293,6 +320,8 @@
 
                                 <field name="offer_type" />
                                 <field name="potential_profit_margin"/>
+                                <field name="offer_expired" />
+                                <field name="offer_approved" invisible="1"/>
                                 <field name="state" invisible="1"/>
                                 <field name="import_type_ven" invisible="1"/>
                             </group>
@@ -1087,6 +1116,8 @@
                 </xpath>
             </field>
         </record>
+
+
 
         <menuitem
                 id="menu_product_in_config_purchase_setting" name="Setting" sequence="99"
