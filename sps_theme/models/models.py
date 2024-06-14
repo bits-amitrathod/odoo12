@@ -17,7 +17,7 @@ class website_cstm(models.Model):
     def send_email_product_instock(self):
         StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
         subcribers = StockNotifcation.search([
-            ('status', '=', 'pending'),
+            ('status', '=', 'pending'), ('x_studio_reoccuring', '=', 'True')
         ])
         notificationList = {}
         template = self.env.ref('sps_theme.mail_template_product_instock_notification_email')
@@ -44,6 +44,23 @@ class PporoductTemplate(models.Model):
                                         help="The product will be available in each mentioned e-commerce category. Go to"
                                              "Shop > Customize and enable 'E-commerce categories' to view all e-commerce categories.",
                                         default=_default_public_categ_ids)
+
+    def _compute_qty_available(self):
+        """
+            This method is overridden from "vendor offer module on field actual_quantity"
+            And when ever actual_quantity of product goes to 0 then it set the website_stock_notify status of that product to pending
+            for reoccuring entries only so that when cron runs it will sent the notification only once not every 15 mint
+            for that we have to disable the automated action on field 'x_studio_reoccuring' which is created by client with studio on DB
+
+        """
+        res = super(PporoductTemplate,self)._compute_qty_available()
+        for temp in self:
+            if temp.actual_quantity == 0:
+                StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
+                subcribers = StockNotifcation.search([('product_tmpl_id', '=', temp.id)])
+                for sub in subcribers:
+                    sub.status = 'pending'
+        return res
 
 class SaleOrder1(models.Model):
     _inherit = 'sale.order'
