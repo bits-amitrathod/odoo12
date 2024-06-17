@@ -21,7 +21,7 @@
              <field name="sequence">10</field>
         </record>
         <record id="offerapproval_user_access" model="res.groups">
-            <field name="name">User</field>
+            <field name="name">Appraisal</field>
             <field name="category_id" ref="approval_vendor_offer"/>
         </record>
 
@@ -831,6 +831,23 @@
                     <footer>
                         <button name="popup_confirm_vendor_offer" string="Offer Accepted" type="object"
                                 class="btn-primary"/>
+                        <button string="Back" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <record id="vendor_offer_approve_popup" model="ir.ui.view">
+            <field name="name">ven.offer.approve.vendor</field>
+            <field name="model">purchase.order</field>
+            <!--<field name="priority">20</field>-->
+            <field name="arch" type="xml">
+                <form string="Offer Approval">
+                    <group>
+                              <div>Vendor Offer Expired. Needs Approval</div>
+                    </group>
+                    <footer>
                         <button string="Back" class="btn-default" special="cancel"/>
                     </footer>
                 </form>

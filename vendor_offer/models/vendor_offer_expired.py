@@ -24,5 +24,5 @@ class VendorOfferExpired(models.Model):
 
     def action_approve_offer(self):
         self.ensure_one()
-        self.write({'offer_expired': False, 'offer_approved': True})
+        self.write({'offer_approved': True})
         return True
