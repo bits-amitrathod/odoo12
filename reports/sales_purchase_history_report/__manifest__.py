@@ -14,9 +14,9 @@
     'depends': ['base', 'sale_management','contract_searching'],
     'data': [
         'security/ir.model.access.csv',
-        # 'views/sale_view.xml',
-        # 'report/saleperson_report.xml',
-        # 'report/saleperson_temp.xml'
+        'views/sale_view.xml',
+        'report/saleperson_report.xml',
+        'report/saleperson_temp.xml'
     ],
     'images': ['static/description/banner.png'],
     'auto_install': False,

@@ -1,11 +1,6 @@
 <odoo>
 <data>
 
-<template id="assets_common" name="cheque_print pdf assets" inherit_id="web.report_assets_common">
-		<xpath expr="." position="inside">
-			 <link href="/cheque_print/static/src/less/report_check_top.less" rel="stylesheet"/>
-		</xpath>
-</template>
 <template id="ckus_check_ext" inherit_id="l10n_us_check_printing.ckus_check">
     <xpath expr="//div[1]/div[6]" position="replace">
 		<div class="ckus_name" t-esc="page['parent']"/>

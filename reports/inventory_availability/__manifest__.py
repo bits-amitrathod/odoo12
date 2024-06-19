@@ -17,9 +17,9 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/inventory_availability.xml',
-        # 'views/inventory_availability_print.xml',
-        # 'views/inventory_availability_pdf.xml',
+        'views/inventory_availability.xml',
+        'views/inventory_availability_print.xml',
+        'views/inventory_availability_pdf.xml',
     ],
 
     'installable': True,

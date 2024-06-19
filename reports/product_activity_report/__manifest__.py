@@ -15,9 +15,9 @@
 
     'data': [
         'security/ir.model.access.csv',
-        # 'views/views.xml',
-        # 'report/report_product_activity_report.xml',
-        # 'report/product_activity_report.xml'
+        'views/views.xml',
+        'report/report_product_activity_report.xml',
+        'report/product_activity_report.xml'
     ],
     'auto_install': False,
     'installable': True,

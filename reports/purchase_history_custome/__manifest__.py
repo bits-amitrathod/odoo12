@@ -19,8 +19,8 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'reports/todo_task_report.xml',
-        # 'views/views.xml'
+        'reports/todo_task_report.xml',
+        'views/views.xml'
     ],
    'installable': True,
    'auto_install': False,

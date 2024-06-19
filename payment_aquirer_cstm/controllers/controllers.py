@@ -128,7 +128,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         ctx = responce.qcontext
 
-        if 'acquirers' not in ctx:
+        if 'providers' not in ctx:
             ctx['showShippingNote'] = False
             ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session[
                 'expedited_shipping'] or ""
@@ -140,16 +140,10 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                     break
             return responce
 
-        if 'order' in ctx:
-            if not ctx['order'].partner_id.allow_purchase:
-                for x in ctx['acquirers']:
-                    if x.name == 'Purchase Order':
-                        ctx['acquirers'].remove(x)
-        else:
-            if 'acquirers' in ctx:
-                for x in ctx['acquirers']:
-                    if x.name == 'Purchase Order':
-                        ctx['acquirers'].remove(x)
+        if ('order' in ctx and not ctx['order'].partner_id.allow_purchase) or ('order' not in ctx):
+            for x in ctx['providers']:
+                if x.name == 'Purchase Order':
+                    ctx['providers'].remove(x)
 
         ctx['showShippingNote'] = False
         ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session['expedited_shipping'] or ""
@@ -190,7 +184,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         for line in order.order_line:
             # UPG_ODOO16_NOTE  line.product_id.inventory_availability "inventory_availability" field is missing on product.product model
             # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
-            if line.product_id.type == 'product':
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
 
         return responce
@@ -203,7 +197,8 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         product_process = request.env['product.process.list'].sudo()
         # this is custom code  used to handle Same Items being sold simultaneously
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 cart_qty = sum(order.order_line.filtered(lambda p: p.product_id.id == line.product_id.id).mapped(
                     'product_uom_qty'))
                 avl_qty = line.product_id.with_context(warehouse=order.warehouse_id.id).virtual_available
@@ -227,7 +222,8 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         # add Products in process
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 product_process.create({
                     'product_id': line.product_id.id,
                     'so_name': order.name,
@@ -487,8 +483,7 @@ class PaymentProcessing(PaymentPostProcessing):
             # order = request.env['sale.order'].sudo().browse(request.session.sale_order_id)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:
-                if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always',
-                                                                                                    'threshold']:
+                if line.product_id.type == 'product' and line.product_id.show_availability:
                     product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
         return super(PaymentProcessing, self).display_status(**kwargs)
 
@@ -502,7 +497,7 @@ class PaypalController(PaypalController):
             # order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:
-                if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+                if line.product_id.type == 'product' and line.product_id.show_availability:
                     product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
 
         return super(PaypalController, self).paypal_cancel(**post)

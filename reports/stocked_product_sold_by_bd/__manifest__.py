@@ -21,9 +21,9 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/views.xml',
-        # 'report/product_sold_by_bd_report.xml',
-        # 'report/product_sold_by_bd_report_template.xml'
+        'views/views.xml',
+        'report/product_sold_by_bd_report.xml',
+        'report/product_sold_by_bd_report_template.xml'
     ],
     'images': ['static/description/banner.png'],
     'installable': True,

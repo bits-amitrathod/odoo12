@@ -9,7 +9,7 @@
     'website': "http://www.benchmarkitsolutions.com",
     'depends': ['base', 'sale','purchase','web'],
     'data': [
-        # 'views/styles_template.xml',
+        'views/styles_template.xml',
     ],
     'auto_install': False,
     'installable': True,

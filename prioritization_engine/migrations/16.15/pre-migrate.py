@@ -33,6 +33,11 @@ def migrate(cr, version):
     cr.execute("""DELETE FROM ir_asset where name ilike 'website_sales%';""")
     cr.execute("""DELETE FROM ir_asset where name ilike 'payment_aquirer_cstm%';""")
     cr.execute("""DELETE FROM ir_asset where name ilike 'product_expiry_extension%';""")
+    cr.execute("""DELETE FROM ir_asset where name ilike 'custom_styles%';""")
+    cr.execute("""DELETE FROM ir_asset where name ilike 'in_stock_report%';""")
+    cr.execute("""DELETE FROM ir_asset where name ilike 'cheque_print%';""")
+
+
     cr.execute("""DELETE FROM ir_asset where bundle ilike 'web.assets_frontend';""")
 
 
@@ -50,6 +55,7 @@ def migrate(cr, version):
     # active the inactive views
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'vendor.offer.purchase.order.form.main';""")
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'purchase.order.form.vendor.offer.inherit_3';""")
+    cr.execute("""UPDATE ir_ui_menu SET sequence = 97 WHERE name->>'en_US' ilike 'Reporting' and parent_id in (SELECT id FROM ir_ui_menu WHERE name->>'en_US' ilike 'Purchase' and parent_id is null);""")
 
 
 

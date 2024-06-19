@@ -9,16 +9,6 @@
             <field name="priority">100</field>
             <field name="arch" type="xml">
                 <xpath expr="//group/group/field[@name='partner_id']" position="replace">
-<!--                  <field string="Vendor" name="partner_id"
-                              context="{'default_customer': 0, 'search_default_supplier': 1, 'default_supplier': 1, 'default_company_type': 'company','vendor_bill_partner_name_display_name': True}"
-                              domain="[('supplier_rank', '>', 0)]"/>-->
-
-                    <!--context="{
-                    'res_partner_search_mode': (context.get('default_move_type', 'entry') in ('out_invoice', 'out_refund', 'out_receipt') and 'customer') or (context.get('default_move_type', 'entry') in ('in_invoice', 'in_refund', 'in_receipt') and 'supplier') or False,
-                    'show_address': 1,
-                    'default_is_company': True,
-                    'show_vat': True}"-->
-
                   <field name="partner_id" widget="res_partner_many2one" nolabel="1"
                          context="{'default_customer': 0,
                          'search_default_supplier': 1,
@@ -54,74 +44,25 @@
             </field>
         </record>
 
-        <!--<record id="vendor_bill_cart_image_side" model="ir.ui.view">-->
-            <!--<field name="name">image_side_company</field>-->
-            <!--<field name="model">res.partner</field>-->
-            <!--<field name="inherit_id" ref="base.view_partner_form"/>-->
-            <!--<field name="arch" type="xml">-->
-                <!--<xpath expr="//form/sheet/field[@name='image']" position="replace">-->
-                      <!--&lt;!&ndash;<field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'  t-if="record.type.raw_value === 'delivery'" t-att-src='_s + "/base/static/img/truck.png"' />&ndash;&gt;-->
-                      <!--&lt;!&ndash;<field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}' t-if="record.type.raw_value === 'invoice'" t-att-src='_s + "/base/static/img/money.png"' />&ndash;&gt;-->
-                      <!--&lt;!&ndash;<field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}' t-if="record.type.raw_value === 'other'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"' />&ndash;&gt;-->
-                      <!--&lt;!&ndash;<t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other' ">&ndash;&gt;-->
-                           <!--&lt;!&ndash;<field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'  t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/img/company_image.png"' />&ndash;&gt;-->
-                           <!--&lt;!&ndash;<field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}' t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/img/avatar.png"' />&ndash;&gt;-->
-                        <!--&lt;!&ndash;</t>&ndash;&gt;-->
-                        <!--<field name="image" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}' ></field>-->
-                         <!--<img alt="Delivery"  t-att-src='_s + "/base/static/img/truck.png"' />-->
-                        <!--&lt;!&ndash;<img alt="Invoice" t-if="type.raw_value === 'invoice'" t-att-src='_s + "/base/static/img/money.png"'/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<img alt="AP" t-if="type.raw_value === 'other'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"'/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<t t-if="type.raw_value !== 'invoice' &amp;&amp; type.raw_value !== 'delivery' &amp;&amp; type.raw_value !== 'other' ">&ndash;&gt;-->
-                            <!--&lt;!&ndash;<img alt="Logo" t-if="is_company.raw_value === true" t-att-src='_s + "/base/static/img/company_image.png"'/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<img alt="Avatar" t-if="is_company.raw_value === false" t-att-src='_s + "/base/static/img/avatar.png"'/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</t>&ndash;&gt;-->
-
-                <!--</xpath>-->
-            <!--</field>-->
-        <!--</record>-->
-
         <record id="vendor_bill_cart_image_23" model="ir.ui.view">
             <field name="name">Cart_image_update</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
-         <!--   <field name="priority" eval="20"/>-->
             <field name="arch" type="xml">
-
-            <xpath expr="//div[@class='o_kanban_image']" position="replace">
-                <div class="o_kanban_image">
-                    <!--<img alt="" t-if="record.image_small.raw_value" t-att-src="kanban_image('res.partner', 'image_small', record.id.raw_value)"/>-->
-                    <!--<t t-if="!record.image_small.raw_value">-->
-                        <!--<img alt="Delivery" t-if="record.type.raw_value === 'delivery'" t-att-src='_s + "/base/static/img/truck.png"'/>-->
-                        <!--<img alt="Invoice" t-if="record.type.raw_value === 'invoice'" t-att-src='_s + "/base/static/img/money.png"'/>-->
-                        <!--<img alt="AP" t-if="record.type.raw_value === 'other'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"'/>-->
-                        <!--<t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other' ">-->
-                            <!--<img alt="Logo" t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/img/company_image.png"'/>-->
-                            <!--<img alt="Avatar" t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/img/avatar.png"'/>-->
-                        <!--</t>-->
-                    <!--</t>-->
-
-                        <!--<img alt="Delivery" t-if="record.type.raw_value === 'delivery'" t-att-src='_s + "/base/static/img/truck.png"'/>
-                        <img alt="Invoice" t-if="record.type.raw_value === 'invoice'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/money.png"'/>
-                        <img alt="AP" t-if="record.type.raw_value === 'other'" t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"'/>
-                        <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other' ">
-                            <img alt="Logo" t-if="record.is_company.raw_value === true" t-att-src='_s + "/base/static/img/company_image.png"'/>
-                            <img alt="Avatar" t-if="record.is_company.raw_value === false" t-att-src='_s + "/base/static/img/avatar.png"'/>
-                        </t>-->
-
-                    <img alt="Contact image" t-if="record.image_128.raw_value" t-att-src="kanban_image('res.partner', 'image_128', record.id.raw_value)"/>
-                                                    <t t-if="!record.image_128.raw_value">
-                                                        <img alt="Delivery" t-if="record.type.raw_value === 'delivery'" t-att-src='"/vendor_bill_partner_name/static/src/img/truck.png"'/>
-                                                        <img alt="Invoice" t-if="record.type.raw_value === 'invoice'" t-att-src='"/vendor_bill_partner_name/static/src/img/money.png"'/>
-                                                        <img alt="AP Address" t-if="record.type.raw_value === 'other'" t-att-src='"/vendor_bill_partner_name/static/src/img/cart.png"'/>
-                                                        <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other'">
-                                                            <img alt="Logo" t-if="record.is_company.raw_value === true" t-att-src='"/base/static/img/company_image.png"'/>
-                                                            <img alt="Avatar" t-if="record.is_company.raw_value === false" t-att-src='"/vendor_bill_partner_name/static/src/img/avatar.png"'/>
-                                                        </t>
-                                                    </t>
-                </div>
-            </xpath>
-
-
+                <xpath expr="//div[@class='o_kanban_image']" position="replace">
+                    <div class="o_kanban_image">
+                        <img alt="Contact image" t-if="record.image_128.raw_value" t-att-src="kanban_image('res.partner', 'image_128', record.id.raw_value)"/>
+                        <t t-if="!record.image_128.raw_value">
+                            <img alt="Delivery" t-if="record.type.raw_value === 'delivery'" t-att-src='"/vendor_bill_partner_name/static/src/img/truck.png"'/>
+                            <img alt="Invoice" t-if="record.type.raw_value === 'invoice'" t-att-src='"/vendor_bill_partner_name/static/src/img/money.png"'/>
+                            <img alt="AP Address" t-if="record.type.raw_value === 'other'" t-att-src='"/vendor_bill_partner_name/static/src/img/cart.png"'/>
+                            <t t-if="record.type.raw_value !== 'invoice' &amp;&amp; record.type.raw_value !== 'delivery' &amp;&amp; record.type.raw_value !== 'other'">
+                                <img alt="Logo" t-if="record.is_company.raw_value === true" t-att-src='"/base/static/img/company_image.png"'/>
+                                <img alt="Avatar" t-if="record.is_company.raw_value === false" t-att-src='"/vendor_bill_partner_name/static/src/img/avatar.png"'/>
+                            </t>
+                        </t>
+                    </div>
+                </xpath>
             </field>
         </record>
         <!-- kanban View images changes related -->
@@ -133,101 +74,43 @@
             <field name="arch" type="xml">
 
                 <xpath expr="//div[@class='oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban']" position="replace">
-
                     <div class="oe_kanban_global_click o_kanban_record_has_image_fill o_res_partner_kanban">
-                                <!--<t t-if="record.image_small.raw_value &amp;&amp; !record.is_company.raw_value">-->
-                                    <!--<img class="o_kanban_image d-none d-md-block" t-att-src="kanban_image('res.partner', 'image_small', record.id.raw_value)" t-att-alt="record.display_name"/>-->
-                                    <!--&lt;!&ndash;<div class="o_kanban_image_fill_left d-none d-md-block" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_medium', record.id.raw_value)}')">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_small', record.parent_id.raw_value)" style="display:none;"/>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;<div class="o_kanban_image rounded-circle d-md-none" t-attf-style="background-image:url('#{kanban_image('res.partner', 'image_small', record.id.raw_value)}')">&ndash;&gt;-->
-                                        <!--&lt;!&ndash;<img class="o_kanban_image_inner_pic" t-if="record.parent_id.raw_value" t-att-alt="record.parent_id.value" t-att-src="kanban_image('res.partner', 'image_small', record.parent_id.raw_value)"/>&ndash;&gt;-->
-                                    <!--&lt;!&ndash;</div>&ndash;&gt;-->
-                                <!--</t>-->
-                                <!--<t t-elif="record.is_company.raw_value">-->
-                                    <!--&lt;!&ndash;<img class="o_kanban_image" t-att-src="kanban_image('res.partner', 'image_small', record.id.raw_value)" t-att-alt="record.display_name"/>&ndash;&gt;-->
-                                     <!--<img class="o_kanban_image" alt="Logo" t-att-src='_s + "/base/static/img/company_image.png"'/>-->
-                                <!--</t>-->
-                                <!--<t t-else="">-->
-                                    <!--<t t-if="record.type.raw_value === 'delivery'">-->
-                                        <!--<img alt="Delivery" t-att-src='_s + "/base/static/img/truck.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>-->
-                                    <!--</t>-->
-                                    <!--<t t-if="record.type.raw_value === 'invoice'">-->
-                                        <!--<img alt="Invoice" t-att-src='_s + "/base/static/img/money.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>-->
-                                    <!--</t>-->
-                                   <!--<t t-if="record.type.raw_value === 'other'">-->
-                                        <!--<img t-att-src='_s + "/vendor_bill_partner_name/static/src/img/cart.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>-->
-                                     <!--</t>-->
-                                    <!--<t t-if="record.type.raw_value != 'invoice' &amp;&amp; record.type.raw_value != 'delivery' &amp;&amp; record.type.raw_value != 'other' ">-->
-                                        <!--<t t-if="record.is_company.raw_value === true">-->
-                                            <!--<img class="o_kanban_image" alt="Logo" t-att-src='_s + "/base/static/img/company_image.png"'/>-->
-                                        <!--</t>-->
-                                        <!--<t t-if="record.is_company.raw_value === false">-->
-                                            <!--<img class="o_kanban_image" alt="Avatar" t-att-src='_s + "/base/static/img/avatar.png"'/>-->
-                                        <!--</t>-->
-                                    <!--</t>-->
-                                <!--</t>-->
-
-
-                                           <t t-if="record.type.raw_value === 'delivery'">
-                                                <img alt="Delivery" t-att-src='"/vendor_bill_partner_name/static/src/img/truck.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
-                                            </t>
-                                            <t t-if="record.type.raw_value === 'invoice'">
-                                                <img alt="Invoice" t-att-src='"/vendor_bill_partner_name/static/src/img/money.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
-                                            </t>
-                                           <t t-if="record.type.raw_value === 'other'">
-                                                <img t-att-src='"/vendor_bill_partner_name/static/src/img/cart.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
-                                             </t>
-                                            <t t-if="record.type.raw_value != 'invoice' &amp;&amp; record.type.raw_value != 'delivery' &amp;&amp; record.type.raw_value != 'other' ">
-                                                <t t-if="record.is_company.raw_value === true">
-                                                    <img class="o_kanban_image" alt="Logo" t-att-src='"/base/static/img/company_image.png"'/>
-                                                </t>
-                                                <t t-if="record.is_company.raw_value === false">
-                                                    <img class="o_kanban_image" alt="Avatar" t-att-src='"/vendor_bill_partner_name/static/src/img/avatar.png"'/>
-                                                </t>
-                                            </t>
-                                <div class="oe_kanban_details">
-                                    <strong class="o_kanban_record_title oe_partner_heading"><field name="display_name"/></strong>
-                                    <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
-                                    <ul>
-                                        <li t-if="record.parent_id.raw_value and !record.function.raw_value"><field name="parent_id"/></li>
-                                        <li t-if="!record.parent_id.raw_value and record.function.raw_value"><field name="function"/></li>
-                                        <li t-if="record.parent_id.raw_value and record.function.raw_value"><field name="function"/> at <field name="parent_id"/></li>
-                                        <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
-                                        <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li>
-                                        <li t-if="record.city.raw_value and !record.state_id.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
-                                        <li t-if="record.city.raw_value and record.state_id.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="state_id"/>, <field name="country_id"/></li>
-                                        <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li>
-                                    </ul>
-                                    <div class="oe_kanban_partner_links"/>
-                                </div>
-                            </div>
-
-
+                        <t t-if="record.type.raw_value === 'delivery'">
+                            <img alt="Delivery" t-att-src='"/vendor_bill_partner_name/static/src/img/truck.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                        </t>
+                        <t t-if="record.type.raw_value === 'invoice'">
+                            <img alt="Invoice" t-att-src='"/vendor_bill_partner_name/static/src/img/money.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                        </t>
+                        <t t-if="record.type.raw_value === 'other'">
+                            <img alt="Cart" t-att-src='"/vendor_bill_partner_name/static/src/img/cart.png"' class="o_kanban_image oe_kanban_avatar_smallbox"/>
+                        </t>
+                        <t t-if="record.type.raw_value != 'invoice' &amp;&amp; record.type.raw_value != 'delivery' &amp;&amp; record.type.raw_value != 'other' ">
+                            <t t-if="record.is_company.raw_value === true">
+                                <img class="o_kanban_image" alt="Logo" t-att-src='"/base/static/img/company_image.png"'/>
+                            </t>
+                            <t t-if="record.is_company.raw_value === false">
+                                <img class="o_kanban_image" alt="Avatar" t-att-src='"/vendor_bill_partner_name/static/src/img/avatar.png"'/>
+                            </t>
+                        </t>
+                        <div class="oe_kanban_details">
+                            <strong class="o_kanban_record_title oe_partner_heading"><field name="display_name"/></strong>
+                            <div class="o_kanban_tags_section oe_kanban_partner_categories"/>
+                            <ul>
+                                <li t-if="record.parent_id.raw_value and !record.function.raw_value"><field name="parent_id"/></li>
+                                <li t-if="!record.parent_id.raw_value and record.function.raw_value"><field name="function"/></li>
+                                <li t-if="record.parent_id.raw_value and record.function.raw_value"><field name="function"/> at <field name="parent_id"/></li>
+                                <li t-if="record.city.raw_value and !record.country_id.raw_value"><field name="city"/></li>
+                                <li t-if="!record.city.raw_value and record.country_id.raw_value"><field name="country_id"/></li>
+                                <li t-if="record.city.raw_value and !record.state_id.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="country_id"/></li>
+                                <li t-if="record.city.raw_value and record.state_id.raw_value and record.country_id.raw_value"><field name="city"/>, <field name="state_id"/>, <field name="country_id"/></li>
+                                <li t-if="record.email.raw_value" class="o_text_overflow"><field name="email"/></li>
+                            </ul>
+                            <div class="oe_kanban_partner_links"/>
+                        </div>
+                    </div>
                 </xpath>
-
             </field>
         </record>
-
-        <!--<record id="sale_invoice_payment_form_partner_name" model="ir.ui.view">
-            <field name="name">account.invoice.form_exx</field>
-            <field name="model">account.invoice</field>
-            <field name="inherit_id" ref="sale.account_invoice_form"></field>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='partner_id']" position="replace">
-                       <field string="Customer" name="partner_id"
-                                context="{'search_default_customer':1, 'show_address': 1, 'default_company_type': 'company','sale_invoice_partner_name_display_name': True}"
-                                options='{"always_reload": True, "no_quick_create": True}'
-                                domain="[('customer', '=', True)]"/>
-                   </xpath>
-
-                <xpath expr="//field[@name='partner_shipping_id']" position="replace">
-                       <field name="partner_shipping_id" groups="sale.group_delivery_invoice_address"
-                       context="{'sale_invoice_sipping_partner_name_display_name': True}"
-                       />
-                   </xpath>
-            </field>
-        </record>-->
 
         <template id="report_invoice_document_inherited_for_due_dates" inherit_id="account.report_invoice_document">
             <xpath expr="//div[@class='page']/div[@id='informations']/div[@name='due_date']" position="after">
@@ -237,7 +120,5 @@
                 </div>
             </xpath>
         </template>
-
-
     </data>
 </odoo>

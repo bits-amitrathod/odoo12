@@ -9,9 +9,9 @@
     'depends': ['base', 'account'],
     'data': [
         'security/ir.model.access.csv',
-        # 'views/payments_scheduler_view.xml',
-        # 'report/payments_scheduler_report.xml',
-        # 'report/payments_scheduler_report_temp.xml'
+        'views/payments_scheduler_view.xml',
+        'report/payments_scheduler_report.xml',
+        'report/payments_scheduler_report_temp.xml'
     ],
     'auto_install': False,
     'installable': True,

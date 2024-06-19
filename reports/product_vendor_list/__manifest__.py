@@ -10,9 +10,9 @@
     'depends': ['base', 'purchase','prioritization_engine'],
     'data': [
         'security/ir.model.access.csv',
-        # 'views/product_vendor_list.xml',
-        # 'report/product_vendor_list_report.xml',
-        # 'report/product_vendor_list_temp.xml'
+        'views/product_vendor_list.xml',
+        'report/product_vendor_list_report.xml',
+        'report/product_vendor_list_temp.xml'
     ],
     'auto_install': False,
     'installable': True,

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>   
 <odoo>       
-      <data>           
-            <template id="assets_backend_in_stock_report" name="tree view menu" inherit_id="web.assets_backend">
-                  <xpath expr="." position="inside">
-                        <script type="text/javascript" src="/in_stock_report/static/src/js/tree_view_button.js"></script>
-                  </xpath>
-            </template>
-      </data>   
+      <data>
+              <record id="in_stock_report.assets_backend" model="ir.asset">
+                  <field name="name">in_stock_report.assets_backend.inherit</field>
+                  <field name="bundle">web.assets_backend</field>
+                  <field name="directive">append</field>
+                  <field name="path">/in_stock_report/static/src/js/tree_view_button.js</field>
+                  <field name="sequence" eval="16"/>
+              </record>
+      </data>
 </odoo>

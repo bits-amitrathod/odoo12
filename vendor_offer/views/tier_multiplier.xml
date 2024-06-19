@@ -88,19 +88,26 @@
          <record id="product_template_form_view" model="ir.ui.view">
             <field name="name">product.template.common.form</field>
             <field name="model">product.template</field>
+            <field name="priority">100</field>
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                 <page name="general_information" position="inside">
                     <group>
-                        <group name="group_general">
-                            <field name="tier"></field>
-                            <field name="class_code"></field>
-                        </group>
+                    <group name="group_general">
+                        <field name="tier"></field>
+                        <field name="class_code"></field>
+                    </group>
                     </group>
                     <group string="Internal Notes">
-                        <field name="description" nolabel="1" placeholder="This note is only for internal purposes." />
+                        <field colspan="2" name="description" nolabel="1" placeholder="This note is only for internal purposes." />
                     </group>
                 </page>
+                <xpath expr="//field[@name='invoice_policy']" position="attributes">
+                   <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='expense_policy']" position="attributes">
+                   <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
         </record>
 

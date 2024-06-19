@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+      <data>
+<!--            <template id="assets_common" name="cheque_print pdf assets" inherit_id="web.report_assets_common">-->
+<!--                <xpath expr="." position="inside">-->
+<!--                     <link href="" rel="stylesheet"/>-->
+<!--                </xpath>-->
+<!--            </template>-->
+            <record id="cheque_print.assets_common_inherit" model="ir.asset">
+              <field name="name">cheque_print.report_assets_common.inherit</field>
+              <field name="bundle">web.report_assets_common</field>
+              <field name="directive">append</field>
+              <field name="path">/cheque_print/static/src/scss/report_check_top.scss</field>
+              <field name="sequence" eval="16"/>
+            </record>
+      </data>
+</odoo>

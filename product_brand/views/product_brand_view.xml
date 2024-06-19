@@ -117,9 +117,9 @@
         <field name="inherit_id" ref="product.product_template_search_view"/>
         <field name="arch" type="xml">
             <field name="name" position="after">
-                <field name="product_brand_id"/>
-                <filter string="Manufacture" name="groupby_brand" domain="[]"
-                        context="{'group_by' : 'product_brand_id'}"/>
+                <field string="Manufacture" name="product_brand_id"/>
+                <filter string="Manufacture" name="groupby_brand" domain="[]" context="{'group_by' : 'product_brand_id'}"/>
+<!--                <field name="pricelist_id" context="{'pricelist': self}" filter_domain="[]" groups="product.group_product_pricelist"/>-->
                 <separator/>
             </field>
         </field>

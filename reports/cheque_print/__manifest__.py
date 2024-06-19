@@ -20,7 +20,8 @@
 
     # always loaded
     'data': [
-        # 'report/print_check.xml',
+        'report/print_check.xml',
+        'data/ir_assets.xml',
     ],
     'installable': True,
     'application': True,

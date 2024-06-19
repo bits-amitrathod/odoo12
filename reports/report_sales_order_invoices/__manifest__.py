@@ -20,14 +20,10 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        # 'views/views.xml',
-        # 'report/report_sales_order_invoices.xml',
-        # 'report/sales_order_invoices.xml'
+        'views/views.xml',
+        'report/report_sales_order_invoices.xml',
+        'report/sales_order_invoices.xml'
     ],
-    # only loaded in demonstration mode
-    # 'demo': [
-    #     'demo/demo.xml',
-    # ],
 
     'installable': True,
     'application': True,

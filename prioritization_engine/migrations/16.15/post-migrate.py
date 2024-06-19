@@ -25,4 +25,7 @@ def migrate(cr, version):
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'vendor_offer%';""")
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'product_seo_backend%';""")
 
+    # Client don't want the this view (customer meeting info button)
+    cr.execute("""update ir_ui_view set active = false where name = 'res_partner.view.form.calendar';""")
+
 _logger.info(" ------- Post-Migration Ended -------" + "\n" * 20)
