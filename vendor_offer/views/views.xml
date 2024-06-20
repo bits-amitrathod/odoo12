@@ -320,7 +320,7 @@
 
                                 <field name="offer_type" />
                                 <field name="potential_profit_margin"/>
-                                <field name="offer_expired" />
+                                <field name="offer_expired"  readonly="1"/>
                                 <field name="offer_approved" invisible="1"/>
                                 <field name="state" invisible="1"/>
                                 <field name="import_type_ven" invisible="1"/>
