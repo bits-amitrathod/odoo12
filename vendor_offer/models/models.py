@@ -819,6 +819,20 @@ class VendorOffer(models.Model):
         #         #raise ValidationError(_('Offer Type must be either "Cash" or "Credit" to Accept '))
         #         raise UserError(_('Offer Type must be either "Cash" or "Credit" not both to Accept'))
 
+        if (self.offer_expired is True) and (self.offer_approved is False):
+            form_view_id = self.env.ref('vendor_offer.vendor_offer_approve_popup').id
+            action = {
+                'type': 'ir.actions.act_window',
+                'views': [(form_view_id, 'form')],
+                'view_mode': 'tree,form',
+                'name': _('Offer Approval'),
+                'res_model': 'purchase.order',
+                'res_id': self.id,
+                'domain': [('id', '=', self.id)],
+                'target': 'new'
+            }
+
+            return action
 
         if self.offer_type == 'cashcredit' or not self.offer_type:
             self.offer_type_popup = 'cash'
