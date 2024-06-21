@@ -324,12 +324,14 @@ class VendorOfferNewAppraisalImport(models.Model):
                                         if uom:
                                             if uom.upper() == 'EACH':
                                                 order_line_obj.update({'uom_str': uom})
-                                            if uom.upper() == 'BOX':
+                                            elif uom.upper() == 'BOX':
                                                 uom_obj = products[0].manufacturer_uom
                                                 temp_qty = uom_obj.factor_inv * float(quantity)
                                                 order_line_obj.update({'uom_str': 'each'})
                                                 order_line_obj.update({'product_qty': temp_qty})
                                                 order_line_obj.update({'product_qty_app_new': temp_qty})
+                                            else:
+                                                order_line_obj.update({'uom_str': uom})
                                         else:
                                             order_line_obj.update({'uom_str': ''})
                                         order_list_list.append(order_line_obj)

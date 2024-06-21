@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_bonus_report"
-                string="Bonus Report"
-                model="purchase.order"
-                report_type="qweb-html"
-                file="bonus_report.bonusreport_temp_test"
-                name="bonus_report.bonusreport_temp_test"
-        />
+        <record id="action_report_bonus_report" model="ir.actions.report">
+            <field name="name">Bonus Report</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">bonus_report.bonusreport_temp_test</field>
+            <field name="report_file">bonus_report.bonusreport_temp_test</field>
+        </record>
     </data>
 </odoo>

@@ -44,14 +44,16 @@
             <field name="model">vendor.pricing</field>
             <field name="arch" type="xml">
                 <form string="Export PPVendorPricing">
-                    <group>
-                        <div>Click On ' Export To File ' button to export PPVendorPricing file</div>
-                    </group>
-                    <footer>
-                        <button name="download_excel_ven_price" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                    <sheet>
+                        <div>
+                            Click On ' Export To File ' button to export PPVendorPricing file
+                        </div>
+                        <footer>
+                            <button name="download_excel_ven_price" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

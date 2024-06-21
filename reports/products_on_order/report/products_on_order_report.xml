@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_products_on_order"
-                string="Products on Order"
-                model="report.products.on.order"
-                report_type="qweb-html"
-                file="products_on_order.prod_on_order_temp"
-                name="products_on_order.prod_on_order_temp"
-                />
+        <record id="action_report_products_on_order" model="ir.actions.report">
+            <field name="name">Products on Order</field>
+            <field name="model">report.products.on.order</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">products_on_order.prod_on_order_temp</field>
+            <field name="report_file">products_on_order.prod_on_order_temp</field>
+        </record>
     </data>
 </odoo>

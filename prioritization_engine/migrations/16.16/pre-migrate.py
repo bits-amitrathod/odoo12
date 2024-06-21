@@ -62,4 +62,7 @@ def migrate(cr, version):
     # client wants to remove this stage ref shared DOC
     cr.execute("""DELETE FROM crm_stage WHERE name->>'en_US' IN ('Qualified', 'Proposition', 'Won');""")
 
+    # This View DeActivates Because of the Adjustment report throw errors (Studio View Deactivated)
+    cr.execute("""update ir_ui_view set active = false where id in (5067)""")
+
     _logger.info(" ------- Pri-Migration Ended -------" + "\n" * 20)

@@ -67,6 +67,9 @@ class ReportPrintInStockExport(http.Controller):
                         cell_style = datetime_style
                     elif isinstance(cell_value, datetime.date):
                         cell_style = date_style
+                    elif isinstance(cell_value, dict) and 'en_US' in cell_value:
+                        cell_value = cell_value.get('en_US') or cell_value.get(list(cell_value.keys())[0]) or ''
+
                     worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
 
         fp = io.BytesIO()

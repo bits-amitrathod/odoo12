@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_print_in_stock_report"
-                string="In Stock Report"
-                model="report.in.stock.report"
-                report_type="qweb-html"
-                file="in_stock_report.in_stock_report_print"
-                name="in_stock_report.in_stock_report_print"
-        />
+        <!-- Report Action -->
+        <record id="action_print_in_stock_report" model="ir.actions.report">
+            <field name="name">In Stock Report</field>
+            <field name="model">report.in.stock.report</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">in_stock_report.in_stock_report_print</field>
+            <field name="report_file">in_stock_report.in_stock_report_print</field>
+        </record>
     </data>
 </odoo>

@@ -8,6 +8,6 @@
                 report_type="qweb-html"
                 file="dormant_customers.dorm_cust_report_temp"
                 name="dormant_customers.dorm_cust_report_temp"
-                />
+        />
     </data>
 </odoo>

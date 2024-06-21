@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Report Action -->
         <report
                 id="action_report_inventory_valuation_summary"
                 string="Inventory Valuation Summary"
