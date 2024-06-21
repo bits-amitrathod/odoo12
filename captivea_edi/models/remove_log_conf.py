@@ -25,23 +25,29 @@ class LogRemove(models.Model):
         processed_logs = self.env['setu.edi.log']
         pickings_ack = invoices_ack = False
         for log_id in logs:
-            if log_id.document_type == '856':
-                sales = log_id.picking_ids.mapped('sale_id')
-            else:
-                sales = log_id.sale_id
+            sales = log_id.picking_ids.mapped('sale_id') if log_id.document_type == '856' else log_id.sale_id
 
             pickings = sales and sales.picking_ids.filtered(lambda pick: pick.state != 'cancel') or False
             invoices = sales and sales.invoice_ids.filtered(lambda inv: inv.state != 'cancel') or False
             sales_ack = sales.mapped('poack_created')
-            if pickings:
-                pickings_ack = pickings.mapped('asn_created')
-            if invoices:
-                invoices_ack = invoices.mapped('invn_sent')
+            pickings_ack = pickings.mapped('asn_created') if pickings else pickings_ack
+            invoices_ack = invoices.mapped('invn_sent') if invoices else invoices_ack
             if pickings and invoices and False not in sales_ack + pickings_ack + invoices_ack:
                 processed_logs |= log_id
         return processed_logs
 
     def run_log_removal_cron(self):
+        """
+            This function is used to remove the EDI logs that are older than the specified number of days.
+            The rules for removing the logs are defined in the Log Removal Rules.
+            The rules are applied in the following order:
+            1. 850 Customer PO
+            2. 855 POACK
+            3. 810 INVACK
+            4. 856 SHIPACK
+            If a log is processed by multiple rules, it is only removed once.
+            The function gets the processed logs and removes them.
+        """
         logs_to_remove = self.env['setu.edi.log']
         rule_850 = self.search([('document_type', '=', '850'), ('is_active', '=', True)])
         rule_855 = self.search([('document_type', '=', '855'), ('is_active', '=', True)])

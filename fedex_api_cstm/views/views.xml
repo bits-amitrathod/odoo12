@@ -35,7 +35,6 @@
             </field>
         </record>
 
-
 <!--        <record id="sale_order_form_view_track_shipment" model="ir.ui.view">-->
 <!--            <field name="name">sale.order.form.view.track.shipment</field>-->
 <!--            <field name="model">sale.order</field>-->
@@ -49,13 +48,11 @@
 <!--            </field>-->
 <!--        </record>-->
 
-        <record id="sale_order_form_view_vendor_track_shipment1" model="ir.ui.view">
+        <record id="sale_order_form_view_vendor_track_shipment" model="ir.ui.view">
             <field name="name">purchase.order.vendor.form.track.shipment</field>
             <field name="model">purchase.order</field>
-<!--            <field name="context">{state: 'ven_draft'}</field>-->
-            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>
+            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form_main"/>
             <field name="arch" type="xml">
-
                 <button name="action_cancel_vendor_offer" position="after">
                     <field name="carrier_id" invisible="1"/>
                     <field name="status_ven" invisible="1"/>

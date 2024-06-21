@@ -15,7 +15,7 @@
     'depends': ['base','account','account_reports'],
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml'
+        # 'views/views.xml'
     ],
 
     'application': True,

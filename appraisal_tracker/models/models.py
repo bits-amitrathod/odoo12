@@ -38,12 +38,6 @@ class apprisal_tracker_vendor(models.Model):
     tier2_margin = fields.Char(compute="_value_broker_margin", store=False, string="Tier 2 Margin")
     less_than_40_margin = fields.Char(compute="_value_broker_margin", store=False, string="< 40% Margin")
 
-    # color = fields.Integer(compute="_value_broker_margin", store=False)
-    #
-    # t1color = fields.Integer(compute="_value_broker_margin", store=False)
-    # t2color = fields.Integer(compute="_value_broker_margin", store=False)
-    # lscolor = fields.Integer(compute="_value_broker_margin", store=False)
-
     status_ven_app = fields.Char(string="Status",store=False)
     vendor_cust_id_app = fields.Char(string="Customer ID", store=False ,compute="_value_broker_margin")
 
@@ -324,7 +318,7 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
 
-    def _compute_average_price(self, qty_invoiced, qty_to_invoice, stock_moves):
+    def _compute_average_price(self, qty_invoiced, qty_to_invoice, stock_moves, is_returned=False):
         """Go over the valuation layers of `stock_moves` to value `qty_to_invoice` while taking
         care of ignoring `qty_invoiced`. If `qty_to_invoice` is greater than what's possible to
         value with the valuation layers, use the product's standard price.

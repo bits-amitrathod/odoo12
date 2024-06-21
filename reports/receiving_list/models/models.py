@@ -84,7 +84,7 @@ class ReceivingListPoReport(models.Model):
                     stock_picking.name as picking_name,
                     product_product.product_tmpl_id,
                     stock_picking.location_dest_id,
-                    stock_move_line.product_uom_qty,
+                    stock_move_line.reserved_qty,
                     stock_move_line.qty_done,
                     stock_move_line.product_uom_id
                 FROM
@@ -187,7 +187,7 @@ class ReceivingListReport(models.Model):
                     stock_picking.date_done,
                     product_product.product_tmpl_id,
                     stock_picking.location_dest_id,
-                    stock_move_line.product_uom_qty,
+                    stock_move_line.reserved_qty,
                     stock_move_line.qty_done,
                     stock_move_line.product_uom_id
                 FROM

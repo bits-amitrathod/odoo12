@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item List ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+
+    <!--  UPG_ODOO16_NOTE need to fix later /shop product listing -->
+<!--    <template id="sps_theme_websute_products_inherit" name="SPS Theme website Products inherits" inherit_id="website_sale.products" priority="1000">-->
+<!--        <xpath expr="//div[hasclass('o_wsale_products_grid_table_wrapper')]" position="replace">-->
+<!--            <div t-if="products" class="o_wsale_products_grid_table_wrapper pt-3 pt-lg-0">-->
+<!--                <div class="" t-att-data-ppg="ppg" t-att-data-ppr="ppr">-->
+<!--                    <div class="row" t-foreach="bins" t-as="tr_product">-->
+<!--                        <t t-foreach="tr_product" t-as="td_product">-->
+<!--                            <t t-if="td_product">-->
+<!--                                <div t-att-colspan="td_product['x'] != 1 and td_product['x']"-->
+<!--                                    t-att-rowspan="td_product['y'] != 1 and td_product['y']"-->
+<!--                                    t-attf-class="oe_product col-md-3"-->
+<!--                                    t-att-data-ribbon-id="td_product['ribbon'].id">-->
+<!--                                    <div t-attf-class="o_wsale_product_grid_wrapper o_wsale_product_grid_wrapper_#{td_product['x']}_#{td_product['y']} h-100">-->
+<!--                                        <t t-set="product" t-value="td_product['product']"/>-->
+<!--&lt;!&ndash;                                        <span t-out="len(product)"/>&ndash;&gt;-->
+<!--                                        <t t-if="product and len(product) == 1">-->
+<!--                                            <t t-call="website_sales.products_item">-->
+<!--                                                <t t-set="product_image_big" t-value="td_product['x'] + td_product['y'] > 2"/>-->
+<!--                                            </t>-->
+<!--                                        </t>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </t>-->
+<!--                            <div t-else=""/>-->
+<!--                        </t>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </xpath>-->
+<!--    </template>-->
+
+    <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item on list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+    <template id="sps_theme_website_product_item_inherit" inherit_id="website_sale.products_item">
+        <xpath expr="//h6[hasclass('o_wsale_products_item_title')]" position="after">
+            <h5>
+                <strong t-out="product.product_brand_id.name"/>
+            </h5>
+        </xpath>
+         <xpath expr="//div[hasclass('product_price')]" position="after">
+             <!-- Show Actual Quantity on shop page -->
+             <t t-if="product.actual_quantity &gt; 0">
+                <div t-attf-class="availability_shop availability_message_#{product_template}">
+                    <t t-esc="int(product.actual_quantity)"/> item(s) left
+                </div>
+            </t>
+<!--             ~~~~~~~~~~~~~~~~~~ Expration~~~~~~~~~~~~~~~~ -->
+            <t t-call="website_sales.productExpirationDate"/>
+
+           <div t-if="product.actual_quantity &lt;= 0" t-attf-class="availability_message_#{product_template} linkCstm mt16">
+                <i class="fa fa-exclamation-triangle"/> Temporarily out of stock
+           </div>
+        </xpath>
+         <xpath expr="//div[hasclass('o_wsale_product_sub')]" position="after">
+             <div t-if="product.actual_quantity &gt; 0">
+                <t t-set="product_variant_id" t-value="product._get_first_possible_variant_id()"/>
+                <input name="product_id" t-att-value="product_variant_id" type="hidden"/>
+                <t t-if="product_variant_id and template_price_vals['price_reduce'] or not website.prevent_zero_price_sale">
+                    <div class="btn-wrapper pb-3">
+                        <a t-if="product._website_show_quick_add()" id="add_to_cart" class="btn btn-info btn-lg mt8 js_check_product a-submit"
+                           href="#">Add to Cart
+                        </a>
+                    </div>
+                </t>
+             </div>
+        </xpath>
+    </template>
+
+     <template id="sps_product_price_custom_web" inherit_id="website_sale.product_price" name="Product price cust" priority="10">
+        <xpath expr="//span[hasclass('oe_price')]" position="replace">
+            <b><span class="oe_price" style="white-space: nowrap;" t-esc="combination_info['price']" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/></b>
+        </xpath>
+     </template>
+
+<!--    <template id="product_price_custom_web_cart_page" inherit_id="website_sale.cart_lines">-->
+<!--        <xpath expr="//td[@class='text-center td-price']" position="replace">-->
+<!--            <td class="text-center td-price" name="price">-->
+<!--                <t t-set="combination" t-value="line.product_id.product_template_attribute_value_ids + line.product_no_variant_attribute_value_ids"/>-->
+<!--                <t t-set="combination_info" t-value="line.product_id.product_tmpl_id._get_combination_info(combination, pricelist=website_sale_order.pricelist_id)"/>-->
+
+<!--                <t t-set="list_price_converted" t-value="website.currency_id._convert(combination_info['list_price_custom'], website_sale_order.currency_id, website_sale_order.company_id, date)"/>-->
+<!--                <t groups="account.group_show_line_subtotals_tax_excluded" t-if="(website_sale_order.pricelist_id.discount_policy == 'without_discount' and website_sale_order.currency_id.compare_amounts(list_price_converted, line.price_reduce_taxexcl) == 1) or website_sale_order.currency_id.compare_amounts(line.price_unit, line.price_reduce) == 1" name="order_line_discount">-->
+<!--                    <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="list_price_converted" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" />-->
+<!--                </t>-->
+<!--                <span t-field="line.price_reduce_taxexcl" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_excluded" />-->
+<!--                <t groups="account.group_show_line_subtotals_tax_included" t-if="(website_sale_order.pricelist_id.discount_policy == 'without_discount' and website_sale_order.currency_id.compare_amounts(list_price_converted, line.price_reduce_taxinc) == 1) or website_sale_order.currency_id.compare_amounts(line.price_unit, line.price_reduce) == 1" name="order_line_discount">-->
+<!--                    <del t-attf-class="#{'text-danger mr8'}" style="white-space: nowrap;" t-esc="list_price_converted" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" />-->
+<!--                </t>-->
+<!--                <span t-field="line.price_reduce_taxinc" style="white-space: nowrap;" t-options="{'widget': 'monetary', 'display_currency': website_sale_order.currency_id}" groups="account.group_show_line_subtotals_tax_included" />-->
+<!--            </td>-->
+<!--        </xpath>-->
+<!--    </template>-->
+</odoo>

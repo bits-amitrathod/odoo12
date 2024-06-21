@@ -1,163 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
     <template id="seller_form_template" name="Sell Page">
-<t t-name="website.sell">
-  <t t-call="website.layout">
-    <div id="wrap" class="oe_structure oe_empty">
-     <section class="pt-5 pb-3">
-        <div class="container">
-            <div class="text-center pb32">
-                <h1  class="about-header"> Sell </h1>
-            </div>
-        </div>
-      </section>
-      <section class="s_text_block pb0 bg-grey py-5">
-        <div class="container">
-          <div class="section-description">
-            <p class="text-center">Please fill out the form below in order to submit an item for valuation.</p>
-          </div>
-          <div class="section-header-title">
-              <p class="hawk-title ft-32 text-center regular-font">Seller Form</p>
-          </div>
+        <t t-name="website.sell">
+          <t t-call="website.layout">
+            <div id="wrap" class="oe_structure oe_empty">
+             <section class="pt-5 pb-3">
+                <div class="container">
+                    <div class="text-center pb32">
+                        <h1  class="about-header"> Sell </h1>
+                    </div>
+                </div>
+              </section>
+              <section class="s_text_block pb0 bg-grey py-5">
+                <div class="container">
+                  <div class="section-description">
+                    <p class="text-center">Please fill out the form below in order to submit an item for valuation.</p>
+                  </div>
+                  <div class="section-header-title">
+                      <p class="hawk-title ft-32 text-center regular-font">Seller Form</p>
+                  </div>
 
-          <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
-              <div class="container">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="form-group has-float-label form-field o_website_form_required_custom">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Business Name *" id="bussines_name" name="bussines_name" required=""/>
-<!--                      <label for="bussines_name" class="control-label">Business Name</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label form-field o_website_form_required_custom">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Business Address *" id="bussines_address" name="bussines_address" required=""/>
-<!--                      <label for="bussines_address" class="control-label">Business Address</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label form-field o_website_form_required_custom">
-                      <input type="text" class="form-control o_website_form_input" placeholder="City *" id="City" name="City" required=""/>
-<!--                      <label for="City" class="control-label">City</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label form-field o_website_form_required_custom">
-                      <input type="text" class="form-control o_website_form_input" placeholder="State / Province *" id="State" name="State" required=""/>
-<!--                      <label for="State" class="control-label">State / Province</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label form-field o_website_form_required_custom">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Zip Code *" id="zip_code" name="zip_code" required=""/>
-<!--                      <label for="zip_code" class="control-label">Zip Code</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name" name="first_name" />
-<!--                      <label for="first_name" class="control-label">First Name</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name" name="last_name" />
-<!--                      <label for="last_name" class="control-label">Last Name</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Phone" id="Phone" name="Phone" />
-<!--                      <label for="Phone" class="control-label">Phone</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Email" id="Email" name="Email"/>
-<!--                      <label for="Email" class="control-label">Email</label>-->
-                  </div>
-                </div>
-                <div class="col-12">
-                  <p class="hawk-title ft-2  regular-font mt-3 mb-4">Contact Name<small>(for final signature)</small> </p>
-                </div>
-
-                <div class="col-md-6">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name2" name="first_name2" />
-<!--                      <label for="first_name2" class="control-label">First Name</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name2" name="last_name2" />
-<!--                      <label for="last_name2" class="control-label">Last Name</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer" />
-<!--                      <label for="Manufacturer" class="control-label">Manufacturer</label>-->
-                  </div>
-                </div>
-                <div class="col-md-6">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Part Number" id="PartNumber" name="PartNumber" />
-<!--                      <label for="PartNumber" class="control-label">Part Number</label>-->
-                  </div>
-                </div>
-                 <div class="col-12">
-                      <div class="form-group has-float-label">
-                            <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"   rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
-<!--                            <label class="control-label" for="description">Description</label>-->
-                      </div>
-                 </div>
-                <div class="col-md-5">
-                    <div class="form-group  has-float-label">
-                       <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
-  <!--                        <input id="birthdate" type="text" placeholder="Date Shipped" name="Date" class="form-control o_website_form_input o_website_form_date"/>-->
-                         <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Purchase Date " data-toggle="datetimepicker" data-target="#datepicker3" name="Purchase Date"/>
-<!--                         <label class="control-label" for="birthdate2" >Purchase Date </label>-->
-                          <div class="input-group-append" data-target="#datepicker3" data-toggle="datetimepicker">
-                              <span class="input-group-text" id="birthdate2"><i class="icon-calendars"></i></span>
+                  <form action="/website_form/" method="post" class="s_website_form container-fluid mt32" enctype="multipart/form-data" data-model_name="mail.mail" data-success_page="/thank-you">
+                      <div class="container">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <div class="form-group has-float-label form-field o_website_form_required_custom">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Business Name *" id="bussines_name" name="bussines_name" required=""/>
                           </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label form-field o_website_form_required_custom">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Business Address *" id="bussines_address" name="bussines_address" required=""/>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label form-field o_website_form_required_custom">
+                              <input type="text" class="form-control o_website_form_input" placeholder="City *" id="City" name="City" required=""/>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label form-field o_website_form_required_custom">
+                              <input type="text" class="form-control o_website_form_input" placeholder="State / Province *" id="State" name="State" required=""/>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label form-field o_website_form_required_custom">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Zip Code *" id="zip_code" name="zip_code" required=""/>
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name" name="first_name" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name" name="last_name" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Phone" id="Phone" name="Phone" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Email" id="Email" name="Email"/>
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <p class="hawk-title ft-2  regular-font mt-3 mb-4">Contact Name<small>(for final signature)</small> </p>
+                        </div>
+
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name2" name="first_name2" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name2" name="last_name2" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer" />
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Part Number" id="PartNumber" name="PartNumber" />
+                          </div>
+                        </div>
+                         <div class="col-12">
+                              <div class="form-group has-float-label">
+                                    <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"   rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
+                              </div>
+                         </div>
+                        <div class="col-md-5">
+                            <div class="form-group  has-float-label">
+                               <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
+                                 <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Purchase Date " data-toggle="datetimepicker" data-target="#datepicker3" name="Purchase Date"/>
+                                  <div class="input-group-append" data-target="#datepicker3" data-toggle="datetimepicker">
+                                      <span class="input-group-text" id="birthdate2"><i class="icon-calendars"></i></span>
+                                  </div>
+                              </div>
+                            </div>
+                         </div>
+                        <div class="col-md-5">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Condition" id="Condition" name="Condition" />
+                          </div>
+                        </div>
+                        <div class="col-md-5">
+                           <div class="form-group has-float-label">
+                              <input type="text" class="form-control o_website_form_input" placeholder="Quantity(Ea)" id="Quantity" name="Quantity" />
+                          </div>
+                        </div>
+                         <div class="col-md-10 offset-md-2">
+                            <div class="form-group file-input">
+                                <label class="control-label" for="Condition">Item Picture Upload</label>
+                                <label for="file" class="file-control">Choose File</label>
+                                <input type="file" onChange='getFileNameWithExt(event)' class="file-upload-control" id="file" name="file"/>
+                                <input id='outputfile' type='text' name='outputfile' class="selected-file" placeholder="No File Chosen" disabled="true"/>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="btn-wrapper text-center my-5  ">
+                              <button class="btn btn-info btn-sm o_website_form_send">Submit</button>
+                            </div>
+                        </div>
                       </div>
                     </div>
-                 </div>
-                <div class="col-md-5">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Condition" id="Condition" name="Condition" />
-<!--                      <label for="Condition" class="control-label">Condition </label>-->
-                  </div>
+                      <input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
+                      <input class="form-field" type="hidden" name="subject" value="Received New 'Seller Form' "/>
+                  </form>
                 </div>
-                <div class="col-md-5">
-                   <div class="form-group has-float-label">
-                      <input type="text" class="form-control o_website_form_input" placeholder="Quantity(Ea)" id="Quantity" name="Quantity" />
-<!--                      <label for="Quantity" class="control-label">Quantity(Ea) </label>-->
-                  </div>
-                </div>
-                 <div class="col-md-10 offset-md-2">
-                    <div class="form-group file-input">
-                        <label class="control-label" for="Condition">Item Picture Upload</label>
-                        <label for="file" class="file-control">Choose File</label>
-                        <input type="file" onChange='getFileNameWithExt(event)' class="file-upload-control" id="file" name="file"/>
-
-                        <input id='outputfile' type='text' name='outputfile' class="selected-file" placeholder="No File Chosen" disabled="true"/>
-                    </div>
-                </div>
-                <div class="col-12">
-                    <div class="btn-wrapper text-center my-5  ">
-                      <button class="btn btn-info btn-sm o_website_form_send">Submit</button>
-                    </div>
-                </div>
-              </div>
+              </section>
             </div>
-              <input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
-              <input class="form-field" type="hidden" name="subject" value="Received New 'Seller Form' "/>
-          </form>
-        </div>
-      </section>
-    </div>
-  </t>
-</t>
+          </t>
+        </t>
     </template>
 </odoo>

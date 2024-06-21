@@ -35,11 +35,11 @@
                            placeholder="****       e.g. A**2" invisible="1" />
                     <field name="sku_postconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
                            placeholder="****       e.g. *2*B" invisible="1" />
-                    <field name="quickbook_id" groups="account.group_account_manager" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="quickbook_id"  attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="parent_saleforce_ac" placeholder="Parent Sale Force A/C." attrs="{'invisible':[('parent_id', '=', False)]}"/>
                     <field name="is_share" invisible="1"/>
                     <field name="sale_margine" invisible="1"/>
-                    <field name="on_hold_readonly" groups="!account.group_account_manager" readonly="1"/>
+                    <field name="on_hold_readonly" readonly="1"/>
                     <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}" invisible="1"/>
                    <!--<field name="charity"/>-->
                     <field name="is_parent" invisible="1"/>
@@ -48,7 +48,7 @@
                     <field name="lang" invisible="1"/>
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                     <field name="on_hold" groups="account.group_account_manager" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                     <field name="on_hold"  attrs="{'readonly':[('is_parent', '==', False)]}"/>
                       <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>
 
@@ -149,10 +149,10 @@
             <field name="name">res.partner.product.property.form.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
-            <field name="groups_id" eval="[(4, ref('product.group_product_pricelist'))]"/>
+<!--            <field name="groups_id" eval="[(4, ref('product.group_product_pricelist'))]"/>-->
             <field name="arch" type="xml">
                 <group name="sale">
-                    <field name="property_product_pricelist" groups="product.group_product_pricelist" attrs="{'readonly': [('is_company','=',False),('parent_id','!=',False)]
+                    <field name="property_product_pricelist"  attrs="{'readonly': [('is_company','=',False),('parent_id','!=',False)]
                     ,'invisible': [('parent_id','=',False)] }"/>
 
                 </group>
@@ -164,7 +164,14 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_tree"/>
             <field name="arch" type="xml">
+                <!-- translated_display_name and display_name  fields is computed
+                that's why they can't provide default sorting fun and client want to sort-->
+                <xpath expr="//field[@name='translated_display_name']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
                 <xpath expr="//field[@name='display_name']" position="after">
+                    <field name="name"/>
                     <field name="company_type"/>
                 </xpath>
             </field>
@@ -303,8 +310,8 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
-                    <field name="manufacturer_uom" groups="uom.group_uom" options="{'no_create': True}"/>
-                    <field name="actual_uom" groups="uom.group_uom" options="{'no_create': True}"/>
+                    <field name="manufacturer_uom"  options="{'no_create': True}"/>
+                    <field name="actual_uom"  options="{'no_create': True}"/>
                 </xpath>
             </field>
         </record>
@@ -449,17 +456,16 @@
             </field>
         </record>
 
-        <record id="set_log_gl_account_response" model="mail.template">
+        <!-- TODO: ODOO16_UPD Need Check -->
+        <!--record id="set_log_gl_account_response" model="mail.template">
             <field name="name">Logs For GL Account</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">
-                <![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="subject">
-                <![CDATA[GL Account No Response for user <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html">${ctx['body']}</field>
-<!--            <field name="user_signature" eval="False"/>-->
-        </record>
+            <field name="email_from">{{object.company_id.name}}{{(object.company_id.email or user.email)}}</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="subject">GL Account No Response for user {{(object.company_id.email or user.email)}}</field>
+            <field name="body_html" type="">{{ctx.get('body')}}</field>
+&lt;!&ndash;            <field name="user_signature" eval="False"/>&ndash;&gt;
+        </record>-->
 
         <record id="action_send_prioritization_credential_email" model="ir.actions.server">
             <field name="name">Send Prioritization API Credential Email</field>
@@ -521,22 +527,22 @@
         <record id="send_prioritization_credential_email" model="mail.template">
             <field name="name">Send Prioritization API Credentials</field>
             <field name="model_id" ref="base.model_res_partner"/>
-            <field name="email_from"><![CDATA[<${(object.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="subject"><![CDATA[Prioritization Engine API Credentials]]></field>
-            <field name="body_html"><![CDATA[
-            <p>Hello <small>${object.name|safe},</small></p>
+            <field name="email_from">{{(object.email or user.email)}}</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="subject">Prioritization Engine API Credentials</field>
+            <field name="body_html" type="html">
+                <p>Hello <small>{{object.name}},</small></p>
                 <p>
                     Prioritization Engine API Credential with required fields are as follows.
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
-                    <b>User Name</b> : ${ctx['username']}
+                    <b>User Name</b> : {{ctx.get('username')}}
                 </p>
                 <p>
-                    <b>Password</b> : ${ctx['password']}
+                    <b>Password</b> : {{ctx.get('password')}}
                 </p>
                 <p>
-                    <b>Url</b> : ${ctx['url']}
+                    <b>Url</b> : {{ctx.get('url')}}
                 </p>
                 <p>
                     <b>Template Type</b> : 'Requirement / Inventory'
@@ -547,45 +553,11 @@
                 <p>
                     Thanks.
                 </p>
-
-            ]]></field>
+            </field>
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <!-- Stockhawk Sales Order Export -->
-        <record id="view_stockhawk_sales_order" model="ir.ui.view">
-<!--            <field name="sequence" eval="1"/>-->
-            <field name="name">Sales Order</field>
-            <field name="model">sale.order.line</field>
-            <field name="mode">primary</field>
-            <field name="arch" type="xml">
-                <tree create="false">
-                    <field name="ex_sale_order_customer" string="Customer Name"/>
-                    <field name="ex_sale_order_name" string="Sale Order#"/>
-                    <field name="ex_product_oem" string="Product OEM"/>
-                    <field name="default_code" string="Product Code"/>
-                    <field name="ex_product_desc" string="Product Description"/>
-                    <field name="product_uom_qty" string="Ordered Quantity"/>
-                    <field name="qty_delivered" string="Delivered Quantity"/>
-                    <field name="price_unit" string="Unit Price"/>
-                    <field name="price_subtotal" string="Total"/>
-<!--                    <field name="ex_sale_order_confirm_date" string="Date Sold"/>-->
-                </tree>
-            </field>
-        </record>
-
-        <record id="sale_order_line_filter" model="ir.ui.view">
-            <field name="name">sale.order.line.filter</field>
-            <field name="model">sale.order.line</field>
-            <field name="arch" type="xml">
-                <search string="Order">
-                    <field name="order_id" string="Order"/>
-                    <group expand="0" string="Group By">
-                        <filter string="Order" name="group_by_order_id" domain="[]" context="{'group_by':'order_id'}" help="Group by Order"/>
-                    </group>
-                </search>
-            </field>
-        </record>
 
         <record id="view_stockhawk_sale_order" model="ir.actions.act_window">
             <field name="name">STOCKHAWK Sales Order</field>

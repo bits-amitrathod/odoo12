@@ -7,7 +7,7 @@
             <field name="model">product.public.category</field>
             <field name="arch" type="xml">
                 <xpath expr="//div" position="after"> 
-                <group string="SEO Information" name="seo">
+                        <group string="SEO Information" name="seo">
                       <group>
                         <field name="website_meta_title"/>
                         <field name="website_meta_keywords"/>

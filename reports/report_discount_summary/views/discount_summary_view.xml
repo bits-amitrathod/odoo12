@@ -47,6 +47,7 @@
                     <field name="r_discount" widget="monetary" optional="show"/>
                     <field name="r_amount" widget="monetary" optional="show"/>
                     <!--<field name="r_total" widget="monetary"/>-->
+                    <field name="company_id" invisible="1"></field>
                     <field name="currency_id"  invisible="1" optional="show" />
                     <field name="state" invisible="1"/>
                 </tree>

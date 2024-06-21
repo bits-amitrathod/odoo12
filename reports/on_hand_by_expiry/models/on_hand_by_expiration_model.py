@@ -53,7 +53,7 @@ class OnHandByExpiry(models.Model):
                     WHEN l.alert_date >= '""" + str(current_date) + """' THEN 'Valid'
                 END AS status
             FROM 
-                stock_production_lot l LEFT JOIN stock_quant sq ON sq.lot_id = l.id 
+                stock_lot l LEFT JOIN stock_quant sq ON sq.lot_id = l.id 
                 LEFT JOIN product_product p ON p.id = sq.product_id LEFT JOIN product_template t 
                 ON t.id = p.product_tmpl_id LEFT JOIN stock_location sl On sl.id = sq.location_id 
                 LEFT JOIN stock_warehouse sw ON sl.id = sw.lot_stock_id      

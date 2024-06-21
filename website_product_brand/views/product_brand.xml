@@ -5,11 +5,8 @@
         <t t-name="website.product_types_page">
             <t t-call="website.layout">
                 <div id="wrap" class="oe_structure oe_empty"/>
-
                 <section class="shop-by-manufacturer">
-
                     <div class="container">
-
                         <h1 class="header-label">Shop by Manufacturer</h1>
                     </div>
                     <div class="container">
@@ -41,5 +38,4 @@
             </ul>
         </li>
     </template>
-
 </odoo>

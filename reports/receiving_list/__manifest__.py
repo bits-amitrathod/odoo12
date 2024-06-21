@@ -12,9 +12,9 @@
 
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/receiving_list_report.xml',
-        'report/receiving_list_report_template.xml'
+        # 'views/views.xml',
+        # 'report/receiving_list_report.xml',
+        # 'report/receiving_list_report_template.xml'
     ],
     'installable': True,
     'application': True,

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="sps_theme.sps_website_theme_frontend_assets_1" model="ir.asset">
+            <field name="name">SPS Website Theme variable SCSS</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">/sps_theme/static/src/scss/variable_style.scss</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_frontend_assets_2" model="ir.asset">
+            <field name="name">SPS Website Theme Pages SCSS </field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">/sps_theme/static/src/scss/pages/about_style.scss</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_frontend_assets_3" model="ir.asset">
+            <field name="name">SPS Website Theme Style SCSS</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">/sps_theme/static/src/scss/theme_style.scss</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_frontend_assets_4" model="ir.asset">
+            <field name="name">SPS Website Theme fonts</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i,800</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_frontend_assets_5" model="ir.asset">
+            <field name="name">SPS Website Theme fonts</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i,900</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_frontend_assets_6" model="ir.asset">
+            <field name="name">SPS Website Theme font scss</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">/sps_theme/static/src/scss/common/font.style.scss</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_frontend_assets_7" model="ir.asset">
+            <field name="name">SPS Website Theme script js</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">/sps_theme/static/src/js/script.js</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_frontend_assets_8" model="ir.asset">
+            <field name="name">SPS Website Theme notify me scss</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">/sps_theme/static/src/js/notify_me.js</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_backend_assets_1" model="ir.asset">
+            <field name="name">SPS Website Theme  SCSS</field>
+            <field name="bundle">web.assets_backend</field>
+            <field name="directive">append</field>
+            <field name="path">/sps_theme/static/src/scss/sps.scss</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+        <record id="sps_theme.sps_website_theme_helper_assets_1" model="ir.asset">
+            <field name="name">SPS Website Theme ui test SCSS</field>
+            <field name="bundle">web._assets_frontend_helpers</field>
+            <field name="directive">prepend</field>
+            <field name="path">/sps_theme/static/src/scss/ui_test.scss</field>
+            <field name="sequence" eval="16"/>
+        </record>
+
+    </data>
+</odoo>

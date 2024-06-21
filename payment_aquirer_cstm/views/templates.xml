@@ -12,7 +12,6 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <form method="post">
-
                                         <div t-att-class="'form-group has-error' if error else 'form-group'">
                                             <label class="control-label">Purchase Order</label>
                                             <input type="text" name="purchase_order" required="required"
@@ -32,37 +31,11 @@
         </t>
     </template>
 
-    <template id="assets_frontend" inherit_id="web.assets_frontend" name="Website Assets">
-        <xpath expr="//script[last()]" position="after">
-            <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"/>
-        </xpath>
-    </template>
-
-
-    <!-- ~~~~~~~~~~~~~~ Confirm Order~~~~~~~~~~~~ -->
-    <!--<template id="customerReferenceSO" name="customerReferenceSO" inherit_id="website_sale.payment">
-        <xpath expr="//div[@id='payment_method']" position="before">
-            <t t-if="website_sale_order.partner_id.allow_purchase">
-                <div class="row" id="order_customer_referance_so">
-                    <div id="cart_totala" class="col-xs-12 col-sm-6">
-                        <span class="col-xs-5 text-right h5 mt0" style="padding-top: 7px;">Purchase Order #:</span>
-                        <span class="col-xs-6 text-right-not-xs text-left-xs h4 mt0" style="white-space: nowrap;">
-                            <input type="text" class="form-control" name="customerReferenceSO"
-                                   t-att-value="website_sale_order.client_order_ref"/>
-                        </span>
-                    </div>
-                </div>
-            </t>
-        </xpath>
-    </template>-->
-
-
     <template id="confirmationCstm" name="confirmation cstm" inherit_id="website_sale.confirmation">
         <xpath expr="//div[hasclass('oe_structure')]" position="before">
             <t t-if="order.client_order_ref">
                 <div id="purchaseOrderConfirmation" class="row">
                     <div class="col-xs-12 col-sm-6">
-
                         <strong>Purchase Order #:</strong>
                         <t t-esc="order.client_order_ref"/>
                     </div>
@@ -80,18 +53,15 @@
 
     <template id="payment_delivery_methods_inherit" inherit_id="website_sale_delivery.payment_delivery_methods">
         <xpath expr="//input[@t-att-value='delivery.id']" position="replace">
-            <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"></script>
+<!--            <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"></script>-->
             <input t-att-value="delivery.id" t-att-id="'%s' % delivery.code" type="radio" name="delivery_type" t-att-class="'d-none' if delivery_nb == 1 else ''"/>
         </xpath>
-<!--        <xpath expr="//span[@t-else='' and @t-att-class='badge_class']" position="replace">-->
-<!--            <span t-else="" t-att-class="badge_class"/>-->
-<!--        </xpath>-->
     </template>
 
 
-    <template id="payment_sale_note" inherit_id="website_sale_delivery.payment_delivery" name="Purchase Order">
-        <xpath expr="//div[@class='card']" position="after">
-            <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"></script>
+    <template id="payment_sale_note" inherit_id="website_sale.payment" name="Payment Sale Note Purchase Order">
+        <xpath expr="//div[@id='address_on_payment']" position="after">
+<!--            <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"></script>-->
             <div class="col-sm-12 col-md-12 p-0" >
                 <textarea style="margin-bottom: 0px;margin-top: 10px;" rows="3" name="sales_team_message"
                           placeholder="Please specify additional comments or specific instructions for this order." class="form-control"/>
@@ -129,20 +99,17 @@
                 </div>
             </div>
         </xpath>
-        <xpath expr="//div[@id='delivery_carrier']/h3" position="replace">
-            <h3 id="choose_a_delivery_method_label" t-if="delivery_nb &gt; 1" class="mb24" style="font-size: 20px;">Choose a delivery method</h3>
-        </xpath>
-        <xpath expr="//div[@id='delivery_carrier']/div[@id='delivery_method']" position="replace">
-            <div id="delivery_method_custom" t-if="delivery_nb &gt; 1" class="card border-0">
-                <ul class="list-group">
-                    <t t-foreach="deliveries" t-as="delivery">
-                        <li class="list-group-item">
-                            <t t-call="website_sale_delivery.payment_delivery_methods"/>
-                        </li>
-                    </t>
-                </ul>
-            </div>
-        </xpath>
+<!--        <xpath expr="//div[@id='delivery_carrier']" position="replace">-->
+
+<!--            <div t-if="delivery_nb == 1" id="delivery_carrier" class="mt4">-->
+<!--                <h3 id="choose_a_delivery_method_label" t-if="delivery_nb &gt; 1" class="mb24" style="font-size: 20px;">Choose a delivery method</h3>-->
+<!--                <t t-foreach="deliveries" t-as="delivery">-->
+<!--                    <div class="o_delivery_carrier_select d-inline">-->
+<!--                        <t t-call="website_sale_delivery.payment_delivery_methods"/>-->
+<!--                    </div>-->
+<!--                </t>-->
+<!--            </div>-->
+<!--        </xpath>-->
     </template>
 
     <template id="payment_cstm" inherit_id="website_sale.payment">
@@ -151,33 +118,5 @@
         </xpath>
     </template>
 
-    <record id="email_after_payment_done" model="mail.template">
-            <field name="name">Email After Payment</field>
-            <field name="model_id" ref="base.model_res_users"/>
-           <field name="email_from">${ctx['email_from']}</field>
-            <field name="email_to">${ctx['email_to']}</field>
-            <field name="email_cc">${ctx['email_cc']}</field>
-            <field name="subject">Payment Done </field>
-            <field name="body_html"><![CDATA[
-                % set tx = ctx.get('tx')
-            <p>
-                    Dear Team,<br/>
-                    Payment Done for the following Sale Order :  <br/>
-            </p>
-                %if ctx.get('sale_order') :
-                <p> Reference :${ctx['sale_order']}<br/></p>
-                <p> Customer name : ${ctx['cust_name']}</p><br/>
-                %endif
-                %if ctx.get('sales_rep') :
-                <p> Sales Rep :${ctx['sales_rep']}<br/></p>
-                %endif
-                %if ctx.get('amount') :
-                <p> Amount :${format_amount(tx.amount,tx.currency_id)}<br/></p>
-                %endif
-                <p>
-                    Thank you <br/>
-                </p>
 
-            ]]></field>
-        </record>
 </odoo>

@@ -1,12 +1,11 @@
 <odoo>
-  <template id="assets_frontend" inherit_id="web.assets_backend" name="Website Assets">
-        <xpath expr="//link[last()]" position="after">
-            <link rel="stylesheet" href="/custom_styles/static/src/less/custom.less"/>
-        </xpath>
-  </template>
-    <template id="assets_frontend_2" inherit_id="web.report_assets_common" name="Website Assets">
-        <xpath expr="//link[last()]" position="after">
-            <link rel="stylesheet" href="/custom_styles/static/src/less/custom.style.less"/>
-        </xpath>
-  </template>
+    <data>
+        <record id="custom_styles.assets_backend_inherit" model="ir.asset">
+            <field name="name">custom_style.web.assets_backend.inherit</field>
+            <field name="bundle">web.assets_backend</field>
+            <field name="directive">append</field>
+            <field name="path">/custom_styles/static/src/less/custom.scss</field>
+            <field name="sequence" eval="16"/>
+        </record>
+    </data>
 </odoo>

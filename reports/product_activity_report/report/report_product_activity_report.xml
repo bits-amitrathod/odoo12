@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_product_activity_report"
-                string="Product Activity Report"
-                model="product.activity.report"
-                report_type="qweb-html"
-                file="product_activity_report.product_activity_report_template"
-                name="product_activity_report.product_activity_report_template"
-        />
+        <record id="action_report_product_activity_report" model="ir.actions.report">
+            <field name="name">Product Activity Report</field>
+            <field name="model">product.activity.report</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">product_activity_report.product_activity_report_template</field>
+            <field name="report_file">product_activity_report.product_activity_report_template</field>
+        </record>
     </data>
 </odoo>

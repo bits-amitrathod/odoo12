@@ -13,6 +13,8 @@
         'purchase',
         'vendor_offer',
         'account',
+        'project',
+        'hr_recruitment',
         'sh_activities_management'
     ],
     'data': [

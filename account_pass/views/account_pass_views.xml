@@ -179,7 +179,11 @@
         <field name="name">Account Pass </field>
         <field name="res_model">account.pass</field>
         <field name="type">ir.actions.act_window</field>
-        <field name="view_mode">kanban,tree,form</field>
+<!--        <field name="view_mode">kanban,tree,form</field>-->
+		<field name="view_ids" eval="[(5, 0, 0),
+				(0, 0, {'view_mode': 'kanban'}),
+    	        (0, 0, {'view_mode': 'tree'}),
+    	        (0, 0, {'view_mode': 'form','view_id': ref('account_pass.account_pass_view_form')})]"/>
 		<field name="context">{}</field>
     </record>
 

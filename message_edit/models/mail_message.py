@@ -36,7 +36,7 @@ class mail_message(models.Model):
             values['changed'] = True
         return super(mail_message, self).write(values)
 
-    def message_format(self):
+    def message_format(self, format_reply=True):
         """
         Overwrite to pass 'changed' and whether message is activity
 

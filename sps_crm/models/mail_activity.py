@@ -58,23 +58,23 @@ class MailActivityNotesCustom(models.Model):
 
     comment = fields.Html(string='Comments')
     dup_poc_note = fields.Html(string='Dup POC', store=False, compute="_compute_act_note_field",
-                                     search="pro_search_for_dup_poc", readonly=False)
+                               search="pro_search_for_dup_poc", readonly=False)
 
     ordered_online = fields.Boolean(related="related_partner_activity.x_studio_ordered_online", readonly=True,
-                                      store=False)
+                                    store=False)
     ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True, store=False)
 
     fiscal_year_end = fields.Selection(related="related_partner_activity.fiscal_year_end", readonly=True,
-                                    store=False)
+                                       store=False)
     top_subspecialties1 = fields.Many2many(related="related_partner_activity.top_subspecialties1", readonly=True,
-                                      store=False)
+                                           store=False)
 
     connected_in_ghx = fields.Boolean(related="related_partner_activity.x_studio_connected_in_ghx", readonly=True,
-                                           store=False)
+                                      store=False)
     ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True,
-                                           store=False)
+                                      store=False)
     email_opt_out = fields.Boolean(related="related_partner_activity.email_opt_out", readonly=True,
-                                        store=False)
+                                   store=False)
 
     #date_done = fields.Date("Completed Date", index=True, readonly=False)
 
@@ -206,7 +206,7 @@ class MailActivityNotesCustom(models.Model):
                 'feedback': '',
                 'display_assignee': self.user_id != self.env.user
             },
-            subtype_id=self.env['ir.model.data'].xmlid_to_res_id('mail.mt_activities'),
+            subtype_id=self.env['ir.model.data']._xmlid_to_res_id('mail.mt_activities'),
             mail_activity_type_id=self.activity_type_id.id,
         )
         messages |= record.sudo().message_ids[0]
@@ -317,7 +317,7 @@ class MailActivityNotesCustom(models.Model):
                     'feedback': self.feedback,
                     'display_assignee': activity_id.user_id != self.env.user
                 },
-                subtype_id=self.env['ir.model.data'].xmlid_to_res_id('mail.mt_activities'),
+                subtype_id=self.env['ir.model.data']._xmlid_to_res_id('mail.mt_activities'),
                 mail_activity_type_id=activity_id.activity_type_id.id,
             )
             messages |= record.sudo().message_ids[0]
@@ -427,7 +427,7 @@ class MailThreadExtendCRM(models.AbstractModel):
         if udpated_fields:
             # fetch "parent" subscription data (aka: subtypes on project to propagate on task)
             doc_data = [(model, [updated_values[fname] for fname in fnames]) for model, fnames in updated_relation.items()]
-            res = self.env['mail.followers']._get_subscription_data(doc_data, None, None, include_pshare=True, include_active=True)
+            res = self.env['mail.followers']._get_subscription_data(doc_data, None, include_pshare=True, include_active=True)
             for fid, rid, pid, cid, subtype_ids, pshare, active in res:
                 # use project.task_new -> task.new link
                 sids = [parent[sid] for sid in subtype_ids if parent.get(sid)]
@@ -452,8 +452,8 @@ class MailThreadExtendCRM(models.AbstractModel):
 
         self.env['mail.followers']._insert_followers(
             self._name, self.ids,
-            list(new_partners), new_partners,
-            list(new_channels), new_channels,
+            partner_ids = new_partners,subtypes=None,
+            customer_ids = [],
             check_existing=True, existing_policy=followers_existing_policy)
 
         # notify people from auto subscription, for example like assignation
@@ -477,8 +477,6 @@ class MailThreadExtendCRM(models.AbstractModel):
         if not self.env.registry.ready:  # Don't send notification during install
             return
 
-        view = self.env['ir.ui.view'].browse(self.env['ir.model.data'].xmlid_to_res_id(template))
-
         for record in self:
             model_description = self.env['ir.model']._get(record._name).display_name
             values = {
@@ -486,7 +484,7 @@ class MailThreadExtendCRM(models.AbstractModel):
                 'model_description': model_description,
                 'access_link': record._notify_get_action_link('view'),
             }
-            assignation_msg = view._render(values, engine='ir.qweb', minimal_qcontext=True)
+            assignation_msg = self.env['ir.ui.view']._render_template(template, values)
             assignation_msg = self.env['mail.render.mixin']._replace_local_links(assignation_msg)
             # record.message_notify(
             #     subject=_('You have been assigned to %s', record.display_name),

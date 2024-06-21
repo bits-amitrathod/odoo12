@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="request_a_quote_template" name="Request A Quote">
         <t t-name="website.request-a-quote">
@@ -42,26 +43,22 @@
                                     <div class="col-md" style="">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                              <input type="text" class="form-control o_website_form_input" name="title" placeholder="Title *" id="title" required=""/>
-                                            <!--<label class="control-label" for="title">Title</label>-->
                                         </div>
                                     </div>
 
                                     <div class="col-md px-0 px-md-2" style="">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="First Name *" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
-<!--                                            <label class="control-label" for="first_name">First Name</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md px-0 px-md-2">
                                          <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Last Name *" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
-<!--                                            <label class="control-label" for="last_name">Last Name</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-1">
                                         <div class="form-group has-float-label form-field">
                                             <input type="text" placeholder="Suffix " id="Suffix" class="form-control o_website_form_input" name="Suffix" />
-<!--                                            <label class="control-label" for="Suffix">Suffix</label>-->
                                         </div>
                                     </div>
 
@@ -70,19 +67,16 @@
                                      <div class="col-md-6">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Phone *" id="Phone" class="form-control o_website_form_input" name="Phone" required=""/>
-<!--                                            <label class="control-label" for="Phone">Phone</label>-->
                                         </div>
                                     </div>
                                      <div class="col-md-6">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Email *" id="Email" class="form-control o_website_form_input" name="Email" required=""/>
-<!--                                            <label class="control-label" for="Email">Email</label>-->
                                         </div>
                                     </div>
                                      <div class="col-md-12">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Facility *" id="Facility" class="form-control o_website_form_input" name="Facility" required=""/>
-<!--                                            <label class="control-label" for="Facility">Facility</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-12">
@@ -93,44 +87,37 @@
                                     <div class="col-md-6">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Address *" id="Address" class="form-control o_website_form_input" name="Address" required=""/>
-<!--                                            <label class="control-label" for="Address">Address</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Apt, suite, etc." id="suite" class="form-control o_website_form_input" name="suite"/>
-<!--                                            <label class="control-label" for="suite">Apt, suite, etc.</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Country" id="Country" class="form-control o_website_form_input" name="Country"/>
-<!--                                            <label class="control-label" for="Country">Country</label>-->
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="City *" id="City" class="form-control o_website_form_input" name="City" required=""/>
-<!--                                            <label class="control-label" for="City">City</label>-->
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="State" id="State" class="form-control o_website_form_input" name="State" />
-<!--                                            <label class="control-label" for="State">State</label>-->
                                         </div>
                                     </div>
                                      <div class="col-md-3">
                                         <div class="form-group has-float-label">
                                             <input type="text" placeholder="Zip Code" id="Zip_Code" class="form-control o_website_form_input" name="Zip_Code" />
-<!--                                            <label class="control-label" for="Zip_Code">Zip Code</label>-->
                                         </div>
                                     </div>
                                      <div class="col-12">
                                           <div class="form-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
                                                 <textarea id="description" placeholder="Message *" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
-<!--                                                <label class="control-label" for="description">Message</label>-->
                                           </div>
                                      </div>
                                        <div class="col-md-12 text-center btn-wrapper pt-4">
@@ -141,11 +128,9 @@
                             <input class="form-field" type="hidden" name="email_to" value="info@surgicalproductsolutions.com"/>
                             <input class="form-field" type="hidden" name="subject" value="Received New 'Request a Quote' Form"/>
                         </form>
-
                      </section>
                 </div>
             </t>
         </t>
-
     </template>
 </odoo>

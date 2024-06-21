@@ -2,29 +2,24 @@
 <odoo>
     <template id="appraisal_tracker_report" >
         <t t-call="web.html_container">
-
-            <t t-call="web.external_layout" t-as="data" >
+            <t t-call="web.external_layout" >
                 <page>
                     <div class="oe_structure"/>
                     <div>
-                    <center>
-                        <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Appraisal Tracker</h4>
-                        </b>
-                    </center>
-                    <center>
-                    </center>
+                        <center>
+                            <b>
+                                <h2> Surgical Product Solutions </h2>
+                                <h4> Appraisal Tracker</h4>
+                            </b>
+                        </center>
+                        <center>
+                        </center>
                     </div>
                     <br/>
-
-
                     <table class="table table-sm" style="border: 1px solid black; " >
                             <thead>
                                 <tr style="border: 1px solid black;">
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Appraisal No#</th>
-                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Priority</th>-->
-                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Revision</th>-->
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Acq Manager</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Facility</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Type</th>
@@ -36,20 +31,16 @@
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Final Billed Total Offer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Billed Total Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Final Billed Total Retail</th>
-                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Created On</th>-->
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Ship ping Label Issu ed</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Shipping Date</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Delivered Date</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Arrival Date</th>
-                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Note</th>-->
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Tier 1 Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Tier 2 Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">&lt; 40% Retail</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">New Cust omer</th>
                                     <th style="border: 1px solid black;text-align: center;width: 5%;">Status</th>
-                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">T1 Margin</th>-->
-                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">T2 Margin</th>-->
-                                    <!--<th style="border: 1px solid black;text-align: center;width: 5%;">Broker Margin</th>-->
+
                                 </tr>
                                 </thead>
                          <tbody>
@@ -58,12 +49,6 @@
                                             <span t-esc="order.appraisal_no"/>
                                         </td>
 
-                                        <!--<td style="border: 1px solid black;width: 5%;">-->
-                                            <!--<span t-esc="order.priority"/>-->
-                                        <!--</td>-->
-                                        <!--<td align="center" style="border: 1px solid black;width: 5%;">-->
-                                            <!--<span t-esc="order.revision"/>-->
-                                        <!--</td>-->
                                         <td style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.acq_user_id.name"/>
                                         </td>
@@ -97,9 +82,6 @@
                                         <td align="right" style="border: 1px solid black;width: 5%;">
                                             <span t-esc="order.final_billed_retail_total"  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
                                         </td>
-                                          <!--<td  style="border: 1px solid black;width: 5%;">-->
-                                             <!--<span t-esc="order.create_date"/>-->
-                                        <!--</td>-->
                                          <td  style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.shipping_label_issued"/>
                                         </td>
@@ -112,10 +94,6 @@
                                          <td  style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.arrival_date_grp"/>
                                         </td>
-
-                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
-                                             <!--<span t-esc="order.notes_desc"/>-->
-                                        <!--</td>-->
 
                                          <td  style="border: 1px solid black;width: 5%;">
                                             <span t-esc="order.tier1_retail" t-options='{"widget": "monetary", "display_currency": order.currency_id}' />
@@ -132,18 +110,6 @@
                                          <td  style="border: 1px solid black;width: 5%;">
                                              <span t-esc="order.status_ven_app"/>
                                         </td>
-                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
-                                            <!--<span t-esc="order.tier1_margin"/>-->
-                                        <!--</td>-->
-                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
-                                            <!--<span t-esc="order.tier2_margin"/>-->
-                                        <!--</td>-->
-                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
-                                            <!--<span t-esc="order.less_than_40_margin"/>-->
-                                        <!--</td>-->
-                                         <!--<td  style="border: 1px solid black;width: 5%;">-->
-                                            <!--<span t-esc="order.broker_margin"/>-->
-                                        <!--</td>-->
                                     </tr>
                              </tbody>
                     </table>

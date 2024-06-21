@@ -9,44 +9,18 @@
             </field>
         </record>
 
-        <template id="assets_backend" name="base_import assets" inherit_id="web.assets_backend">
-            <xpath expr="." position="inside">
-                <script type="text/javascript" src="/base_import/static/lib/javascript-state-machine/state-machine.js"></script>
-                <script type="text/javascript" src="/vendor_offer_automation/static/src/js/offer_template_widget.js"></script>
-            </xpath>
-        </template>
-
-
-        <!--<record model="ir.ui.view" id="purchase_order_line_file_field">-->
-            <!--<field name="name">Vendor Offer File Field</field>-->
-            <!--<field name="model">purchase.order</field>-->
-            <!--<field eval="40" name="priority"/>-->
-            <!--<field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>-->
-            <!--<field name="arch" type="xml">-->
-                <!--<xpath expr="//field[@name='new_customer']" position="after">-->
-                    <!--<field name="template_name" states="ven_draft" attrs="{'invisible':[('template_exists','==', False)]}"/>-->
-                    <!--<field name="template_exists" invisible="1"/>-->
-                    <!--<field name="filename" invisible="1" />-->
-                    <!--<field widget="file" name="document" filename="filename" states="ven_draft" attrs="{'invisible':[('template_exists','==', False)]}" />-->
-                <!--</xpath>-->
-            <!--</field>-->
-        <!--</record>-->
-
-          <record model="ir.ui.view" id="purchase_order_line_file_field_vendor_import">
-            <field name="name">Vendor Offer File Field</field>
+          <record model="ir.ui.view" id="purchase_order_line_file_field_vendor_import_view">
+            <field name="name">Vendor Offer Import File Buttons View</field>
             <field name="model">purchase.order</field>
             <field eval="40" name="priority"/>
-            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form"/>
+            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form_main"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[@name='action_send_offer_email']" position="after">
                     <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary"  />
                     <button name="action_import_order_lines_all_column" string="Manual Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
+                    <button name="action_import_order_lines_app_new" string="Appraisal Import New" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
                 </xpath>
             </field>
         </record>
-       <!--<menuitem-->
-            <!--id="menu_product_offer_template_import" name="Import Template" action="vendor_offer_automation.vendor_template_client_action"-->
-            <!--parent="vendor_offer.menu_product_in_config_purchase_setting" sequence="31" />-->
-
     </data>
 </odoo>

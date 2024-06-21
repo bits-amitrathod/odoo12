@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 	<template id="careers_page_template1" name="Careers">
 		<t t-name="website.careers">
@@ -8,9 +9,6 @@
 						  	<div class="text-center pt32 pb32">
 								<h1 class="about-header"> Surgical Product Solutions Careers </h1>
 							</div>
-							 <!--<div class="banner-wrapper">
-								<img src="/sps_theme/static/src/images/career.jpg" class="img-fluid"/>
-							</div>-->
 							 <div class="section-description contact-us-section">
                                     <div class="row">
                                         <div class="col-md-6">

@@ -1,9 +1,7 @@
 from odoo import api, fields, models, _
 from dateutil.relativedelta import relativedelta
 import datetime
-from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT, pycompat, misc
 
-from datetime import date, timedelta
 
 class account_pass(models.Model):
     _name = "account.pass"
@@ -45,14 +43,15 @@ class account_pass(models.Model):
     integration_note = fields.Text(string="Integration Note")
 
     total = fields.Float(string="Total", compute="compute_total")
-    backorder = fields.Selection(string='Backorder Only?', selection=[('yes', 'Yes'),('no', 'No')])
+    backorder = fields.Selection(string='Backorder Only?', selection=[('yes', 'Yes'), ('no', 'No')])
     ph = fields.Boolean(string="PH on file?")
     expansion = fields.Boolean(string="Expansion Call Complete?")
 
     company_id = fields.Many2one('res.company', string='Company', index=True, default=lambda self: self.env.company.id)
     bonused = fields.Boolean(string="Bonused")
-    total_account_spend = fields.Monetary(string="Total Account Spend", currency_field='company_currency',)
-    company_currency = fields.Many2one("res.currency", string='Currency', related='company_id.currency_id', readonly=True)
+    total_account_spend = fields.Monetary(string="Total Account Spend", currency_field='company_currency', )
+    company_currency = fields.Many2one("res.currency", string='Currency', related='company_id.currency_id',
+                                       readonly=True)
     ordering_method = fields.Text(string="Ordering Days/Order Method")
     subspecialties = fields.Text(string="Subspecialties/Manufacturers")
     popular_code = fields.Text(string="Popular Codes they will always buy")
@@ -60,9 +59,11 @@ class account_pass(models.Model):
     in_stock_report_text = fields.Text(string="In Stock Report up to date w/ all products they can/will buy with us?")
     position = fields.Text(string="Where do they position SPS?")
 
-    reinstated_or_new = fields.Selection(string='Reinstated or New', compute="compute_customer_reinstated_or_new", store=True, selection=[('reinstated', 'Reinstated'), ('new', 'New')])
-    customer_status = fields.Selection(string='Ideal Customer or Inconsistent Customer', selection=[('inconsistent', 'Inconsistent'), ('ideal', 'Ideal')])
-    sales_rep = fields.Many2one('res.users', string="Sales Rep", tracking=True , default=lambda self: self.env.uid)
+    reinstated_or_new = fields.Selection(string='Reinstated or New', compute="compute_customer_reinstated_or_new",
+                                         store=True, selection=[('reinstated', 'Reinstated'), ('new', 'New')])
+    customer_status = fields.Selection(string='Ideal Customer or Inconsistent Customer',
+                                       selection=[('inconsistent', 'Inconsistent'), ('ideal', 'Ideal')])
+    sales_rep = fields.Many2one('res.users', string="Sales Rep", tracking=True, default=lambda self: self.env.uid)
 
     note = fields.Text(string="Notes")
 
@@ -74,28 +75,39 @@ class account_pass(models.Model):
 
     @api.onchange('partner_id')
     def partner_depends_value_cal(self):
+        """
+        On change method triggered when the 'partner_id' field is changed.
+        It updates the 'saleforce_ac' field based on the value of 'partner_id'.
+        :return: None
+        """
         for rec in self:
             rec.saleforce_ac = rec.partner_id.saleforce_ac if rec.partner_id else None
 
-    @api.onchange("is_in_stock_report", "is_follow_up_discussed", "is_req_freq", "is_competitor_info", "is_code_in_top_20",
-              "is_vendors_purchased", "is_unique_codes", "is_purchase_history", "is_average_month", "is_purchased",
-              "is_prime_vendor", "is_integration")
+    @api.onchange("is_in_stock_report", "is_follow_up_discussed", "is_req_freq", "is_competitor_info",
+                  "is_code_in_top_20",
+                  "is_vendors_purchased", "is_unique_codes", "is_purchase_history", "is_average_month", "is_purchased",
+                  "is_prime_vendor", "is_integration")
     def compute_total(self):
+        """
+        Compute the total score based on the values of various boolean fields.
+        The function updates the ``total`` field of the record.
+        """
         for rec in self:
             rec.total = ((0.25 if rec.is_in_stock_report else 0.0) + (0.25 if rec.is_follow_up_discussed else 0.0) + \
-                        (0.25 if rec.is_req_freq else 0.0) + (0.25 if rec.is_competitor_info else 0.0) + \
-                        (0.25 if rec.is_code_in_top_20 else 0.0) + (0.25 if rec.is_vendors_purchased else 0.0) + \
-                        (0.50 if rec.is_unique_codes else 0.0) + (0.50 if rec.is_purchase_history else 0.0) + \
-                        (0.75 if rec.is_average_month else 0.0) + (0.75 if rec.is_purchased else 0.0) + \
-                        (1.0 if rec.is_prime_vendor else 0.0) + (1.0 if rec.is_integration else 0.0))
-
+                         (0.25 if rec.is_req_freq else 0.0) + (0.25 if rec.is_competitor_info else 0.0) + \
+                         (0.25 if rec.is_code_in_top_20 else 0.0) + (0.25 if rec.is_vendors_purchased else 0.0) + \
+                         (0.50 if rec.is_unique_codes else 0.0) + (0.50 if rec.is_purchase_history else 0.0) + \
+                         (0.75 if rec.is_average_month else 0.0) + (0.75 if rec.is_purchased else 0.0) + \
+                         (1.0 if rec.is_prime_vendor else 0.0) + (1.0 if rec.is_integration else 0.0))
 
     @api.onchange('partner_id')
     def compute_customer_reinstated_or_new(self):
         for rec in self:
             if rec.partner_id and rec.partner_id.reinstated_date:
-                datetime_obj = datetime.datetime.strptime(str(rec.partner_id.reinstated_date),"%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d")
-                self.env.cr.execute("SELECT * FROM sale_order where partner_id=" + str(rec.partner_id.id) +" and date_order > '" + datetime_obj + "' and state='sale'")
+                datetime_obj = datetime.datetime.strptime(str(rec.partner_id.reinstated_date),
+                                                          "%Y-%m-%d %H:%M:%S").strftime("%Y-%m-%d")
+                self.env.cr.execute("SELECT * FROM sale_order where partner_id=" + str(
+                    rec.partner_id.id) + " and date_order > '" + datetime_obj + "' and state='sale'")
                 data = self.env.cr.dictfetchall()
                 if data and len(data) > 2:
                     rec.reinstated_or_new = 'reinstated'
@@ -112,7 +124,7 @@ class account_pass(models.Model):
                     so_req = self.env['sale.order'].search([
                         ('date_order', '>=', end_date),
                         ('date_order', '<=', start_date),
-                        ('state', 'in', ['draft','sent']),
+                        ('state', 'in', ['draft', 'sent']),
                         ('partner_id', '=', rec.partner_id.id)
                     ])
 
@@ -125,10 +137,11 @@ class account_pass(models.Model):
                     po_req = self.env['purchase.order'].search([
                         ('date_approve', '>=', end_date_purchase),
                         ('date_approve', '<=', start_date),
-                        ('state', 'in', ['ven_draft', 'ven_sent','draft','sent']),
+                        ('state', 'in', ['ven_draft', 'ven_sent', 'draft', 'sent']),
                         ('partner_id', '=', rec.partner_id.id)
                     ])
 
-                    rec.reinstated_or_new = 'new' if (len(so_ordered) > 0 or len(so_req) >= 2) or (len(po_ordered) > 0 or len(po_req) >= 2) else None
+                    rec.reinstated_or_new = 'new' if (len(so_ordered) > 0 or len(so_req) >= 2) or (
+                                len(po_ordered) > 0 or len(po_req) >= 2) else None
             else:
                 rec.reinstated_or_new = None

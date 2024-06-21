@@ -27,8 +27,15 @@ class PurchaseOrderPopUp(models.TransientModel):
 
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade',
                                  domain="[('delivery_type','=','fedex')]", default=_get_default_carrier)
-    product_packaging = fields.Many2one('product.packaging', string='Package',
-                                        domain="[('package_carrier_type','=','fedex')]", default=_get_default_packaging)
+
+    # UPG_ODOO16_NOTE as we are removing the domain from below field because field 'package_carrier_type' is changed in model now it
+    # is not selection field now it is many2one field with model 'stock.package.type' and we have to apply domain accordingly
+
+    # product_packaging = fields.Many2one('product.packaging', string='Package', domain="[('package_type_id.package_carrier_type','=','fedex')]", default=_get_default_packaging)
+
+    delivery_package_type_id = fields.Many2one('stock.package.type', 'Delivery Package Type')
+    product_packaging = fields.Many2one('product.packaging', string='Package', domain="[('package_type_id','=',delivery_package_type_id)]", default=_get_default_packaging)
+
     weight = fields.Float('Weight', default=_get_default_weight)
     package_count = fields.Integer("Packages Count", default=1)
 

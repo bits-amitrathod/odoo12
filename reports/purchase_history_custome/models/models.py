@@ -51,7 +51,7 @@ class PurchaseHistory(models.Model):
         for order in self:
             print(order.product_id.id)
             if order.product_id.id!=False:
-                order.env.cr.execute("SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id =" + str(
+                order.env.cr.execute("SELECT min(use_date), max (use_date) FROM public.stock_lot where product_id =" + str(
                     order.product_id.id))
                 query_result = self.env.cr.dictfetchone()
                 if query_result['min'] is not None :
@@ -62,7 +62,7 @@ class PurchaseHistory(models.Model):
         for order in self:
             print(order.product_id.id)
             if order.product_id.id != False:
-                order.env.cr.execute("SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id =" + str(
+                order.env.cr.execute("SELECT min(use_date), max (use_date) FROM public.stock_lot where product_id =" + str(
                     order.product_id.id))
                 query_result = order.env.cr.dictfetchone()
                 if query_result['max'] is not None:

@@ -20,16 +20,16 @@ class ProductProduct(models.Model):
                     FROM
                         stock_quant
                     INNER JOIN
-                        stock_production_lot
+                        stock_lot
                     ON
-                        (stock_quant.lot_id = stock_production_lot.id)
+                        (stock_quant.lot_id = stock_lot.id)
                     INNER JOIN
                         stock_location
                     ON
                         (stock_quant.location_id = stock_location.id)
                     WHERE
                         stock_location.usage IN ('internal', 'transit')
-                        AND stock_production_lot.product_id = %s
+                        AND stock_lot.product_id = %s
                 """
                 self.env.cr.execute(query, (product.id,))
                 result = self.env.cr.fetchone()

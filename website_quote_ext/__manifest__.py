@@ -18,7 +18,15 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
+        'views/other_templates.xml',
         'views/templates.xml',
+        'views/vendor_offer_templates.xml',
+        'data/data.xml',
     ],
+    "assets":{
+        'web.assets_frontend': [
+            'website_quote_ext/static/src/js/website_sale.js',
+        ],
+    },
     
 }

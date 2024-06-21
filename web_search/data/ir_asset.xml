@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="web_search.sps_web_search_frontend_assets_1" model="ir.asset">
+            <field name="name">SPS Website Search lib js</field>
+            <field name="bundle">web.assets_frontend</field>
+            <field name="directive">append</field>
+            <field name="path">/web_search/static/src/js/lib.js</field>
+            <field name="sequence" eval="16"/>
+        </record>
+    </data>
+</odoo>

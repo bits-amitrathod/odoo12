@@ -39,7 +39,7 @@ class Invent(TestPickingBarcodeClientAction):
 #         })
 #
 #         # Add lot1 et lot2 sur productlot1
-#         lotObj = self.env['stock.production.lot']
+#         lotObj = self.env['stock.lot']
 #         lot1 = lotObj.create({'name': 'lot1', 'product_id': self.productlot1.id})
 #         lot2 = lotObj.create({'name': 'lot2', 'product_id': self.productlot1.id})
 #

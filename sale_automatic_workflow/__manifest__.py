@@ -14,10 +14,12 @@
     'depends': ['sale_stock',
                 'sales_team',
                 ],
-    'data': ['views/sale_view.xml',
-             'views/sale_workflow_process_view.xml',
-             'data/automatic_workflow_data.xml',
-             'security/ir.model.access.csv',
+    'data': [
+            'security/ir.model.access.csv',
+            'views/sale_view.xml',
+            'views/sale_workflow_process_view.xml',
+            'data/automatic_workflow_data.xml',
+
              ],
      'installable': True,
     'application': True,

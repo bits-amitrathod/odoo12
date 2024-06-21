@@ -90,16 +90,16 @@ class CustomerCreditNote(models.TransientModel):
                         invoice_created.action_post()
 
                 else:
-                    raise Warning(_(
-                        'Payment Warning!\nCannot proceed with Payment Journal =" Credit Note " '
-                        'as the selected vendor is not a customer'))
+                    raise UserError('Payment Warning!\nCannot proceed with Payment Journal =" Credit Note " '
+                                   'as the selected vendor is not a customer')
             else:
-                raise Warning(_(
-                    'Payment Warning!\n This Payment Journal option is available for Vendor Bill only'))
+                raise UserError(
+                    'Payment Warning!\n This Payment Journal option is available for Vendor Bill only')
         else:
             print('not CRN')
             super(CustomerCreditNote, self).action_create_payments()
 
+    # TODO: UPD ODOO16 Note this Method is Not Used anywhere else in this module
     def _get_counterpart_move_line_vals(self, invoice=False):
         if self.payment_type == 'transfer':
             name = self.name

@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+
+         <template id="portal_my_home_menu_vendor" name="Portal layout : vendor menu entries"  inherit_id="portal.portal_layout" priority="20">
+            <xpath expr="//div[hasclass('o_portal_my_details')]" position="inside">
+                <li t-if="vendor_offer and vendor_offer.state in ('ven_sent', 'cancel')">
+                    <a t-if="vendor_offer" t-attf-href="/my/vendor?{{ keep_query() }}">Vendor Offer</a>
+                    <t t-else="">Vendor Offer</t>
+                </li>
+            </xpath>
+        </template>
+
+        <template id="portal_my_home_vendor_offer" name="Portal My Home : vendor offer entry"  inherit_id="portal.portal_my_home" priority="25">
+            <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="title">Vendor Offers</t>
+                    <t t-set="url" t-value="'/my/vendor'"/>
+                    <t t-set="placeholder_count" t-value="'vendor_count'"/>
+                </t>
+            </xpath>
+
+            <xpath expr="//div[hasclass('o_portal_my_home')]" position="before">
+                <div class="container">
+                    <div class="row " style="padding: 0px 16px 30px 15px;">
+                         <div class="o_app_icon" style="display: inline-flex;margin-top: -22px;">
+                             <img src="/website_quote_ext/static/src/img/StockHawk_Logo_TM_R1.png"  style="width:181px;padding-top: 9px;" align="center"  alt="Rapid Order"/>
+                             <!--<span  style=" font-size: 28px; color: black;    vertical-align: middle;">Ordering Tools</span>-->
+                             <h3  style="vertical-align: middle;padding-top: 19px;">Ordering Tools</h3>
+                         </div>
+
+                        <div class="table-responsive" style="border: 1px solid #e0d6d6;  border-radius: 3px;">
+                            <t t-set="user" t-value="request.env['res.users'].sudo().search([('id', '=', request.session.uid)])"/>
+                            <div class="col-sm" style="border-bottom:  1px solid #e0d6d6;padding:10px;">
+                                <a id="" href="/shop/my_in_stock_report" style="text-decoration: none;width:100%;" >
+                                  <div style="" class="o_app_icon">
+                                      <img src="/website_quote_ext/static/src/img/Stockhawk_InStock_Report_R1_new.png" align="center" style="width:120px;" alt="In-Stock Report"/>
+                                      <img src="/website_quote_ext/static/src/img/arrow.jpg" style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="In-Stock Report"/>
+                                  </div>
+                                 </a>
+                            </div>
+                            <t t-if="user.partner_id.active and user.partner_id.prioritization and user.partner_id.on_hold != True">
+                                <div class="col-sm" style="border-bottom: 1px solid #e0d6d6;padding:10px;">
+                                     <a id="" href="/spreadsheet/stockhawk_spreadsheet"    style="text-decoration: none;width:100%" >
+                                       <div class="o_app_icon">
+                                            <img src="/website_quote_ext/static/src/img/Stockhawk_Rapid_Order_R1_new.png"  style="width:93px;" align="center"  alt="Rapid Order"/>
+                                            <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="Rapid Order"/>
+                                        </div>
+                                      </a>
+                                </div>
+                            </t>
+                            <div class="col-sm" style="padding:10px;">
+                                  <a id="" href="/shop" style="text-decoration: none;width:100%;">
+                                      <div style="" class="o_app_icon">
+                                          <span style=" font-size: 14px; color: #495057;    padding-left: 5px;">Shop Our Website</span>
+                                          <img src="/website_quote_ext/static/src/img/arrow.jpg"  style="width:16px;float:right;padding-top: 6px;margin-right: 6px;" align="center"  alt="Shop"/>
+                                      </div>
+                                  </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        <template id="portal_my_vendor_offers" name="Portal: My Vendor Offers">
+            <t t-call="portal.portal_layout">
+                <t t-call="portal.portal_searchbar">
+                    <t t-set="title">Vendor Offers</t>
+                </t>
+                <div t-if="orders" class="panel panel-default">
+                    <div class="table-responsive">
+                        <table class="table table-hover o_portal_my_doc_table">
+                            <thead>
+                                <tr class="active">
+                                    <th>Vendor Offer #</th>
+                                    <th>Order Date</th>
+                                    <th>Offer Type</th>
+                                    <th></th>
+                                    <th>Cash Total</th>
+                                    <th>Credit Total</th>
+                                </tr>
+                            </thead>
+                            <t t-foreach="orders" t-as="order">
+                                <tr>
+                                    <td>
+                                        <a t-attf-href="/my/vendor/#{order.id}?#{keep_query()}">
+                                            <t t-esc="order.name"/>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span t-field="order.date_order" t-options='{"widget": "date"}'/>
+                                    </td>
+                                     <td>
+                                        <span t-field="order.offer_type"/>
+                                        <span t-if="(not order.offer_type ) or order.offer_type=='False'"> Cash/Credit </span>
+                                    </td>
+                                    <td>
+                                        <t t-if="order.state == 'cancel'">
+                                            <span class="badge bg-secondary">
+                                                <i class="fa fa-fw fa-remove"/>
+                                                Cancelled
+                                            </span>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <t t-if="order.state != 'cancel'">
+                                            <t t-if="order.offer_type=='cash' or order.offer_type=='cashcredit'">
+                                            <span t-field="order.cash_amount_total"
+                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </t>
+                                            <t t-if="order.offer_type=='credit'">
+                                            <span > - </span>
+                                            </t>
+                                            <t t-if="not (order.offer_type=='cash' or order.offer_type=='credit' or order.offer_type=='cashcredit') ">
+                                            <span t-field="order.cash_amount_total"
+                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </t>
+                                        </t>
+                                        <t t-if="order.state == 'cancel'">
+                                             <t t-if="order.offer_type=='cash'  or order.offer_type=='cashcredit'">
+                                            <span t-field="order.amount_total"
+                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </t>
+                                            <t t-if="order.offer_type=='credit'">
+                                            <span > - </span>
+                                            </t>
+                                            <t t-if="not (order.offer_type=='cash' or order.offer_type=='credit' or order.offer_type=='cashcredit') ">
+                                            <span t-field="order.amount_total"
+                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </t>
+                                        </t>
+                                    </td>
+                                    <td>
+                                         <t t-if="order.state != 'cancel'">
+                                            <t t-if="order.offer_type=='credit'  or order.offer_type=='cashcredit' or not order.offer_type ">
+                                            <span t-field="order.credit_amount_total"
+                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </t>
+                                            <t t-if="order.offer_type=='cash'">
+                                            <span > - </span>
+
+                                             <t t-if="not (order.offer_type=='cash' or order.offer_type=='credit' or order.offer_type=='cashcredit') ">
+                                               <span > - </span>
+                                            </t>
+                                            </t>
+                                         </t>
+                                        <t t-if="order.state == 'cancel' ">
+                                             <!--<span > - </span>-->
+                                            <t t-if="order.offer_type=='credit'  or order.offer_type=='cashcredit' ">
+                                            <span t-field="order.amount_total"
+                                                  t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </t>
+                                            <t t-if="order.offer_type=='cash'">
+                                            <span > - </span>
+
+                                             <t t-if="not (order.offer_type=='cash' or order.offer_type=='credit' or order.offer_type=='cashcredit') ">
+                                               <span > - </span>
+                                            </t>
+                                            </t>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </table>
+                    </div>
+                    <div t-if="pager" class="o_portal_pager text-center">
+                        <t t-call="portal.pager"/>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="portal_my_vendor_offer" name="Portal: My Vendor Offer">
+            <t t-call="portal.portal_layout">
+                <t t-set="vendor_offer" t-value="order"/>
+                <div id="optional_placeholder"></div>
+                <div class="container">
+                    <div t-if="order.state == 'cancel'" class="alert alert-danger alert-dismissible d-print-none" role="status">
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <strong>  This order has been Rejected </strong>
+                    </div>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>
+                                        <t t-call='portal.record_pager'/>
+                                        Vendor Offer
+                                        <span t-esc="order.name"/>
+                                        <t t-if=" order.state == 'cancel'">
+                                             <span style="font-size:1rem;vertical-align: top;" class="badge bg-secondary">
+                                                 <i class="fa fa-fw fa-remove"/>
+                                                 Rejected
+                                             </span>
+                                        </t>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <div class="mb8">
+                                <strong>Date:</strong>
+                                <span t-field="order.date_order" t-options='{"widget": "date"}'/>
+                            </div>
+                            <div class="mb8">
+                                <strong>Offer Type:</strong>
+                                <span t-field="order.offer_type" />
+                                <span  t-if="not order.offer_type or  order.offer_type=='False'" >Cash/Credit </span>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <strong>Product</strong>
+                                </div>
+                                 <div class="col-md-1">
+                                    <strong>SKU</strong>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <strong>Offer Price</strong>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <strong>Quantity</strong>
+                                </div>
+                                <div class="col-md-2 text-right">
+                                    <strong>Subtotal</strong>
+                                </div>
+                            </div>
+                            <t t-foreach="order.order_line" t-as="ol">
+                                <div class="row purchases_vertical_align">
+                                    <div class="col-md-1 text-center">
+                                        <img t-att-src="'/web/image/purchase.order.line/%s/product_image/48x48' % ol.id"/>
+                                    </div>
+                                    <div id='product_name' class="col-md-4">
+                                        <span t-esc="ol.product_id.name"/>
+                                    </div>
+                                    <div class="col-md-1">
+                                        <span t-esc="ol.sku_code"/>
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <span t-field="ol.product_offer_price"
+                                              t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <span t-esc="ol.product_qty"/>
+                                    </div>
+                                    <div class="col-md-2 text-right">
+                                        <span t-field="ol.price_subtotal"
+                                              t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                    </div>
+                                </div>
+                            </t>
+                            <hr/>
+                            <div class="row">
+                              <div class="col-md-12"  >
+                                   <div class="col-md-12 text-right" style="margin-bottom:20px;">
+                                    <t t-if="order.offer_type == 'cash' or  not order.offer_type or  order.offer_type=='False' or order.offer_type == 'cashcredit' ">
+                                        <div class="row">
+                                            <div class="col-md-9 text-right">
+                                                Untaxed Cash Amount:
+                                            </div>
+                                            <div class="col-md-3 text-right">
+                                                <span t-field="order.cash_amount_untaxed"
+                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-9 text-right">
+                                                Taxes:
+                                            </div>
+                                            <div class="col-md-3 text-right">
+                                                <span t-field="order.amount_tax"
+                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-9 text-right">
+                                                <strong>Cash Total:</strong>
+                                            </div>
+                                            <div class="col-md-3 text-right">
+                                                <strong>
+                                                    <span t-field="order.cash_amount_total"
+                                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                </div>
+                               <div class="col-md-12 text-right" >
+                                    <t t-if="order.offer_type == 'credit' or order.offer_type == 'cashcredit'">
+                                        <div class="row">
+                                            <div class="col-md-9 text-right">
+                                                Untaxed Credit Amount:
+                                            </div>
+                                            <div class="col-md-3 text-right">
+                                                <span t-field="order.credit_amount_untaxed"
+                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-9 text-right">
+                                                Taxes:
+                                            </div>
+                                            <div class="col-md-3 text-right">
+                                                <span t-field="order.amount_tax"
+                                                      t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-9 text-right">
+                                                <strong>Credit Total:</strong>
+                                            </div>
+                                            <div class="col-md-3 text-right">
+                                                <strong>
+                                                    <span t-field="order.credit_amount_total"
+                                                          t-options='{"widget": "monetary", "display_currency": order.currency_id}'/>
+                                                </strong>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                           </div>
+                        </div>
+                    </div>
+                    <div t-if="order.state not in ('cancel','purchase')" class="text-center hidden-print mt16 mb16" id="quotation_toolbar">
+                        <a class="btn btn-success" data-bs-target="#modalacceptcash" data-bs-toggle="modal" t-if="order.offer_type == 'cash' or  not order.offer_type or  order.offer_type=='False' or order.offer_type == 'cashcredit'">
+                            <i class="fa fa-check"></i>
+                            Accept Cash Offer
+                        </a>
+                         <a class="btn btn-success" data-bs-target="#modalacceptcredit" data-bs-toggle="modal" t-if="order.offer_type == 'credit' or order.offer_type == 'cashcredit' or  not order.offer_type" >
+                            <i class="fa fa-check"></i>
+                            Accept Credit Offer
+                        </a>
+                        <a class="btn stockhawk_reject_btn" data-bs-target="#modaldecline" data-bs-toggle="modal">
+                            Reject
+                        </a>
+                    </div>
+                    <div class="modal fade" id="modalacceptcash" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form id="accept" method="POST" t-att-data-order-id="order.id"
+                                  class="js_accept_json modal-content js_website_submit_form">
+                                  <input type="hidden" name="res_id" t-att-value="order.id"/>
+                                  <input type="hidden" name="order_id" t-att-value="order.id"/>
+                                  <input type="hidden" name="partner_name" t-att-value="order.partner_id.name"/>
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="modal-header">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    <h4 class="modal-title">Validate Cash Order</h4>
+                                </div>
+
+                                    <div class="modal-body" id="sign-dialog">
+
+                                    <t t-call="portal.signature_form">
+                                         <t t-set="res_id" t-value="order.id"/>
+                                        <t t-set="object" t-value="order"/>
+                                        <t t-set="default_name" t-value="order.partner_id.name"/>
+                                        <t t-set="call_url" t-value="'/vendor_offer/accept/%s' % order.id"/>
+                                        <t t-set="order_id" t-value="order.id"/>
+
+                                    </t>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                     <div class="modal fade" id="modalacceptcredit" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form id="acceptcredit" method="POST" t-att-data-order-id="order.id"
+                                  class="js_accept_json modal-content js_website_submit_form">
+                                <input type="hidden" name="res_id" t-att-value="order.id"/>
+                                <input type="hidden" name="order_id" t-att-value="order.id"/>
+                                <input type="hidden" name="partner_name" t-att-value="order.partner_id.name"/>
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="modal-header">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    <h4 class="modal-title">Validate Credit Order</h4>
+                                </div>
+                                <div class="modal-body" id="sign-dialog">
+                                    <t t-call="portal.signature_form">
+                                         <t t-set="res_id" t-value="order.id"/>
+                                        <t t-set="object" t-value="order"/>
+                                        <t t-set="default_name" t-value="order.partner_id.name"/>
+                                        <t t-set="call_url" t-value="'/vendor_offer/acceptcredit/%s' % order.id"/>
+                                        <t t-set="order_id" t-value="order.id"/>
+                                    </t>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="modaldecline" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <form id="reject" method="POST" t-att-data-order-id="order.id"
+                                  class="js_reject_json modal-content js_website_submit_form">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                <div class="modal-header">
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                                    <h4 class="modal-title">Reject Order</h4>
+                                </div>
+                                <div class="modal-body" id="sign-dialog">
+                                    <t t-call="portal.signature_form">
+                                         <t t-set="res_id" t-value="order.id"/>
+                                        <t t-set="object" t-value="order"/>
+                                        <t t-set="default_name" t-value="order.partner_id.name"/>
+                                        <t t-set="call_url" t-value="'/vendor_offer/reject/%s' % order.id"/>
+                                        <t t-set="order_id" t-value="order.id"/>
+                                    </t>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+    </data>
+</odoo>

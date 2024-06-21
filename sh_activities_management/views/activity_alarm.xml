@@ -43,5 +43,5 @@
             <p class="o_view_nocontent_smiling_face">Create a new Activity Alarm</p>
         </field>
     </record>
-    <menuitem id="sh_activity_alarm_manu" name="Activity Alarm" action="sh_activity_alarm_action" parent="sh_activities_management.menu_config" groups="sh_activities_management.group_activity_alarm" sequence="2" />
+    <menuitem id="sh_activity_alarm_manu" name="Activity Alarm" action="sh_activity_alarm_action" parent="sh_activities_management.menu_config" sequence="2" />
 </odoo>

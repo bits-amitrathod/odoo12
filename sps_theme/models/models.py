@@ -54,6 +54,7 @@ class PporoductTemplate(models.Model):
 
         """
         res = super(PporoductTemplate,self)._compute_qty_available()
+
         for temp in self:
             if temp.actual_quantity == 0:
                 StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
@@ -67,7 +68,7 @@ class SaleOrder1(models.Model):
     def _cart_lines_stock_update(self, values, **kwargs):
         line_id = values.get('line_id')
         for line in self.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 cart_qty = sum(self.order_line.filtered(lambda p: p.product_id.id == line.product_id.id).mapped('product_uom_qty'))
                 if (line_id == line.id) and cart_qty > line.product_id.actual_quantity:
                     qty = line.product_id.with_context(warehouse=self.warehouse_id.id).actual_quantity - cart_qty

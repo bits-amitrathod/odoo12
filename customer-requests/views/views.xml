@@ -172,7 +172,7 @@
             </field>
         </record>
 
-        <record id="view_form_import_template_stockhawk" model="ir.ui.view">
+        <record id="view_form_import_template_stockhawk2" model="ir.ui.view">
             <field name="name">Import Template customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -187,13 +187,13 @@
             </field>
         </record>
 
-        <template id="assets_backend" name="base_import assets" inherit_id="web.assets_backend">
+        <!--template id="assets_backend" name="base_import assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <script type="text/javascript"
                         src="/base_import/static/lib/javascript-state-machine/state-machine.js"></script>
                 <script type="text/javascript" src="/customer-requests/static/src/js/template_import.js"></script>
             </xpath>
-        </template>
+        </template>-->
 
         <record id="customer-template-client-action" model="ir.actions.client">
             <field name="name">Customer Import Template</field>
@@ -415,7 +415,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
-                <xpath expr="/search/filter[@name='customer']" position="after">
+                <xpath expr="/search/filter[@name='type_company']" position="after">
                     <filter string="Contract" name="contract" domain="[('contract', '!=', None)]"/>
                </xpath>
                 <xpath expr="/search" position="inside">

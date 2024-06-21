@@ -1,98 +1,10 @@
 # -*- coding: utf-8 -*-
 import re
 from odoo import models, fields, api
-from odoo import _
 from odoo.exceptions import UserError, Warning
-import odoo.addons.decimal_precision as dp
 import logging
 
 _logger = logging.getLogger(__name__)
-
-
-class CustomerContract(models.Model):
-    _inherit = "res.partner"
-
-    exclude_in_stock_product_ids = fields.One2many('exclude.product.in.stock', 'partner_id')
-
-    def _get_default_user_id(self):
-        res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
-        if res_users:
-            return res_users.id
-
-    facility_tpcd = fields.Selection(string='Facility Type',
-                                     selection=[('health_sys', 'Health System'),
-                                                ('hospital', 'Hospital'),
-                                                ('surgery_cen', 'Surgery Center'),
-                                                ('pur_alli', 'Purchasing Alliance'),
-                                                ('charity', 'Charity'),
-                                                ('broker', 'Broker'),
-                                                ('veterinarian', 'Veterinarian'),
-                                                ('closed', 'Non-Surgery/Closed'),
-                                                ('wholesale', 'Wholesale'),
-                                                ('national_acc', 'National Account Target'),
-                                                ('other', 'Other'),
-                                                ('lab/_research_center', 'Lab/ Research Center'),
-                                                ('closed1', 'Closed'),
-                                                ('no_surgery', 'No Surgery'),
-                                                ('plastic_center', 'Plastic Center'),
-                                                ('eye_center', 'Eye Center'),
-                                                ],
-                                                tracking=True)
-
-    company_type = fields.Selection(string='Company Type',
-                                    selection=[('person', 'Individual'), ('company', 'Company')],
-                                    compute='_compute_company_type', inverse='_write_company_type',tracking=True)
-
-    @api.depends('is_company')
-    def _compute_company_type(self):
-        for partner in self:
-            partner.company_type = 'company' if partner.is_company else 'person'
-
-    account_manager_cust = fields.Many2one('res.users', string="Key Account(KA)", domain="[('active', '=', True)"
-                                                                                         ",('share','=',False)]", tracking=True)
-    user_id = fields.Many2one('res.users', string='Business Development(BD)', help='The internal user in charge of this contact.',
-                              default=_get_default_user_id, tracking=True)
-
-    national_account_rep = fields.Many2one('res.users', string="National Account Rep.(NA)",
-                                           domain="[('active', '=', True), ('share','=',False)]", tracking=True)
-
-    customer_success = fields.Many2one('res.users', string="Customer Success",
-                                           domain="[('active', '=', True), ('share','=',False)]", tracking=True)
-
-    order_quota = fields.Float(string="Order Quota", help="Number of transactions", tracking=True,
-                               digits=dp.get_precision('Product Price'))
-
-    revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", tracking=True)
-
-    reinstated_date = fields.Datetime(string='Reinstated Date', tracking=True)
-
-    charity = fields.Boolean(string='Is a Charity?', tracking=True)
-
-    display_reinstated_date_flag = fields.Integer(default=0, compute="_display_reinstated_date_flag")
-
-    todays_notification = fields.Boolean(string='Todays Notification', default=False)
-
-    @api.depends('category_id')
-    def _display_reinstated_date_flag(self):
-        reinstated_date_flag = False
-        for record in self:
-            if record and record.category_id:
-                for category_id in record.category_id:
-                    if category_id.name.strip().upper() == 'REINSTATED':
-                        reinstated_date_flag = True
-        if reinstated_date_flag:
-            self.display_reinstated_date_flag = 1
-        else:
-            self.display_reinstated_date_flag = 0
-
-    @api.onchange('parent_id')
-    def onchange_parent_id(self):
-        self.customer_rank = 1
-        account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
-        if account_payment_term:
-            self.property_payment_term_id = account_payment_term.id
-            self.property_supplier_payment_term_id = account_payment_term.id
-        return super(CustomerContract, self).onchange_parent_id()
 
 
 class sale_order(models.Model):
@@ -107,9 +19,8 @@ class sale_order(models.Model):
                               track_sequence=2, default=lambda self: self.env.user)
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
-    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success",
-                                       compute="get_customer_success", domain="['&',['active','=',True],['share','=',False]]", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success",racking=True)
     #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
 
     # @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
@@ -164,11 +75,8 @@ class sale_order(models.Model):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
 
-    def get_customer_success(self):
-        for so in self:
-            so.customer_success = so.partner_id.customer_success.id
-    @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
-    @api.depends('client_order_ref', 'x_studio_allow_duplicate_po')
+    @api.onchange('client_order_ref')
+    @api.depends('client_order_ref')
     def onchange_client_order_ref(self):
         if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
             records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref),('partner_id', '=', self.get_chils_parent())])
@@ -176,7 +84,7 @@ class sale_order(models.Model):
                 for record in records:
                     if self.name != record.name and (self.x_studio_allow_duplicate_po is False or
                                                  record.x_studio_allow_duplicate_po is False):
-                        raise Warning(_("Duplicate PO number is not allowed.\n"
+                        raise Warning(("Duplicate PO number is not allowed.\n"
                                         "The PO number of this Sales Order is already present on Sales Order %s.\n "
                                         "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
                                         "setting ON for both Sales Order.") % record.name)
@@ -202,10 +110,6 @@ class sale_order(models.Model):
                 vals['national_account'] = res_partner.national_account_rep.id
             elif res_partner and res_partner.parent_id and res_partner.parent_id.national_account_rep and res_partner.parent_id.national_account_rep.id:
                 vals['national_account'] = res_partner.parent_id.national_account_rep.id
-            if res_partner and res_partner.customer_success and res_partner.customer_success.id:
-                vals['customer_success'] = res_partner.customer_success.id
-            elif res_partner and res_partner.parent_id and res_partner.parent_id.customer_success and res_partner.parent_id.customer_success.id:
-                vals['customer_success'] = res_partner.parent_id.customer_success.id
         return super(sale_order, self).create(vals)
 
     @api.depends('order_line.price_total')
@@ -229,10 +133,8 @@ class sale_order(models.Model):
 
     def write(self, val):
         super(sale_order, self).write(val)
-        # Add Sale note in pick,pull,out
-        # Need to optimize the Code
-        #TODO : We can also Move to onChange (sale_note) ,
-        if self.state and self.state in 'sale' and 'sale_note' in val:
+        # Add note in pick delivery
+        if self.state and self.state in 'sale':
             for pick in self.picking_ids:
                 pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
 
@@ -242,24 +144,21 @@ class sale_order(models.Model):
                 if stock_picking and stock_picking.state != 'done' and stock_picking.state != 'cancel' :
                     stock_picking.write({'carrier_id': self.carrier_id.id})
 
-        # sale Note notification would be add in to Pick,Pull,Out
-        if self.sale_note and 'sale_note' in val and self.team_id.team_type != 'engine':
+        # if 'sale_note' in val or self.sale_note:
+        if self.sale_note and self.team_id.team_type != 'engine':
             body = self.sale_note
             for stk_picking in self.picking_ids:
                 stock_picking_val = {
                     'body': body,
                     'model': 'stock.picking',
                     'message_type': 'notification',
-                    'no_auto_thread': False,
-                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'reply_to_force_new': False,
+                    'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
 
-        # For Follower Adding 
-        if self.customer_success.id:
-            self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
     def _get_carrier_tracking_ref(self):
         for so in self:
             stock_picking = self.env['stock.picking'].search([('origin', '=', so.name), ('picking_type_id', '=', 5),
@@ -332,12 +231,11 @@ class sale_order(models.Model):
         elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.national_account_rep \
                 and self.partner_id.commercial_partner_id.national_account_rep.id:
             self.national_account = self.partner_id.commercial_partner_id.national_account_rep.id
-        if self.partner_id and self.partner_id.customer_success and self.partner_id.customer_success.id:
-            self.customer_success = self.partner_id.customer_success.id
-        elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.customer_success \
-                and self.partner_id.commercial_partner_id.customer_success.id:
-            self.customer_success = self.partner_id.commercial_partner_id.customer_success.id
-        super(sale_order, self).onchange_partner_id()
+        # TODO: UPG_ODOO16_NOTE
+        # addons/sale/models/sale_order.py line No 339-350
+        # I think That Handled using Depends that's Why this is commented
+        # onchange_partner_id() Removed From parent
+        # super(sale_order, self).onchange_partner_id()
 
     def get_chils_parent(self):
         list = []
@@ -345,128 +243,3 @@ class sale_order(models.Model):
         list = parent_id.child_ids.ids
         list.append(parent_id.id)
         return list
-
-
-class StockPicking(models.Model):
-    _inherit = 'stock.picking'
-
-    note_readonly_flag = fields.Integer('Delivery Note readonly flag', default=0)
-    # note = fields.Text('Notes', compute='_get_note')
-    #
-    # def _get_note(self):
-    #     for stock_picking in self:
-    #         sale_order = self.env['sale.order'].search([('name', '=', stock_picking.origin)])
-    #         stock_picking.note = sale_order.sale_note
-
-    def button_validate(self):
-        action = super(StockPicking, self).button_validate()
-
-        # Note Section code
-        # Is there are Need to set Notification After each Pick, pull ,out Validation
-        # because After SO Confirmation that Notification Also Set and Also on Change of SO Sale Note
-        # TODO: Neet To Optimize the Code, Lot of Duplicate Code
-        # add_note_in_log_section() code committed because of repeated notification Issue
-        if self.sale_id:
-            if self.picking_type_id.name == "Pick" and self.state == "done":
-                self.note_readonly_flag = 1
-                # self.add_note_in_log_section()
-                for picking_id in self.sale_id.picking_ids:
-                    if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Pull' and picking_id.state == 'assigned'):
-                        picking_id.note = self.note
-            elif self.picking_type_id.name == "Pull" and self.state == "done":
-                self.note_readonly_flag = 1
-                # self.add_note_in_log_section()
-                for picking_id in self.sale_id.picking_ids:
-                    if picking_id.state != 'cancel' and (picking_id.picking_type_id.name == 'Delivery Orders' and picking_id.state == 'assigned'):
-                        picking_id.note = self.note
-            elif self.picking_type_id.name == "Delivery Orders" and self.state == "done":
-                self.note_readonly_flag = 1
-                # self.add_note_in_log_section()
-
-        if self.picking_type_id.code == "outgoing":
-            if self.state == 'done' and self.carrier_id and self.carrier_tracking_ref:
-                sale_order = self.env['sale.order'].search([('name', '=', self.origin)])
-                sale_order.carrier_track_ref = self.carrier_tracking_ref
-                if sale_order.carrier_id.id is False:
-                    sale_order.carrier_id = self.carrier_id.id
-                    sale_order.amount_delivery = self.carrier_price
-                    sale_order.set_delivery_line(self.carrier_id, self.carrier_price)
-                if sale_order.carrier_id.id != self.carrier_id.id:
-                    sale_order.carrier_id = self.carrier_id.id
-                    sale_order.amount_delivery = self.carrier_price
-                    self.update_sale_order_line(sale_order, self.carrier_id, self.carrier_price)
-                else:
-                    self.update_sale_order_line(sale_order, self.carrier_id, self.carrier_price)
-        return action
-
-    def cancel_shipment(self):
-        self.carrier_id.cancel_shipment(self)
-        msg = "Shipment %s cancelled" % self.carrier_tracking_ref
-        self.message_post(body=msg)
-        self.carrier_tracking_ref = False
-        sale_order = self.env['sale.order'].search([('name', '=', self.origin)])
-        sale_order.carrier_track_ref = False
-
-    def update_sale_order_line(self, sale_order, carrier, price_unit):
-        sale_order_line = self.env['sale.order.line'].search([('order_id', '=', sale_order.id), ('is_delivery', '=', True)])
-
-        if len(sale_order_line) == 1:
-            if sale_order.partner_id:
-                # set delivery detail in the customer language
-                carrier = carrier.with_context(lang=sale_order.partner_id.lang)
-
-            # Apply fiscal position
-            taxes = carrier.product_id.taxes_id.filtered(lambda t: t.company_id.id == sale_order.company_id.id)
-            taxes_ids = taxes.ids
-            if sale_order.partner_id and sale_order.fiscal_position_id:
-                taxes_ids = sale_order.fiscal_position_id.map_tax(taxes, carrier.product_id, sale_order.partner_id).ids
-
-            carrier_with_partner_lang = carrier.with_context(lang=sale_order.partner_id.lang)
-
-            if carrier_with_partner_lang.product_id.description_sale:
-                so_description = '%s: %s' % (carrier_with_partner_lang.name,
-                                             carrier_with_partner_lang.product_id.description_sale)
-            else:
-                so_description = carrier_with_partner_lang.name
-
-            # Update the sales order line
-            sale_order_line.write({'name': so_description, 'price_unit':price_unit,'product_uom': carrier.product_id.uom_id.id, 'product_id': carrier.product_id.id, 'tax_id': [(6, 0, taxes_ids)]})
-
-    # No Longer Use Of this Code, Need to Remove at Migration
-    def add_note_in_log_section(self):
-        if self.note:
-            body = self.note
-            for stk_picking in self.sale_id.picking_ids:
-                stock_picking_val = {
-                    'body': body,
-                    'model': 'stock.picking',
-                    'message_type': 'notification',
-                    'no_auto_thread': False,
-                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
-                    'res_id': stk_picking.id,
-                    'author_id': self.env.user.partner_id.id,
-                }
-                self.env['mail.message'].sudo().create(stock_picking_val)
-
-
-class ResUsers(models.Model):
-    _inherit = "res.users"
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        users = super(ResUsers, self.with_context(default_customer=False)).create(vals_list)
-        for user in users:
-            user.partner_id.write({'customer_rank': 1})
-            account_payment_term = self.env['account.payment.term'].search([('name', '=', 'Net 30'), ('active', '=', True)])
-            if account_payment_term:
-                user.partner_id.write({'property_payment_term_id': account_payment_term.id,
-                                       'property_supplier_payment_term_id': account_payment_term.id})
-        return users
-
-
-class SalePayLink(models.Model):
-    _name = "sale.pay.link.cust"
-
-    allow_pay_gen_payment_link = fields.Boolean("Allow Pay")
-    sale_order_id = fields.Integer()
-    invoice_id = fields.Integer()

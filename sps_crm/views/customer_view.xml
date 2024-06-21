@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook/page[@name='internal_notes']" position="after">
                     <page name="externalfields" string="Details"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False), ('customer_rank', '==', 0), ('is_parent_assigned', '==', False)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False), ('customer_rank', '==', 0)]}">
 <!--                            <field name="partner_id"/>-->
                         <group>
                             <group>
@@ -66,12 +66,13 @@
                         </group>
                     </page>
                     <page name="activitynotesfields" string="Activity Notes"
-                          attrs="{'invisible':['|', '|', ('is_parent', '==', False), ('customer_rank', '==', 0), ('is_parent_assigned', '==', False)]}">
+                          attrs="{'invisible':['|', ('is_parent', '==', False), ('customer_rank', '==', 0)]}">
 
                         <group>
                                    <field name="sales_activity_notes"/>
                                    <field name="acq_activity_notes"/>
-                                   <field name="dup_poc_note"/>
+                                    <field name="dup_poc_note"/>
+
                         </group>
                     </page>
                     <page name="wishlist" string="Wishlist">
@@ -132,9 +133,9 @@
                 <xpath expr="/search/field[@name='name']" position="replace">
                    <field name="name_search_cust" string="Name"/>
                </xpath>
-                <xpath expr="/search/field[@name='phone']" position="replace">
+                <!--<xpath expr="/search/field[@name='phone']" position="replace">
                     <field name="phone_search" string="Phone"/>
-                </xpath>
+                </xpath>-->
             </field>
        </record>
 

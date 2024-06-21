@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="terms_and_conditions_template" name="Terms">
         <t t-name="website.terms">
@@ -5,9 +6,9 @@
                 <div id="wrap" class="oe_structure oe_empty"/>
                 <section class="about-us-section">
                     <div class="container">
-                          <div class="text-center pt32 pb32">
-                            <h1  class="about-header"> Terms &amp; Conditions </h1>
-                          </div>
+                      <div class="text-center pt32 pb32">
+                        <h1  class="about-header"> Terms &amp; Conditions </h1>
+                      </div>
                         <div class="row">
                             <div class="col-md-12 mb32">
                                 <div class="about-us-description">

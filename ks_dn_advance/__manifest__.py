@@ -111,7 +111,7 @@
 
 	'depends': ['ks_dashboard_ninja'],
 
-	'data': ['views/ks_dashboard_tv_assets.xml', 'views/ks_dashboard_ninja_item_view_inherit.xml', 'views/ks_dashboard_form_view_inherit.xml'],
+	# 'data': ['views/ks_dashboard_tv_assets.xml', 'views/ks_dashboard_ninja_item_view_inherit.xml', 'views/ks_dashboard_form_view_inherit.xml'],
 
 	'qweb': ['static/src/xml/ks_dashboard_tv_ninja.xml', 'static/src/xml/ks_query_templates.xml', 'static/src/xml/ks_dna_to_template.xml'],
 

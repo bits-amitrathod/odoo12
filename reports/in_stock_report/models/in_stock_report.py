@@ -93,7 +93,7 @@ class ReportInStockReport(models.Model):
         for record in self:
             record.actual_quantity = record.product_tmpl_id.actual_quantity
             if record.partner_id.property_product_pricelist.id:
-                a = record.partner_id.property_product_pricelist.get_product_price(record.product_id, record.actual_quantity, record.partner_id)
+                a = record.partner_id.property_product_pricelist._get_product_price(record.product_id, record.actual_quantity)
                 if a:
                     record.price_list =a
                 else:
@@ -108,17 +108,17 @@ class ReportInStockReport(models.Model):
             FROM
                 stock_quant
             INNER JOIN
-                stock_production_lot
+                stock_lot
             ON
                 (
-                    stock_quant.lot_id = stock_production_lot.id)
+                    stock_quant.lot_id = stock_lot.id)
             INNER JOIN
                 stock_location
             ON
                 (
                     stock_quant.location_id = stock_location.id)
             WHERE
-                stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+                stock_location.usage in('internal', 'transit') and stock_lot.product_id  = %s
                 """,
                 (record.product_id.id,))
             query_result = self.env.cr.dictfetchone()

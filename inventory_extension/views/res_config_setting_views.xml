@@ -7,7 +7,7 @@
             <field name="name">res.config.settings.view.form.inherit.inventory.extension</field>
             <field name="model">res.config.settings</field>
             <field name="priority" eval="30"/>
-            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
             <field name="arch" type="xml">
 
                 <xpath expr="//field[@name='group_stock_tracking_owner']/parent::div/parent::div" position="before">
@@ -49,12 +49,12 @@
 
 
 
-       <!-- <function model="res.config.settings" name="execute">
-            &lt;!&ndash; ids = &ndash;&gt;
-            <value eval="[ref('inventory_extension.product_lot_settings_in')]"/>
-            &lt;!&ndash; context = &ndash;&gt;
-            <value eval="{}"/>
-        </function>-->
+        <!-- <function model="res.config.settings" name="execute">
+             &lt;!&ndash; ids = &ndash;&gt;
+             <value eval="[ref('inventory_extension.product_lot_settings_in')]"/>
+             &lt;!&ndash; context = &ndash;&gt;
+             <value eval="{}"/>
+         </function>-->
 
         <!--<function model ="res.config.settings" name="group_stock_production_lot_fun">-->
         <!--<value>True</value>-->
@@ -72,7 +72,7 @@
                     <field name="origin"/>
                 </xpath>
 
-                 <xpath expr="//field[@name='scheduled_date']" position="before">
+                <xpath expr="//field[@name='scheduled_date']" position="before">
                     <field name="date_done" string="Date Done"/>
                 </xpath>
             </field>

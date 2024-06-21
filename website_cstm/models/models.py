@@ -104,26 +104,6 @@ class Website(models.Model):
             })
             result['view_id'] = view.id
 
-        _logger.info('------- start -----------')
-        _logger.info('template_record :')
-        _logger.info(template_record.id)
-        _logger.info('-----------------')
-        _logger.info('name :')
-        _logger.info(name)
-        _logger.info('-----------------')
-        _logger.info('key :')
-        _logger.info(key)
-        _logger.info('-----------------')
-        _logger.info('website_id :')
-        _logger.info(website_id)
-        _logger.info('-----------------')
-        _logger.info('view :')
-        _logger.info(view.id)
-        _logger.info('-----------------')
-        _logger.info('result :')
-        _logger.info(result)
-
-        print('------- end  -----------')
         if add_menu:
             self.env['website.menu'].create({
                 'name': name,

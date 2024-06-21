@@ -16,7 +16,7 @@
     'category': 'Report',
     'version': '1.0',
 
-    'depends': ['base', 'sale'],
+    'depends': ['product_expiry_extension'],
 
     # always loaded
     'data': [

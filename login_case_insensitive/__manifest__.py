@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','auth_signup'],
+    'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
@@ -22,4 +22,6 @@
     'application': True,
     'auto-install': False,
     'installable': True,
+    'license': 'LGPL-3',
+
 }

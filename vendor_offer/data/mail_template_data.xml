@@ -1,122 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!--Email template -->
-        <!--<record id="email_template_edi_vendor_offer_done" model="mail.template">-->
-            <!--<field name="name">Vendor Offer - Send by Email</field>-->
-            <!--<field name="email_from">-->
-                <!--${(object.create_uid.email and '&quot;%s&quot; &lt;%s&gt;' % (object.create_uid.name, object.create_uid.email) or '')|safe}-->
-            <!--</field>-->
-            <!--<field name="subject">${object.company_id.name} Order (Ref ${object.name or 'n/a' })</field>-->
-            <!--<field name="partner_to">${object.partner_id.id}</field>-->
-            <!--<field name="model_id" ref="purchase.model_purchase_order"/>-->
-            <!--<field name="auto_delete" eval="True"/>-->
-            <!--<field name="report_template" ref="action_report_vendor_offer"/>-->
-            <!--<field name="report_name">vendor_offer_${(object.name or '').replace('/','_')}</field>-->
-            <!--<field name="lang">${object.partner_id.lang}</field>-->
-            <!--<field name="body_html"><![CDATA[-->
-                <!--% set access_url = object.get_mail_url() or ''-->
-
-                <!--<p>Dear ${object.partner_id.name}-->
-                <!--% if object.partner_id.parent_id:-->
-                    <!--(<i>${object.partner_id.parent_id.name}</i>)-->
-                <!--% endif-->
-                <!--,</p>-->
-                <!--<p>-->
-                <!--Please find in attachment a <strong>${object.state in ('draft', 'sent') and 'request for vendor draft' or 'vendor offer confirmation'} ${object.name}</strong>-->
-                <!--% if object.partner_ref:-->
-                    <!--with reference: ${object.partner_ref}-->
-                <!--% endif-->
-                <!--% if object.origin:-->
-                    <!--(RFQ origin: ${object.origin})-->
-                <!--% endif-->
-                <!--amounting <strong>${format_amount(object.amount_total, object.currency_id)}</strong>-->
-                <!--from ${object.company_id.name}.-->
-                <!--</p>-->
-                <!--<br/><br/>-->
-                <!--<center>-->
-                    <!--<a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View order</a>-->
-                    <!--<br/><br/><br/>-->
-                    <!--<span style="color:#888888">(or view attached PDF)</span>-->
-                <!--</center>-->
-                <!--<p>You can reply to this email if you have any questions.</p>-->
-                <!--<p>Thank you,</p>-->
-                <!--]]>-->
-            <!--</field>-->
-        <!--</record>-->
-
 
         <record id="email_template_edi_vendor_offer_done" model="mail.template">
             <field name="name">Vendor Offer - Send by Email</field>
             <field name="model_id" ref="purchase.model_purchase_order"/>
-            <field name="subject">${object.company_id.name} Offer (Ref ${object.name or 'n/a' })</field>
-            <!--<field name="email_from">${object.super_user_email}</field>-->
-             <field name="email_from">${(object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe)}</field>
-            <field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>
-            <field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>
-            <field name="email_cc">${object.acq_user_id.partner_id.email | safe}</field>
-             <field name="body_html"><![CDATA[
-                % set access_url = object.get_mail_url() or ''
-
-                <p>Dear ${object.partner_id.name}
-                % if object.partner_id.parent_id:
-                    (<i>${object.partner_id.parent_id.name}</i>)
-                % endif
-                ,</p>
+            <field name="subject">{{object.company_id.name }}  Offer (Ref {{object.name or 'n/a' }})</field>
+            <field name="email_from">{{ (object.acq_user_id.partner_id.email or object.acq_user_id.email_formatted or object.company_id.email_formatted) }}</field>
+            <field name="partner_to">{{ object.partner_id.id if not object.partner_id.vendor_email else False }}</field>
+            <field name="email_to">{{ ctx['vendor_email'] }}</field>
+            <field name="email_cc">{{ ctx['email_cc'] }}</field>
+             <field name="body_html" type="html">
                 <p>
-                Please find in attachment a <strong>${object.state in ('draft', 'sent') and 'request for vendor draft' or 'vendor offer confirmation'} ${object.name}</strong>
-                % if object.partner_ref:
-                    with reference: ${object.partner_ref}
-                % endif
-                % if object.origin:
-                    (RFQ origin: ${object.origin})
-                % endif
-                 % if object.offer_type=='cash':
-                    Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
-
-                % elif object.offer_type=='credit':
-                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
-                 % elif object.offer_type=='cashcredit':
-                    Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
-                    Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
-                  % else:
-                   Credit amounting <strong>${format_amount(object.credit_amount_total, object.currency_id)}</strong>
-                     Cash amounting <strong>${format_amount(object.cash_amount_total, object.currency_id)}</strong>
-                 % endif
-
-                from ${object.company_id.name}.
+                Dear <t t-out="object.partner_id.name"/>
+                <t t-if="object.partner_id.parent_id">
+                     (<i><t t-out="object.partner_id.parent_id.name"/></i>)
+                </t>
+                </p>
+                <p>
+                    Please find in attachment a
+                    <strong>
+                    <t t-out="object.partner_id.name"/>
+                        <t t-set="is_draft_sent" t-value="object.state in ('draft', 'sent')"/>
+                        <t t-out="'request for vendor draft' if is_draft_sent else 'vendor offer confirmation'"/>
+                        <t t-out="object.name"/>
+                    </strong>
+                    <t t-if="object.partner_ref">
+                        with reference: <t t-out="object.partner_ref"/>
+                    </t>
+                     <t t-if="object.origin">
+                         (RFQ origin: <t t-out="object.origin"/>)
+                    </t>
+                    <t t-if="object.offer_type == 'cash'">
+                        Cash amounting <strong><t t-out="format_amount(object.cash_amount_total, object.currency_id)"/></strong>
+                    </t>
+                    <t t-elif="object.offer_type == 'credit'">
+                        Credit amounting <strong><t t-out="format_amount(object.credit_amount_total, object.currency_id)"/></strong>
+                    </t>
+                    <t t-elif="object.offer_type == 'cashcredit'">
+                        Credit amounting <strong><t t-out="format_amount(object.credit_amount_total, object.currency_id)"/></strong>
+                        Cash amounting <strong><t t-out="format_amount(object.cash_amount_total, object.currency_id)"/></strong>
+                    </t>
+                    <t t-else="">
+                        Credit amounting <strong><t t-out="format_amount(object.credit_amount_total, object.currency_id)"/></strong>
+                        Cash amounting <strong><t t-out="format_amount(object.cash_amount_total, object.currency_id)"/></strong>
+                    </t>
+                    from  <t t-out="object.company_id.name"/> .
                 </p>
                 <br/><br/>
                 <center>
-                    <a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Offer</a>
+                    <t t-set="access_url" t-value="object.get_mail_url()"/>
+                    <a t-attf-href="{{access_url}}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">View Offer</a>
                     <br/><br/><br/>
                     <span style="color:#888888">(or view attached PDF)</span>
                 </center>
                 <p>You can reply to this email if you have any questions.</p>
                 <p>Thank you,</p>
-                ]]>
             </field>
             <field name="report_template" ref="action_report_vendor_offer"/>
-            <field name="report_name">OFFER_${(object.name or '').replace('/','_')}</field>
-            <field name="lang">${object.partner_id.lang}</field>
-            <!--<field name="user_signature" eval="False"/>-->
+            <field name="report_name">OFFER_{{(object.name or '').replace('/','_')}}</field>
+            <field name="lang">{{object.partner_id.lang}}</field>
             <field name="auto_delete" eval="True"/>
         </record>
 
         <record id="email_template_edi_vendor_offer_done_cstm" model="mail.template">
             <field name="name">Vendor Offer - Send by Email</field>
             <field name="model_id" ref="purchase.model_purchase_order"/>
-            <field name="email_from">${(object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe)}</field>
-            <field name="partner_to">${(object.partner_id.id if object.partner_id.vendor_email==False)}</field>
-            <field name="email_to">${(object.partner_id.vendor_email if object.partner_id.vendor_email!=False)}</field>
-            <field name="email_cc"><![CDATA[${ctx['email_cc'] | safe}]]></field>
-            <field name="subject"><![CDATA[${ctx['subject_details']}]]></field>
-            <field name="body_html"><![CDATA[
-                    <div style="font-size: 13px;font-family: "Times New Roman"> ${ctx['body_details'] | safe} </div>
-                ]]>
+            <field name="email_from">{{ (object.acq_user_id.partner_id.email if object.acq_user_id.partner_id.email != False else object.sudo().create_uid.email_formatted | safe) }}</field>
+            <field name="partner_to">{{ (object.partner_id.id if object.partner_id.vendor_email==False) }}</field>
+            <field name="email_to">{{ (object.partner_id.vendor_email if object.partner_id.vendor_email!=False) }}</field>
+            <field name="email_cc">{{ ctx['email_cc'] | safe }}></field>
+            <field name="subject">{{ ctx['subject_details'] }}></field>
+            <field name="body_html" type="html">
+                    <div style="font-size: 13px;font-family: 'Times New Roman'">
+                        <t t-out="ctx['body_details']" />
+                    </div>
             </field>
             <field name="report_template" ref="action_report_vendor_offer"/>
-            <field name="report_name">OFFER_${(object.name or '').replace('/','_')}</field>
+            <field name="report_name">OFFER_{{(object.name or '').replace('/','_')}</field>
             <field name="lang">${object.partner_id.lang}</field>
             <!--<field name="user_signature" eval="False"/>-->
             <field name="auto_delete" eval="True"/>

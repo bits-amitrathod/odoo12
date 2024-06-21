@@ -6,12 +6,12 @@
     </record>
     <menuitem id="sh_menu_activity_dashboard" name="Dashboard" action="sh_action_activity_dashboard" parent="sh_activity_dashboard" sequence="1" />
 
-    <template id="sh_activities_assets_backend" name="CRM assets" inherit_id="web.assets_backend">
+   <!-- <template id="sh_activities_assets_backend" name="CRM assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/sh_activities_management/static/src/js/activity_dashboard.js" />
             <link rel="stylesheet" href="/sh_activities_management/static/src/css/crm_dashboard.css" />
         </xpath>
-    </template>
+    </template>-->
     <template id="sh_crm_db_activity_count_box" name="SH Activity To Do">
         <div id="js_id_sh_crm_activity_all_count_tbl_div">
             <div class="row row-sm">

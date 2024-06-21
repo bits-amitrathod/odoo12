@@ -19,8 +19,9 @@
           </page>
           <page name="credit_limit" string="Credit Limit">
             <group>
-                <field name="x_studio_field_6O3nt"/>
-                <field name="x_studio_field_21C8m"/>
+
+<!--      UPG_ODOO16_NOTE field commented due to error         <field name="x_studio_field_6O3nt"/>-->
+<!--      UPG_ODOO16_NOTE field commented due to error         <field name="x_studio_field_21C8m"/>-->
             </group>
           </page>
         </xpath>
@@ -33,9 +34,9 @@
         <field name="inherit_id" ref="sale_stock.view_order_form_inherit_sale_stock"/>
         <field name="arch" type="xml">
             <xpath expr="//group[@name='sale_shipping']" position="attributes">
-                    <attribute name="groups"></attribute>
-                    <attribute name="string">Shipping Information</attribute>
-                </xpath>
+                <attribute name="groups"></attribute>
+                <attribute name="string">Shipping Information</attribute>
+            </xpath>
             <xpath expr="//field[@name='picking_policy']" position="before">
                 <field name="warehouse_id" />
             </xpath>

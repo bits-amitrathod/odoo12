@@ -17,75 +17,76 @@ _logger = logging.getLogger('odoo.addons.base.partner.merge')
 class MailActivityMixin(models.AbstractModel):
     _inherit = 'mail.activity.mixin'
 
-    def _read_progress_bar(self, domain, group_by, progress_bar):
-        group_by_fname = group_by.partition(':')[0]
-        if not (progress_bar['field'] == 'activity_state' and self._fields[group_by_fname].store):
-            return super()._read_progress_bar(domain, group_by, progress_bar)
-
-        # optimization for 'activity_state'
-
-        # explicitly check access rights, since we bypass the ORM
-        self.check_access_rights('read')
-        self._flush_search(domain, fields=[group_by_fname], order='id')
-        self.env['mail.activity'].flush(['res_model', 'res_id', 'user_id', 'date_deadline'])
-
-        query = self._where_calc(domain)
-        self._apply_ir_rules(query, 'read')
-        gb = group_by.partition(':')[0]
-        annotated_groupbys = [
-            self._read_group_process_groupby(gb, query)
-            for gb in [group_by, 'activity_state']
-        ]
-        groupby_dict = {gb['groupby']: gb for gb in annotated_groupbys}
-        for gb in annotated_groupbys:
-            if gb['field'] == 'activity_state':
-                gb['qualified_field'] = '"_last_activity_state"."activity_state"'
-        groupby_terms, orderby_terms = self._read_group_prepare('activity_state', [], annotated_groupbys, query)
-        select_terms = [
-            '%s as "%s"' % (gb['qualified_field'], gb['groupby'])
-            for gb in annotated_groupbys
-        ]
-        from_clause, where_clause, where_params = query.get_sql()
-        tz = self._context.get('tz') or self.env.user.tz or 'UTC'
-        select_query = """
-            SELECT 1 AS id, count(*) AS "__count", {fields}
-            FROM {from_clause}
-            JOIN (
-                SELECT res_id,
-                CASE
-                    WHEN min(date_deadline - (now() AT TIME ZONE COALESCE(res_partner.tz, %s))::date) > 0 THEN 'planned'
-                    WHEN min(date_deadline - (now() AT TIME ZONE COALESCE(res_partner.tz, %s))::date) < 0 THEN 'overdue'
-                    WHEN min(date_deadline - (now() AT TIME ZONE COALESCE(res_partner.tz, %s))::date) = 0 THEN 'today'
-                    ELSE null
-                END AS activity_state
-                FROM mail_activity
-                JOIN res_users ON (res_users.id = mail_activity.user_id)
-                JOIN res_partner ON (res_partner.id = res_users.partner_id)
-                WHERE res_model = '{model}' and mail_activity.active = True
-                GROUP BY res_id
-            ) AS "_last_activity_state" ON ("{table}".id = "_last_activity_state".res_id)
-            WHERE {where_clause}
-            GROUP BY {group_by}
-        """.format(
-            fields=', '.join(select_terms),
-            from_clause=from_clause,
-            model=self._name,
-            table=self._table,
-            where_clause=where_clause or '1=1',
-            group_by=', '.join(groupby_terms),
-        )
-        self.env.cr.execute(select_query, [tz] * 3 + where_params)
-        fetched_data = self.env.cr.dictfetchall()
-        self._read_group_resolve_many2one_fields(fetched_data, annotated_groupbys)
-        data = [
-            {key: self._read_group_prepare_data(key, val, groupby_dict)
-             for key, val in row.items()}
-            for row in fetched_data
-        ]
-        return [
-            self._read_group_format_result(vals, annotated_groupbys, [group_by], domain)
-            for vals in data
-        ]
+    # def _read_progress_bar(self, domain, group_by, progress_bar):
+    #     group_by_fname = group_by.partition(':')[0]
+    #     if not (progress_bar['field'] == 'activity_state' and self._fields[group_by_fname].store):
+    #         return super()._read_progress_bar(domain, group_by, progress_bar)
+    #
+    #     # optimization for 'activity_state'
+    #
+    #     # explicitly check access rights, since we bypass the ORM
+    #     self.check_access_rights('read')
+    #     self._flush_search(domain, fields=[group_by_fname], order='id')
+    #     self.env['mail.activity'].flush(['res_model', 'res_id', 'user_id', 'date_deadline'])
+    #
+    #     query = self._where_calc(domain)
+    #     self._apply_ir_rules(query, 'read')
+    #     gb = group_by.partition(':')[0]
+    #     annotated_groupbys = [
+    #         self._read_group_process_groupby(gb, query)
+    #         for gb in [group_by, 'activity_state']
+    #     ]
+    #     groupby_dict = {gb['groupby']: gb for gb in annotated_groupbys}
+    #     for gb in annotated_groupbys:
+    #         if gb['field'] == 'activity_state':
+    #             gb['qualified_field'] = '"_last_activity_state"."activity_state"'
+    #     groupby_terms, orderby_terms = self._read_group_prepare('activity_state', [], annotated_groupbys, query)
+    #     select_terms = [
+    #         '%s as "%s"' % (gb['qualified_field'], gb['groupby'])
+    #         for gb in annotated_groupbys
+    #     ]
+    #     from_clause, where_clause, where_params = query.get_sql()
+    #     tz = self._context.get('tz') or self.env.user.tz or 'UTC'
+    #     select_query = """
+    #         SELECT 1 AS id, count(*) AS "__count", {fields}
+    #         FROM {from_clause}
+    #         JOIN (
+    #             SELECT res_id,
+    #             CASE
+    #                 WHEN min(date_deadline - (now() AT TIME ZONE COALESCE(res_partner.tz, %s))::date) > 0 THEN 'planned'
+    #                 WHEN min(date_deadline - (now() AT TIME ZONE COALESCE(res_partner.tz, %s))::date) < 0 THEN 'overdue'
+    #                 WHEN min(date_deadline - (now() AT TIME ZONE COALESCE(res_partner.tz, %s))::date) = 0 THEN 'today'
+    #                 ELSE null
+    #             END AS activity_state
+    #             FROM mail_activity
+    #             JOIN res_users ON (res_users.id = mail_activity.user_id)
+    #             JOIN res_partner ON (res_partner.id = res_users.partner_id)
+    #             WHERE res_model = '{model}' and mail_activity.active = True
+    #             GROUP BY res_id
+    #         ) AS "_last_activity_state" ON ("{table}".id = "_last_activity_state".res_id)
+    #         WHERE {where_clause}
+    #         GROUP BY {group_by}
+    #     """.format(
+    #         fields=', '.join(select_terms),
+    #         from_clause=from_clause,
+    #         model=self._name,
+    #         table=self._table,
+    #         where_clause=where_clause or '1=1',
+    #         group_by=', '.join(groupby_terms),
+    #     )
+    #     self.env.cr.execute(select_query, [tz] * 3 + where_params)
+    #     fetched_data = self.env.cr.dictfetchall()
+    #     # TODO: UPD ODOO16 NOTE comment
+    #     # self._read_group_resolve_many2one_fields(fetched_data, annotated_groupbys)
+    #     data = [
+    #         {key: self._read_group_prepare_data(key, val, groupby_dict)
+    #          for key, val in row.items()}
+    #         for row in fetched_data
+    #     ]
+    #     return [
+    #         self._read_group_format_result(vals, annotated_groupbys, [group_by], domain)
+    #         for vals in data
+    #     ]
 
 class MailActivity(models.Model):
     """ Inherited Mail Acitvity to add custom field"""
@@ -399,213 +400,214 @@ class MailActivity(models.Model):
         self._compute_state()
 #         return messages.ids and messages.ids[0] or False
 
-    def _action_done(self, feedback=False, attachment_ids=None):
-        self.ensure_one()
-        """ Private implementation of marking activity as done: posting a message, deleting activity
-            (since done), and eventually create the automatical next activity (depending on config).
-            :param feedback: optional feedback from user when marking activity as done
-            :param attachment_ids: list of ir.attachment ids to attach to the posted mail.message
-            :returns (messages, activities) where
-                - messages is a recordset of posted mail.message
-                - activities is a recordset of mail.activity of forced automically created activities
-        """
-        # marking as 'done'
-        messages = self.env['mail.message']
-        next_activities_values = []
-        for activity in self:
-            # extract value to generate next activities
-            if activity.force_next:
-                # context key is required in the onchange to set deadline
-                Activity = self.env['mail.activity'].sudo().with_context(
-                    activity_previous_deadline=activity.date_deadline)
-                vals = Activity.default_get(Activity.fields_get())
-
-                vals.update({
-                    'previous_activity_type_id': activity.activity_type_id.id,
-                    'res_id': activity.res_id,
-                    'res_model': activity.res_model,
-                    'res_model_id': self.env['ir.model']._get(activity.res_model).id,
-                })
-                virtual_activity = Activity.new(vals)
-                virtual_activity._onchange_previous_activity_type_id()
-                virtual_activity._onchange_activity_type_id()
-                next_activities_values.append(
-                    virtual_activity._convert_to_write(virtual_activity._cache))
-
-            # post message on activity, before deleting it
-            record = self.env[activity.res_model].sudo().browse(
-                activity.res_id)
-            record.sudo().message_post_with_view(
-                'mail.message_activity_done',
-                values={
-                    'activity': activity,
-                    'feedback': feedback,
-                    'display_assignee': activity.user_id != self.env.user
-                },
-                subtype_id=self.env['ir.model.data'].xmlid_to_res_id(
-                    'mail.mt_activities'),
-                mail_activity_type_id=activity.activity_type_id.id,
-                attachment_ids=[
-                    (4, attachment_id) for attachment_id in attachment_ids] if attachment_ids else [],
-            )
-            messages |= record.sudo().message_ids[0]
-
-        next_activities = self.env['mail.activity'].sudo().create(
-            next_activities_values)
-        self.active = False
-        self.date_done = fields.Date.today()
-        self.feedback = feedback
-        self.state = "done"
-        self.activity_done = True
-        self._compute_state()
-#         self.unlink()  # will unlink activity, dont access `self` after that
-
-        return messages, next_activities
-
-
-
-
-class ResUsers(models.Model):
-    _inherit = 'res.users'
+        # TODO: UPD ODOO16 NOTE Parent def changed
+#     def _action_done(self, feedback=False, attachment_ids=None):
+#         self.ensure_one()
+#         """ Private implementation of marking activity as done: posting a message, deleting activity
+#             (since done), and eventually create the automatical next activity (depending on config).
+#             :param feedback: optional feedback from user when marking activity as done
+#             :param attachment_ids: list of ir.attachment ids to attach to the posted mail.message
+#             :returns (messages, activities) where
+#                 - messages is a recordset of posted mail.message
+#                 - activities is a recordset of mail.activity of forced automically created activities
+#         """
+#         # marking as 'done'
+#         messages = self.env['mail.message']
+#         next_activities_values = []
+#         for activity in self:
+#             # extract value to generate next activities
+#             if activity.force_next:
+#                 # context key is required in the onchange to set deadline
+#                 Activity = self.env['mail.activity'].sudo().with_context(
+#                     activity_previous_deadline=activity.date_deadline)
+#                 vals = Activity.default_get(Activity.fields_get())
+#
+#                 vals.update({
+#                     'previous_activity_type_id': activity.activity_type_id.id,
+#                     'res_id': activity.res_id,
+#                     'res_model': activity.res_model,
+#                     'res_model_id': self.env['ir.model']._get(activity.res_model).id,
+#                 })
+#                 virtual_activity = Activity.new(vals)
+#                 virtual_activity._onchange_previous_activity_type_id()
+#                 virtual_activity._onchange_activity_type_id()
+#                 next_activities_values.append(
+#                     virtual_activity._convert_to_write(virtual_activity._cache))
+#
+#             # post message on activity, before deleting it
+#             record = self.env[activity.res_model].sudo().browse(
+#                 activity.res_id)
+#             record.sudo().message_post_with_view(
+#                 'mail.message_activity_done',
+#                 values={
+#                     'activity': activity,
+#                     'feedback': feedback,
+#                     'display_assignee': activity.user_id != self.env.user
+#                 },
+#                 subtype_id=self.env['ir.model.data']._xmlid_to_res_id(
+#                     'mail.mt_activities', raise_if_not_found=True),
+#                 mail_activity_type_id=activity.activity_type_id.id,
+#                 attachment_ids=[
+#                     (4, attachment_id) for attachment_id in attachment_ids] if attachment_ids else [],
+#             )
+#             messages |= record.sudo().message_ids[0]
+#
+#         next_activities = self.env['mail.activity'].sudo().create(
+#             next_activities_values)
+#         self.active = False
+#         self.date_done = fields.Date.today()
+#         self.feedback = feedback
+#         self.state = "done"
+#         self.activity_done = True
+#         self._compute_state()
+# #         self.unlink()  # will unlink activity, dont access `self` after that
+#
+#         return messages, next_activities
 
 
-    @api.model
-    def systray_get_activities(self):
-        query = """SELECT m.id, count(*), act.res_model as model,
-                        CASE
-                            WHEN %(today)s::date - act.date_deadline::date = 0 Then 'today'
-                            WHEN %(today)s::date - act.date_deadline::date > 0 Then 'overdue'
-                            WHEN %(today)s::date - act.date_deadline::date < 0 Then 'planned'
-                        END AS states
-                    FROM mail_activity AS act
-                    JOIN ir_model AS m ON act.res_model_id = m.id
-                    WHERE user_id = %(user_id)s and active=True
-                    GROUP BY m.id, states, act.res_model;
-                    """
-        self.env.cr.execute(query, {
-            'today': fields.Date.context_today(self),
-            'user_id': self.env.uid,
-        })
-        activity_data = self.env.cr.dictfetchall()
-        model_ids = [a['id'] for a in activity_data]
-        model_names = {n[0]: n[1] for n in self.env['ir.model'].sudo().browse(model_ids).name_get()}
 
-        user_activities = {}
-        for activity in activity_data:
-            if not user_activities.get(activity['model']):
-                module = self.env[activity['model']]._original_module
-                icon = module and modules.module.get_module_icon(module)
-                user_activities[activity['model']] = {
-                    'name': model_names[activity['id']],
-                    'model': activity['model'],
-                    'type': 'activity',
-                    'icon': icon,
-                    'total_count': 0, 'today_count': 0, 'overdue_count': 0, 'planned_count': 0,
-                }
-            user_activities[activity['model']]['%s_count' % activity['states']] += activity['count']
-            if activity['states'] in ('today', 'overdue'):
-                user_activities[activity['model']]['total_count'] += activity['count']
 
-            user_activities[activity['model']]['actions'] = [{
-                'icon': 'fa-clock-o',
-                'name': 'Summary',
-            }]
-        activities = list(user_activities.values())
-        if self.env['ir.module.module'].sudo().search([('name','=','note'),('state','=','installed')]):
-            notes_count = self.env['note.note'].search_count([('user_id', '=', self.env.uid)])
-            if notes_count:
-                note_index = next((index for (index, a) in enumerate(activities) if a["model"] == "note.note"), None)
-                note_label = _('Notes')
-                if note_index is not None:
-                    activities[note_index]['name'] = note_label
-                else:
-                    activities.append({
-                        'type': 'activity',
-                        'name': note_label,
-                        'model': 'note.note',
-                        'icon': modules.module.get_module_icon(self.env['note.note']._original_module),
-                        'total_count': 0,
-                        'today_count': 0,
-                        'overdue_count': 0,
-                        'planned_count': 0
-                    })
-        for activity in activities:
-            if self.env['ir.module.module'].sudo().search([('name','=','contacts'),('state','=','installed')]):
-                if activity['model'] == 'res.partner':
-                    activity['icon'] = '/sh_activities_management/static/description/contacts_icon.png'
-            if self.env['ir.module.module'].sudo().search([('name','=','mass_mailing'),('state','=','installed')]):
-                if activity.get('model') == 'mailing.mailing':
-                    activity['name'] = _('Email Marketing')
-                    break
-            if self.env['ir.module.module'].sudo().search([('name','=','mass_mailing_sms'),('state','=','installed')]):
-                if activity.get('model') == 'mailing.mailing':
-                    activities.remove(activity)
-                    query = """SELECT m.mailing_type, count(*), act.res_model as model, act.res_id,
-                                CASE
-                                    WHEN %(today)s::date - act.date_deadline::date = 0 Then 'today'
-                                    WHEN %(today)s::date - act.date_deadline::date > 0 Then 'overdue'
-                                    WHEN %(today)s::date - act.date_deadline::date < 0 Then 'planned'
-                                END AS states
-                            FROM mail_activity AS act
-                            JOIN mailing_mailing AS m ON act.res_id = m.id
-                            WHERE act.res_model = 'mailing.mailing' AND act.user_id = %(user_id)s  
-                            GROUP BY m.mailing_type, states, act.res_model, act.res_id;
-                            """
-                    self.env.cr.execute(query, {
-                        'today': fields.Date.context_today(self),
-                        'user_id': self.env.uid,
-                    })
-                    activity_data = self.env.cr.dictfetchall()
-            
-                    user_activities = {}
-                    for act in activity_data:
-                        if not user_activities.get(act['mailing_type']):
-                            if act['mailing_type'] == 'sms':
-                                module = 'mass_mailing_sms'
-                                name = _('SMS Marketing')
-                            else:
-                                module = 'mass_mailing'
-                                name = _('Email Marketing')
-                            icon = module and modules.module.get_module_icon(module)
-                            res_ids = set()
-                            user_activities[act['mailing_type']] = {
-                                'name': name,
-                                'model': 'mailing.mailing',
-                                'type': 'activity',
-                                'icon': icon,
-                                'total_count': 0, 'today_count': 0, 'overdue_count': 0, 'planned_count': 0,
-                                'res_ids': res_ids,
-                            }
-                        user_activities[act['mailing_type']]['res_ids'].add(act['res_id'])
-                        user_activities[act['mailing_type']]['%s_count' % act['states']] += act['count']
-                        if act['states'] in ('today', 'overdue'):
-                            user_activities[act['mailing_type']]['total_count'] += act['count']
-            
-                    for mailing_type in user_activities.keys():
-                        user_activities[mailing_type].update({
-                            'actions': [{'icon': 'fa-clock-o', 'name': 'Summary',}],
-                            'domain': json.dumps([['activity_ids.res_id', 'in', list(user_activities[mailing_type]['res_ids'])]])
-                        })
-                    activities.extend(list(user_activities.values()))
-                    break
-        if self.env['ir.module.module'].sudo().search([('name','=','calendar'),('state','=','installed')]):
-            meetings_lines = self.env['calendar.event'].search_read(
-            self._systray_get_calendar_event_domain(),
-            ['id', 'start', 'name', 'allday', 'attendee_status'],
-            order='start')
-            meetings_lines = [line for line in meetings_lines if line['attendee_status'] != 'declined']
-            if meetings_lines:
-                meeting_label = _("Today's Meetings")
-                meetings_systray = {
-                    'type': 'meeting',
-                    'name': meeting_label,
-                    'model': 'calendar.event',
-                    'icon': modules.module.get_module_icon(self.env['calendar.event']._original_module),
-                    'meetings': meetings_lines,
-                }
-                
-                activities.insert(0, meetings_systray)
-        return activities
+# class ResUsers(models.Model):
+#     _inherit = 'res.users'
+
+
+    # @api.model
+    # def systray_get_activities(self):
+    #     query = """SELECT m.id, count(*), act.res_model as model,
+    #                     CASE
+    #                         WHEN %(today)s::date - act.date_deadline::date = 0 Then 'today'
+    #                         WHEN %(today)s::date - act.date_deadline::date > 0 Then 'overdue'
+    #                         WHEN %(today)s::date - act.date_deadline::date < 0 Then 'planned'
+    #                     END AS states
+    #                 FROM mail_activity AS act
+    #                 JOIN ir_model AS m ON act.res_model_id = m.id
+    #                 WHERE user_id = %(user_id)s and active=True
+    #                 GROUP BY m.id, states, act.res_model;
+    #                 """
+    #     self.env.cr.execute(query, {
+    #         'today': fields.Date.context_today(self),
+    #         'user_id': self.env.uid,
+    #     })
+    #     activity_data = self.env.cr.dictfetchall()
+    #     model_ids = [a['id'] for a in activity_data]
+    #     model_names = {n[0]: n[1] for n in self.env['ir.model'].sudo().browse(model_ids).name_get()}
+    #
+    #     user_activities = {}
+    #     for activity in activity_data:
+    #         if not user_activities.get(activity['model']):
+    #             module = self.env[activity['model']]._original_module
+    #             icon = module and modules.module.get_module_icon(module)
+    #             user_activities[activity['model']] = {
+    #                 'name': model_names[activity['id']],
+    #                 'model': activity['model'],
+    #                 'type': 'activity',
+    #                 'icon': icon,
+    #                 'total_count': 0, 'today_count': 0, 'overdue_count': 0, 'planned_count': 0,
+    #             }
+    #         user_activities[activity['model']]['%s_count' % activity['states']] += activity['count']
+    #         if activity['states'] in ('today', 'overdue'):
+    #             user_activities[activity['model']]['total_count'] += activity['count']
+    #
+    #         user_activities[activity['model']]['actions'] = [{
+    #             'icon': 'fa-clock-o',
+    #             'name': 'Summary',
+    #         }]
+    #     activities = list(user_activities.values())
+    #     if self.env['ir.module.module'].sudo().search([('name','=','note'),('state','=','installed')]):
+    #         notes_count = self.env['note.note'].search_count([('user_id', '=', self.env.uid)])
+    #         if notes_count:
+    #             note_index = next((index for (index, a) in enumerate(activities) if a["model"] == "note.note"), None)
+    #             note_label = _('Notes')
+    #             if note_index is not None:
+    #                 activities[note_index]['name'] = note_label
+    #             else:
+    #                 activities.append({
+    #                     'type': 'activity',
+    #                     'name': note_label,
+    #                     'model': 'note.note',
+    #                     'icon': modules.module.get_module_icon(self.env['note.note']._original_module),
+    #                     'total_count': 0,
+    #                     'today_count': 0,
+    #                     'overdue_count': 0,
+    #                     'planned_count': 0
+    #                 })
+    #     for activity in activities:
+    #         if self.env['ir.module.module'].sudo().search([('name','=','contacts'),('state','=','installed')]):
+    #             if activity['model'] == 'res.partner':
+    #                 activity['icon'] = '/sh_activities_management/static/description/contacts_icon.png'
+    #         if self.env['ir.module.module'].sudo().search([('name','=','mass_mailing'),('state','=','installed')]):
+    #             if activity.get('model') == 'mailing.mailing':
+    #                 activity['name'] = _('Email Marketing')
+    #                 break
+    #         if self.env['ir.module.module'].sudo().search([('name','=','mass_mailing_sms'),('state','=','installed')]):
+    #             if activity.get('model') == 'mailing.mailing':
+    #                 activities.remove(activity)
+    #                 query = """SELECT m.mailing_type, count(*), act.res_model as model, act.res_id,
+    #                             CASE
+    #                                 WHEN %(today)s::date - act.date_deadline::date = 0 Then 'today'
+    #                                 WHEN %(today)s::date - act.date_deadline::date > 0 Then 'overdue'
+    #                                 WHEN %(today)s::date - act.date_deadline::date < 0 Then 'planned'
+    #                             END AS states
+    #                         FROM mail_activity AS act
+    #                         JOIN mailing_mailing AS m ON act.res_id = m.id
+    #                         WHERE act.res_model = 'mailing.mailing' AND act.user_id = %(user_id)s
+    #                         GROUP BY m.mailing_type, states, act.res_model, act.res_id;
+    #                         """
+    #                 self.env.cr.execute(query, {
+    #                     'today': fields.Date.context_today(self),
+    #                     'user_id': self.env.uid,
+    #                 })
+    #                 activity_data = self.env.cr.dictfetchall()
+    #
+    #                 user_activities = {}
+    #                 for act in activity_data:
+    #                     if not user_activities.get(act['mailing_type']):
+    #                         if act['mailing_type'] == 'sms':
+    #                             module = 'mass_mailing_sms'
+    #                             name = _('SMS Marketing')
+    #                         else:
+    #                             module = 'mass_mailing'
+    #                             name = _('Email Marketing')
+    #                         icon = module and modules.module.get_module_icon(module)
+    #                         res_ids = set()
+    #                         user_activities[act['mailing_type']] = {
+    #                             'name': name,
+    #                             'model': 'mailing.mailing',
+    #                             'type': 'activity',
+    #                             'icon': icon,
+    #                             'total_count': 0, 'today_count': 0, 'overdue_count': 0, 'planned_count': 0,
+    #                             'res_ids': res_ids,
+    #                         }
+    #                     user_activities[act['mailing_type']]['res_ids'].add(act['res_id'])
+    #                     user_activities[act['mailing_type']]['%s_count' % act['states']] += act['count']
+    #                     if act['states'] in ('today', 'overdue'):
+    #                         user_activities[act['mailing_type']]['total_count'] += act['count']
+    #
+    #                 for mailing_type in user_activities.keys():
+    #                     user_activities[mailing_type].update({
+    #                         'actions': [{'icon': 'fa-clock-o', 'name': 'Summary',}],
+    #                         'domain': json.dumps([['activity_ids.res_id', 'in', list(user_activities[mailing_type]['res_ids'])]])
+    #                     })
+    #                 activities.extend(list(user_activities.values()))
+    #                 break
+    #     if self.env['ir.module.module'].sudo().search([('name','=','calendar'),('state','=','installed')]):
+    #         meetings_lines = self.env['calendar.event'].search_read(
+    #         self._systray_get_calendar_event_domain(),
+    #         ['id', 'start', 'name', 'allday', 'attendee_status'],
+    #         order='start')
+    #         meetings_lines = [line for line in meetings_lines if line['attendee_status'] != 'declined']
+    #         if meetings_lines:
+    #             meeting_label = _("Today's Meetings")
+    #             meetings_systray = {
+    #                 'type': 'meeting',
+    #                 'name': meeting_label,
+    #                 'model': 'calendar.event',
+    #                 'icon': modules.module.get_module_icon(self.env['calendar.event']._original_module),
+    #                 'meetings': meetings_lines,
+    #             }
+    #
+    #             activities.insert(0, meetings_systray)
+    #     return activities
 
 
 

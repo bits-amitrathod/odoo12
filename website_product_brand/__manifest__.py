@@ -12,7 +12,6 @@
     'depends': ['product_brand','website_sale','product_expiry_extension'],
 
     'data': [
-        # 'security/ir.model.access.csv',
         "security/ir.model.access.csv",
         "views/product_brand.xml",
     ],

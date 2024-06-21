@@ -12,9 +12,8 @@ class ReportPurchaseSalespersonWise(models.AbstractModel):
 
         popup = self.env['adj_popup.view.model'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
-        if popup.compute_at_date:
-            date = datetime.strptime(str(popup.start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(str
-            (popup.end_date), '%Y-%m-%d').strftime('%m/%d/%Y')
+        if popup.compute_at_date == '1':
+            date = datetime.strptime(str(popup.start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(str(popup.end_date), '%Y-%m-%d').strftime('%m/%d/%Y')
         else:
             date = False
 

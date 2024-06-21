@@ -97,9 +97,9 @@ class SaleOrder(models.Model):
             # template_id = int(self.env['ir.config_parameter'].sudo().get_param('sale.default_confirmation_template'))
             # template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
             if not template_id:
-                template_id = self.env['ir.model.data'].xmlid_to_res_id('sale_order_cstm.mail_template_sale_confirmation_cstm1', raise_if_not_found=False)
+                template_id = self.env['ir.model.data']._xmlid_to_res_id('sale_order_cstm.mail_template_sale_confirmation_cstm', raise_if_not_found=True)
         if not template_id:
-            template_id = self.env['ir.model.data'].xmlid_to_res_id('sale_order_cstm.email_template_sale_custom_dub', raise_if_not_found=False)
+            template_id = self.env['ir.model.data']._xmlid_to_res_id('sale_order_cstm.email_template_sale_custom_dub', raise_if_not_found=True)
         return template_id
 
     def action_quotation_send(self):
@@ -131,20 +131,6 @@ class SaleOrder(models.Model):
             ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
         else:
             ctx['email_from'] = None
-
-
-        customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
-        if customer.account_manager_cust:
-            if ctx['email_from']:
-                ctx['email_from'] = ctx['email_from'] + ',' + customer.account_manager_cust.login
-            else:
-                ctx['email_from'] = customer.account_manager_cust.login
-
-        if customer.customer_success:
-            if ctx['email_from']:
-                ctx['email_from'] = ctx['email_from'] + ',' + customer.customer_success.login
-            else:
-                ctx['email_from'] = customer.customer_success.login
 
         return {
             'type': 'ir.actions.act_window',
@@ -206,8 +192,8 @@ class SaleOrder(models.Model):
                     'body': body,
                     'model': 'stock.picking',
                     'message_type': 'notification',
-                    'no_auto_thread': False,
-                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'reply_to_force_new': False,
+                    'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': self.env.user.partner_id.id,
                 }
@@ -327,7 +313,7 @@ class SaleOrderLinePrioritization(models.Model):
 
         if self.order_id.pricelist_id and self.order_id.partner_id:
             vals['price_unit'] = self.env['account.tax']._fix_tax_included_price_company(
-                self._get_display_price(product), product.taxes_id, self.tax_id, self.company_id)
+                self._get_display_price(), product.taxes_id, self.tax_id, self.company_id)
         self.update(vals)
 
         return result
@@ -395,14 +381,14 @@ class StockPicking(models.Model):
         pickings_without_lots = self.browse()
         products_without_lots = self.env['product.product']
         for picking in self:
-            if not picking.move_lines and not picking.move_line_ids:
+            if not picking.move_ids and not picking.move_line_ids:
                 pickings_without_moves |= picking
 
             picking.message_subscribe([self.env.user.partner_id.id])
             picking_type = picking.picking_type_id
             precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
             no_quantities_done = all(float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in picking.move_line_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
-            no_reserved_quantities = all(float_is_zero(move_line.product_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in picking.move_line_ids)
+            no_reserved_quantities = all(float_is_zero(move_line.reserved_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in picking.move_line_ids)
             if no_reserved_quantities and no_quantities_done:
                 pickings_without_quantities |= picking
 

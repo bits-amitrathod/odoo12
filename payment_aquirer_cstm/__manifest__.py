@@ -16,16 +16,11 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
-        'data/payment_acquirer_cstm_data.xml',
+        'data/payment_provider_cstm_data.xml',
 
     ],
-    # only loaded in demonstration mode
-    # 'demo': [
-    #     'demo/demo.xml',
-    # ],
 
     'installable': True,
     # 'application': True,

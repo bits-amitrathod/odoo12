@@ -24,10 +24,10 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'reports/rma_report.xml',
-        'reports/rma_report_template.xml',
-        'views/templates.xml',
+        # 'views/views.xml',
+        # 'reports/rma_report.xml',
+        # 'reports/rma_report_template.xml',
+        # 'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

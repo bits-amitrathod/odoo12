@@ -10,11 +10,13 @@ from odoo.osv import expression
 from odoo.addons.portal.controllers.mail import _message_post_helper
 import werkzeug
 from odoo import api, fields, models, tools, SUPERUSER_ID
+from odoo.tools import ustr
+from odoo.tools.translate import _
 from odoo.exceptions import AccessError, MissingError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq, ustr
-from odoo import api, fields, models, _
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq
+from odoo import api, fields, models
 from odoo.tools.float_utils import float_repr
-from odoo.addons.payment.controllers.portal import PaymentProcessing
+from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
 from odoo.addons.payment_paypal.controllers.main import PaypalController
 from odoo.exceptions import UserError, ValidationError
 
@@ -71,8 +73,7 @@ class PaymentAquirerCstm(http.Controller):
         # request.session.set('sale_transaction_id', request.session.get('__website_sale_last_tx_id'))
         return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
 
-    @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True,
-                csrf=False)
+    @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def cart_update(self, purchase_order, **kw):
         order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
         order.client_order_ref = purchase_order
@@ -103,16 +104,6 @@ class PaymentAquirerCstm(http.Controller):
                 res_currency = request.env.user.company_id.currency_id
                 if res_currency:
                     currency = res_currency
-            # return {
-            #     'carrier_acc_no': False,
-            #     'status': order.delivery_rating_success,
-            #     'error_message': order.delivery_message,
-            #     'is_free_delivery': not bool(order.amount_delivery),
-            #     'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}),
-            #     'new_amount_untaxed': Monetary.value_to_html(order.amount_untaxed, {'display_currency': currency}),
-            #     'new_amount_tax': Monetary.value_to_html(order.amount_tax, {'display_currency': currency}),
-            #     'new_amount_total': Monetary.value_to_html(order.amount_total, {'display_currency': currency}),
-            # }
 
             gen_pay = False
             if order.id:
@@ -126,17 +117,9 @@ class PaymentAquirerCstm(http.Controller):
 
             return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}), 'status': order.delivery_rating_success, 'gen_pay_link': gen_pay}
 
-    # def _format_amount(self, amount, currency):
-    #     fmt = "%.{0}f".format(currency.decimal_places)
-    #     lang = request.env['res.lang']._lang_get(request.env.context.get('lang') or 'en_US')
-    #     return lang.format(fmt, currency.round(amount), grouping=True, monetary=True)\
-    #         .replace(r' ', u'\N{NO-BREAK SPACE}').replace(r'-', u'-\N{ZERO WIDTH NO-BREAK SPACE}')
-
-
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
-    @http.route(['/shop/payment'], type='http', auth="public", website=True)
-    def payment(self, **post):
-        responce = super(WebsiteSalesPaymentAquirerCstm, self).payment(**post)
+    def shop_payment(self, **post):
+        responce = super(WebsiteSalesPaymentAquirerCstm, self).shop_payment(**post)
 
         if 'expedited_shipping' not in request.session:
             request.session['expedited_shipping'] = "Ground"
@@ -145,7 +128,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         ctx = responce.qcontext
 
-        if 'acquirers' not in ctx:
+        if 'providers' not in ctx:
             ctx['showShippingNote'] = False
             ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session[
                 'expedited_shipping'] or ""
@@ -157,16 +140,10 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                     break
             return responce
 
-        if 'order' in ctx:
-            if not ctx['order'].partner_id.allow_purchase:
-                for x in ctx['acquirers']:
-                    if x.name == 'Purchase Order':
-                        ctx['acquirers'].remove(x)
-        else:
-            if 'acquirers' in ctx:
-                for x in ctx['acquirers']:
-                    if x.name == 'Purchase Order':
-                        ctx['acquirers'].remove(x)
+        if ('order' in ctx and not ctx['order'].partner_id.allow_purchase) or ('order' not in ctx):
+            for x in ctx['providers']:
+                if x.name == 'Purchase Order':
+                    ctx['providers'].remove(x)
 
         ctx['showShippingNote'] = False
         ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session['expedited_shipping'] or ""
@@ -179,20 +156,15 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         return responce
 
-    @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
-    def payment_confirmation(self, **post):
-        responce = super(WebsiteSalesPaymentAquirerCstm, self).payment_confirmation(**post)
+    # @http.route(['/shop/confirmation'], type='http', auth="public", website=True, sitemap=False)
+    def shop_payment_confirmation(self, **post):
+        responce = super(WebsiteSalesPaymentAquirerCstm, self).shop_payment_confirmation(**post)
         order = responce.qcontext['order']
         sale_note = ""
         if 'sales_team_message' in request.session:
             if request.session['sales_team_message']:
                 sale_note = request.session['sales_team_message']
                 request.session.pop('sales_team_message')
-                # order_sudo = order.sudo()
-                # body = _(sale_note)
-                # _message_post_helper(res_model='sale.order', res_id=order_sudo.id, message=body,
-                #                      message_type='notification', subtype="mail.mt_note",
-                #                      **({'token': order.access_token} if order.access_token else {}))
 
         if order.carrier_id.code == "my_shipper_account" and 'expedited_shipping' in request.session:
             if request.session['expedited_shipping']:
@@ -210,7 +182,9 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         # remove Product from Product Process
         product_process = request.env['product.process.list'].sudo()
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # UPG_ODOO16_NOTE  line.product_id.inventory_availability "inventory_availability" field is missing on product.product model
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
 
         return responce
@@ -223,7 +197,8 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         product_process = request.env['product.process.list'].sudo()
         # this is custom code  used to handle Same Items being sold simultaneously
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 cart_qty = sum(order.order_line.filtered(lambda p: p.product_id.id == line.product_id.id).mapped(
                     'product_uom_qty'))
                 avl_qty = line.product_id.with_context(warehouse=order.warehouse_id.id).virtual_available
@@ -247,7 +222,8 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         # add Products in process
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 product_process.create({
                     'product_id': line.product_id.id,
                     'so_name': order.name,
@@ -262,25 +238,18 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         request.session['sales_team_message'] = sales_team_message
 
 
-class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment):
+class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
 
     def action_send_mail_after_payment_final(self, ref=None):
         template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
-
         if ref:
             so_name = str(ref.reference.split("-", 1)[0])
             values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
-            email_cc = 'accounting@surgicalproductsolutions.com'
-            email_from = "info@surgicalproductsolutions.com"
-
             sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
             if sale_order:
                 if sale_order.account_manager:
                     user_id_email = sale_order.account_manager.login
-                    if sale_order.customer_success:
-                        email_cc = email_cc + ',' + sale_order.customer_success.login
-
                 elif sale_order.user_id:
                     if sale_order.user_id.name == "National Accounts" and sale_order.national_account:
                         user_id_email = sale_order.national_account.login
@@ -292,6 +261,10 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                     user_id_email = sale_order.user_id.login
 
             email_to = user_id_email
+
+            email_cc = 'accounting@surgicalproductsolutions.com'
+            email_from = "info@surgicalproductsolutions.com"
+
             sales_rep = sale_order.user_id.name if sale_order.user_id else None
 
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
@@ -446,11 +419,11 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                 ['|', ('country_ids', '=', False), ('country_ids', 'in', [partner.sudo().country_id.id])]
             ])
         if acquirer_id:
-            acquirers = env['payment.acquirer'].browse(int(acquirer_id))
+            acquirers = env['payment.provider'].browse(int(acquirer_id))
         if order_id:
-            acquirers = env['payment.acquirer'].search(acquirer_domain)
+            acquirers = env['payment.provider'].search(acquirer_domain)
         if not acquirers:
-            acquirers = env['payment.acquirer'].search(acquirer_domain)
+            acquirers = env['payment.provider'].search(acquirer_domain)
 
         values['acquirers'] = self._get_acquirers_compatible_with_current_user(acquirers)
         for item in values['acquirers']:
@@ -491,7 +464,7 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             else:
                 status = 'danger'
                 message = tx.state_message or _('An error occured during the processing of this payment')
-            odoo.addons.payment.controllers.portal.PaymentProcessing.remove_payment_transaction(tx)
+            PaymentPostProcessing.remove_transactions(tx)
             if tx and tx.reference and tx.reference.startswith("SO"):
                 #_logger.info("***    Reference Start With SO ***")
                 self.action_send_mail_after_payment_final(tx)
@@ -499,21 +472,20 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
         else:
             return request.redirect('/my/home')
 
-class PaymentProcessing(PaymentProcessing):
+class PaymentProcessing(PaymentPostProcessing):
 
     @http.route()
     def payment_status_page(self, **kwargs):
         # Remove product from
         order_id = request.session.sale_order_id
         if order_id:
-            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1).sudo()
+            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
             # order = request.env['sale.order'].sudo().browse(request.session.sale_order_id)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:
-                if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always',
-                                                                                                    'threshold']:
+                if line.product_id.type == 'product' and line.product_id.show_availability:
                     product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
-        return super(PaymentProcessing, self).payment_status_page(**kwargs)
+        return super(PaymentProcessing, self).display_status(**kwargs)
 
 
 class PaypalController(PaypalController):
@@ -525,7 +497,7 @@ class PaypalController(PaypalController):
             # order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:
-                if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+                if line.product_id.type == 'product' and line.product_id.show_availability:
                     product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
 
         return super(PaypalController, self).paypal_cancel(**post)

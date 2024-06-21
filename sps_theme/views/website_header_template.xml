@@ -1,53 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
-     <template id="headerNavbar_template" name="Main layout" inherit_id="website.template_header_default">
-        <xpath expr="//header//nav//div[@id='top_menu_collapse']"  position="before">
-
-     <!--<div class="navbar-header navbar-brand logo mr-4">
-                   <a class="navbar-brand" href="/">
-                    <span t-field="res_company.logo" t-options="{'widget': 'image'}"
-                          t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name"/>
-                </a>
-               <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#top_menu_collapse">
-                   <span class="navbar-toggler-icon"/>
-               </button>
-
-            </div>-->
-       <div class="top-header collapse navbar-collapse" id="top_menu_collapse">
-
-                  <ul class="contact-detail">
+     <template id="sps_headerNavbar_template" name="Sps header template" inherit_id="website.template_header_default">
+        <xpath expr="//div[@id='top_menu_container']"  position="before">
+            <div class="top-header container d-flex" id="top-header">
+                <ul class="contact-detail">
                     <li>
                         <a href="#">Contact Our Sales Team Today: <span>412.564.1280</span></a>
                     </li>
                 </ul>
-<!--             <t t-if="not request.httprequest.path[0:5] == '/shop'">-->
-
-                <form class="navbar-form navbar-right" role="search" t-attf-action="/shop" method="get">
-                        <div class="input-group">
-                            <input id="SearchBox" type="text" name="search"
-                                   class="form-control search-input"
-                                   placeholder="Search" t-att-value="search"/>
-                            <div class="input-group-append">
-                                <span class="input-group-text py-0"><button type="submit" class="btn btn-link p-0"><i class="icon-search"></i></button></span>
-                            </div>
-                        </div>
-                    </form>
-<!--             </t>-->
-
+               <t t-call="website.website_search_box_input">
+                    <t t-set="_form_classes" t-valuef="o_wsale_products_searchbar_form me-auto flex-grow-1 {{_form_classes}}"/>
+                    <t t-set="_submit_classes" t-valuef="btn btn-{{navClass}}"/>
+                    <t t-set="_input_classes" t-valuef="border-0 text-bg-{{navClass}}"/>
+                    <t t-set="search_type" t-valuef="products"/>
+                   <t t-if="keep">
+                        <t t-set="action" t-value="keep('/shop'+ ('/category/'+slug(category)) if category else None, search=0) or '/shop'"/>
+                   </t>
+                   <t t-else="">
+                        <t t-set="action" t-value="'/shop'"/>
+                   </t>
+                    <t t-set="display_image" t-valuef="false"/>
+                    <t t-set="display_description" t-valuef="false"/>
+                    <t t-set="display_extra_link" t-valuef="false"/>
+                    <t t-set="display_detail" t-valuef="false"/>
+                    <t t-if="attrib_values">
+                        <t t-foreach="attrib_values" t-as="a">
+                            <input type="hidden" name="attrib" t-att-value="'%s-%s' % (a[0], a[1])" />
+                        </t>
+                    </t>
+                </t>
             </div>
         </xpath>
     </template>
 
-    <template id="template_header_default_oe_structure_header_default_1" inherit_id="website.template_header_default_oe_structure_header_default_1" name="Template Header Default (oe_structure_header_default_1)">
-        <xpath expr="//*[hasclass('oe_structure')][@id='oe_structure_header_default_1']" position="replace">
-           <!-- <div class="oe_structure oe_structure_solo" id="oe_structure_header_default_1">
-                <section class="s_text_block" data-snippet="s_text_block" data-name="Text">
-                    <div class="container">
-                     <a href="/contactus" class="btn btn-primary ml-4">Contact Us</a>
-                    </div>
-                </section>
-            </div>-->
-        </xpath>
-    </template>
+<!--    <template id="template_header_default_oe_structure_header_default_1" inherit_id="website.template_header_default_oe_structure_header_default_1" name="Template Header Default (oe_structure_header_default_1)">-->
+<!--        <xpath expr="//*[hasclass('oe_structure')][@id='oe_structure_header_default_1']" position="replace">-->
+<!--        </xpath>-->
+<!--    </template>-->
 
 
 </odoo>

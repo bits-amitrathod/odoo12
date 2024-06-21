@@ -19,6 +19,7 @@
         <field name="arch" type="xml">
         	<xpath expr="//tree" position="attributes">
             		<attribute name="create"></attribute>
+                <attribute name="default_order">date_deadline desc</attribute>
             	</xpath>
             <field name="date_deadline" position="after">
                 <field name="state" />
@@ -65,9 +66,12 @@
         <field name="arch" type="xml">
             <form string="Log an Activity">
                 <header>
-                    <button attrs="{'invisible': ['|',('force_next', '=', True),('state', '=', 'done')]}" string="Mark as Done" name="action_done" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
+                    <!--<button attrs="{'invisible': ['|',('force_next', '=', True),('state', '=', 'done')]}" string="Mark as Done" name="action_done" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
                     <button attrs="{'invisible': ['|',('force_next', '=', True),('state', '=', 'done')]}" string="Done &amp; Schedule Next" name="action_done_schedule_next" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
-                    <button attrs="{'invisible': [('force_next', '=', False)]}" string="Done &amp; Launch Next" name="action_done_schedule_next" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
+                    <button attrs="{'invisible': [('force_next', '=', False)]}" string="Done &amp; Launch Next" name="action_done_schedule_next" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />-->
+                    <button attrs="{'invisible': [('state', '=', 'done')]}" string="Mark as Done" name="action_done" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
+                    <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Schedule Next" name="action_done_schedule_next" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
+                    <button string="Done &amp; Launch Next" name="action_done_schedule_next" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
                     <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" attrs="{'invisible':['|',('state', '=', 'done'),('state', '=', 'cancel')]}"/>
                     <field name="state" widget="statusbar" />
                 </header>
@@ -89,7 +93,7 @@
                         <field name="sh_display_multi_user" invisible="1" />
                         <field name="res_model" invisible="1" />
                         <field name="res_id" invisible="1" widget="integer" />
-                        <field name="force_next" invisible="1" />
+<!--                        <field name="force_next" invisible="1" />  TODO: UPG_ODOO16_NOTE -->
                         <field name="previous_activity_type_id" />
                         <field name="has_recommended_activities" />
                         <field name="activity_cancel" invisible="1"/>
@@ -113,14 +117,14 @@
                         </group>
                         <group>
                             <field name="date_deadline" />
-                            <field name="sh_date_deadline" groups="sh_activities_management.group_activity_alarm"/>
+                            <field name="sh_date_deadline" />
                             <field name="user_id" />
                             <field name="company_id" groups="base.group_multi_company" />
                             <field name="sh_user_ids" widget="many2many_tags" attrs="{'invisible':[('sh_display_multi_user','=',False)]}" />
                             <field name="sh_create_individual_activity" attrs="{'invisible':[('sh_user_ids','=',[])]}" />
                             <field name="supervisor_id" />
                             <field name="sh_activity_tags" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" />
-                            <field name="sh_activity_alarm_ids" widget="many2many_tags" groups="sh_activities_management.group_activity_alarm"/>
+                            <field name="sh_activity_alarm_ids" widget="many2many_tags" />
                         </group>
                     </group>
                     <field name="note" placeholder="Log a note..." />
@@ -149,7 +153,7 @@
                 <field name="sh_activity_tags" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}" />
             </xpath>
             <xpath expr="//field[@name='summary']" position="after">
-            	<field name="sh_activity_alarm_ids" widget="many2many_tags" groups="sh_activities_management.group_activity_alarm"/>
+            	<field name="sh_activity_alarm_ids" widget="many2many_tags" />
                 <field name="sh_create_individual_activity" attrs="{'invisible':[('sh_user_ids','=',[])]}" />
             </xpath>
             <field name="activity_type_id" position="after">
@@ -159,7 +163,7 @@
                 <attribute name="attrs">{'invisible':[('state', '=', 'done')]}</attribute>
             </button>
             <field name="date_deadline" position="after">
-            	<field name="sh_date_deadline" groups="sh_activities_management.group_activity_alarm"/>
+            	<field name="sh_date_deadline"/>
             </field>
         </field>
     </record>
@@ -266,13 +270,13 @@
         <field name="model">mail.activity</field>
         <field name="inherit_id" ref="mail.mail_activity_view_search" />
         <field name="arch" type="xml">
-        	<field name="res_model_id" position="before">
+        	<field name="res_model" position="before">
             		<field name="res_name" string="Activity" filter_domain="['|','|','|','|','|','|','|',('res_name', 'ilike', self),('activity_type_id','ilike',self),('user_id','ilike',self),('res_model','ilike',self),('res_model_id','ilike',self),('supervisor_id','ilike',self),('sh_activity_tags','ilike',self),('sh_user_ids','ilike',self)]"/>
             	</field>
             <field name="activity_type_id" position="after">
                 <field name="sh_activity_tags" />
             </field>
-            <field name="res_model_id" position="after">
+            <field name="res_model" position="after">
             	<filter string="Completed Activities" name="activities_completed" domain="[('state', '=', 'done'),('active','=',False)]" />
             	<filter string="Cancelled Activities" name="activities_cancelled" domain="[('state', '=', 'cancel'),('active','=',False)]" />
                 <!-- <filter string="Completed Activities" name="activities_completed" domain="[('state', '=', 'done'),'|',('active','=',False),('active','=',True)]" />

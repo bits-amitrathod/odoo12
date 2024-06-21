@@ -14,8 +14,6 @@
         'security/ir.model.access.csv',
         'data/website_data.xml',
         'views/views.xml',
-
-
         'views/home.xml',
         'views/contact.xml',
         'views/faqs.xml',
@@ -45,8 +43,6 @@
         'views/mission.xml',
         'views/testimonials.xml',
         'views/thank_you.xml'
-
-
     ],
 
     'images': [

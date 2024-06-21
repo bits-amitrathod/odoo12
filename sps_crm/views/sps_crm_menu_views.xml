@@ -28,7 +28,7 @@
         id="my_vendor_offers_menu"
         name="My Vendor Offers"
         parent="crm_menu_purchase"
-        action="vendor_offer.action_window"
+        action="vendor_offer.action_window_app"
         sequence="2"/>
     <menuitem
         id="purchase_order_menu"
@@ -60,11 +60,11 @@
               parent="crm_menu_purchase"
               action="appraisal_tracker.action_window" sequence="7"/>
 
-    <menuitem id="dashboard"
+    <!--<menuitem id="dashboard"
               name="Documents"
               parent="crm_menu_purchase"
               action="documents.document_action"
-              sequence="8"/>
+              sequence="8"/>-->
 
 
     <!-- CONFIGURATION -->

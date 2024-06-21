@@ -154,7 +154,7 @@
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='order_line']/form/group/group/div/field[@name='product_uom']" position="replace">
-                    <field name="product_uom" groups="uom.group_uom" class="oe_inline oe_no_button"
+                    <field name="product_uom" class="oe_inline oe_no_button"
                                                     attrs="{'readonly': [('state', 'in', ('sale','done', 'cancel'))]}" options="{'no_create_edit': True, 'no_open': True}"/>
                 </xpath>
             </field>
@@ -228,7 +228,7 @@
             </div>
         </xpath>
 
-        <xpath expr="//table[@class='table table-sm o_main_table']" position="replace">
+        <xpath expr="//table[@class='table table-sm o_main_table table-borderless mt-4']" position="replace">
             <table class="table table-condensed">
                     <thead>
                         <tr>

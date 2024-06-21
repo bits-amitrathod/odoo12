@@ -8,7 +8,6 @@
                     <group>
                         <group>
                             <field name="group_by"/>
-<!--                            <field name="customer_id" domain="[('customer','=', True)]"/>-->
                             <field name="product_id"/>
                             <field name="sale_order_id"/>
                         </group>
@@ -18,10 +17,6 @@
                             <field name="end_date" attrs="{'invisible': [('date_range', '=', 0)]}"/>
                         </group>
                     </group>
-                    <!--<group>-->
-                    <!--<field name="include_returns" widget="checkbox"/>-->
-                    <!--<field name="include_shipping" widget="checkbox"/>                        -->
-                    <!--</group>-->
                     <footer>
                         <button name="open_table" string="View Report" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
@@ -33,10 +28,9 @@
         <record id="action_margins" model="ir.actions.act_window">
             <field name="name">Margins</field>
             <field name="res_model">margins.popup</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_margins_popup"/>
-<!--            <field name="target">new</field>-->
+            <field name="target">new</field>
         </record>
 
         <record model="ir.ui.view" id="margins_list_view">

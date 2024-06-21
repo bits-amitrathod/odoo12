@@ -21,9 +21,16 @@
         'views/views.xml',
         'views/templates.xml',
     ],
+    'assets':{
+        'web.assets_backend':[
+            'customer_credit_note/static/src/js/thread.js',
+        ],
+    },
     # only loaded in demonstration mode
 
     'application': True,
     'auto-install': True,
     'installable': True,
+    'license': 'LGPL-3',
+
 }

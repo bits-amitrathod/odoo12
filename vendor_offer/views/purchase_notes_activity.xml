@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+<!--        Purchase Notes Activity form View-->
+        <record id="view_purchase_order_edit_note_form" model="ir.ui.view">
+            <field name="name">purchase.notes.activity.edit</field>
+            <field name="model">purchase.notes.activity</field>
+            <field name="arch" type="xml">
+                <form string="Edit Note">
+                    <group>
+                        <field name="note"/>
+                        <field name="note_date" invisible="not context.get('isFooterInvisible', True)"/>
+                        <field name="order_id" invisible="1"/>
+                    </group>
+                    <footer invisible="context.get('isFooterInvisible', True)">
+                        <button name="action_add_note" string="Save" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+<!--        Purchase Notes Activity tree View    -->
+
+        <record id="view_purchase_order_edit_note_tree" model="ir.ui.view">
+            <field name="name">purchase.notes.activity.tree</field>
+            <field name="model">purchase.notes.activity</field>
+            <field name="arch" type="xml">
+                <tree string="Add Note" create="false" delete="false">
+                    <field name="note" string="Notes"/>
+                    <field name="note_date" string="Date"/>
+                </tree>
+            </field>
+        </record>
+
+<!--        Purchase Notes Activity action View-->
+
+        <record id="action_purchase_order_edit_note" model="ir.actions.act_window">
+            <field name="name">Edit Note</field>
+            <field name="res_model">purchase.notes.activity</field>
+            <!--<field name="view_type">form</field>-->
+            <field name="view_mode">form</field>
+            <field name="context">{'default_order_id': context.get('active_id', False),}</field>
+            <field name="view_id" ref="view_purchase_order_edit_note_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <record model="ir.ui.view" id="listmultiplier">
+            <field name="name">multiplier.multiplier listmultiplier</field>
+            <field name="model">multiplier.multiplier</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="retail"/>
+                    <field name="margin"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_vendor_offer_multiplier" model="ir.ui.view">
+            <field name="name">multiplier.multiplier.form</field>
+            <field name="model">multiplier.multiplier</field>
+            <field name="arch" type="xml">
+                <form string="Multiplier" class="o_sale_order">
+                    <header></header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="code"/>
+                                <field name="retail"/>
+                                <field name="margin"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="listcompetition">
+            <field name="name">competition.competition listcompetition</field>
+            <field name="model">competition.competition</field>
+            <field name="arch" type="xml">
+                <tree>
+                    <field name="name"/>
+                    <field name="margin"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="view_vendor_offer_competition" model="ir.ui.view">
+            <field name="name">competition.competition.form</field>
+            <field name="model">competition.competition</field>
+            <field name="arch" type="xml">
+                <form string="Competition" class="o_sale_order">
+                    <header></header>
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="margin"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="vendor_offer.action_window_competition">
+            <field name="name">Competition</field>
+            <field name="res_model">competition.competition</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('listcompetition')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_competition')})
+        ]"/>
+
+        </record>
+
+        <record model="ir.actions.act_window" id="vendor_offer.action_window_multiplier">
+            <field name="name">Multiplier</field>
+            <field name="res_model">multiplier.multiplier</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('listmultiplier')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('view_vendor_offer_multiplier')})
+        ]"/>
+
+        </record>
+
+    </data>
+</odoo>

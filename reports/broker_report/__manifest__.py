@@ -16,10 +16,10 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/broker_report_view.xml',
-        'views/templates.xml',
-        'report/broker_report.xml',
-        'report/broker_report_temp.xml',
+        # 'views/broker_report_view.xml',
+        # 'views/templates.xml',
+        # 'report/broker_report.xml',
+        # 'report/broker_report_temp.xml',
     ],
     # only loaded in demonstration mode
     'demo': [

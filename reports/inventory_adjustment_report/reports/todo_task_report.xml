@@ -1,12 +1,12 @@
 <odoo>
-
-    <report id="action_todo_model_report"
-            string="Adjustment Report "
-            model="stock.move.line"
-            report_type="qweb-html"
-            file="inventory_adjustment_report.adjustment_report1"
-            name="inventory_adjustment_report.adjustment_report1"
-    />
+    <!-- Report Action -->
+    <record id="action_todo_model_report" model="ir.actions.report">
+        <field name="name">Adjustment Report</field>
+        <field name="model">stock.move.line</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">inventory_adjustment_report.adjustment_report1</field>
+        <field name="report_file">inventory_adjustment_report.adjustment_report1</field>
+    </record>
 
     <template id="adjustment_report1">
         <t t-call="web.html_container">

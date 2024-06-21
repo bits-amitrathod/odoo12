@@ -20,7 +20,6 @@
 
     'data': [
         'security/ir.model.access.csv',
-        'views/stock_barcode_templates.xml',
         'views/views.xml',
         'reports/sps_receiving_list.xml'
     ],
@@ -28,6 +27,13 @@
         'views/qweb_templates.xml',
 
     ],
+    'assets': {
+        'web.assets_backend':[
+            'sps_receiving_list_report/static/js/settings_widget.js',
+            'sps_receiving_list_report/static/js/picking_client_action.js',
+        ]
+    },
+
     'installable': True,
     'auto_install': False,
     'application': True,

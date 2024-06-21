@@ -5,7 +5,6 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 import json
 from odoo.http import Controller, request, route
 
-
 class VendorOfferAutomation(http.Controller):
 
     @http.route('/offer_template_import/set_file', methods=['POST'])
@@ -19,15 +18,3 @@ class VendorOfferAutomation(http.Controller):
         })
 
         return 'window.top.%s(%s)' % (misc.html_escape(jsonp), json.dumps({'result': written}))
-
-    # @http.route('/offer_template_import_all_column/set_file_all', methods=['POST'])
-    # def set_file_all(self, file, import_id, jsonp='callback'):
-    #     import_id = int(import_id)
-    #
-    #     written = request.env['sps.vendor.offer.template.transient.all.column'].browse(import_id).write({
-    #         'file': file.read(),
-    #         'file_name': file.filename,
-    #         'file_type': file.content_type,
-    #     })
-    #
-    #     return 'window.top.%s(%s)' % (misc.html_escape(jsonp), json.dumps({'result': written}))

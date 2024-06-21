@@ -16,7 +16,7 @@
 
     # always loaded
     'data': [
-        'views/views.xml',
+        # 'views/views.xml',
     ],
 
     'application' :True,
