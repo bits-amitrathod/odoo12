@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_sales_saleperson_wise"
-                string="Gross Sales By Product"
-                model="sale.order.line"
-                report_type="qweb-html"
-                file="report_sale_orders_groupby_product.group_by_product"
-                name="report_sale_orders_groupby_product.group_by_product"
-        />
+        <record id="action_report_sales_saleperson_wise" model="ir.actions.report">
+            <field name="name">Gross Sales By Product</field>
+            <field name="model">sale.order.line</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">report_sale_orders_groupby_product.group_by_product</field>
+            <field name="report_file">report_sale_orders_groupby_product.group_by_product</field>
+        </record>
     </data>
 </odoo>

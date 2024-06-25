@@ -9,7 +9,7 @@
                 <form string="Choose your date">
                     <group>
                         <group>
-                            <field name="end_date"  />
+                            <field name="end_date" />
                         </group>
                     </group>
                     <footer>
@@ -28,7 +28,6 @@
                     <field name="acquisition_rep"  optional="show"/>
                     <field name="company_name" groups="base.group_user" string="Vendor Bill Contact Name" optional="show"/>
                     <field name="company_address" groups="base.group_user" string="Vendor Bill Address" optional="show"/>
-<!--                    <field name="reference"  />-->
                     <field name="secure_sequence_number" optional="show"/>
                     <field name="invoice_origin"  string="Purchase Order #" optional="show"/>
                     <field name="invoice_date" string="Check-in Date"/>
@@ -36,7 +35,6 @@
                     <field name="pay_to" string="AP Contact Name" optional="show"/>
                     <field name="amount_residual" string ="To Pay" optional="show"/>
                     <field name="address" string="AP Contact Address" optional="show"/>
-<!--                    <field name="invoice_payment_term_id" options="{'no_create': True}"/>-->
                     <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount" optional="show"/>
                     <field name="state" invisible="1" optional="show" />
                     <field name="currency_id" invisible="1" optional="show"/>
@@ -54,23 +52,17 @@
                                <field name="acquisition_rep" />
                                <field name="company_name" groups="base.group_user" string="Vendor Bill Contact Name"/>
                                <field name="company_address" groups="base.group_user" string="Vendor Bill Address"/>
-<!--                               <field name="reference"  />-->
                                <field name="invoice_origin"  string="Purchase Order #"/>
                                 <field name="invoice_date" string="Check-in Date"/>
                                <field name="invoice_date_due"/>
                           </group>
                         <group>
-<!--                                <field name="partner_id" string="AP Contact Name"/>-->
-                                <field name="amount_residual" string ="To Pay"/>
-                                <field name="address" string="AP Contact Address"/>
-<!--                                <field name="number"/>-->
-<!--                                <field name="invoice_payment_term_id" options="{'no_create': True}"/>-->
-                                <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
+                            <field name="amount_residual" string ="To Pay"/>
+                            <field name="address" string="AP Contact Address"/>
+                            <field name="amount_total_signed" string="Bill Amount" sum="Bill Amount"/>
                           </group>
                          <field name="state" invisible="1" />
-<!--                        <field name="currency_id" invisible="1"/>-->
                     </sheet>
-
                 </form>
             </field>
         </record>
@@ -78,7 +70,6 @@
         <record id="payments_scheduler_action" model="ir.actions.act_window">
             <field name="name">Payments Scheduled Report</field>
             <field name="res_model">payments_scheduler.report.summary</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_popup_view"/>
             <field name="target">new</field>
