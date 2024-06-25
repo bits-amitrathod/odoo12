@@ -1,29 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="ir_cron_scheduler_expire_old_vendor_offers" model="ir.cron">
-            <field name="name">Update Vendor Offer Expired Checkbox</field>
-            <field name="user_id" ref="base.user_root"/>
-            <field name="interval_number">1</field>
-            <field name="interval_type">days</field>
-            <field name="model_id" ref="model_purchase_order"/>
-            <field name="state">code</field>
-            <field name="code">model.set_expiration_flag_old_offer()</field>
-            <field name="numbercall">-1</field>
-            <field name="priority">0</field>
-            <field name="doall" eval="False"/>
-            <field name="active" eval="False"/>
-        </record>
-
-        <record model="ir.module.category" id="approval_vendor_offer">
-             <field name="name">OfferApproval</field>
-             <field name="description">User access levels for Vendor offer for approval</field>
-             <field name="sequence">10</field>
-        </record>
-        <record id="offerapproval_user_access" model="res.groups">
-            <field name="name">Appraisal</field>
-            <field name="category_id" ref="approval_vendor_offer"/>
-        </record>
 
         <!-- explicit list view definition -->
         <record model="ir.ui.view" id="vendor_offer.list_view">
@@ -140,10 +117,6 @@
                                 <!--context="{'vendor_offer_data': True}" string="Offer Accept As Credit" type="object"/>-->
                         <button name="action_confirm_offer_both" states="ven_draft,ven_sent"
                                 context="{'vendor_offer_data': True}" string="Offer Accepted" type="object"/>
-                        <button name="action_approve_offer" states="ven_draft,ven_sent"
-                                context="{'vendor_offer_data': True}" string="Approve" type="object"
-                                groups="vendor_offer.offerapproval_user_access"
-                                attrs="{'invisible':[('offer_expired', '=', False)]}" />
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
                         <field name="vendor_offer_data" invisible="1"/>
@@ -197,8 +170,6 @@
 
                                 <field name="offer_type" />
                                 <field name="potential_profit_margin"/>
-                                <field name="offer_expired"  readonly="1"/>
-                                <field name="offer_approved" invisible="1"/>
                                 <field name="state" invisible="1"/>
                                 <field name="import_type_ven" invisible="1"/>
                             </group>
@@ -533,42 +504,6 @@
         </record>
 
 
-        <record id="vendor_offer_approve_popup" model="ir.ui.view">
-            <field name="name">ven.offer.approve.vendor</field>
-            <field name="model">purchase.order</field>
-            <!--<field name="priority">20</field>-->
-            <field name="arch" type="xml">
-                <form string="Offer Approval">
-                    <group>
-                              <div>Vendor Offer Expired. Needs Approval</div>
-                    </group>
-                    <footer>
-                        <button string="Back" class="btn-default" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
-
-<!--        <record name="Export PPVendorPricing"-->
-
-<!--                    res_model="vendor.pricing"-->
-<!--                    src_model="product.product"-->
-<!--                    view_mode="form"-->
-<!--                    target="new"-->
-<!--                    id="vendor_pricing_act_window"/>-->
-
-
-                <record id="vendor_pricing_act_window" model="ir.actions.act_window">
-                <field name="name">Export PPVendorPricing</field>
-<!--                <field name="type">ir.actions.act_window</field>-->
-                <field name="res_model" >vendor.pricing</field>
-                <field name="binding_model_id" ref="product.model_product_product"/>
-                <field name="view_mode">form</field>
-                     <field name="target">new</field>
-
-            </record>
-
-
         <!--do not remove this commented code -->
 
         <!--<record id="vendor_offer.vendor_pricing_client_action" model="ir.actions.client">-->
@@ -644,8 +579,6 @@
              </xpath>
             </field>
         </record>
-
-
 
         <menuitem
                 id="menu_product_in_config_purchase_setting" name="Setting" sequence="99"
