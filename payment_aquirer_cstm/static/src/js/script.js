@@ -295,6 +295,43 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
             }
         });
 
+        $("#fedex_international").change(function() {
+            if ( $(this).is(':checked') ) {
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_international'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
+            }
+        });
+
+       $("#fedex_economy").change(function() {
+            if ( $(this).is(':checked') ) {
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_economy'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
+            }
+        });
+
+
         $("#selectDeliveryMethod").unbind().change(function() {
             var e = document.getElementById("selectDeliveryMethod");
             var value = e.options[e.selectedIndex].value;
