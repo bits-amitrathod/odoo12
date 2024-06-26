@@ -107,12 +107,19 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             for val in productProduct:
                 if (val.actual_quantity) > 0:
                     query_result = self.fetch_lot_expirydates(val.id)
+                    date_str = query_result['min'].strftime('%m/%d/%Y') + \
+                               " - " + query_result['max'].strftime('%m/%d/%Y')
+                    if (query_result['max'] - query_result['min']).days > 365:
+                        date_str = "1 Year+"
                     productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
-                                                  "max": fields.Datetime.from_string(query_result['max'])}
+                                                  "max": fields.Datetime.from_string(query_result['max']),
+                                                  "str_min_max": date_str
+                                                  }
                 else:
                     productMaxMinDates[val.id] = {
                         "min": None,
-                        "max": None
+                        "max": None,
+                        "str_min_max": None
                     }
 
             payload['productExpiration'] = productMaxMinDates
@@ -142,14 +149,20 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
         productMaxMinDates = {}
         if (payload['product'].actual_quantity) > 0 and payload['product'].product_variant_id.id:
             query_result = self.fetch_lot_expirydates(payload['product'].product_variant_id.id)
+            date_str = query_result['min'].strftime('%m/%d/%Y') + \
+                       " - " + query_result['max'].strftime('%m/%d/%Y')
+            if (query_result['max'] - query_result['min']).days > 365:
+                date_str = "1 Year+"
             productMaxMinDates[payload['product'].product_variant_id.id] = {
                 "min": fields.Datetime.from_string(query_result['min']),
-                "max": fields.Datetime.from_string(query_result['max'])
+                "max": fields.Datetime.from_string(query_result['max']),
+                "str_min_max": date_str
             }
         else:
             productMaxMinDates[payload['product'].product_variant_id.id] = {
                 "min": None,
-                "max": None
+                "max": None,
+                "str_min_max": None
             }
 
         payload['productExpiration'] = productMaxMinDates

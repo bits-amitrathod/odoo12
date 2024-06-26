@@ -13,22 +13,32 @@
         <t t-if="isVisibleWebsiteExpirationDate and product.actual_quantity &gt; 0">
             <div class="expiration-section">
                 <p class="expiration-title">Expiration :</p>
-                <p>
-                    <span>Min -</span>
-                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">
-                        <span t-esc="productExpiration[product.product_variant_id.id]['min']"
-                              t-options="{'widget': 'date'}"/>
-                    </t>
+<!--                <p>-->
+<!--                    <span>Min -</span>-->
+<!--                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">-->
+<!--                        <span t-esc="productExpiration[product.product_variant_id.id]['min']"-->
+<!--                              t-options="{'widget': 'date'}"/>-->
+<!--                    </t>-->
 
-                    <t t-else="">
-                       <span> N/A</span>
-                    </t>
-                 </p>
+<!--                    <t t-else="">-->
+<!--                       <span> N/A</span>-->
+<!--                    </t>-->
+<!--                 </p>-->
+<!--                <p>-->
+<!--                    <span>Max -</span>-->
+<!--                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">-->
+<!--                        <span t-esc="productExpiration[product.product_variant_id.id]['max']"-->
+<!--                              t-options="{'widget': 'date'}"/>-->
+<!--                    </t>-->
+
+<!--                    <t t-else="">-->
+<!--                        <span>N/A</span>-->
+<!--                    </t>-->
+<!--                </p>-->
                 <p>
-                    <span>Max -</span>
+                    <span>Min - Max : </span>
                     <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">
-                        <span t-esc="productExpiration[product.product_variant_id.id]['max']"
-                              t-options="{'widget': 'date'}"/>
+                        <span t-esc="productExpiration[product.product_variant_id.id]['str_min_max']" />
                     </t>
 
                     <t t-else="">

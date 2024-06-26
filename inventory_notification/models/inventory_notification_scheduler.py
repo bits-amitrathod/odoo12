@@ -509,11 +509,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                 
                 """
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
-                          'Min Exp. Date',
-                          'Max Exp. Date', 'Unit Of Measure']
+                          'Min Exp. Date - Max Exp. Date', 'Unit Of Measure']
                 columnProps = ['product_brand_id.name', 'sku_code', 'name', 'customer_price_list', 'actual_quantity',
-                               'minExDate',
-                               'maxExDate', 'uom_id.name']
+                               'minmaxDate', 'uom_id.name']
                 closing_content = """
                                     Please reply to this email or contact your Account Manager to hold product or place an order. If you would like to place an order on your own please click on the link "Order Online Here".
                                     <br/> Thank you <br/>
@@ -1261,6 +1259,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                     if query_result and query_result['max']:
                         max = str(query_result['max'])
                         column = datetime.strptime(str(max), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                    else:
+                        column = ""
+                elif column_name == 'minmaxDate':
+                    if query_result and query_result['min'] and query_result['max']:
+                        if (query_result['max'] - query_result['min']).days > 365:
+                            column = "1 Year+"
+                        else:
+                            column = datetime.strptime(str(query_result['min']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y') + ' - ' \
+                                     + datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
                 elif column_name == 'customer_price_list':
