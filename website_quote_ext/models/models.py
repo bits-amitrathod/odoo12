@@ -40,7 +40,7 @@ class ProductProduct(models.Model):
                     product.max_exp_date = result[2]
                     if product.min_exp_date and product.max_exp_date:
                         if (product.max_exp_date - product.min_exp_date).days > 365:
-                            product.srt_date_min_max = "1 Year +"
+                            product.srt_date_min_max = product.min_exp_date.strftime('%m/%d/%Y')+" - "+ "1 Year+"
                         else:
                             product.srt_date_min_max = product.min_exp_date.strftime('%m/%d/%Y')+" - "+product\
                                 .max_exp_date.strftime('%m/%d/%Y')

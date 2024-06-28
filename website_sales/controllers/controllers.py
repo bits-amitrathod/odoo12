@@ -110,7 +110,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
                     date_str = query_result['min'].strftime('%m/%d/%Y') + \
                                " - " + query_result['max'].strftime('%m/%d/%Y')
                     if (query_result['max'] - query_result['min']).days > 365:
-                        date_str = "1 Year+"
+                        date_str = query_result['min'].strftime('%m/%d/%Y')+ ' - ' +"1 Year+"
                     productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
                                                   "max": fields.Datetime.from_string(query_result['max']),
                                                   "str_min_max": date_str
@@ -152,7 +152,7 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             date_str = query_result['min'].strftime('%m/%d/%Y') + \
                        " - " + query_result['max'].strftime('%m/%d/%Y')
             if (query_result['max'] - query_result['min']).days > 365:
-                date_str = "1 Year+"
+                date_str = query_result['min'].strftime('%m/%d/%Y')+ ' - ' +"1 Year+"
             productMaxMinDates[payload['product'].product_variant_id.id] = {
                 "min": fields.Datetime.from_string(query_result['min']),
                 "max": fields.Datetime.from_string(query_result['max']),

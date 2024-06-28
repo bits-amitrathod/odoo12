@@ -1264,7 +1264,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 elif column_name == 'minmaxDate':
                     if query_result and query_result['min'] and query_result['max']:
                         if (query_result['max'] - query_result['min']).days > 365:
-                            column = "1 Year+"
+                            column = datetime.strptime(str(query_result['min']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y') + ' - ' +"1 Year+"
                         else:
                             column = datetime.strptime(str(query_result['min']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y') + ' - ' \
                                      + datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')

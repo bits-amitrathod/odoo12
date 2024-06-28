@@ -133,7 +133,7 @@ class TempProductList(models.Model):
                 str_date_cal = ''
                 if (result['min'] is not None and result['max'] is not None) and \
                         ((result['max'] - result['min']).days > 365):
-                    str_date_cal = '1 Year+'
+                    str_date_cal = result['min'].strftime('%m/%d/%Y') + ' - ' + '1 Year+'
                 elif result['min'] is not None and result['max'] is not None:
                     str_date_cal = result['min'].strftime('%m/%d/%Y') + ' - ' + result['max'].strftime('%m/%d/%Y')
 
@@ -265,7 +265,7 @@ class TempProductList(models.Model):
                 str_date_cal = ''
                 if (result['min'] is not None and result['max'] is not None) and\
                         ((result['max'] - result['min']).days > 365):
-                    str_date_cal = '1 Year+'
+                    str_date_cal = result['min'].strftime('%m/%d/%Y') + ' - ' + '1 Year+'
                 elif result['min'] is not None and result['max'] is not None:
                     str_date_cal = result['min'].strftime('%m/%d/%Y') + ' - ' + result['max'].strftime('%m/%d/%Y')
 
