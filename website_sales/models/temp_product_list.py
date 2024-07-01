@@ -62,7 +62,7 @@ class TempProductList(models.Model):
                         a.product_brand_id AS product_brand_id,      
                         null as min_expiration_date,
                         null as max_expiration_date,
-                        null as str_min_max_date,                  
+                        null as str_max_date,                  
                         1 as quantity                                     
                         FROM
                         sale_order
@@ -133,9 +133,9 @@ class TempProductList(models.Model):
                 str_date_cal = ''
                 if (result['min'] is not None and result['max'] is not None) and \
                         ((result['max'] - result['min']).days > 365):
-                    str_date_cal = result['min'].strftime('%m/%d/%Y') + ' - ' + '1 Year+'
+                    str_date_cal = '1 Year+'
                 elif result['min'] is not None and result['max'] is not None:
-                    str_date_cal = result['min'].strftime('%m/%d/%Y') + ' - ' + result['max'].strftime('%m/%d/%Y')
+                    str_date_cal = result['max'].strftime('%m/%d/%Y')
 
                 company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
                 product_dict = {'product': product,
@@ -145,7 +145,7 @@ class TempProductList(models.Model):
                                 'product_sku': product.product_tmpl_id.sku_code,
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
-                                'str_min_max_date': str_date_cal,
+                                'str_max_date': str_date_cal,
                                 'price_list': price_list,
                                 'price_curr': company_fetch.currency_id,
                                 'quantity': query_result['quantity'],
@@ -193,7 +193,7 @@ class TempProductList(models.Model):
                         a.product_brand_id AS product_brand_id,      
                         null as min_expiration_date,
                         null as max_expiration_date,  
-                        null as str_min_max_date,                
+                        null as str_max_date,                
                         1 as quantity                                     
                         FROM
                         sale_order
@@ -265,9 +265,9 @@ class TempProductList(models.Model):
                 str_date_cal = ''
                 if (result['min'] is not None and result['max'] is not None) and\
                         ((result['max'] - result['min']).days > 365):
-                    str_date_cal = result['min'].strftime('%m/%d/%Y') + ' - ' + '1 Year+'
+                    str_date_cal = '1 Year+'
                 elif result['min'] is not None and result['max'] is not None:
-                    str_date_cal = result['min'].strftime('%m/%d/%Y') + ' - ' + result['max'].strftime('%m/%d/%Y')
+                    str_date_cal = result['max'].strftime('%m/%d/%Y')
 
                 product_dict = {'product': product,
                                 'partner': partner,
@@ -276,7 +276,7 @@ class TempProductList(models.Model):
                                 'product_sku': product.product_tmpl_id.sku_code,
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
-                                'str_min_max_date': str_date_cal,
+                                'str_max_date': str_date_cal,
                                 'price_list': price_list,
                                 'price_curr': company_fetch.currency_id,
                                 'quantity': query_result['quantity'],

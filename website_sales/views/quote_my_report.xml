@@ -49,9 +49,8 @@
                             <th class="td-img">Product</th>
                             <th></th>
                             <th class="text-center td-manufacturer">Manufacturer</th>
-<!--                            <th class="text-center td-min-exp">Min Exp. Date</th>-->
-<!--                            <th class="text-center td-max-exp">Max Exp. Date</th>-->
-                            <th class="text-center td-min-max-exp">Min Exp. Date - Max Exp. Date</th>
+                            <th class="text-center td-min-exp">Min Exp. Date</th>
+                            <th class="text-center td-max-exp">Max Exp. Date</th>
                             <th class="text-center td-av-qty">Available Quantity</th>
                             <th class="text-center td-qty">Quantity</th>
                             <th class="text-center td-price">Price</th>
@@ -88,11 +87,11 @@
                                         <span t-esc="product_list.get(product[0])['product_brand_name']"/>
                                     </div>
                                 </td>
-<!--                                <td class="text-center td-min-exp align-middle">-->
-<!--                                    <div>-->
-<!--                                        <span t-esc="product_list.get(product[0])['min_expiration_date']" t-options="{'widget': 'date'}"/>-->
-<!--                                    </div>-->
-<!--                                </td>-->
+                                <td class="text-center td-min-exp align-middle">
+                                    <div>
+                                        <span t-esc="product_list.get(product[0])['min_expiration_date']" t-options="{'widget': 'date'}"/>
+                                    </div>
+                                </td>
 <!--                                <td class="text-center td-max-exp align-middle">-->
 <!--                                    <div>-->
 <!--                                        <span t-esc="product_list.get(product[0])['max_expiration_date']" t-options="{'widget': 'date'}"/>-->
@@ -100,7 +99,7 @@
 <!--                                </td>-->
                                 <td class="text-center td-max-exp align-middle">
                                     <div>
-                                        <span t-esc="product_list.get(product[0])['str_min_max_date']" />
+                                        <span t-esc="product_list.get(product[0])['str_max_date']" />
                                     </div>
                                 </td>
                                 <td class="text-center td-av-qty align-middle">

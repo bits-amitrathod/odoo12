@@ -509,9 +509,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                 
                 """
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
-                          'Min Exp. Date - Max Exp. Date', 'Unit Of Measure']
+                          'Min Exp. Date', 'Max Exp. Date', 'Unit Of Measure']
                 columnProps = ['product_brand_id.name', 'sku_code', 'name', 'customer_price_list', 'actual_quantity',
-                               'minmaxDate', 'uom_id.name']
+                               'str_min', 'str_max', 'uom_id.name']
                 closing_content = """
                                     Please reply to this email or contact your Account Manager to hold product or place an order. If you would like to place an order on your own please click on the link "Order Online Here".
                                     <br/> Thank you <br/>
@@ -1270,6 +1270,22 @@ class InventoryNotificationScheduler(models.TransientModel):
                                      + datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
+                elif column_name == 'str_min':
+                    if query_result and query_result['min']:
+                        min = str(query_result['min'])
+                        column = datetime.strptime(str(min), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                    else:
+                        column = ""
+
+                elif column_name == 'str_max':
+                    if query_result and query_result['min'] and query_result['max']:
+                        if (query_result['max'] - query_result['min']).days > 365:
+                            column = "1 Year+"
+                        else:
+                            column = datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                    else:
+                        column = ""
+
                 elif column_name == 'customer_price_list':
                     print("Inside customer_price_list ")
                     column = '$' + " {0:.2f}".format(
