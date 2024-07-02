@@ -1,5 +1,5 @@
 <odoo>
-    <template id="footer_template" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
+    <template id="footer_template_new" inherit_id="website.footer_custom" customize_show="True" name="Automatic Footer">
         <xpath expr="//div[@id='footer']" position="replace">
              <div class="seprator">
                           <div class="red"></div>
@@ -22,6 +22,9 @@
                             </li>
                             <li>
                                 <a href="/careers" title="Catalog">CAREERS</a>
+                            </li>
+                            <li>
+                                <a href="/subscribe" title="Catalog">SUBSCRIBE</a>
                             </li>
                         </ul>
                     </div>
@@ -56,10 +59,10 @@
                                 <a href="/equipment-repair" title="Surgical Equipment Repair">REPAIR</a>
                             </li>
                               <li>
-                                    <a href="/terms_of_sale" title="TERMS OF SALE">TERMS OF SALE</a>
+                                    <a href="/terms_of_product_sale" title="TERMS OF PRODUCT SALE">TERMS OF PRODUCT SALE</a>
                                 </li>
                                 <li>
-                                    <a href="/terms_of_purchase" title="TERMS OF PURCHASE">TERMS OF PURCHASE</a>
+                                    <a href="/terms_of_surplus_purchase" title="TERMS OF SURPLUS PURCHASE">TERMS OF SURPLUS PURCHASE</a>
                                 </li>
                         </ul>
                     </div>
@@ -80,9 +83,9 @@
                              <li>
                                 <a href="/web/login" title="Sign In">SIGN IN</a>
                             </li>
-                             <li>
-                                <a href="/downloadCatalog" title="Download catalog">DOWNLOAD CATALOG</a>
-                            </li>
+<!--                             <li>-->
+<!--                                <a href="/downloadCatalog" title="Download catalog">DOWNLOAD CATALOG</a>-->
+<!--                            </li>-->
                         </ul>
                     </div>
                 </div>
@@ -91,7 +94,7 @@
                         <div class="copy-right">
                             <ul>
                                 <li>
-                                    <a href="#" title=""> <![CDATA[&copy;]]> 2021 Surgical Product Solutions.</a>
+                                    <a href="#" title=""> <![CDATA[&copy;]]> 2023 Surgical Product Solutions.</a>
                                 </li>
                                 <li>
                                     <a href="/terms-and-condition" title=""> Terms and Conditions</a>
@@ -128,7 +131,7 @@
                     <div class="col-md-8 col-sm-8 px-3 px-md-0">
                         <div class="contact-detail">
                             <div class="detail">
-                                <a href="javascript:void(0)" title=""> info@surgicalproductsolutions.com</a>
+                                <a href="javascript:void(0)" title=""> info@shopsps.com</a>
                             </div>
                             <div class="detail">
                                 <a href="javascript:void(0)" title=""> 412.564.1280 </a>
