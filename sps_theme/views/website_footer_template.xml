@@ -28,7 +28,7 @@
                             </li>
                         </ul>
                     </div>
-                    <div class="col-md">
+                    <div class="col-2md">
                         <h6 class="footer-title">SURGICAL PRODUCTS</h6>
                         <ul class="footer-menu">
                             <li>
@@ -42,6 +42,12 @@
                             <li>
                                 <a href="/shop/featured" title="Surgical product Sale">SALE ITEMS</a>
                             </li>
+                            <li>
+                                    <a href="/terms_of_product_sale" title="TERMS OF PRODUCT SALE">TERMS OF PRODUCT SALE</a>
+                                </li>
+                                <li>
+                                    <a href="/terms_of_surplus_purchase" title="TERMS OF SURPLUS PURCHASE">TERMS OF SURPLUS PURCHASE</a>
+                                </li>
                         </ul>
                     </div>
                     <div class="col-md">
@@ -58,12 +64,7 @@
                              <li>
                                 <a href="/equipment-repair" title="Surgical Equipment Repair">REPAIR</a>
                             </li>
-                              <li>
-                                    <a href="/terms_of_product_sale" title="TERMS OF PRODUCT SALE">TERMS OF PRODUCT SALE</a>
-                                </li>
-                                <li>
-                                    <a href="/terms_of_surplus_purchase" title="TERMS OF SURPLUS PURCHASE">TERMS OF SURPLUS PURCHASE</a>
-                                </li>
+
                         </ul>
                     </div>
                      <div class="col-md">
