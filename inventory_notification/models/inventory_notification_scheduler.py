@@ -18,6 +18,7 @@ SUPERUSER_ID_INFO = 2
 
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
+    _description = "InventoryNotificationScheduler"
 
     warehouse_email = "warehouse@surgicalproductsolutions.com"
     sales_email = "sales@surgicalproductsolutions.com"

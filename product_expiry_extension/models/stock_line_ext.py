@@ -16,7 +16,7 @@ from odoo.tools.float_utils import float_round, float_compare, float_is_zero
 class InventoryExe(models.Model):
     _inherit = 'stock.move.line'
     lot_expired_date = fields.Datetime('Expiration Date')
-    lot_use_date = fields.Datetime('Expiration Date', compute='_compute_show_lot_user_date',readOnly=True, required=True)
+    lot_use_date = fields.Datetime('Expiration Date', compute='_compute_show_lot_user_date',readonly=True, required=True)
     lot_id_po = fields.Many2one(
         'stock.lot', 'Lot/Serial Number',
         domain="[('product_id', '=', product_id), ('company_id', '=', company_id)]", check_company=True)

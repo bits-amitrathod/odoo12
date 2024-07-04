@@ -5,27 +5,29 @@
             <field name="model">popup.on_hand_by_date</field>
             <field name="arch" type="xml">
                 <form string="Filter">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="report_date"/>
-                            <field name="vendor_id"/>
-                            <field name="sku_code"/>
-                            <field name="warehouse_id"/>
-                        </group>
-                        <group>
-                            <field name="quantities" widget="radio"/>
                             <group>
-                                <field name="show_inactive_products" widget="checkbox"/>
+                                <field name="report_date"/>
+                                <field name="vendor_id"/>
+                                <field name="sku_code"/>
+                                <field name="warehouse_id"/>
                             </group>
                             <group>
-                                <field name="show_cost" widget="checkbox"/>
+                                <field name="quantities" widget="radio"/>
+                                <group>
+                                    <field name="show_inactive_products" widget="checkbox"/>
+                                </group>
+                                <group>
+                                    <field name="show_cost" widget="checkbox"/>
+                                </group>
                             </group>
                         </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

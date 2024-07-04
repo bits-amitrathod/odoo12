@@ -15,7 +15,7 @@ from odoo.exceptions import UserError
 
 class ProductMapping(models.Model):
     _name = 'product.mapping'
-
+    _description = 'Product Mapping'
     google_shop_id = fields.Many2one(comodel_name='google.shop',string="Shop Name",required = True)
     product_id = fields.Many2one(comodel_name='product.product',string="Product Name",required = True)
     update_status = fields.Boolean(string="Updated",default=True)

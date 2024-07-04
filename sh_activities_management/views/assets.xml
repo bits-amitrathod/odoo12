@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <!--<template id="sh_activity_management_global_assets_backend" name="activity dynamic_action assets" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <script type="text/javascript" src="/sh_activities_management/static/src/js/action_manager_act_window.js"></script>
-            <script type="text/javascript" src="/sh_activities_management/static/src/js/systray_activity_menu.js"></script>
-        </xpath>
-    </template>-->
-</odoo>

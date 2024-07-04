@@ -39,6 +39,7 @@ class AutomaticWorkflowJob(models.Model):
     invoices, pickings...  """
 
     _name = 'automatic.workflow.job'
+    _description = "Automatic Workflow Job"
 
     @api.model
     def _validate_sale_orders(self, order_filter):

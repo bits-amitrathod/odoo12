@@ -3,6 +3,7 @@ from odoo import api, models
 
 class ReportInventoryProductValuationSummary(models.AbstractModel):
     _name = 'report.inventory_valuation_summary.inventory_valuation_template'
+    _description = 'Report Inventory Product Valuation Summary'
 
     @api.model
     def _get_report_values(self, docids, data=None):

@@ -8,7 +8,7 @@
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Sale',
-    'version': '16.16',
+    'version': '16.18',
 
     # any module necessary for this one to work correctly
 
@@ -43,4 +43,5 @@
     'application': True,
     'auto-install': True,
     'installable': True,
+    'license': 'LGPL-3',
 }

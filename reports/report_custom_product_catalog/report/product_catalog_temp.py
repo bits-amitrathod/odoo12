@@ -38,6 +38,7 @@ except ImportError:
 
 class ReportCustomProductCatalog(models.TransientModel):
     _name = 'report.report_custom_product_catalog.catalog_temp'
+    _description = 'Report Custom Product Catalog'
 
     def _get_report_values(self, docids, data=None):
         popup = self.env['popup.custom.product.catalog'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
@@ -217,6 +218,7 @@ class ProductCatalogXL(http.Controller):
 
 class ReportProductWise(models.AbstractModel):
     _name = 'report.report_custom_product_catalog.product_catalog_temp'
+    _description = 'Report Product Wise template'
 
     def _get_report_values(self, docids, data=None):
         return {'data': self.env['product.product'].browse(docids)}

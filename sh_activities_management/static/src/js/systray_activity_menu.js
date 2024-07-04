@@ -5,26 +5,8 @@ var ActivityMenu = require('mail.systray.ActivityMenu');
 var fieldUtils = require('web.field_utils');
 var core = require('web.core');
 var session = require('web.session');
-var _t = core._t;
 
 ActivityMenu.include({
-
-	events: _.extend({}, ActivityMenu.prototype.events, {
-		'click .o_activity_show': '_onrecurrentactivityClick',
-	}),
-	_onrecurrentactivityClick: function (ev) {
-		var self = this;
-		ev.preventDefault();
-		ev.stopPropagation();
-		this.do_action({
-			type: 'ir.actions.act_window',
-			name: _t('Recurrent Activity'),
-			res_model: 'sh.recurring.activities',
-			views: [[false, 'list'],[false, 'form']],
-			target: 'current'
-		});
-
-	},
 
     //-----------------------------------------
     // Handlers

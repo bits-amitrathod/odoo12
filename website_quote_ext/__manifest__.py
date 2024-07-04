@@ -28,5 +28,6 @@
             'website_quote_ext/static/src/js/website_sale.js',
         ],
     },
-    
+    'license': 'AGPL-3'
+
 }

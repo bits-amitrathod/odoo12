@@ -1,0 +1,492 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sh_activities_management
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 14.1alpha1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-09-26 11:53+0000\n"
+"PO-Revision-Date: 2020-09-26 11:53+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "&amp;nbsp;"
+msgstr "&amp;nbsp;"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "&times;"
+msgstr "&times;"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "<strong>Recommended Activities</strong>"
+msgstr "<strong>推荐活动</ strong>"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "Action"
+msgstr "行动"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_mail_activity__active
+msgid "Active"
+msgstr "积极的"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_schedule_activity_view_tree
+msgid "Activities"
+msgstr "活动"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/js/activity_dashboard.js:0
+#: model:ir.model,name:sh_activities_management.model_mail_activity
+#: model:ir.ui.menu,name:sh_activities_management.sh_activity
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+#, python-format
+msgid "Activity"
+msgstr "活动"
+
+#. module: sh_activities_management
+#: model:ir.actions.client,name:sh_activities_management.sh_action_activity_dashboard
+#: model:ir.model,name:sh_activities_management.model_activity_dashboard
+#: model:ir.module.category,description:sh_activities_management.module_activity_category
+#: model:ir.module.category,name:sh_activities_management.module_activity_category
+#: model:ir.ui.menu,name:sh_activities_management.sh_activity_dashboard
+msgid "Activity Dashboard"
+msgstr "活动仪表板"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#: model:ir.actions.act_window,name:sh_activities_management.feedback_wizard_action
+#: model:ir.model,name:sh_activities_management.model_activity_feedback
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.feedback_wizard_view
+#, python-format
+msgid "Activity Feedback"
+msgstr "活动反馈"
+
+#. module: sh_activities_management
+#: model:res.groups,name:sh_activities_management.group_activity_manager
+msgid "Activity Manager"
+msgstr "活动经理"
+
+#. module: sh_activities_management
+#: model:res.groups,name:sh_activities_management.group_activity_supervisor
+msgid "Activity Supervisor"
+msgstr "活动主管"
+
+#. module: sh_activities_management
+#: model:res.groups,name:sh_activities_management.group_activity_user
+msgid "Activity User"
+msgstr "活动用户"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/js/activity_dashboard.js:0
+#: model:ir.actions.act_window,name:sh_activities_management.sh_all_activity_action
+#: model:ir.actions.act_window,name:sh_activities_management.sh_reporting_action
+#: model:ir.ui.menu,name:sh_activities_management.all_activity
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_count_box
+#, python-format
+msgid "All Activities"
+msgstr "所有活动"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "Archived"
+msgstr "存档"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_search
+msgid "Archived Activities"
+msgstr "存档的活动"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "Assigned To"
+msgstr "分配给"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.feedback_wizard_view
+msgid "Cancel"
+msgstr "取消"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Close"
+msgstr "关闭"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/js/activity_dashboard.js:0
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_count_box
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_search
+#, python-format
+msgid "Completed Activities"
+msgstr "完成活动"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_mail_activity__date_done
+msgid "Completed Date"
+msgstr "完成日期"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_dashboard__create_uid
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback__create_uid
+msgid "Created by"
+msgstr "由...制作"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_dashboard__create_date
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback__create_date
+msgid "Created on"
+msgstr "创建于"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Current Month"
+msgstr "这个月"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Current Week"
+msgstr "本周"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Current Year"
+msgstr "今年"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Custom"
+msgstr "风俗"
+
+#. module: sh_activities_management
+#: model:ir.ui.menu,name:sh_activities_management.sh_menu_activity_dashboard
+msgid "Dashboard"
+msgstr "仪表盘"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "Deadline Date"
+msgstr "截止日期"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_dashboard__display_name
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback__display_name
+#: model:ir.model.fields,field_description:sh_activities_management.field_mail_activity__display_name
+msgid "Display Name"
+msgstr "显示名称"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#: model:ir.model.fields.selection,name:sh_activities_management.selection__mail_activity__state__done
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.feedback_wizard_view
+#, python-format
+msgid "Done"
+msgstr "完毕"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "Done & Launch Next"
+msgstr "完成并启动下一个"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.feedback_wizard_view
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "Done & Schedule Next"
+msgstr "完成＆附表"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback__done_button_pressed
+msgid "Done Button Pressed"
+msgstr "完成按钮按下"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback__feedback
+#: model:ir.model.fields,field_description:sh_activities_management.field_mail_activity__feedback
+#, python-format
+msgid "Feedback"
+msgstr "回馈"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_dashboard__id
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback__id
+#: model:ir.model.fields,field_description:sh_activities_management.field_mail_activity__id
+msgid "ID"
+msgstr "ID"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_dashboard____last_update
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback____last_update
+#: model:ir.model.fields,field_description:sh_activities_management.field_mail_activity____last_update
+msgid "Last Modified on"
+msgstr "最后修改了"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_dashboard__write_uid
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback__write_uid
+msgid "Last Updated by"
+msgstr "最后更新"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_dashboard__write_date
+#: model:ir.model.fields,field_description:sh_activities_management.field_activity_feedback__write_date
+msgid "Last Updated on"
+msgstr "上次更新了"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "Log a note..."
+msgstr "记录一下......"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "Log an Activity"
+msgstr "记录活动"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "Mark As Done"
+msgstr "标记为已完成"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "Mark as Done"
+msgstr "标记为已完成"
+
+#. module: sh_activities_management
+#: model:ir.actions.act_window,name:sh_activities_management.sh_action_my_activities
+#: model:ir.ui.menu,name:sh_activities_management.sh_my_activity
+msgid "My Activities"
+msgstr "我的活动"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "Name"
+msgstr "姓名"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "No Any Data Available"
+msgstr "没有任何数据可用"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "Origin"
+msgstr "起源"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/js/activity_dashboard.js:0
+#, python-format
+msgid "Origin Activity"
+msgstr "起源活动"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/js/activity_dashboard.js:0
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_count_box
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#, python-format
+msgid "Overdue Activities"
+msgstr "逾期活动"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/js/activity_dashboard.js:0
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_count_box
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+#, python-format
+msgid "Planned Activities"
+msgstr "计划开展的活动"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Previous Month"
+msgstr "前一个月"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Previous Week"
+msgstr "上个礼拜"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Previous Year"
+msgstr "上一年"
+
+#. module: sh_activities_management
+#: model:ir.ui.menu,name:sh_activities_management.reporting
+msgid "Reporting"
+msgstr "报告."
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_schedule_activity_view_calendar
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_schedule_activity_view_graph
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_schedule_activity_view_pivot
+msgid "Schedule Activity"
+msgstr "安排活动"
+
+#. module: sh_activities_management
+#: code:addons/sh_activities_management/models/mail_activity.py:0
+#: code:addons/sh_activities_management/wizard/feedback.py:0
+#, python-format
+msgid "Schedule an Activity"
+msgstr "安排活动"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Select Date"
+msgstr "选择日期"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_mail_activity__state
+msgid "State"
+msgstr "状态"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+msgid "Status"
+msgstr "地位"
+
+#. module: sh_activities_management
+#: model:ir.model.fields,field_description:sh_activities_management.field_mail_activity__supervisor_id
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "Supervisor"
+msgstr "导师"
+
+#. module: sh_activities_management
+#: model:ir.actions.act_window,name:sh_activities_management.sh_supervisor_activity_action
+#: model:ir.ui.menu,name:sh_activities_management.sh_supervisor_activity
+msgid "Supervisor Activities"
+msgstr "主管活动"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Supervisors"
+msgstr "监督员"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Today"
+msgstr "今天"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "User A"
+msgstr "用户A."
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "User B"
+msgstr "用户B."
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "User C"
+msgstr "用户C."
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Users"
+msgstr "用户"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_all_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_completed_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_overdue_tbl
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_crm_db_activity_todo_tbl
+msgid "View"
+msgstr "看法"
+
+#. module: sh_activities_management
+#. openerp-web
+#: code:addons/sh_activities_management/static/src/xml/activity_dashboard.xml:0
+#, python-format
+msgid "Yesterday"
+msgstr "昨天"
+
+#. module: sh_activities_management
+#: model_terms:ir.ui.view,arch_db:sh_activities_management.sh_mail_activity_view_form
+msgid "e.g. Discuss proposal"
+msgstr "例如讨论提案"

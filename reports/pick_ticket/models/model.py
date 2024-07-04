@@ -3,13 +3,14 @@ import odoo.addons.decimal_precision as dp
 
 class PickTicketReport(models.Model):
     _name = "report.pick.ticket"
+    _description = "PickTicketReport"
     _auto = False
 
     _inherits = {'stock.picking': 'picking_id'}
 
     carrier_info = fields.Char(string="Sale Order#")
     move_id = fields.Many2one('stock.move', string="Customer Name")
-    qty_done = fields.Float(string="Quantity",digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float(string="Quantity",digits='Product Unit of Measure')
     location_id = fields.Many2one('stock.location', string="Location")
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     state = fields.Char(string='state', )
@@ -20,7 +21,7 @@ class PickTicketReport(models.Model):
     picking_id = fields.Many2one('stock.picking', string='Pick Number')
     product_uom_id = fields.Many2one('uom.uom', 'UOM ')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
-    scheduled_date = fields.Datetime(stirng='Scheduled Date')
+    scheduled_date = fields.Datetime(string='Scheduled Date')
     picking_type = fields.Char(string='Type', )
 
     def init(self):

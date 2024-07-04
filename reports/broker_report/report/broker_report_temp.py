@@ -49,6 +49,7 @@ class Discount():
 
 class ReportBrokerReport(models.AbstractModel):
     _name = 'report.broker_report.brokerreport_temp_test'
+    _description = "Report Broker Report"
 
     @api.model
     def _get_report_values(self, docids, data):

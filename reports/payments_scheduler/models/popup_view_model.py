@@ -4,15 +4,15 @@ import datetime
 
 class AcquisitionReportPopUp(models.TransientModel):
     _name = 'payments_scheduler.report.summary'
+    _description = "Payment Scheduler Report Popup Model"
 
-    end_date = fields.Date('Due Date', help="Choose a date to get the  Invoices at that using  Due date",
-                               default=fields.date.today())
+    end_date = fields.Date('Due Date', help="Choose a date to get the  Invoices at that using  Due date", default=fields.date.today())
 
     def open_table(self):
-        tree_view_id = self.env.ref('payments_scheduler.form_list').id
-        form_view_id = self.env.ref('payments_scheduler.form_view').id
-
-        ai = self.env['account.move'].search([('invoice_date_due','<=',self.end_date)]).ids
+        tree_view_id = self.env.ref('payments_scheduler.payment_scheduled_report_list_view').id
+        form_view_id = self.env.ref('payments_scheduler.payment_scheduled_report_form_view').id
+        end_date = self.end_date
+        ai = self.env['account.move'].search([('invoice_date_due','<=', end_date)]).ids
 
         action = {
             'type': 'ir.actions.act_window',

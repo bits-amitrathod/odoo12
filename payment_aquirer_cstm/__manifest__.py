@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': " Purchase order Payment acquirer",
+    'name': " Purchase order Payment Provider",
     'description': """
-        Purchase order Payment acquirer 
+        Purchase order Payment Provider 
     """,
 
     'author': "Benchmark IT Solutions (I) Pvt Ltd.",
@@ -24,4 +24,5 @@
 
     'installable': True,
     # 'application': True,
+    "license" : "LGPL-3",
 }

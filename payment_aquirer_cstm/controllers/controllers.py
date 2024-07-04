@@ -140,10 +140,10 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                     break
             return responce
 
+        # if ('order' in ctx and not ctx['order'].partner_id.allow_purchase) or ('order' not in ctx) :
         if ('order' in ctx and not ctx['order'].partner_id.allow_purchase) or ('order' not in ctx):
-            for x in ctx['providers']:
-                if x.name == 'Purchase Order':
-                    ctx['providers'].remove(x)
+            if 'providers' in ctx:
+                ctx['providers'] = ctx['providers'] and ctx['providers'].filtered(lambda p:p.name != 'Purchase Order')
 
         ctx['showShippingNote'] = False
         ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session['expedited_shipping'] or ""
@@ -278,7 +278,7 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
                 response = {'message': 'Unable to connect to SMTP Server'}
 
     @http.route(['/website_payment/pay'], type='http', auth='public', website=True, sitemap=False)
-    def pay(self, reference='', order_id=None, amount=False, currency_id=None, acquirer_id=None, partner_id=False,
+    def pay(self, reference='', order_id=None, amount=False, currency_id=None, provider_id=None, partner_id=False,
             access_token=None, **kw):
         """
         Generic payment page allowing public and logged in users to pay an arbitrary amount.
@@ -355,8 +355,8 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
         reference_values = order_id and {'sale_order_ids': [(4, order_id)]} or {}
         values['reference'] = env['payment.transaction']._compute_reference(values=reference_values, prefix=reference)
 
-        # Check acquirer
-        acquirers = None
+        # Check Providers
+        providers = None
         if order_id and order:
             cid = order.company_id.id
         elif kw.get('company_id'):
@@ -411,27 +411,27 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
             'error_msg': kw.get('error_msg')
         })
 
-        acquirer_domain = ['&', ('state', 'in', ['enabled', 'test']), ('company_id', '=', cid)]
+        provider_domain = ['&', ('state', 'in', ['enabled', 'test']), ('company_id', '=', cid)]
         if partner_id:
             partner = request.env['res.partner'].browse([partner_id])
-            acquirer_domain = expression.AND([
-                acquirer_domain,
+            provider_domain = expression.AND([
+                provider_domain,
                 ['|', ('country_ids', '=', False), ('country_ids', 'in', [partner.sudo().country_id.id])]
             ])
-        if acquirer_id:
-            acquirers = env['payment.provider'].browse(int(acquirer_id))
-        if order_id:
-            acquirers = env['payment.provider'].search(acquirer_domain)
-        if not acquirers:
-            acquirers = env['payment.provider'].search(acquirer_domain)
+        if provider_id:
+            providers = env['payment.provider'].browse(int(provider_id)) if provider_id else env['payment.provider'].search(provider_domain)
+        if not providers:
+            providers = env['payment.provider'].search(provider_domain)
 
-        values['acquirers'] = self._get_acquirers_compatible_with_current_user(acquirers)
-        for item in values['acquirers']:
-            if item.display_name == 'Purchase Order':
-                values['acquirers'].remove(item)
+        # UPG_ODOO16_NOTE no need of below line because it is removed from odoo 16 flow
+        # values['providers'] = self._get_acquirers_compatible_with_current_user(providers)
+
+        # Removing the "Purchase Order" provider form provider list
+        values['providers'] = values['providers'].filtered(lambda p: p.name != 'Purchase Order')
+
         if partner_id:
             values['pms'] = request.env['payment.token'].search([
-                ('acquirer_id', 'in', acquirers.ids),
+                ('provider_id', 'in', providers.ids),
                 ('partner_id', 'child_of', partner.commercial_partner_id.id)
             ])
         else:
@@ -457,10 +457,10 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
                 tx = request.env['payment.transaction'].browse(tx_id)
             if tx.state in ['done', 'authorized']:
                 status = 'success'
-                message = tx.acquirer_id.done_msg
+                message = tx.provider_id.done_msg
             elif tx.state == 'pending':
                 status = 'warning'
-                message = tx.acquirer_id.pending_msg
+                message = tx.provider_id.pending_msg
             else:
                 status = 'danger'
                 message = tx.state_message or _('An error occured during the processing of this payment')

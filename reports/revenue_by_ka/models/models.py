@@ -14,6 +14,8 @@ _logger = logging.getLogger(__name__)
 
 class RevenueByKa(models.Model):
     _name = 'report.ka.revenue'
+    _description = "Revenue By Ka"
+
     _auto = False
     _order = "customer"
 
@@ -21,10 +23,10 @@ class RevenueByKa(models.Model):
     key_account = fields.Many2one('res.users', 'Key Account')
     no_of_orders = fields.Integer('No. of orders')
     total_revenue = fields.Float('Total Revenue')
-    order_quota = fields.Float(string="Order Quota", help="Number of transactions", digits=dp.get_precision('Product Price'))
+    order_quota = fields.Float(string="Order Quota", help="Number of transactions", digits='Product Price')
     revenue_quota = fields.Integer(string="Revenue Quota", help="Amount")
-    progress_order_quota = fields.Float('Progress of Order Quota %', digits=dp.get_precision('Product Price'))
-    progress_revenue_quota = fields.Float('Progress of Revenue Quota %', digits=dp.get_precision('Product Price'))
+    progress_order_quota = fields.Float('Progress of Order Quota %', digits='Product Price')
+    progress_revenue_quota = fields.Float('Progress of Revenue Quota %', digits='Product Price')
     currency_id = fields.Many2one('res.currency', string='Currency')
 
     @api.model
@@ -136,6 +138,7 @@ class RevenueByKa(models.Model):
 # Export code
 class RevenueByKaExport(models.TransientModel):
     _name = 'report.ka.revenue.export'
+    _description = "Revenue By Ka Export"
 
     start_month = fields.Selection([('01', 'January'), ('02', 'February'), ('03', 'March'), ('04', 'April'),
                                     ('05', 'May'), ('06', 'June'), ('07', 'July'), ('08', 'August'),

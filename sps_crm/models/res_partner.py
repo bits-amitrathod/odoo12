@@ -365,8 +365,8 @@ class Partner(models.Model):
         ('nov', 'November'),
         ('dec', 'December')], string='Fiscal Year End', compute="compute_fiscal_year_end",
         store=False, search='pro_search_for_fiscal_year_end', readonly=False )
-    last_modify_by = fields.Many2one(comodel_name='res.partner', String='Last Modified By', store=False)
-    created_by = fields.Many2one(comodel_name='res.partner', String='Created By', store=False)
+    last_modify_by = fields.Many2one(comodel_name='res.partner', string='Last Modified By', store=False)
+    created_by = fields.Many2one(comodel_name='res.partner', string='Created By', store=False)
     time_zone = fields.Selection([
         ('est', 'EST'),
         ('cst', 'CST'),
@@ -734,7 +734,7 @@ class PartnerLinkTracker(models.Model):
 
 
     # link_id = fields.Many2one('res.partner', 'Link', required=True, ondelete='cascade')
-    partner_id = fields.Many2one(comodel_name='res.partner', String='Entry')
+    partner_id = fields.Many2one(comodel_name='res.partner', string='Entry')
 
     gpo = fields.Char(string="GPO")
     purchase = fields.Char("Purchasing")
@@ -809,8 +809,8 @@ class PartnerLinkTracker(models.Model):
         ('nov', 'November'),
         ('dec', 'December')],string='Fiscal Year End')
 
-    last_modify_by = fields.Many2one(comodel_name='res.partner', String='Last Modified By')
-    created_by = fields.Many2one(comodel_name='res.partner', String='Created By')
+    last_modify_by = fields.Many2one(comodel_name='res.partner', string='Last Modified By')
+    created_by = fields.Many2one(comodel_name='res.partner', string='Created By')
 
     top_subspecialties1 = fields.Many2many('specialties.tag', string='Top Subspecialties')
     acq_account = fields.Boolean("ACQ Accoun", default=False)

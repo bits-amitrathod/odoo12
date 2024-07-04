@@ -9,6 +9,8 @@ _logger = logging.getLogger(__name__)
 class SpsCustomerUploadedDocument(models.Model):
 
     _name = 'sps.cust.uploaded.documents'
+    _description = "SpsCustomerUploadedDocument"
+
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     # template_id = fields.Many2one('sps.customer.template', string='Template')
     request_ids = fields.One2many('sps.customer.requests', 'document_id', string="Requests")

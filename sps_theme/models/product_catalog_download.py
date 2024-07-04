@@ -6,6 +6,7 @@ _logger = logging.getLogger(__name__)
 
 class website_product_download_catelog_cstm(models.Model):
     _name = 'sps_theme.product_download_catelog'
+    _description = "website_product_download_catelog_cstm"
 
     file = fields.Binary('File')
     filename = fields.Char()

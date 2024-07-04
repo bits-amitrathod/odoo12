@@ -11,7 +11,7 @@ class SpsReceivingList(models.Model):
     _inherit = 'stock.move.line'
 
     sku_code = fields.Char('Product SKU', store=False, compute="_get_sku")
-    qty_rece = fields.Float('Qty Received', store=False, compute="_get_sku",digits=dp.get_precision('Product Unit of Measure'))
+    qty_rece = fields.Float('Qty Received', store=False, compute="_get_sku",digits='Product Unit of Measure')
     date_done = fields.Datetime('Date Validated', store=False, compute="_get_sku")
     purchase_order_id = fields.Char('Purchase Order', store=False, compute="_get_sku")
     purchase_partner_id = fields.Char('Vendor', store=False, compute="_get_sku")

@@ -12,7 +12,7 @@ class account_pass(models.Model):
         readonly=False, store=True, group_expand='_read_group_stage_ids',
         copy=False, ondelete='restrict')
 
-    partner_id = fields.Many2one('res.partner', String='Customer')
+    partner_id = fields.Many2one('res.partner', string='Customer')
     saleforce_ac = fields.Char("SF A/C  No#", compute="partner_depends_value_cal", readonly=False, store=False)
 
     is_in_stock_report = fields.Boolean(string="In Stock Report Turned On")

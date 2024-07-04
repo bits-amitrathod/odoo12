@@ -7,6 +7,8 @@ _logger = logging.getLogger(__name__)
 
 class CustomerContract(models.Model):
     _name = "exclude.product.in.stock"
+    _description = 'Exclude Product in Stock model'
+
     _inherits = {'product.product': 'product_id'}
 
     partner_id = fields.Many2one('res.partner', string='Customer', required=True)

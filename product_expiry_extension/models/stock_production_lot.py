@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 class ProductionLot(models.Model):
     _inherit = 'stock.lot'
     _name = 'stock.lot'
+    _description = "ProductionLot"
 
     expiration_date = fields.Datetime(string='End of Life Date',
                                       help='This is the date on which the goods with this Serial Number may become dangerous and must not be consumed.')

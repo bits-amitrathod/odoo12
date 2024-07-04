@@ -26,6 +26,7 @@ class ResPartner(models.Model):
 
 class PortalAccessScheduler(models.TransientModel):
     _name = 'portal.access.scheduler'
+    _description = "PortalAccessScheduler"
 
     @api.model
     def portal_access_scheduler(self):

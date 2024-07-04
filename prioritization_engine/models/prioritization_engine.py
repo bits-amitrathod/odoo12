@@ -14,6 +14,7 @@ _logger = logging.getLogger(__name__)
 class PrioritizationEngine(models.TransientModel):
     # _inherit = 'crm.team'
     _name = 'prioritization.engine.model'
+    _description = "Prioritization Engine Model"
 
 #     team_type = fields.Selection([('prioritization', 'Prioritization')])
 

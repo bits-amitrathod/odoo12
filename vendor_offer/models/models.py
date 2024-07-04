@@ -58,10 +58,10 @@ class VendorOffer(models.Model):
 
     billed_retail_untaxed = fields.Monetary(string='Billed Untaxed Retail', compute='_amount_all', readonly=True)
     billed_retail_total = fields.Monetary(string='Billed Retail Total', compute='_amount_all', readonly=True)
-    final_billed_retail_total = fields.Monetary(string='Final Billed Retail Total', default=0, track_visibility='onchange')
+    final_billed_retail_total = fields.Monetary(string='Final Billed Retail Total', default=0, tracking=True)
     billed_offer_untaxed = fields.Monetary(string='Billed Untaxed Offer', compute='_amount_all', readonly=True)
     billed_offer_total = fields.Monetary(string='Billed Offer Total', compute='_amount_all', readonly=True)
-    final_billed_offer_total = fields.Monetary(string='Final Billed Offer Total', default=0, track_visibility='onchange')
+    final_billed_offer_total = fields.Monetary(string='Final Billed Offer Total', default=0, tracking=True)
 
 
 
@@ -107,7 +107,7 @@ class VendorOffer(models.Model):
         ('purchase', 'Purchase Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled')
-    ], string='Offer Type', readonly=True, index=True, copy=False, default='ven_draft', track_visibility='onchange',
+    ], string='Offer Type', readonly=True, index=True, copy=False, default='ven_draft', tracking=True,
         store=True)
 
     state = fields.Selection([
@@ -119,7 +119,7 @@ class VendorOffer(models.Model):
         ('purchase', 'Purchase Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled')
-    ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
+    ], string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
 
     import_type_ven = fields.Char(string='Import Type')
     arrival_date_grp = fields.Datetime(string="Arrival Date")

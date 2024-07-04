@@ -24,9 +24,9 @@ class apprisal_tracker_vendor(models.Model):
 
     _inherit = "purchase.order"
 
-    tier1_extra_retail = fields.Monetary(string="Tier 1 Extra Retail", track_visibility='onchange')
-    tier2_extra_retail = fields.Monetary(string="Tier 2 Extra Retail", track_visibility='onchange')
-    less_than_40_extra_retail = fields.Monetary(string="< 40% Extra Retail", track_visibility='onchange')
+    tier1_extra_retail = fields.Monetary(string="Tier 1 Extra Retail", tracking=True)
+    tier2_extra_retail = fields.Monetary(string="Tier 2 Extra Retail", tracking=True)
+    less_than_40_extra_retail = fields.Monetary(string="< 40% Extra Retail", tracking=True)
 
     tier1_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="Tier 1 Retail")
     tier2_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="Tier 2 Retail")

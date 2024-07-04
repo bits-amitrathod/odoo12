@@ -5,6 +5,7 @@ import odoo.addons.decimal_precision as dp
 
 class InventoryValuationPopUp(models.TransientModel):
     _name = 'popup.product.catalog'
+    _description =  'Inventory Valuation PopUp'
 
     sku_code = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
@@ -31,6 +32,7 @@ class InventoryValuationPopUp(models.TransientModel):
 
 class InventoryCustomProductPopUp(models.TransientModel):
     _name = 'popup.custom.product.catalog'
+    _description = "Inventory Custom Product PopUp"
 
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
@@ -91,7 +93,7 @@ class ProductCatalogReport(models.Model):
     _inherit = 'product.product'
 
     product_qty = fields.Float("Product Qty", compute='_compare_qty', store=False,
-                               digits=dp.get_precision('Product Unit of Measure'))
+                               digits='Product Unit of Measure')
     exp_min_date = fields.Date("Exp Min Date", store=False)
     exp_max_date = fields.Date("Exp Max Date", store=False)
 
@@ -116,6 +118,8 @@ class ProductCatalogReport(models.Model):
 
 class customeproductcata(models.Model):
     _name = 'cust.pro.catalog'
+    _description = "Custome Product Cata"
+
     _rec_name = 'product_tmpl_id'
 
 

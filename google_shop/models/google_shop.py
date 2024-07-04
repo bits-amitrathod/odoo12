@@ -23,6 +23,7 @@ to_remove_keys = ['CURRENCY','BASE_URL','SLUG','ID','template_id']
 
 class GoogleMerchantShop(models.Model):
     _name = 'google.shop'
+    _description = "Google Merchant Shop"
 
     name = fields.Char(string="Name",required=True)
 
@@ -51,7 +52,7 @@ class GoogleMerchantShop(models.Model):
     field_mapping_id = fields.Many2one(comodel_name="field.mappning",string="Field Mapping",domain=[('active','=',True)],required=True)
     product_ids_rel = fields.Many2many(comodel_name='product.product', relation='merchant_shop_product_rel', column1='google_id', column2='product_id',domain=[("sale_ok", "=", True),("website_published","=",True)], string="Products")
     shop_url=fields.Char(name="Shop URL",help="Write your domain name of your website",related="oauth_id.domain_uri",readonly=True)
-    mapping_count=fields.Integer(srting="Total Mappings",compute="_mapping_count")
+    mapping_count=fields.Integer(string="Total Mappings",compute="_mapping_count")
 
 
     def _get_product_domain(self):

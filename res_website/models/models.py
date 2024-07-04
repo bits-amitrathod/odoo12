@@ -4,6 +4,7 @@ from odoo.tools import image
 
 class WebResource(models.Model):
     _name = 'resource.webresource'
+    _description = "Web Resource"
 
     title = fields.Char(string='Resource Title', required=True)
     description = fields.Char(string='Resource Description', required=True)

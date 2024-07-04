@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class PopUp(models.TransientModel):
     _name = 'popup.view.model.purchase.history'
+    _description = "Purchase history popup model"
 
 
     start_date = fields.Date('Start Date' ,required=True)

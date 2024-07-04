@@ -3,6 +3,7 @@ from odoo import api, models
 
 class ReportSpsReceivingList(models.AbstractModel):
     _name = 'report.sps_receiving_list_report.adjustment_report'
+    _description = "ReportSpsReceivingList"
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -99,6 +100,7 @@ class ReportSpsReceivingList(models.AbstractModel):
 
 class ReportSpsReceivingList1(models.AbstractModel):
     _name = 'report.sps_receiving_list_report.adjustment_report1'
+    _description = "ReportSpsReceivingList1"
 
     @api.model
     def _get_report_values(self, docids, data=None):

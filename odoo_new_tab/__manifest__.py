@@ -20,7 +20,7 @@
   "version"              :  "1.0.0",
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
-  "license"              :  "Other proprietary",
+  "license"              :  "LGPL-3",
   "website"              :  "https://store.webkul.com/Odoo-View-Records-In-New-Tab.html",
   "description"          :  """View Records In New Tab""",
   "live_test_url"        :  "",

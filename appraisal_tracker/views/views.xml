@@ -311,15 +311,14 @@
             </field>
         </record>
 
-        <report
-                id="action_report_appraisal_tracker"
+        <record id="action_report_appraisal_tracker" model="ir.actions.report">
+            <field name="name">Appraisal Tracker</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">appraisal_tracker.appraisal_tracker_report</field>
+            <field name="report_file">appraisal_tracker.appraisal_tracker_report</field>
+        </record>
 
-                string="Appraisal Tracker"
-                model="purchase.order"
-                report_type="qweb-html"
-                file="appraisal_tracker.appraisal_tracker_report"
-                name="appraisal_tracker.appraisal_tracker_report"
-        />
 
 
         <record id="appraisal_tracker_view_purchase_order_filter" model="ir.ui.view">

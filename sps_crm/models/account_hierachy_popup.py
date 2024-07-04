@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class AccountHierarchyReport(models.TransientModel):
     _name = 'popup.account.hierarchy.report'
+    _description = "Account Hierarchy Report"
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
                              help="Choose a date to get the New Account Bonus Report at that Start date")

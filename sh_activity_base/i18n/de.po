@@ -33,17 +33,17 @@ msgstr "Unternehmen"
 #. module: sh_activity_base
 #: model:ir.model,name:sh_activity_base.model_res_config_settings
 msgid "Config Settings"
-msgstr "Config-Einstellungen"
+msgstr "Konfigurationseinstellungen"
 
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Days After Due Date"
-msgstr "Tage nach Fälligkeit"
+msgstr "Tage nach Fälligkeitsdatum"
 
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Days Before Due Date"
-msgstr "Tage vor dem Fälligkeitsdatum"
+msgstr "Tage vor Fälligkeitsdatum"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_mail_activity__display_name
@@ -57,43 +57,43 @@ msgstr "Anzeigename"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__activity_due_notification
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Due Activity Notification"
-msgstr "Aufgrund Aktivität Mitteilung"
+msgstr "Fällige Benachrichtigung der Aktivität."
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_after_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_after_first_notify
 msgid "Enter First Days After Due Date"
-msgstr "Geben Sie Erste Tage nach Fälligkeit"
+msgstr "Geben Sie die ersten Tage nach dem Fälligkeitsdatum ein"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_before_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_before_first_notify
 msgid "Enter First Days Before Due Date"
-msgstr "Geben Sie erste Tage vor Fälligkeit"
+msgstr "Geben Sie die ersten Tage vor Fälligkeitsdatum ein"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_after_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_after_second_notify
 msgid "Enter Second Days After Due Date"
-msgstr "Geben Sie Second Tage nach Fälligkeit"
+msgstr "Innerhalb der zweiten Tage nach dem Fälligkeitsdatum eingeben"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_before_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_before_second_notify
 msgid "Enter Second Days Before Due Date"
-msgstr "Geben Sie Second Tage vor Fälligkeit"
+msgstr "Geben Sie die zweite Tage vor Fälligkeitsdatum ein"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__after_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__after_first_notify
 msgid "First Days After Due Date"
-msgstr "Erste Tage nach Fälligkeit"
+msgstr "Erste Tage nach Fälligkeitsdatum"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__before_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__before_first_notify
 msgid "First Days Before Due Date"
-msgstr "Erste Tage vor Fälligkeit"
+msgstr "Erste Tage vor Fälligkeitsdatum"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_mail_activity__id
@@ -107,12 +107,12 @@ msgstr "ICH WÜRDE"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company____last_update
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings____last_update
 msgid "Last Modified on"
-msgstr "Zuletzt geändert am"
+msgstr "Zuletzt geändert"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_mail_activity__text_note
 msgid "Notes In Char format "
-msgstr "Hinweise In Char Format"
+msgstr "Hinweise im Zeichenformat"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__notify_create_user_after_first
@@ -126,32 +126,32 @@ msgstr "Hinweise In Char Format"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__notify_create_user_before_second
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__notify_create_user_due
 msgid "Notify Create User"
-msgstr "Benutzer erstellen Notify"
+msgstr "Benachrichtigen Sie den Benutzer erstellen."
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__ondue_date_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__ondue_date_notify
 msgid "On Due Date"
-msgstr "Auf Due Date"
+msgstr "Am Fälligkeitsdatum"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__after_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__after_second_notify
 msgid "Second Days After Due Date"
-msgstr "Zweite Tage nach Fälligkeit"
+msgstr "Zweite Tage nach Fälligkeitsdatum"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__before_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__before_second_notify
 msgid "Second Days Before Due Date"
-msgstr "Zweite Tage vor Fälligkeit"
+msgstr "Zweite Tage vor Fälligkeitsdatum"
 
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Set Options to True and enter notification days"
-msgstr "Festlegen von Optionen auf True und geben Sie Benachrichtigung Tage"
+msgstr "Setzen Sie Optionen auf TRUE und geben Sie Benachrichtigungsstage ein"
 
 #. module: sh_activity_base
 #: model:ir.actions.act_window,name:sh_activity_base.activity_config_settings_action
 msgid "Settings"
-msgstr "die Einstellungen"
+msgstr "Einstellungen"

@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class AvailableProductDict(models.TransientModel):
     _name = "available.product.dict"
+    _description = "Available Product Dict"
 
     available_production_lot_dict_to_be_returned = {}
     available_production_lot_dict = {}

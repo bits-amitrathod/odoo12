@@ -5,6 +5,7 @@ from odoo import api, fields, models
 
 class ReportProducts(models.AbstractModel):
     _name = 'report.tps_report_sale.report_products'
+    _description = "Report Total Products Sale"
 
     @api.model
     def _get_report_values(self, docids, data=None):

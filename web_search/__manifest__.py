@@ -14,4 +14,5 @@
         'data/ir_asset.xml',
     ],
     'installable': True,
+    'license': 'AGPL-3'
 }

@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class website_cstm(models.Model):
     _name = 'website_cstm.product_instock_notify'
+    _description = "Website CSTM Product Instock Notify"
 
     email = fields.Char()
     product_tmpl_id = fields.Many2one('product.template', 'Product Template', ondelete='cascade', required=True)
@@ -37,6 +38,7 @@ class website_cstm(models.Model):
 
 class website_product_download_catelog_cstm(models.Model):
     _name = 'website_cstm.product_download_catelog'
+    _description = "Website CSTM Product Download Catelog"
 
     file = fields.Binary('File')
     filename = fields.Char()

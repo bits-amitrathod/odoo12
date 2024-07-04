@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class InventoryNotificationHTML(models.TransientModel):
     _name = 'inventory.notification.html'
+    _description = "InventoryNotificationHTML"
     def process_packing_list_html(self,packing_list):
         html_description="""
             <html>

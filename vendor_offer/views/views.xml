@@ -68,18 +68,20 @@
             <field name="model">purchase.order.shipping.popup</field>
             <field name="arch" type="xml">
                 <form string="Generate Tracking Text">
-                    <group>
-                        <field name="carrier_id"/>
-                        <field name="delivery_package_type_id" invisible="1"/>
-                        <field name="product_packaging"/>
-                        <field name="weight" class="oe_inline"/>
-                        <field name="package_count"/>
-                    </group>
-                    <footer>
-                        <button name="action_tracking" string="Generate Shipping Label" type="object"
-                                class="btn-primary"/>
-                        <button string="_Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                    <sheet>
+                        <group>
+                            <field name="carrier_id"/>
+                            <field name="delivery_package_type_id" invisible="1"/>
+                            <field name="product_packaging"/>
+                            <field name="weight" class="oe_inline"/>
+                            <field name="package_count"/>
+                        </group>
+                        <footer>
+                            <button name="action_tracking" string="Generate Shipping Label" type="object"
+                                    class="btn-primary"/>
+                            <button string="_Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

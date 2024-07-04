@@ -390,6 +390,8 @@ class NotificationSetting(models.Model):
 # Customer product level setting
 class Prioritization(models.Model):
     _name = 'prioritization_engine.prioritization'
+    _description = "Prioritization Engine"
+
     _inherits = {'product.product': 'product_id'}
     min_threshold = fields.Integer("Min Threshold", readonly=False)
     max_threshold = fields.Integer("Max Threshold", readonly=False)
@@ -470,6 +472,8 @@ class Prioritization(models.Model):
 
 class PrioritizationTransient(models.TransientModel):
     _name = 'prioritization.transient'
+    _description = "Prioritization Transient"
+
     min_threshold = fields.Integer("Min Threshold", readonly=False)
     max_threshold = fields.Integer("Max Threshold", readonly=False)
     priority = fields.Integer("Priority")
@@ -729,6 +733,7 @@ class StockMove(models.Model):
 
 class GLAccount(models.Model):
     _name = "gl.account"
+    _description = "GL Account"
 
     _sql_constraints = [
         ('name', 'unique(name)', 'GL Account already exists'),

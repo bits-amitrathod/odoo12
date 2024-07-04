@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class PopUp(models.TransientModel):
     _name = 'sps_receive_popup.view.model'
+    _description = 'sps receive popup view model'
 
     start_date = fields.Date('Start Date')
     end_date = fields.Date(string="End Date")

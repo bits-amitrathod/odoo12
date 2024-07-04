@@ -5,6 +5,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 class BdAccountClosedReportPopup_18(models.TransientModel):
     _name = 'popup.bd.account.closed_18'
+    _description = 'BdAccountClosedReportPopup_18'
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
                              help="Choose a date to get the Revenue From Accounts Closed In 18 Months By BD at that End date")

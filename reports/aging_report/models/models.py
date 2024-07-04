@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class AgingReport(models.Model):
     _name = 'aging.report'
+    _description = "Aging Report"
     _rec_name = 'product_id'
 
     # cr_date = fields.Date("Created date")

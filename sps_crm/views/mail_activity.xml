@@ -5,9 +5,9 @@
         <field name="model">mail.activity</field>
         <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree" />
         <field name="arch" type="xml">
-              <field name="summary" position="replace">
+              <!--<field name="summary" position="replace">
                     <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
-                </field>
+                </field>-->
             <field name="user_id" position="after">
                 <field name="sh_state" invisible="1" />
 
@@ -24,7 +24,7 @@
             <field name="model">mail.activity</field>
             <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
             <field name="arch" type="xml">
-                  <field name="summary" position="replace">
+                <field name="summary" position="replace">
                     <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
                 </field>
                 <field name="note" position="replace">
@@ -92,26 +92,8 @@
                 </xpath>
         </field>
         </record>
-        <!-- UPG ODOO16 NOTE Same view inherited that why this code apply on above view sh_mail_activity_view_form_custom -->
-         <!--<record id="sh_mail_activity_view_form_custom2" model="ir.ui.view">
-        <field name="name">sh.mail.activity.view.form.add.priority</field>
-        <field name="model">mail.activity</field>
-        <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
-        <field name="arch" type="xml">
-            <field name="reference" position="replace">
-                 <field name="reference" string="Account"></field>
-                 <field name="activity_priority" ></field>
-                 <field name="related_partner_activity" string="Contact"></field>
-                <field name="email" ></field>
-                <field name="phone" ></field>
-                <field name="mobile"></field>
-            </field>
-            <field name="summary" position="after">
-                <field name="tags" widget="many2many_tags" ></field>
-            </field>
-        </field>
-    </record>-->
-         <record id="sh_mail_activity_view_tree_child_priority" model="ir.ui.view">
+
+        <record id="sh_mail_activity_view_tree_child_priority" model="ir.ui.view">
         <field name="name">sh.mail.activity.view.tree</field>
         <field name="model">mail.activity</field>
         <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree" />
@@ -128,54 +110,6 @@
             </field>
         </field>
     </record>
-
-        <!-- Studio changes-->
-        <!-- TODO:UPG ODOO16 NOTE Same view inherited that why this code apply on above view sh_mail_activity_view_form_custom -->
-        <!--<record id="sh_mail_activity_view_form_n" model="ir.ui.view">
-            <field name="name">sh.mail.activity.view.form.add.priority</field>
-            <field name="model">mail.activity</field>
-            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
-&lt;!&ndash;            <field name="priority"></field>&ndash;&gt;
-            <field name="arch" type="xml">
-                <xpath expr="/form[1]/sheet[1]/group[3]" position="attributes">
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-                <xpath expr="/form[1]/sheet[1]/notebook[1]/page[1]" position="before">
-                    <page name="detail_tab" string="Details">
-                        <group>
-                            <field name="reference"  string="Account"></field>
-                            <field name="related_partner_activity" string="Contact" options="{'no_create': True}"></field>
-                        </group>
-                        <group name="parent_group">
-                            <group name="group_left">
-                                <field name="activity_type_id" options="{'no_create': True}"/>
-                                <field name="summary" string="Subject"/>
-                                <field name="activity_priority"/>
-                                <field name="email" widget="email"/>
-                                <field name="function" string="Job Title"/>
-                                <field name="phone" widget="phone"/>
-                                <field name="direct_line"/>
-                                <field name="mobile" widget="phone"/>
-                                <field name="tags" widget="many2many_tags"/>
-                                <field name="request_partner_id"/>
-                            </group>
-                            <group name="group_right">
-                                <field name="date_deadline"/>
-                                <field name="date_done"/>
-                                <field name="create_date"/>
-                                <field name="user_id"/>
-                                <field name="time_zone"/>
-                            </group>
-                        </group>
-                    </page>
-                </xpath>
-                 <xpath expr="//page[@name='actnotes']" position="replace">
-                    <page name="comment_tab" string="NA or Comments">
-                      <group> <field name="comment"/></group>
-                   </page>
-                  </xpath>
-            </field>
-        </record>-->
 
         <!-- Search  -->
         <record id="crm_mail_activity_view_search" model="ir.ui.view">
@@ -203,7 +137,8 @@
                     <field name="reference" string="Account"></field>
                    <field name="related_partner_activity" string="Contact"></field>
                 </xpath>
-                <field name="supervisor_id" position="replace">
+                <!-- TODO: ODOO_16 SH_mig -->
+<!--                <field name="supervisor_id" position="replace">
                     <field name="supervisor_id" invisible="1"/>
                 </field>
                 <field name="company_id" position="replace">
@@ -211,7 +146,7 @@
                 </field>
                 <field name="sh_activity_tags" position="replace">
                     <field name="sh_activity_tags" invisible="1"/>
-                </field>
+                </field>-->
                 <field name="summary" position="replace">
                     <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
                 </field>
@@ -318,7 +253,6 @@
                 </xpath>
             </field>
         </record>
-
         <record id="mail_activity_view_form_popup_done_duplicate" model="ir.ui.view">
             <field name="name">mail.activity.view.form.popup.duplicate</field>
             <field name="model">mail.activity</field>
@@ -344,7 +278,6 @@
                         <button string="Discard" class="btn-secondary" special="cancel" />
                     </footer>
                 </xpath>
-
             </field>
     </record>
 

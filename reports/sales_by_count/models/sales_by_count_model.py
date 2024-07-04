@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductSaleByCountReport(models.Model):
     _name = "report.sales.by.count"
+    _description = "Product Sale ByCount Report"
     _auto = False
 
     sku_code = fields.Char('Product SKU')

@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 class RmaPopUp(models.TransientModel):
 
     _name = 'rma.report.popup'
+    _description = "Rma Pop Up"
 
     #  domain="['|',('state', '=', 'return'),'&', ('picking_ids.state','=','done'),('picking_ids.location_dest_id.name','=','Stock')]"
     sale_order_id = fields.Many2one('sale.order', string='Sale Order', required=True)

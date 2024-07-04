@@ -5,16 +5,18 @@
             <field name="model">salesbymonth.popup</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="end_date"/>
-                            <field name="product_sku_code"/>
+                            <group>
+                                <field name="end_date"/>
+                                <field name="product_sku_code"/>
+                            </group>
                         </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

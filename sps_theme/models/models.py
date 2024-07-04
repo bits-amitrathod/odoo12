@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class website_cstm(models.Model):
     _name = 'sps_theme.product_instock_notify'
+    _description = "Sps theme product in stock notify"
 
     email = fields.Char()
     product_tmpl_id = fields.Many2one('product.template', 'Product Template', ondelete='cascade', required=True)

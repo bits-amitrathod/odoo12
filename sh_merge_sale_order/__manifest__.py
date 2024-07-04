@@ -62,5 +62,6 @@ combine sale order
     "auto_install":False,
     "installable" : True,
     "price": 25,
-    "currency": "EUR"   
+    "currency": "EUR",
+    "license": "LGPL-3",
 }

@@ -5,22 +5,24 @@
             <field name="model">popup.returned.sales</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="sale_person_id"/>
-                            <field name="customer_id"/>
-                            <field name="sku_code"/>
+                            <group>
+                                <field name="sale_person_id"/>
+                                <field name="customer_id"/>
+                                <field name="sku_code"/>
+                            </group>
+                            <group>
+                                <field name="compute_at_date" widget="radio" default="0"/>
+                                <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                                <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            </group>
                         </group>
-                        <group>
-                            <field name="compute_at_date" widget="radio" default="0"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

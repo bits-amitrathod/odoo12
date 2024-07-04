@@ -8,9 +8,9 @@ class CompareSaleByMonth(models.Model):
 
     # sku_name = fields.Char("Product ",store=False)
     product_name = fields.Char("Product Name ",compute = '_compare_data',)
-    last_month_total_qty = fields.Float("Last Month Total Qty", compute = '_compare_data', store=False,digits=dp.get_precision('Product Unit of Measure'))
+    last_month_total_qty = fields.Float("Last Month Total Qty", compute = '_compare_data', store=False,digits='Product Unit of Measure')
     last_month_total_amount = fields.Monetary("Last Month Total Amount", compute = '_compare_data',)
-    current_month_total_qty = fields.Float("Current Month Total Qty", compute = '_compare_data',digits=dp.get_precision('Product Unit of Measure'))
+    current_month_total_qty = fields.Float("Current Month Total Qty", compute = '_compare_data',digits='Product Unit of Measure')
     current_month_total_amount = fields.Monetary("Current Month Total Amount", compute = '_compare_data',)
     # location = fields.Char(string='Location')
 
