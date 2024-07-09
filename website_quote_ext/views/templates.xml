@@ -492,8 +492,9 @@
                                     <td id="product_name"><span t-field="line.name"/> </td>
                                     <td class="text-right" id="product_name"><span t-field="line.product_id.product_tmpl_id.actual_quantity"/></td>
 <!--                                    <td id="product_name"><span t-if="line.order_id.team_id.team_type=='engine' and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>-->
-                                    <td class="text-right"><div><span t-esc="line.product_id.min_exp_date" t-options="{'widget': 'date'}"/></div></td>
+<!--                                    <td class="text-right"><div><span t-esc="line.product_id.min_exp_date" t-options="{'widget': 'date'}"/></div></td>-->
 <!--                                    <td class="text-right"><div><span t-esc="line.product_id.max_exp_date" /></div></td>-->
+                                    <td class="text-right"><div><span t-esc="line.product_id.srt_date_min" /></div></td>
                                     <td class="text-right"><div><span t-esc="line.product_id.srt_date_max" /></div></td>
                                     <td id="product_name"><span t-if="line.order_id.team_id.team_type in ('engine', 'rapid_quote') and line.product_min_max_exp_date" t-field="line.product_min_max_exp_date"/> </td>
                                     <td><span t-if="line.req_date" t-field="line.req_date" t-options='{"widget": "date"}'/></td>

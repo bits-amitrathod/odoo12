@@ -1273,7 +1273,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                 elif column_name == 'str_min':
                     if query_result and query_result['min']:
                         min = str(query_result['min'])
-                        column = datetime.strptime(str(min), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                        if ((query_result['min'].date() > fields.Datetime.today().date())
+                                and ((query_result['min'].date() - fields.Datetime.today().date()).days > 365)
+                                and ((query_result['max'].date() - query_result['min'].date()).days > 365)):
+                            column = "-"
+                        else:
+                            column = datetime.strptime(str(min), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
 

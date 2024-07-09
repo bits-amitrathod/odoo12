@@ -131,11 +131,19 @@ class TempProductList(models.Model):
                         price_list = product.product_tmpl_id.list_price
 
                 str_date_cal = ''
+                str_date_min = ''
                 if (result['min'] is not None and result['max'] is not None) and \
                         ((result['max'] - result['min']).days > 365):
                     str_date_cal = '1 Year+'
                 elif result['min'] is not None and result['max'] is not None:
                     str_date_cal = result['max'].strftime('%m/%d/%Y')
+
+                if ((result['min'].date() > fields.Datetime.today().date())
+                        and ((result['min'].date() - fields.Datetime.today().date()).days > 365)
+                        and ((result['max'].date() - result['min'].date()).days > 365)):
+                    str_date_min = '-'
+                elif result['min'] is not None:
+                    str_date_min = result['min'].strftime('%m/%d/%Y')
 
                 company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
                 product_dict = {'product': product,
@@ -146,6 +154,7 @@ class TempProductList(models.Model):
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
                                 'str_max_date': str_date_cal,
+                                'str_min_date': str_date_min,
                                 'price_list': price_list,
                                 'price_curr': company_fetch.currency_id,
                                 'quantity': query_result['quantity'],
