@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<odoo>
-	<menuitem name="Activity Dashboard" id="sh_activity_dashboard" web_icon="sh_activities_management,static/description/icon.png" sequence="1"/>
-	<menuitem name="Configuration" id="menu_config" parent="sh_activity_dashboard" sequence="4" />
-</odoo>

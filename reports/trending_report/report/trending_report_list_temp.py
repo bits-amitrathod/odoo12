@@ -7,6 +7,8 @@ log = logging.getLogger(__name__)
 
 class ReportTrendingReportList(models.AbstractModel):
     _name = 'report.trending_report.trendingreportlist_temp_test'
+    _description = "Report Trending ReportList"
+
     @api.model
     def _get_report_values(self, docids, data=None):
 

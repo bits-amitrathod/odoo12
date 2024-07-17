@@ -16,10 +16,11 @@
 
     # always loaded
     'data': [
-        # 'views/views.xml',
+        'views/views.xml',
     ],
 
     'application' :True,
     'auto-install': False,
     'installable': True,
+    'license': 'LGPL-3',
 }

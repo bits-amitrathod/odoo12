@@ -4,6 +4,7 @@ import datetime
 
 class DiscountSummaryPopUp(models.TransientModel):
     _name = 'popup.discount.summary'
+    _description = "Discount Summary PopUp"
     # _description = 'Discount Summary PopUp'
 
     compute_at_date = fields.Selection([

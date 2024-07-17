@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class ReceivingListPopUp(models.TransientModel):
     _name = 'popup.receiving.list'
+    _description = "ReceivingListPopUp"
 
     order_type = fields.Selection([
         ('1', 'PO'),
@@ -43,6 +44,9 @@ class ReceivingListPopUp(models.TransientModel):
 
 class ReceivingListPoReport(models.Model):
     _name = "report.receiving.list.po"
+    _description = "ReceivingListPoReport"
+
+
     _auto = False
 
     order_id = fields.Many2one('purchase.order', string='Purchase Order#', )
@@ -52,8 +56,8 @@ class ReceivingListPoReport(models.Model):
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
-    product_uom_qty = fields.Float('Quantity', digits=dp.get_precision('Product Unit of Measure'))
-    qty_done = fields.Float('Qty Received', digits=dp.get_precision('Product Unit of Measure'))
+    product_uom_qty = fields.Float('Quantity', digits='Product Unit of Measure')
+    qty_done = fields.Float('Qty Received', digits='Product Unit of Measure')
     date_done = fields.Datetime('Date Done')
     product_uom_id = fields.Many2one('uom.uom', 'UOM')
     state = fields.Selection([
@@ -148,6 +152,8 @@ class ReceivingListPoReport(models.Model):
 
 class ReceivingListReport(models.Model):
     _name = "report.receiving.list.so"
+    _description = "ReceivingListReport"
+
     _auto = False
 
     order_id = fields.Many2one('sale.order', string='Sale Order#', )
@@ -157,8 +163,8 @@ class ReceivingListReport(models.Model):
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     picking_name = fields.Char('Picking #')
     product_tmpl_id = fields.Many2one('product.template', "Product")
-    product_uom_qty = fields.Float('Quantity', digits=dp.get_precision('Product Unit of Measure'))
-    qty_done = fields.Float('Qty Received', digits=dp.get_precision('Product Unit of Measure'))
+    product_uom_qty = fields.Float('Quantity', digits='Product Unit of Measure')
+    qty_done = fields.Float('Qty Received', digits='Product Unit of Measure')
     date_done = fields.Datetime('Date Done')
     product_uom_id = fields.Many2one('uom.uom', 'UOM')
     state = fields.Selection([

@@ -49,6 +49,8 @@ _logger = logging.getLogger(__name__)
 class VendorOfferImportTransientModel(models.TransientModel):
     _inherit = 'base_import.import'
     _name = "sps.vendor.offer.template.transient"
+    _description = "Vendor Offer Automation Template Class"
+
     # customer_id = fields.Integer('Customer')
     columns_from_template = fields.Char(string='Template Columns')
 

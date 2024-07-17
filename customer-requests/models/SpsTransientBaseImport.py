@@ -46,6 +46,8 @@ ATTACHMENT_DIR = "/home/odoo/Documents/templates/customer/"
 class SpsTransientBaseImport(models.TransientModel):
     _inherit = 'base_import.import'
     _name = "sps.template.transient"
+    _description = "Sps Transient Base Import"
+
     # customer_id = fields.Integer('Customer')
     columns_from_template = fields.Char(string='Template Columns')
 

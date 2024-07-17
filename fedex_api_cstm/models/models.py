@@ -249,6 +249,7 @@ class FedexDelivery(models.Model):
 
 class cstm_popup_message(models.TransientModel):
     _name = "cstm.popup.message"
+    _description = "CSTM Popup Message Model"
 
     def get_default(self):
         if self.env.context.get("message", False):
@@ -260,6 +261,7 @@ class cstm_popup_message(models.TransientModel):
 
 class tracking_popup(models.TransientModel):
     _name = "tracking.popup"
+    _description = "Tracking Popup model"
 
     def get_default(self):
         if self.env.context.get("tracking_numbers", False):

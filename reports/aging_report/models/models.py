@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 class AgingReport(models.Model):
     _name = 'aging.report'
+    _description = "Aging Report"
     _rec_name = 'product_id'
 
     # cr_date = fields.Date("Created date")
@@ -97,26 +98,26 @@ class AgingReport(models.Model):
                public.stock_warehouse
                ON
                 (public.stock_location.id in (public.stock_warehouse.lot_stock_id,public.stock_warehouse.wh_output_stock_loc_id,wh_pack_stock_loc_id))
-           inner JOIN ( 
+           INNER JOIN ( 
                 select a.lot_id, max(a.date) as date,avg(DATE_PART('day',CURRENT_DATE :: TIMESTAMP - a.date :: TIMESTAMP )) as avg_day  from(        
-                SELECT stock_move_line.lot_id ,stock_move.date FROM public.stock_inventory 
-                left JOIN public.stock_move 
-                ON ( public.stock_inventory.id = public.stock_move.inventory_id and public.stock_inventory.state in('done'))
-                left join stock_move_line ON  stock_move.id = stock_move_line.move_id
-                where stock_move_line.lot_id is not null
-                union
-                select stock_move_line.lot_id , stock_move.date from stock_move_line
-                inner join stock_picking 
-                on stock_move_line.picking_id = stock_picking.id and stock_move_line.location_dest_id =14
-                inner join stock_move on stock_move.id = stock_move_line.move_id
-                where lot_id is not null) a 
-        group by a.lot_id
+                    SELECT stock_move_line.lot_id ,stock_move.date FROM public.stock_move 
+                    INNER JOIN public.stock_move_line 
+                    ON ( public.stock_move.id = public.stock_move_line.move_id and public.stock_move.state in ('done'))
+                    where stock_move_line.lot_id is not null 
+                    union
+                    SELECT stock_move_line.lot_id , stock_move.date from stock_move_line
+                    inner join stock_picking 
+                    on stock_move_line.picking_id = stock_picking.id and stock_move_line.location_dest_id =14
+                    inner join stock_move on stock_move.id = stock_move_line.move_id
+                    where lot_id is not null
+                ) a 
+                group by a.lot_id
            ) as a
-             ON stock_lot.id = a.lot_id  
-             WHERE public.stock_quant.quantity>0
+            ON stock_lot.id = a.lot_id  
+            WHERE public.stock_quant.quantity>0
              
-             group by  public.stock_lot.id ,public.product_template.name,public.stock_lot.name,public.stock_lot.create_date,
-             public.stock_lot.use_date, public.stock_warehouse.id, public.product_template.id,a.avg_day
+            group by  public.stock_lot.id ,public.product_template.name,public.stock_lot.name,public.stock_lot.create_date,
+            public.stock_lot.use_date, public.stock_warehouse.id, public.product_template.id,a.avg_day
         
         """
         if stock_location and not stock_location is None :
@@ -127,7 +128,7 @@ class AgingReport(models.Model):
             select_query = insert + """ SELECT 
                             stock_move_line.lot_id as lot_id,
                             product_template.name as product_name,
-                            sum(stock_move_line.product_uom_qty) as qty ,
+                            sum(stock_move_line.reserved_uom_qty) as qty ,
                             stock_lot.name as lot_name ,
                             max(sale_order.date_order) as create_date,
                             stock_lot.use_date as use_date,
@@ -156,7 +157,7 @@ class AgingReport(models.Model):
         select_query = insert + """ SELECT 
                                 public.stock_move_line.lot_id as prod_lot_id, 
                                 public.product_template.name as product_name,
-                                sum(public.stock_move_line.product_uom_qty) as qty, 
+                                sum(public.stock_move_line.reserved_uom_qty) as qty, 
                                 public.stock_lot.name as lot_name,
                                 max(public.purchase_order.date_order) as create_date,
                                 public.stock_lot.use_date as use_date,

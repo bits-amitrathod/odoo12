@@ -4,6 +4,7 @@ from odoo import api, models
 
 class ReportSalesSalespersonWise(models.AbstractModel):
     _name = 'report.report_price_list.price_list_temp'
+    _description = "Report Sales Salesperson Wise"
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -12,6 +13,7 @@ class ReportSalesSalespersonWise(models.AbstractModel):
 
 class CustProductPriceList(models.AbstractModel):
     _name = 'report.report_price_list.cust_price_list_temp'
+    _description = "Cust Product PriceList"
 
     @api.model
     def _get_report_values(self, docids, data=None):

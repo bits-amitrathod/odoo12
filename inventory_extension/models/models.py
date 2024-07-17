@@ -6,6 +6,7 @@ _logger = logging.getLogger(__name__)
 
 class WarningPopup(models.TransientModel):
     _name = 'warning.popup.wizard'
+    _description =  "Warning Popup"
 
     picking_warn_msg = fields.Char(string="Warning", compute="compute_warning")
 

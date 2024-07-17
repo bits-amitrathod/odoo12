@@ -53,20 +53,22 @@
             <field name="model">popup.bd.revenue.per.account</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="compute_at_date" widget="radio" default="0"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <group>
+                                <field name="compute_at_date" widget="radio" default="0"/>
+                                <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                                <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            </group>
+                            <group>
+                                <field name="business_development"/>
+                            </group>
                         </group>
-                        <group>
-                            <field name="business_development"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -93,24 +95,26 @@
             <field name="model">report.bd.revenue.per.account.export</field>
             <field name="arch" type="xml">
                 <form string="Export Revenue By Business Development Per Account Report">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="compute_at_date" widget="radio" default="0"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <group>
+                                <field name="compute_at_date" widget="radio" default="0"/>
+                                <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                                <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            </group>
+                            <group>
+                                <field name="business_development"/>
+                            </group>
+                            <group>
+                                <div>Click On ' Export To File ' button to export Revenue By Business Development Per Account report file</div>
+                            </group>
                         </group>
-                        <group>
-                            <field name="business_development"/>
-                        </group>
-                        <group>
-                            <div>Click On ' Export To File ' button to export Revenue By Business Development Per Account report file</div>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="download_excel_bd_revenue" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="download_excel_bd_revenue" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

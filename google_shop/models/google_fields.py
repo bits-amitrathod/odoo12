@@ -12,6 +12,7 @@ from odoo.addons.http_routing.models.ir_http import slug
 
 class Detail_oauth2(models.Model):
     _name = 'google.fields'
+    _description = "Google Fields"
 
     name = fields.Char(string="Field",required=True)
     required = fields.Boolean(string="Required")

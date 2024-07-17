@@ -1,51 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report 
-            string="Vendor Offer"
-            id="action_report_vendor_offer"
-            model="purchase.order" 
-            report_type="qweb-pdf"
-            name="vendor_offer.report_vendorofferdraft"
-            file="vendor_offer.report_vendorofferdraft"
-            print_report_name="
-                ('Vendor Offer- %s' % (object.name))"
-        />
+        <record id="action_report_vendor_offer" model="ir.actions.report">
+            <field name="name">Vendor Offer</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">vendor_offer.report_vendorofferdraft</field>
+            <field name="report_file">vendor_offer.report_vendorofferdraft</field>
+            <field name="print_report_name">('Vendor Offer- %s' % (object.name))</field>
+        </record>
 
-        <report
-            string="Vendor Offer"
-            id="action_report_vendor_offer_accepted"
-            model="purchase.order"
-            report_type="qweb-pdf"
-            name="vendor_offer.report_vendorofferdraft_accepted"
-            file="vendor_offer.report_vendorofferdraft_accepted"
-            print_report_name="
-                ('Vendor Offer- %s' % (object.name))"
-            attachment_use="True"
-            menu="False"
-        />
+        <record id="action_report_vendor_offer_accepted" model="ir.actions.report">
+            <field name="name">Vendor Offer</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">vendor_offer.report_vendorofferdraft_accepted</field>
+            <field name="report_file">vendor_offer.report_vendorofferdraft_accepted</field>
+            <field name="print_report_name">('Vendor Offer- %s' % (object.name))</field>
+            <field name="attachment_use">True</field>
+        </record>
 
-          <report
-            string="Acceleration Clause"
-            id="action_report_vendor_offer_acceleration"
-            model="purchase.order"
-            report_type="qweb-pdf"
-            name="vendor_offer.report_vendorofferacceleration"
-            file="vendor_offer.report_vendorofferacceleration"
-            print_report_name="
-                ('Vendor Offer- %s' % (object.name))"
-        />
+        <record id="action_report_vendor_offer_acceleration" model="ir.actions.report">
+            <field name="name">Acceleration Clause</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">vendor_offer.report_vendorofferacceleration</field>
+            <field name="report_file">vendor_offer.report_vendorofferacceleration</field>
+            <field name="print_report_name">('Vendor Offer- %s' % (object.name))</field>
+        </record>
 
-        <report
-            string="Vendor Offer Not Itemized"
-            id="action_report_vendor_offer_not_itemized"
-            model="purchase.order"
-            report_type="qweb-pdf"
-            name="vendor_offer.report_vendoroffernotitemized"
-            file="vendor_offer.report_vendoroffernotitemized"
-            print_report_name="
-                ('Vendor Offer- %s' % (object.name))"
-        />
+        <record id="action_report_vendor_offer_not_itemized" model="ir.actions.report">
+            <field name="name">Vendor Offer Not Itemized</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">vendor_offer.report_vendoroffernotitemized</field>
+            <field name="report_file">vendor_offer.report_vendoroffernotitemized</field>
+            <field name="print_report_name">('Vendor Offer- %s' % (object.name))</field>
+        </record>
 
     </data>
 </odoo>

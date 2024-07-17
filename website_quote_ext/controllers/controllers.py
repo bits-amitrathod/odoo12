@@ -117,7 +117,7 @@ class SPSCustomerPortal(CustomerPortal):
             values['acquirers'] = providers.filtered(lambda acq: (acq.payment_flow == 'form' and acq.view_template_id) or (acq.payment_flow == 's2s' and acq.registration_view_template_id))
             values['pms'] = request.env['payment.token'].search(
                 [('partner_id', '=', order_sudo.partner_id.id),
-                 ('acquirer_id', 'in', providers.filtered(lambda acq: acq.payment_flow == 's2s').ids)])
+                 ('provider_id', 'in', providers.filtered(lambda acq: acq.payment_flow == 's2s').ids)])
 
         if order_sudo.state in ('draft', 'sent', 'cancel'):
             history = request.session.get('my_quotations_history', [])
@@ -452,10 +452,6 @@ class CustomerPortal(CustomerPortal):
                 pay_ids.append(item.id)
         providers = request.env['payment.provider'].search([('id', 'in', pay_ids)])
         values['providers'] = providers
-
-        # if providers:
-        #     country_id = values.get('partner_id') and values.get('partner_id')[0].country_id.id
-        #     values['acq_extra_fees'] = providers.get_acquirer_extra_fees(invoice_sudo.amount_residual, invoice_sudo.currency_id, country_id)
 
         pay_link = request.env['sale.pay.link.cust'].search([('invoice_id', '=', invoice_id)])
         if pay_link:

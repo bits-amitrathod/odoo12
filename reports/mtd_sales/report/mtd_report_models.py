@@ -12,6 +12,7 @@ except ImportError:
 
 class MtdReportModel(models.AbstractModel):
     _name = 'report.mtd_sales.mtd_temp'
+    _description = "Mtd Report Model"
 
     def get_report_values(self, docids, data=None):
 

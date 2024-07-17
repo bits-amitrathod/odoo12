@@ -20,7 +20,7 @@
   "version"              :  "1.0.4",
   "sequence"             :  1,
   "author"               :  "Webkul Software Pvt. Ltd.",
-  "license"              :  "Other proprietary",
+  "license"              :  "LGPL-3",
   "maintainer"           :  "Kunal Chaudhary Rajora",
   "website"              :  "https://store.webkul.com/Odoo-Google-Shop.html",
   "description"          :  """Allows you to send the products of odoo into google shop""",

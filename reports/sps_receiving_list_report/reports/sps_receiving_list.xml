@@ -1,29 +1,28 @@
 <odoo>
 
-    <report id="action_sps_receiving_list_report_pdf"
-            string="SPS Receiving PDF"
-            model="stock.move.line"
-            report_type="qweb-pdf"
-            file="sps_receiving_list_report.adjustment_report"
-            name="sps_receiving_list_report.adjustment_report"
-    />
+    <record id="action_sps_receiving_list_report_pdf" model="ir.actions.report">
+        <field name="name">SPS Receiving PDF</field>
+        <field name="model">stock.move.line</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">sps_receiving_list_report.adjustment_report</field>
+        <field name="report_file">sps_receiving_list_report.adjustment_report</field>
+    </record>
 
-    <report id="action_sps_receiving_list_report"
-            string="SPS Receiving List"
-            model="stock.move.line"
-            report_type="qweb-html"
-            file="sps_receiving_list_report.adjustment_report"
-            name="sps_receiving_list_report.adjustment_report"
-    />
+    <record id="action_sps_receiving_list_report" model="ir.actions.report">
+        <field name="name">SPS Receiving List</field>
+        <field name="model">stock.move.line</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">sps_receiving_list_report.adjustment_report</field>
+        <field name="report_file">sps_receiving_list_report.adjustment_report</field>
+    </record>
 
-
-    <report id="action_sps_receiving_list_report1"
-            string="SPS Receiving List PDF"
-            model="stock.picking"
-            report_type="qweb-html"
-            file="sps_receiving_list_report.adjustment_report1"
-            name="sps_receiving_list_report.adjustment_report1"
-    />
+    <record id="action_sps_receiving_list_report1" model="ir.actions.report">
+        <field name="name">SPS Receiving List PDF</field>
+        <field name="model">stock.picking</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">sps_receiving_list_report.adjustment_report1</field>
+        <field name="report_file">sps_receiving_list_report.adjustment_report1</field>
+    </record>
 
     <template id="adjustment_report">
         <t t-call="web.html_container">

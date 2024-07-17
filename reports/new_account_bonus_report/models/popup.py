@@ -5,6 +5,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 class NewAccountBonusReportPopup(models.TransientModel):
     _name = 'popup.new.account.bonus.report'
+    _description = "New Account Bonus Report Popup"
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
                              help="Choose a date to get the New Account Bonus Report at that Start date")

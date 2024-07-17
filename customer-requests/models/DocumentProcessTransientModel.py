@@ -23,6 +23,7 @@ _logger = logging.getLogger(__name__)
 
 class DocumentProcessTransientModel(models.TransientModel):
     _name = 'sps.document.process'
+    _description = "Document Process Transient Model"
 
     def process_portal_document(self, user_model, uploaded_file_path, template_type_from_user, file_name, document_source='Portal'):
         _logger.info('In process_portal_document')

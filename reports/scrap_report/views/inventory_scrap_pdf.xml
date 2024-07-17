@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_print_inventory_scrap"
-                string="Inventory Scrap Report"
-                model="stock.scrap"
-                report_type="qweb-html"
-                file="scrap_report.inventory_scrap_print"
-                name="scrap_report.inventory_scrap_print"
-        />
+        <record id="action_print_inventory_scrap" model="ir.actions.report">
+            <field name="name">Inventory Scrap Report</field>
+            <field name="model">stock.scrap</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">scrap_report.inventory_scrap_print</field>
+            <field name="report_file">scrap_report.inventory_scrap_print</field>
+        </record>
     </data>
 </odoo>

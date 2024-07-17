@@ -23,7 +23,7 @@ msgstr "Actividad"
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Activity Management"
-msgstr "Gestión de las Actividades"
+msgstr "Gestión de actividades"
 
 #. module: sh_activity_base
 #: model:ir.model,name:sh_activity_base.model_res_company
@@ -33,12 +33,12 @@ msgstr "Compañías"
 #. module: sh_activity_base
 #: model:ir.model,name:sh_activity_base.model_res_config_settings
 msgid "Config Settings"
-msgstr "Opciones de Configuración"
+msgstr "Configuración de configuración"
 
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Days After Due Date"
-msgstr "Días después de la fecha debida"
+msgstr "Días después de la fecha de vencimiento"
 
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
@@ -57,62 +57,62 @@ msgstr "Nombre para mostrar"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__activity_due_notification
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Due Activity Notification"
-msgstr "Notificación actividad debido"
+msgstr "Notificación de la Actividad Debida"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_after_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_after_first_notify
 msgid "Enter First Days After Due Date"
-msgstr "Introduzca primeros días después de la fecha debida"
+msgstr "Ingrese los primeros días después de la fecha de vencimiento"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_before_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_before_first_notify
 msgid "Enter First Days Before Due Date"
-msgstr "Antes de entrar en primeros días Fecha de vencimiento"
+msgstr "Ingrese los primeros días antes de la fecha de vencimiento"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_after_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_after_second_notify
 msgid "Enter Second Days After Due Date"
-msgstr "Introduzca segundo lugar días después de la fecha debida"
+msgstr "Ingrese los segundos días después de la fecha de vencimiento"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_before_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_before_second_notify
 msgid "Enter Second Days Before Due Date"
-msgstr "Introduzca segundo días antes de la fecha debida"
+msgstr "Ingrese los segundos días antes de la fecha de vencimiento"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__after_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__after_first_notify
 msgid "First Days After Due Date"
-msgstr "Primeros días después de la fecha debida"
+msgstr "Primeros días después de la fecha de vencimiento"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__before_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__before_first_notify
 msgid "First Days Before Due Date"
-msgstr "Primeros días antes de la fecha debida"
+msgstr "Primeros días antes de la fecha de vencimiento"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_mail_activity__id
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__id
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__id
 msgid "ID"
-msgstr "CARNÉ DE IDENTIDAD"
+msgstr "IDENTIFICACIÓN"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_mail_activity____last_update
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company____last_update
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings____last_update
 msgid "Last Modified on"
-msgstr "Modificada por última vez"
+msgstr "Última modificación en"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_mail_activity__text_note
 msgid "Notes In Char format "
-msgstr "En formato de notas Char"
+msgstr "Notas en formato char"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__notify_create_user_after_first
@@ -126,32 +126,32 @@ msgstr "En formato de notas Char"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__notify_create_user_before_second
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__notify_create_user_due
 msgid "Notify Create User"
-msgstr "Notify Crear usuario"
+msgstr "Notificar a crear usuario"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__ondue_date_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__ondue_date_notify
 msgid "On Due Date"
-msgstr "En fecha de vencimiento"
+msgstr "A la fecha de vencimiento"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__after_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__after_second_notify
 msgid "Second Days After Due Date"
-msgstr "En segundo lugar días después de la fecha debida"
+msgstr "Segundo día después de la fecha de vencimiento."
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__before_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__before_second_notify
 msgid "Second Days Before Due Date"
-msgstr "Antes de la segunda Días Fecha de vencimiento"
+msgstr "Segundo día antes de la fecha de vencimiento."
 
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Set Options to True and enter notification days"
-msgstr "Establecer opciones en True y entran días de notificación"
+msgstr "Establecer opciones para verdaderas e ingresar días de notificación"
 
 #. module: sh_activity_base
 #: model:ir.actions.act_window,name:sh_activity_base.activity_config_settings_action
 msgid "Settings"
-msgstr "ajustes"
+msgstr "Ajustes"

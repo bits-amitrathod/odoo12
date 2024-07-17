@@ -5,6 +5,7 @@ from datetime import datetime
 
 class ReportPurchaseSalespersonWise(models.AbstractModel):
     _name = 'report.inventory_adjustment_report.adjustment_report1'
+    _description = "Report Purchase Salesperson Wise"
 
     @api.model
     def _get_report_values(self, docids, data=None):

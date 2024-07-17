@@ -116,6 +116,8 @@ class maxinventorydurationpopup(models.TransientModel):
 
 class ReportInventoryMonitor(models.AbstractModel):
     _name = 'report.inventory_monitor.inventory_monitor_print'
+    _description = "Inventory Monitor Report"
+
     @api.model
     def _get_report_values(self, docids, data=None):
          _logger.info("print report called...")
@@ -124,6 +126,7 @@ class ReportInventoryMonitor(models.AbstractModel):
 
 class ProductTemplate(models.Model):
     _name = 'inventory.monitor'
+    _description = "Inventory Monitor Model"
 
     max_inventory_level = fields.Integer("Max Inv Level", default="0")
     max_inventory_percent= fields.Float("Current % of Max Inv Level", default="0")

@@ -6,6 +6,7 @@ log = logging.getLogger(__name__)
 
 class ReportNaRevenuePerAccount(models.AbstractModel):
     _name = 'report.revenue_by_na_per_account.na_revenue_pa_temp_test'
+    _description = "Report Na Revenue Per Account"
 
     @api.model
     def _get_report_values(self, docids, data=None):

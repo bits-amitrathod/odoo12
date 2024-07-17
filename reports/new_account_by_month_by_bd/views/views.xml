@@ -89,23 +89,25 @@
             <field name="model">report.bd.new.account.export</field>
             <field name="arch" type="xml">
                 <form string="Export New Account By Month By Business Development Report">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="end_date"/>
+                            </group>
+                            <group>
+                                <field name="business_development"/>
+                            </group>
+                            <group>
+                                <div>Click On ' Export To File ' button to export New Account By Month By Business Development report file</div>
+                            </group>
                         </group>
-                        <group>
-                            <field name="business_development"/>
-                        </group>
-                        <group>
-                            <div>Click On ' Export To File ' button to export New Account By Month By Business Development report file</div>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="download_excel_bd_new_account" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="download_excel_bd_new_account" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

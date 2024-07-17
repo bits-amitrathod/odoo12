@@ -9,7 +9,8 @@ _logger = logging.getLogger(__name__)
 
 class TempProductList(models.Model):
     _name = 'quotation.product.list'
-    _description = ""
+    _description = "Temp Product List"
+
     _auto = False
 
     product_list = {}

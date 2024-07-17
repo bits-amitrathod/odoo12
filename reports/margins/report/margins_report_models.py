@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class OnHandByDateReportModel(models.AbstractModel):
     _name = 'report.margins.margins_temp'
+    _description = "OnHand ByDate Report Model"
 
     @api.model
     def _get_report_values(self, docids, data=None):

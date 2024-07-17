@@ -1,5 +1,19 @@
 <odoo>
     <data>
+
+        <record id="account_move_tree_view_inherited" model="ir.ui.view">
+            <field name="name">account.move.tree.view.inherited</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_invoice_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='state']" position="replace"> </xpath>
+                <xpath expr="//field[@name='payment_state']" position="before">
+                     <field name="state" widget="badge" decoration-success="state == 'posted'" decoration-info="state == 'draft'" optional="show"/>
+                </xpath>
+            </field>
+        </record>
+
+
          <record id="invoice_form_credit_note_label_update" model="ir.ui.view">
             <field name="name">sps.account.invoice.form.inherit</field>
             <field name="model">account.move</field>

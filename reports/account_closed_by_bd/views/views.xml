@@ -51,22 +51,24 @@
             <field name="model">popup.bd.account.closed</field>
             <field name="arch" type="xml">
                 <form>
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="start_date"/>
-                            <field name="business_development"/>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="business_development"/>
+                            </group>
+                            <group>
+                                <!--<b>Filter By Revenue Date</b>-->
+                                <field name="delivery_start_date"/>
+                                <field name="delivery_end_date"/>
+                            </group>
                         </group>
-                        <group>
-                            <!--<b>Filter By Revenue Date</b>-->
-                            <field name="delivery_start_date"/>
-                            <field name="delivery_end_date"/>
-                        </group>
-                    </group>
 
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

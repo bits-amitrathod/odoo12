@@ -17,6 +17,7 @@ UPLOAD_DIR = "/home/odoo/Documents/uploads/"
 
 class RemoveDocumentScheduler(models.Model):
     _name = 'remove.document.cron.scheduler'
+    _description = 'Remove Document Scheduler'
 
     @api.model
     #@api.multi

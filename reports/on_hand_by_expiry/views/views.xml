@@ -5,23 +5,25 @@
             <field name="model">on_hand_by_expiry.popup</field>
             <field name="arch" type="xml">
                 <form string="Filter">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="state"/>
-                            <field name="warehouse_id"/>
-                            <field name="location_id"/>
-                            <field name="sku_code"/>
+                            <group>
+                                <field name="state"/>
+                                <field name="warehouse_id"/>
+                                <field name="location_id"/>
+                                <field name="sku_code"/>
+                            </group>
+                            <group>
+                                <field name="date_range" widget="radio" dafaut="0"/>
+                                <field name="start_date" attrs="{'invisible': [('date_range', '=', '0')]}"/>
+                                <field name="end_date" attrs="{'invisible': [('date_range', '=', '0')]}"/>
+                            </group>
                         </group>
-                        <group>
-                            <field name="date_range" widget="radio" dafaut="0"/>
-                            <field name="start_date" attrs="{'invisible': [('date_range', '=', '0')]}"/>
-                            <field name="end_date" attrs="{'invisible': [('date_range', '=', '0')]}"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

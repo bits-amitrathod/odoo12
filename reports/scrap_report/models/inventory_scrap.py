@@ -11,13 +11,9 @@ import datetime
 _logger = logging.getLogger(__name__)
 
 
-
-
-class InventoryAvailability(models.Model):
-    _inherit="stock.scrap"
-
 class InventoryAvailabilityReport(models.AbstractModel):
     _name = 'report.scrap_report.inventory_scrap_print'
+    _description = "Inventory Availability Report"
 
     @api.model
     def _get_report_values(self, docids, data=None):

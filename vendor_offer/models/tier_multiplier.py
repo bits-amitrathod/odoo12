@@ -8,8 +8,8 @@ class Multiplier(models.Model):
 
     name = fields.Char(string="Multiplier Name", required=True)
     code = fields.Char(string="Multiplier Code", required=True)
-    retail = fields.Float('Retail %', digits=dp.get_precision('Product Unit of Measure'), required=True)
-    margin = fields.Float('Margin %', digits=dp.get_precision('Product Unit of Measure'), required=True)
+    retail = fields.Float('Retail %', digits='Product Unit of Measure', required=True)
+    margin = fields.Float('Margin %', digits='Product Unit of Measure', required=True)
 
 
 class Competition(models.Model):
@@ -17,7 +17,7 @@ class Competition(models.Model):
     _description = "Competition"
 
     name = fields.Char(string="Competition Name", required=True)
-    margin = fields.Float('Margin %', digits=dp.get_precision('Product Unit of Measure'), required=True)
+    margin = fields.Float('Margin %', digits='Product Unit of Measure', required=True)
 
 
 class Tier(models.Model):

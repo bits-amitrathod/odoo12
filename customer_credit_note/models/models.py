@@ -132,6 +132,6 @@ class CustomerCreditNote(models.TransientModel):
 class AccountInvoiceVendorCredit(models.Model):
     _inherit = "account.move"
     vendor_credit_flag = fields.Boolean('Credit Note Flag', default=False)
-    user_id = fields.Many2one('res.users', string='Business Development', track_visibility='onchange',
+    user_id = fields.Many2one('res.users', string='Business Development', tracking=True,
                               readonly=True, states={'draft': [('readonly', False)]},
                               default=lambda self: self.env.user, copy=False)

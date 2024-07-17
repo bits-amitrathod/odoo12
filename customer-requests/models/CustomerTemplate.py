@@ -28,6 +28,7 @@ ATTACHMENT_DIR = "/home/odoo/Documents/templates/customer/"
 class CustomerTemplate(models.Model):
 
     _name = 'sps.customer.template'
+    _description =  "SPS Customer Template"
 
     customer_id = fields.Many2one('res.partner', string='Customer', required=True)
     file_name = fields.Char('File Name')

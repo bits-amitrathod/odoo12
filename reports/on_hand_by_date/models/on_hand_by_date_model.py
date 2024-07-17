@@ -12,11 +12,13 @@ _logger = logging.getLogger(__name__)
 
 class OnHandByDate(models.Model):
     _name = "report.on.hand.by.date"
+    _description = "Report OnHand By Date"
+
     _auto = False
 
     sku_code = fields.Char('Product SKU')
     product_name = fields.Char("Product Name")
-    qty_done = fields.Float("Product Qty", digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float("Product Qty", digits='Product Unit of Measure')
     vendor_name = fields.Char("Vendor Name")
     price_unit = fields.Float("Unit Price")
     asset_value = fields.Float("Assets Value")
@@ -117,6 +119,8 @@ class OnHandByDate(models.Model):
 
 class OnHandByDateCost(models.Model):
     _name = "report.on.hand.by.date.cost"
+    _description = "Report OnHand By Date Cost"
+
     _inherit = 'report.on.hand.by.date'
     _auto = False
 

@@ -11,6 +11,7 @@ from odoo import api, fields, models
 
 class ProductBrand(models.Model):
     _name = 'product.brand'
+    _description = "ProductBrand"
 
     name = fields.Char('Manufacture Name', related='partner_id.name',readonly=True,store=True)
     description = fields.Text('Description', translate=True)

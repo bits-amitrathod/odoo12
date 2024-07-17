@@ -1,7 +1,4 @@
-14.0.1
--------
-- Initial release
+16.0.1 (2 November 2022)
+-------------------------
 
-14.0.2 (Date : 20th October 2021)
----------------
-[FIX] -remove warnings
+- Initial release

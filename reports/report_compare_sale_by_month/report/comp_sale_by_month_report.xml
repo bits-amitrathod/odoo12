@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_comp_sale_by_month_wise"
-                string="Compare Sales By Month"
-                model="product.product"
-                report_type="qweb-html"
-                file="report_compare_sale_by_month.compsalebymonth_template"
-                name="report_compare_sale_by_month.compsalebymonth_template"
-        />
+        <record id="action_report_comp_sale_by_month_wise" model="ir.actions.report">
+            <field name="name">Compare Sales By Month</field>
+            <field name="model">product.product</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">report_compare_sale_by_month.compsalebymonth_template</field>
+            <field name="report_file">report_compare_sale_by_month.compsalebymonth_template</field>
+        </record>
+
     </data>
 </odoo>

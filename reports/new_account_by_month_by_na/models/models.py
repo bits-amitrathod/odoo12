@@ -11,6 +11,8 @@ _logger = logging.getLogger(__name__)
 
 class NewAccountByMonthByNa(models.Model):
     _name = 'report.na.new.account'
+    _description = "New Account By Month By Na"
+
     _auto = False
     _order = 'customer'
 
@@ -148,6 +150,7 @@ class NewAccountByMonthByNa(models.Model):
 
 class NewAccountByMonthByNaExport(models.TransientModel):
     _name = 'report.na.new.account.export'
+    _description = "New Account By Month By Na Export"
 
     start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)),
                              help="Choose a date to get the New Account By Month By National Account at that  Start date")

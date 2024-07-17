@@ -40,4 +40,5 @@ Webkul Addons For Website""",
   "application"          :  True,
   "installable"          :  True,
   "auto_install"         :  False,
+  "license": "AGPL-3",
 }

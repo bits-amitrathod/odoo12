@@ -3,6 +3,7 @@ from odoo import api, models
 
 class ReportSalesSalespersonWise(models.AbstractModel):
     _name = 'report.receiving_list.receiving_list_temp'
+    _description = "ReportSalesSalespersonWise"
 
     def _get_report_values(self, docids, data=None):
 

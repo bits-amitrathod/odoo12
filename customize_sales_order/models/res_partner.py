@@ -10,7 +10,8 @@ class CustomerContract(models.Model):
     _inherit = "res.partner"
 
     exclude_in_stock_product_ids = fields.One2many('exclude.product.in.stock', 'partner_id')
-    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", racking=True)
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", tracking=True)
+
     def _get_default_user_id(self):
         res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
         if res_users:
@@ -54,7 +55,7 @@ class CustomerContract(models.Model):
                                            domain="[('active', '=', True), ('share','=',False)]", tracking=True)
 
     order_quota = fields.Float(string="Order Quota", help="Number of transactions", tracking=True,
-                               digits=dp.get_precision('Product Price'))
+                               digits='Product Price')
 
     revenue_quota = fields.Monetary(string="Revenue Quota", help="Amount", tracking=True)
 

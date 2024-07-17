@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 # Part of Softhealer Technologies.
 {
-    "name": "Activity Management Base",
+    "name": "Activity Base",
     "author": "Softhealer Technologies",
     "website": "https://www.softhealer.com",
     "support": "support@softhealer.com",
-    "version": "14.0.2",
+    "version": "16.0.1",
     "category": "Discuss",
     "summary": """ Activity Management Odoo, Activity Scheduler Odoo, Manage Project Activity, Manage Employee Activity Module, Manage Supervisor Activity, Filter Completed Activity,filter planned Activity Odoo """,
     "description": """Do you want to show the activities list beautifully? Do you want to show the well-organized structure of activities?""",
@@ -13,7 +13,7 @@
         'mail'
     ],
     "data": [
-        'views/activity_base.xml',
+        'views/res_config_settings_views.xml',
     ],
     "images": ["static/description/background.png", ],
     "license": "OPL-1",

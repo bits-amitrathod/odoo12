@@ -5,10 +5,14 @@
             <field name="model">cstm.popup.message</field>
             <field name="arch" type="xml">
                 <form string="Message">
-                    <field name="name"/>
-                    <footer>
-                        <button string="OK" class="btn-primary" special="cancel"/>
-                    </footer>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <footer>
+                            <button string="OK" class="btn-primary" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -19,18 +23,20 @@
             <field name="model">tracking.popup</field>
             <field name="arch" type="xml">
                 <form string="Select Tracking Number">
-                    <group>
+                    <sheet>
                         <group>
-                           <field name="tracking_number"/>
+                            <group>
+                               <field name="tracking_number"/>
+                            </group>
+                            <group>
+                                <button name="track_fedex" string="Track on Fedex" type="object" class="btn-default" invisible="not context.get('isFedEx', True)" attrs="{'invisible': [('tracking_number', '==', False)]}"/>
+                            </group>
                         </group>
-                        <group>
-                            <button name="track_fedex" string="Track on Fedex" type="object" class="btn-default" invisible="not context.get('isFedEx', True)" attrs="{'invisible': [('tracking_number', '==', False)]}"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="Track" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="Track" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

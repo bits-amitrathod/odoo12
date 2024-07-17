@@ -8,6 +8,9 @@ log = logging.getLogger(__name__)
 
 class ReportBdAccountClosed_18(models.AbstractModel):
     _name = 'report.account_closed_by_bd.bd_account_closed_temp_test_18'
+    _description =  "ReportBdAccountClosed_18"
+
+
     @api.model
     def _get_report_values(self, docids, data=None):
         records = self.env['report.bd.account.closed_18'].browse(docids)

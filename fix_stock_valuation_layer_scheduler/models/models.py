@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class FixStockValuationLayerScheduler(models.Model):
     _name = "fix.stock.valuation.layer.cron"
+    _description =  "Fix Stock Valuation Layer Scheduler"
 
     @api.model
     def fix_stock_valuation_layer_scheduler(self,prods_sku):

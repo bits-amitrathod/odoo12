@@ -12,4 +12,5 @@
     "depends": ["website_sale_suggest_create_account", "web_tour"],
     # "data": ["views/website_sale.xml", "views/assets.xml"],
     "post_init_hook": "post_init_hook",
+
 }

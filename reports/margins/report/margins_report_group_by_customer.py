@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class MarginsRerpotGroupByCustomer(models.AbstractModel):
     _name = 'report.margins.margins_group_by_cust_temp'
+    _description = "Margins Rerpot GroupBy Customer"
 
     @api.model
     def _get_report_values(self, docids, data=None):

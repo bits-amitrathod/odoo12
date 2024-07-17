@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_custom_catalog_wise"
-                string="Custom Product Catalog"
-                model="product.product"
-                report_type="qweb-html"
-                file="report_custom_product_catalog.catalog_temp"
-                name="report_custom_product_catalog.catalog_temp"
-        />
+        <record id="action_report_custom_catalog_wise" model="ir.actions.report">
+            <field name="name">Custom Product Catalog</field>
+            <field name="model">product.product</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">report_custom_product_catalog.catalog_temp</field>
+            <field name="report_file">report_custom_product_catalog.catalog_temp</field>
+        </record>
 
-        <report
-                id="action_report_product_catalog_wise"
-                string="Product Catalog"
-                model="product.product"
-                report_type="qweb-html"
-                file="report_custom_product_catalog.product_catalog_temp"
-                name="report_custom_product_catalog.product_catalog_temp"
-        />
+        <record id="action_report_product_catalog_wise" model="ir.actions.report">
+            <field name="name">Product Catalog</field>
+            <field name="model">product.product</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">report_custom_product_catalog.product_catalog_temp</field>
+            <field name="report_file">report_custom_product_catalog.product_catalog_temp</field>
+        </record>
     </data>
 </odoo>

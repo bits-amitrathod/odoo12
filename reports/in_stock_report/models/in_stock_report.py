@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class ReportInStockReportPopup(models.TransientModel):
     _name = 'popup.report.in.stock.report'
+    _description = "Report In Stock Report Popup"
 
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
@@ -66,6 +67,8 @@ class ReportInStockReportPopup(models.TransientModel):
 
 class ReportInStockReport(models.Model):
     _name = 'report.in.stock.report'
+    _description = "Report InStock Report"
+
     _auto = False
 
     _inherits = {'product.template': 'product_tmpl_id'}
@@ -191,6 +194,7 @@ class ReportInStockReport(models.Model):
 
 class ReportPrintInStockReport(models.AbstractModel):
     _name = 'report.in_stock_report.in_stock_report_print'
+    _description = "Report Print InStock Report"
 
     @api.model
     def _get_report_values(self, docids, data=None):

@@ -11,6 +11,7 @@ from odoo.addons.http_routing.models.ir_http import slug
 
 class FieldMapping(models.Model):
     _name = 'field.mappning'
+    _description = " Fields Mapping "
 
     name = fields.Char(string="Name",required=True)
     active = fields.Boolean(string="Active",default=True)

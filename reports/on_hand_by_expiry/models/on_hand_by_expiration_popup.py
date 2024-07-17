@@ -27,7 +27,7 @@ class ProductsOnHandByExpiryPopUp(models.TransientModel):
     ], string="Status", default='0',)
 
     warehouse_id = fields.Many2one('stock.warehouse', 'Group Location', required=True, default=1)
-    location_id = fields.Selection(selection=[('lot_stock_id', 'Pick'), ('wh_pack_stock_loc_id', 'Pack'), ('wh_output_stock_loc_id', 'Ship')],String='Location')
+    location_id = fields.Selection(selection=[('lot_stock_id', 'Pick'), ('wh_pack_stock_loc_id', 'Pack'), ('wh_output_stock_loc_id', 'Ship')], string='Location')
     start_date = fields.Date('Start Date', default=fields.date.today())
     end_date = fields.Date('End Date', default=fields.date.today())
     sku_code =  fields.Many2one('product.product', string='Product SKU',

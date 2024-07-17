@@ -21,7 +21,7 @@
             'data/automatic_workflow_data.xml',
 
              ],
-     'installable': True,
+    'installable': True,
     'application': True,
     'auto_install': False,
 }

@@ -46,31 +46,31 @@
                                         <span t-esc="order.company_address"/>
                                     </td>
                                      <td style="border: 1px solid black;">
-                                        <span t-esc="order.reference"/>
+                                        <span t-esc="order.ref"/>
                                     </td>
                                      <td style="border: 1px solid black;">
-                                        <span t-esc="order.number"/>
+                                        <span t-esc="order.name"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.origin"/>
+                                        <span t-esc="order.invoice_origin"/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="order.date_invoice" t-options='{"widget": "date"}'/>
+                                        <span t-esc="order.invoice_date" t-options='{"widget": "date"}'/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                        <span t-esc="order.date_due" t-options='{"widget": "date"}'/>
+                                        <span t-esc="order.invoice_date_due" t-options='{"widget": "date"}'/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.pay_to"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.residual_signed"/>
+                                        <span t-esc="order.amount_residual_signed"/>
                                     </td>
                                     <td style="border: 1px solid black;">
                                         <span t-esc="order.address"/>
                                     </td>
                                     <td style="border: 1px solid black;">
-                                        <span t-esc="order.payment_term_id.name"/>
+                                        <span t-esc="order.invoice_payment_term_id.name"/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                         <span t-esc="order.amount_total_signed"

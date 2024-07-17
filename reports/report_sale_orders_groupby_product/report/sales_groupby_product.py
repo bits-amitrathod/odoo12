@@ -24,6 +24,7 @@ import logging
 _logger = logging.getLogger(__name__)
 class ReportSaleOrderLineGroupByProduct(models.AbstractModel):
     _name = 'report.report_sale_orders_groupby_product.group_by_product'
+    _description = "Report Sale Order Line Group By Product"
 
     @api.model
     def _get_report_values(self, docids, data=None):

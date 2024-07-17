@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class website_cstm(models.Model):
     _name = 'sps_theme.product_instock_notify'
+    _description = "Sps theme product in stock notify"
 
     email = fields.Char()
     product_tmpl_id = fields.Many2one('product.template', 'Product Template', ondelete='cascade', required=True)
@@ -17,7 +18,7 @@ class website_cstm(models.Model):
     def send_email_product_instock(self):
         StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
         subcribers = StockNotifcation.search([
-            ('status', '=', 'pending'), ('x_studio_reoccuring', '=', 'True')
+            ('status', '=', 'pending'),
         ])
         notificationList = {}
         template = self.env.ref('sps_theme.mail_template_product_instock_notification_email')
@@ -54,11 +55,10 @@ class PporoductTemplate(models.Model):
 
         """
         res = super(PporoductTemplate,self)._compute_qty_available()
-
-        for temp in self:
-            if temp.actual_quantity == 0:
-                StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
-                subcribers = StockNotifcation.search([('product_tmpl_id', '=', temp.id)])
+        for template in self:
+            if template.actual_quantity == 0:
+                StockNotifcation = template.env['sps_theme.product_instock_notify'].sudo()
+                subcribers = StockNotifcation.search([('product_tmpl_id', '=', template.id),('x_studio_reoccuring', '=', 'True')])
                 for sub in subcribers:
                     sub.status = 'pending'
         return res

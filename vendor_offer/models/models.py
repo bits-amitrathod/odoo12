@@ -58,10 +58,10 @@ class VendorOffer(models.Model):
 
     billed_retail_untaxed = fields.Monetary(string='Billed Untaxed Retail', compute='_amount_all', readonly=True)
     billed_retail_total = fields.Monetary(string='Billed Retail Total', compute='_amount_all', readonly=True)
-    final_billed_retail_total = fields.Monetary(string='Final Billed Retail Total', default=0, track_visibility='onchange')
+    final_billed_retail_total = fields.Monetary(string='Final Billed Retail Total', default=0, tracking=True)
     billed_offer_untaxed = fields.Monetary(string='Billed Untaxed Offer', compute='_amount_all', readonly=True)
     billed_offer_total = fields.Monetary(string='Billed Offer Total', compute='_amount_all', readonly=True)
-    final_billed_offer_total = fields.Monetary(string='Final Billed Offer Total', default=0, track_visibility='onchange')
+    final_billed_offer_total = fields.Monetary(string='Final Billed Offer Total', default=0, tracking=True)
 
 
 
@@ -107,7 +107,7 @@ class VendorOffer(models.Model):
         ('purchase', 'Purchase Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled')
-    ], string='Offer Type', readonly=True, index=True, copy=False, default='ven_draft', track_visibility='onchange',
+    ], string='Offer Type', readonly=True, index=True, copy=False, default='ven_draft', tracking=True,
         store=True)
 
     state = fields.Selection([
@@ -119,7 +119,7 @@ class VendorOffer(models.Model):
         ('purchase', 'Purchase Order'),
         ('done', 'Locked'),
         ('cancel', 'Cancelled')
-    ], string='Status', readonly=True, index=True, copy=False, default='draft', track_visibility='onchange')
+    ], string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
 
     import_type_ven = fields.Char(string='Import Type')
     arrival_date_grp = fields.Datetime(string="Arrival Date")
@@ -819,20 +819,6 @@ class VendorOffer(models.Model):
         #         #raise ValidationError(_('Offer Type must be either "Cash" or "Credit" to Accept '))
         #         raise UserError(_('Offer Type must be either "Cash" or "Credit" not both to Accept'))
 
-        if (self.offer_expired is True) and (self.offer_approved is False):
-            form_view_id = self.env.ref('vendor_offer.vendor_offer_approve_popup').id
-            action = {
-                'type': 'ir.actions.act_window',
-                'views': [(form_view_id, 'form')],
-                'view_mode': 'tree,form',
-                'name': _('Offer Approval'),
-                'res_model': 'purchase.order',
-                'res_id': self.id,
-                'domain': [('id', '=', self.id)],
-                'target': 'new'
-            }
-
-            return action
 
         if self.offer_type == 'cashcredit' or not self.offer_type:
             self.offer_type_popup = 'cash'

@@ -4,6 +4,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 class NaNewAccountByMonthReportPopup(models.TransientModel):
     _name = 'popup.na.new.account'
+    _description = "Na New Account By Month Report Popup"
 
     start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)), required=True, help="Choose a date to get the New Account By Month By National Account at that  Start date")
     end_date = fields.Date('End Date', default=fields.date.today(), required=True, help="Choose a date to get the New Account By Month By National Account at that  End date")

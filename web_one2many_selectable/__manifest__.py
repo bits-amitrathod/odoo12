@@ -64,6 +64,7 @@ You can change the model as well as python function name from javascript.
     "installable": True,
     "application": False,
     "external_dependencies": {
-        'python': [],
+    'python': [],
     },
+    'license': 'AGPL-3'
 }
