@@ -262,62 +262,6 @@ class VendorPricingExport(models.TransientModel):
                                          'Average Aging', 'Inventory Scrapped', 'Open Quotations Per Code']))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
         company = self.env['res.company'].search([], limit=1, order="id desc")
-
-        # sql_fuction = """
-        #                         CREATE  OR REPLACE FUNCTION get_aging_days(product_template_param integer)  RETURNS integer AS $$
-        #                         DECLARE
-        #                             rec RECORD;
-        #                             query text;
-        #                             diff  integer;
-        #                             sum_qty_day integer;
-        #                             total_quantity integer;
-        #                             aging decimal;
-        #                         BEGIN
-        #                             total_quantity = 0;
-        #                             sum_qty_day= 0;
-        #                             aging = 0;
-        #
-        #                              query := 'SELECT    date_part(''day'', now() -   Date(PUBLIC.stock_lot.create_date) )as diff ,
-        #                                                Sum(PUBLIC.stock_quant.quantity)              AS quantity
-        #                                     FROM       PUBLIC.product_product
-        #                                     INNER JOIN PUBLIC.product_template
-        #                                     ON         (
-        #                                                           PUBLIC.product_product.product_tmpl_id = PUBLIC.product_template.id)
-        #                                     INNER JOIN PUBLIC.stock_lot
-        #                                     ON         (
-        #                                                           PUBLIC.stock_lot.product_id=PUBLIC.product_product.id )
-        #                                     INNER JOIN PUBLIC.stock_quant
-        #                                     ON         (
-        #                                                           PUBLIC.stock_quant.lot_id=PUBLIC.stock_lot.id)
-        #                                     INNER JOIN PUBLIC.stock_location
-        #                                     ON         (
-        #                                                           PUBLIC.stock_location.id=PUBLIC.stock_quant.location_id)
-        #                                     INNER JOIN PUBLIC.stock_warehouse
-        #                                     ON         (
-        #                                                           PUBLIC.stock_location.id IN (PUBLIC.stock_warehouse.lot_stock_id,
-        #                                                                                        PUBLIC.stock_warehouse.wh_output_stock_loc_id,
-        #                                                                                        wh_pack_stock_loc_id))
-        #                                     WHERE      PUBLIC.stock_quant.quantity>0
-        #                                     AND        product_template.id = ' || product_template_param || '
-        #                                     GROUP BY   PUBLIC.stock_lot.create_date,
-        #                                                PUBLIC.product_template.id';
-        #                             FOR rec IN EXECUTE query
-        #                             LOOP
-        #                                 total_quantity = total_quantity + rec.quantity;
-        #                                 sum_qty_day = sum_qty_day + (rec.quantity *  rec.diff);
-        #
-        #                             END LOOP;
-        #                             IF total_quantity > 0 THEN
-        #                                 aging = sum_qty_day::decimal / total_quantity;
-        #                             END IF;
-        #                             -- RAISE NOTICE '% - %', total_quantity, sum_qty_day;
-        #                             -- RAISE NOTICE '- % -',  aging;
-        #                             RETURN aging;
-        #                         END;
-        #                         $$ LANGUAGE plpgsql;
-        #                                 """
-
-        # WHERE  so.confirmation_date >= %s         add this fields
         str_query = """
                         SELECT pt.sku_code, 
                            pt.name, 
@@ -450,72 +394,6 @@ class VendorPricingExport(models.TransientModel):
 
 								"""
 
-        # str_query_join_old = """
-        #
-        #                 LEFT JOIN
-        #         (
-        #                   SELECT    sum(sml.qty_done) AS qty_done,
-        #                             sml.product_id
-        #                   FROM      sale_order_line AS sol
-        #                   LEFT JOIN stock_picking   AS sp
-        #                   ON        sp.sale_id=sol.id
-        #                   LEFT JOIN stock_move_line AS sml
-        #                   ON        sml.picking_id=sp.id
-        #                   WHERE     sml.state='done'
-        #                 AND       sml.location_dest_id =%s
-        #                   AND       sp.date_done >= %s
-        #
-        #                   GROUP BY  sml.product_id ) AS ninty_sales ON pp.id=ninty_sales.product_id LEFT JOIN
-        #         (
-        #                  SELECT   count(spl.NAME) AS NAME,
-        #                           spl.product_id
-        #                  FROM     stock_lot spl
-        #                  WHERE    spl.use_date < %s
-        #                  GROUP BY spl.product_id ) AS exp_evntory ON pp.id=exp_evntory.product_id LEFT JOIN
-        #         (
-        #                    SELECT     sum(sq.quantity) AS qty_available,
-        #                               spl.product_id
-        #                    FROM       stock_quant sq
-        #                    INNER JOIN stock_lot AS spl
-        #                    ON         sq.lot_id = spl.id
-        #                    INNER JOIN stock_location AS sl
-        #                    ON         sq.location_id = sl.id
-        #                    WHERE      sl.usage IN ('internal',
-        #                                            'transit')
-        #                    GROUP BY   spl.product_id ) AS qty_available_count ON pp.id=qty_available_count.product_id LEFT JOIN
-        #         (
-        #                  SELECT   "stock_move"."product_id"       AS "product_id",
-        #                           sum("stock_move"."product_qty") AS "product_qty"
-        #                  FROM     "stock_location"                AS "stock_move__location_dest_id",
-        #                           "stock_location"                AS "stock_move__location_id",
-        #                           "stock_move"
-        #                  WHERE    (
-        #                                    "stock_move"."location_id" = "stock_move__location_id"."id"
-        #                           AND      "stock_move"."location_dest_id" = "stock_move__location_dest_id"."id")
-        #                  AND      ((((
-        #                                                               "stock_move"."state" IN('waiting',
-        #                                                                                       'confirmed',
-        #                                                                                       'assigned',
-        #                                                                                       'partially_available')) )
-        #                                    AND      (
-        #                                                      "stock_move__location_dest_id"."parent_path" :: text LIKE '1/11/%%' ))
-        #                           AND      (
-        #                                             NOT((
-        #                                                               "stock_move__location_id"."parent_path" :: text LIKE '1/11/%%' )) ))
-        #                  AND      (
-        #                                    "stock_move"."company_id" IS NULL
-        #                           OR       (
-        #                                             "stock_move"."company_id" IN(""" + str(company.id) + """)))
-        #                  GROUP BY "stock_move"."product_id" ) AS qty_on_order ON pp.id=qty_on_order.product_id LEFT JOIN
-        #         (
-        #                  SELECT   sum(sts.scrap_qty) AS scrap_qty,
-        #                           sts.product_id
-        #                  FROM     stock_scrap sts
-        #                  WHERE    sts.state ='done'
-        #                  AND      sts.date_done < %s
-        #                  AND      sts.date_done > %s
-        #                  GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
-
         str_query_join = """  
 
                                 LEFT JOIN 
@@ -578,10 +456,6 @@ class VendorPricingExport(models.TransientModel):
                                  GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
 
         start_time = time.time()
-        # self.env.cr.execute(sql_fuction)
-        # self.env.cr.execute(str_query + str_query_join, (cust_location_id,last_yr, cust_location_id, last_yr,today_date,
-        #                                                  cust_location_id, last_3_months, today_date,
-        #                                                  today_date, last_yr))
         self.env.cr.execute(str_query + str_query_join,
                             (last_yr, last_yr, today_date,
                              last_3_months, today_date,

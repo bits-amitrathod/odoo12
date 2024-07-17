@@ -62,9 +62,9 @@ class ProductsOnHandByDatePopUp(models.TransientModel):
         if self.sku_code:
             action["domain"].append(('product_name', '=', self.sku_code.name))
 
-        if self.quantities is 0:
+        if self.quantities == 0:
             action["domain"].append(('qty_done', '>', '0'))
-        elif self.quantities is 2:
+        elif self.quantities == 2:
             action["domain"].append(('qty_done', '=', '0'))
 
         if self.show_inactive_products:

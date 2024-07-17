@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (c) 2016-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- License URL : <https://store.webkul.com/license.html/> -->
+<templates xml:space="preserve">
+    <t t-name='odoo_new_tab.ListRenderer' t-inherit='web.ListRenderer' t-inherit-mode="extension" owl="1">
+        <xpath expr='//div/table/thead/tr/th[1]' position="after">
+                <th class='new_tab_column'>
+                    <span>#</span>
+                </th>
+        </xpath>
+    </t>
+    <t t-name='odoo_new_tab.ListRenderer.RecordRow' t-inherit='web.ListRenderer.RecordRow' t-inherit-mode="extension" owl="1">
+        <xpath expr='//tr/td[1]' position="after">
+            <td class='new_tab'>
+                <t t-if="isX2Many == false">
+                    <a t-attf-href='web#id={{record.resId}}&amp;action={{env.config.actionId}}&amp;model={{record.resModel}}&amp;view_type=form' target='_blank'>
+                        <i class='fa fa-external-link'/>
+                    </a>
+                </t>
+                <t t-else="">
+                    <a t-attf-href='web#id={{record.resId}}&amp;model={{record.resModel}}&amp;view_type=form' target='_blank'>
+                        <i class='fa fa-external-link'/>
+                    </a>
+                </t>
+            </td>
+        </xpath>
+    </t>
+</templates>

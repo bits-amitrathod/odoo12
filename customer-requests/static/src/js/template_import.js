@@ -1107,10 +1107,29 @@ var DataImport = AbstractAction.extend({
             _t("%d records successfully imported"),
             results.ids.length
         ) });
-        this.exit();
+        this.redirectToCustomerPage();
     },
     exit: function () {
         this.trigger_up('history_back');
+    },
+    redirectToCustomerPage: function() {
+        var self = this;
+        var customer_id = this.customer;
+        if (customer_id) {
+            this.do_action({
+                type: 'ir.actions.act_window',
+                res_model: 'res.partner',
+                res_id: customer_id,
+                views: [[false, 'form']],
+                target: 'current',
+            });
+        } else {
+            this.displayNotification({
+                type: 'warning',
+                message: _t('Customer ID is not set, unable to redirect.'),
+            });
+            self.exit();
+        }
     },
     onresults: function (event, from, to, results) {
         var self = this;

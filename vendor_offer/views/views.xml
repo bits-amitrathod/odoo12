@@ -161,7 +161,7 @@
                                 <field name="vendor_cust_id"/>
 <!--                                UPG_ODOO16_NOTE below field commented due to error&ndash;&gt;-->
 <!--                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />-->
-                                <field name="company_id"  options="{'no_create': True}" />
+                                <field name="company_id"  options="{'no_create': True}"  />
                                 <field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}" string="Facility Name" placeholder="Name, TIN, Email, or Reference"  />
                                 <field name="acq_user_id"/>
                                 <field name="possible_competition"
@@ -538,16 +538,16 @@
 
 <!-- Adding Billing status column for odoo 12 -->
 <!--        UPG_ODOO16_NOTE below field commented due to error-->
-<!--        <record id="purchase_order_tree_inherit" model="ir.ui.view">-->
-<!--            <field name="name">purchase order billing status</field>-->
-<!--            <field name="model">purchase.order</field>-->
-<!--            <field name="inherit_id" ref="purchase.purchase_order_tree"/>-->
-<!--            <field name="arch" type="xml">-->
-<!--                <xpath expr="//field[@name='invoice_status']" position="replace">-->
-<!--                     <field name="invoice_status" invisible="not context.get('show_purchase', True)"/>-->
-<!--                </xpath>-->
-<!--            </field>-->
-<!--        </record>-->
+        <record id="purchase_order_tree_inherit" model="ir.ui.view">
+            <field name="name">purchase order billing status</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='invoice_status']" position="replace">
+                     <field name="invoice_status" invisible="not context.get('show_purchase', True)"/>
+                </xpath>
+            </field>
+        </record>
 
         <record id="purchase_order_tree_sort_force" model="ir.ui.view">
             <field name="name">purchase.order.tree</field>

@@ -196,14 +196,6 @@
          <h6 t-attf-class="o_categories_collapse_title mb-3 {{_titleClasses}}" position="replace">
              <b> PRODUCT CATEGORY</b>
          </h6>
-<!--        UPG_ODOO16_NOTE -->
-<!--        <xpath expr="//div[@id='products_grid_before']" position="attributes">-->
-<!--            <attribute name="class">col-md-3 col-sm-4</attribute>-->
-<!--        </xpath>-->
-<!--        <xpath expr="//div[@id='products_grid']" position="attributes">-->
-<!--            <attribute name="class">col-md-9 col-sm-8</attribute>-->
-<!--        </xpath>-->
-<!--        UPG_ODOO16_NOTE-->
     </template>
 
     <template id="category_vender" name="Category Vender">

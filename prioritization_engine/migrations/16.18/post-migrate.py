@@ -25,6 +25,9 @@ def migrate(cr, version):
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'vendor_offer%';""")
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'product_seo_backend%';""")
 
+    # My Activity -> Filter view activate
+    cr.execute("""update ir_ui_view set active = true where id in (5733);""")
+
     # Client don't want the this view (customer meeting info button)
     cr.execute("""update ir_ui_view set active = false where name = 'res_partner.view.form.calendar';""")
 

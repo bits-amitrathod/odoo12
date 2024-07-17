@@ -23,16 +23,17 @@
   "license"              :  "LGPL-3",
   "website"              :  "https://store.webkul.com/Odoo-View-Records-In-New-Tab.html",
   "description"          :  """View Records In New Tab""",
-  "live_test_url"        :  "",
+  "live_test_url"        :  "http://odoodemo.webkul.com/?module=odoo_new_tab",
   "depends"              :  ['web'],
-  # "data"                 :  ['views/template.xml'], AHUJA MIGRATION
   "images"               :  ['static/description/Banner.gif'],
   "application"          :  True,
   "installable"          :  True,
   "assets"              :  {
-    "web.assets_backend" :  [
-      'odoo_new_tab/static/src/js/list_view.js'
-    ]
+                              "web.assets_backend" :  
+                              [
+                                '/odoo_new_tab/static/src/views/**/*',
+                                '/odoo_new_tab/static/src/scss/template.scss',
+                              ],
   },
   "auto_install"         :  False,
   "price"                :  10,

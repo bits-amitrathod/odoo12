@@ -3,9 +3,9 @@
 <!-- See LICENSE file for full copyright and licensing details. -->
 <!-- License URL : <https://store.webkul.com/license.html/> -->
 <odoo>
-    <template id="assets" inherit_id="web.assets_backend">
+    <!-- <template id="assets" inherit_id="web.assets_backend">
         <xpath expr="." position="inside">
             <script type="text/javascript" src="/odoo_new_tab/static/src/js/list_view.js"></script>
         </xpath>
-    </template>
+    </template> -->
 </odoo>
