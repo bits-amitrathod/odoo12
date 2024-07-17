@@ -35,80 +35,90 @@
                                     <th class="text-center td-checkbox">
                                         <input type="checkbox" id="selectAll"/>
 
-                                    </th>
-                                    <th class="td-img">Product</th>
-                                    <th></th>
-                                    <th class="text-center td-manufacturer">Manufacturer</th>
-                                    <th class="text-center td-min-exp">Min Exp. Date</th>
-                                    <th class="text-center td-max-exp">Max Exp. Date</th>
-                                    <th class="text-center td-av-qty">Available Quantity</th>
-                                    <th class="text-center td-qty">Quantity</th>
-                                    <th class="text-center td-price">Price</th>
-                                    <!--<th class="text-center td-action"></th>-->
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <t t-foreach="product_sorted_list" t-as="product">
-                                    <tr t-attf-id="row_checked_{{product_list.get(product[0])['partn_name']}}" t-att-class="'optional_product info' ">
-                                        <td class="text-center td-checkbox align-middle">
-                                            <input type="checkbox" id="product_list.get(product[0])['product'].id"
-                                                   t-att-data-partn-name-id="product_list.get(product[0])['partn_name']"
-                                                   t-att-data-partner-id="product_list.get(product[0])['partner'].id"
-                                                   t-att-data-product-id="product_list.get(product[0])['product'].id"
-                                                   t-att-data-available-qty="product_list.get(product[0])['product'].actual_quantity"/>
-                                        </td>
-                                        <td colspan="2" t-if="not product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'></td>
-        <!--                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'>-->
-        <!--                                    <span t-field="product_list.get(product[0])['product'].image_128" t-options="{'widget': 'image', 'class': 'rounded'}" />-->
-        <!--                                </td>-->
-                                        <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='align-middle' style="font-weight: 600;">
-                                            <span t-field="product_list.get(product[0])['product'].default_code"  />
-                                        </td>
-                                        <!--td-product_name-->
-                                        <td t-if="product_list.get(product[0])['product'].product_tmpl_id" class=' align-middle'>
-                                            <div>
-                                                <t t-call="website_sales.cart_line_product_link">
-                                                    <span t-esc="product_list.get(product[0])['product'].product_tmpl_id.name" style="color:black;"/>
-                                                </t>
-                                            </div>
-                                        </td>
-                                        <td class="text-center td-manufacturer align-middle">
-                                            <div>
-                                                <span t-esc="product_list.get(product[0])['product_brand_name']"/>
-                                            </div>
-                                        </td>
-                                        <td class="text-center td-min-exp align-middle">
-                                            <div>
-                                                <span t-esc="product_list.get(product[0])['min_expiration_date']" t-options="{'widget': 'date'}"/>
-                                            </div>
-                                        </td>
-                                        <td class="text-center td-max-exp align-middle">
-                                            <div>
-                                                <span t-esc="product_list.get(product[0])['max_expiration_date']" t-options="{'widget': 'date'}"/>
-                                            </div>
-                                        </td>
-                                        <td class="text-center td-av-qty align-middle">
-                                            <div>
-                                                <strong><span t-esc="product_list.get(product[0])['product'].actual_quantity" t-options='{"widget": "integer"}'/></strong>
-                                            </div>
-                                        </td>
-                                        <td class="text-center td-qty align-middle" style="width:10%">
-                                            <div class="css_quantity input-group oe_website_spinner m-auto">
-                                                <div class="input-group-prepend">
-                                                    <a t-attf-id="allow_qty_minus_{{product_list.get(product[0])['partn_name']}}" aria-label="Remove one" title="Remove one" t-attf-href="#"
-                                                        style="color:#cacaca;pointer-events:none;" class="btn btn-link js_add_cart_json d-none d-md-inline-block">
-                                                        <i class="fa fa-minus"></i>
-                                                    </a>
-                                                </div>
-                                                <input t-attf-id="input_qty_{{product_list.get(product[0])['partn_name']}}"
-                                                       type="text" class="js_quantity form-control quantity input_qty_1"
-                                                       style="color:#cacaca;pointer-events:none;"
-                                                       t-att-data-product-id="product_list.get(product[0])['product'].id"
-                                                       t-att-data-partn-name-id="product_list.get(product[0])['partn_name']"
-                                                       t-att-data-partner-id="product_list.get(product[0])['partner'].id"
-                                                       t-att-data-available-qty="product_list.get(product[0])['product'].actual_quantity"
-                                                       t-att-value="product_list.get(product[0])['quantity']"
-                                                       />
+                            </th>
+                            <th class="td-img">Product</th>
+                            <th></th>
+                            <th class="text-center td-manufacturer">Manufacturer</th>
+                            <th class="text-center td-min-exp">Min Exp. Date</th>
+                            <th class="text-center td-max-exp">Max Exp. Date</th>
+                            <th class="text-center td-av-qty">Available Quantity</th>
+                            <th class="text-center td-qty">Quantity</th>
+                            <th class="text-center td-price">Price</th>
+                            <!--<th class="text-center td-action"></th>-->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="product_sorted_list" t-as="product">
+                            <tr t-attf-id="row_checked_{{product_list.get(product[0])['partn_name']}}" t-att-class="'optional_product info' ">
+                                <td class="text-center td-checkbox align-middle">
+                                    <input type="checkbox" id="product_list.get(product[0])['product'].id"
+                                           t-att-data-partn-name-id="product_list.get(product[0])['partn_name']"
+                                           t-att-data-partner-id="product_list.get(product[0])['partner'].id"
+                                           t-att-data-product-id="product_list.get(product[0])['product'].id"
+                                           t-att-data-available-qty="product_list.get(product[0])['product'].actual_quantity"/>
+                                </td>
+                                <td colspan="2" t-if="not product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'></td>
+<!--                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='td-img align-middle'>-->
+<!--                                    <span t-field="product_list.get(product[0])['product'].image_128" t-options="{'widget': 'image', 'class': 'rounded'}" />-->
+<!--                                </td>-->
+                                <td align="center" t-if="product_list.get(product[0])['product'].product_tmpl_id" class='align-middle' style="font-weight: 600;">
+                                    <span t-field="product_list.get(product[0])['product'].default_code"  />
+                                </td>
+                                <!--td-product_name-->
+                                <td t-if="product_list.get(product[0])['product'].product_tmpl_id" class=' align-middle'>
+                                    <div>
+                                        <t t-call="website_sales.cart_line_product_link">
+                                            <span t-esc="product_list.get(product[0])['product'].product_tmpl_id.name" style="color:black;"/>
+                                        </t>
+                                    </div>
+                                </td>
+                                <td class="text-center td-manufacturer align-middle">
+                                    <div>
+                                        <span t-esc="product_list.get(product[0])['product_brand_name']"/>
+                                    </div>
+                                </td>
+<!--                                <td class="text-center td-min-exp align-middle">-->
+<!--                                    <div>-->
+<!--                                        <span t-esc="product_list.get(product[0])['min_expiration_date']" t-options="{'widget': 'date'}"/>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+<!--                                <td class="text-center td-max-exp align-middle">-->
+<!--                                    <div>-->
+<!--                                        <span t-esc="product_list.get(product[0])['max_expiration_date']" t-options="{'widget': 'date'}"/>-->
+<!--                                    </div>-->
+<!--                                </td>-->
+                                <td class="text-center td-min-exp align-middle">
+                                    <div>
+                                        <span t-esc="product_list.get(product[0])['str_min_date']" />
+                                    </div>
+                                </td>
+                                <td class="text-center td-max-exp align-middle">
+                                    <div>
+                                        <span t-esc="product_list.get(product[0])['str_max_date']" />
+                                    </div>
+                                </td>
+                                <td class="text-center td-av-qty align-middle">
+                                    <div>
+                                        <strong><span t-esc="product_list.get(product[0])['product'].actual_quantity" t-options='{"widget": "integer"}'/></strong>
+                                    </div>
+                                </td>
+                                <td class="text-center td-qty align-middle" style="width:10%">
+                                    <div class="css_quantity input-group oe_website_spinner m-auto">
+                                        <div class="input-group-prepend">
+                                            <a t-attf-id="allow_qty_minus_{{product_list.get(product[0])['partn_name']}}" aria-label="Remove one" title="Remove one" t-attf-href="#"
+                                                style="color:#cacaca;pointer-events:none;" class="btn btn-link js_add_cart_json d-none d-md-inline-block">
+                                                <i class="fa fa-minus"></i>
+                                            </a>
+                                        </div>
+                                        <input t-attf-id="input_qty_{{product_list.get(product[0])['partn_name']}}"
+                                               type="text" class="js_quantity form-control quantity input_qty_1"
+                                               style="color:#cacaca;pointer-events:none;"
+                                               t-att-data-product-id="product_list.get(product[0])['product'].id"
+                                               t-att-data-partn-name-id="product_list.get(product[0])['partn_name']"
+                                               t-att-data-partner-id="product_list.get(product[0])['partner'].id"
+                                               t-att-data-available-qty="product_list.get(product[0])['product'].actual_quantity"
+                                               t-att-value="product_list.get(product[0])['quantity']"
+                                               />
 
                                                 <div class="input-group-append">
                                                     <a t-attf-id="allow_qty_plus_{{product_list.get(product[0])['partn_name']}}" aria-label="Add one" title="Add one" t-attf-href="#"

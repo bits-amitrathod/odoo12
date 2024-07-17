@@ -10,6 +10,8 @@ class ProductProduct(models.Model):
 
     min_exp_date = fields.Date(compute='_compute_exp_dates', store=False)
     max_exp_date = fields.Date(compute='_compute_exp_dates', store=False)
+    srt_date_max = fields.Char(compute='_compute_exp_dates', store=False)
+    srt_date_min = fields.Char(compute='_compute_exp_dates', store=False)
 
     def _compute_exp_dates(self):
         for product in self:
@@ -37,9 +39,24 @@ class ProductProduct(models.Model):
                 if result and all(result):
                     product.min_exp_date = result[1]
                     product.max_exp_date = result[2]
+                    if product.min_exp_date and product.max_exp_date:
+                        if (product.max_exp_date - product.min_exp_date).days > 365:
+                            product.srt_date_max = "1 Year+"
+                        else:
+                            product.srt_date_max = product.max_exp_date.strftime('%m/%d/%Y')
+                        if ((product.min_exp_date > fields.Datetime.today().date())
+                                and ((product.min_exp_date - fields.Datetime.today().date()).days > 365)
+                                and ((product.max_exp_date - product.min_exp_date).days > 365)):
+                            product.srt_date_min = "-"
+                        else:
+                            product.srt_date_min = product.min_exp_date.strftime('%m/%d/%Y')
                 else:
                     product.min_exp_date = False
                     product.max_exp_date = False
+                    product.srt_date_max = False
+                    product.srt_date_min = False
+
+
 class Website(models.Model):
     _inherit = 'website'
 

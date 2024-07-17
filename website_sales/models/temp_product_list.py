@@ -62,7 +62,8 @@ class TempProductList(models.Model):
                         a.id AS product_id,
                         a.product_brand_id AS product_brand_id,      
                         null as min_expiration_date,
-                        null as max_expiration_date,                  
+                        null as max_expiration_date,
+                        null as str_max_date,                  
                         1 as quantity                                     
                         FROM
                         sale_order
@@ -130,6 +131,21 @@ class TempProductList(models.Model):
                     else:
                         price_list = product.product_tmpl_id.list_price
 
+                str_date_cal = ''
+                str_date_min = ''
+                if (result['min'] is not None and result['max'] is not None) and \
+                        ((result['max'] - result['min']).days > 365):
+                    str_date_cal = '1 Year+'
+                elif result['min'] is not None and result['max'] is not None:
+                    str_date_cal = result['max'].strftime('%m/%d/%Y')
+
+                if ((result['min'].date() > fields.Datetime.today().date())
+                        and ((result['min'].date() - fields.Datetime.today().date()).days > 365)
+                        and ((result['max'].date() - result['min'].date()).days > 365)):
+                    str_date_min = '-'
+                elif result['min'] is not None:
+                    str_date_min = result['min'].strftime('%m/%d/%Y')
+
                 company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
                 product_dict = {'product': product,
                                 'partner': partner,
@@ -138,6 +154,8 @@ class TempProductList(models.Model):
                                 'product_sku': product.product_tmpl_id.sku_code,
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
+                                'str_max_date': str_date_cal,
+                                'str_min_date': str_date_min,
                                 'price_list': price_list,
                                 'price_curr': company_fetch.currency_id,
                                 'quantity': query_result['quantity'],
@@ -184,7 +202,8 @@ class TempProductList(models.Model):
                         a.id AS product_id,
                         a.product_brand_id AS product_brand_id,      
                         null as min_expiration_date,
-                        null as max_expiration_date,                  
+                        null as max_expiration_date,  
+                        null as str_max_date,                
                         1 as quantity                                     
                         FROM
                         sale_order
@@ -253,6 +272,13 @@ class TempProductList(models.Model):
                         price_list = product.product_tmpl_id.list_price
 
                 company_fetch = self.env['res.company'].search([], limit=1, order="id desc")
+                str_date_cal = ''
+                if (result['min'] is not None and result['max'] is not None) and\
+                        ((result['max'] - result['min']).days > 365):
+                    str_date_cal = '1 Year+'
+                elif result['min'] is not None and result['max'] is not None:
+                    str_date_cal = result['max'].strftime('%m/%d/%Y')
+
                 product_dict = {'product': product,
                                 'partner': partner,
                                 'partn_name': query_result['partn_name'],
@@ -260,6 +286,7 @@ class TempProductList(models.Model):
                                 'product_sku': product.product_tmpl_id.sku_code,
                                 'min_expiration_date': result['min'],
                                 'max_expiration_date': result['max'],
+                                'str_max_date': str_date_cal,
                                 'price_list': price_list,
                                 'price_curr': company_fetch.currency_id,
                                 'quantity': query_result['quantity'],

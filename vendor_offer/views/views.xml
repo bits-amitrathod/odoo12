@@ -2,6 +2,31 @@
 <odoo>
     <data>
 
+        <record id="ir_cron_scheduler_expire_old_vendor_offers" model="ir.cron">
+            <field name="name">Update Vendor Offer Expired Checkbox</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="model_id" ref="model_purchase_order"/>
+            <field name="state">code</field>
+            <field name="code">model.set_expiration_flag_old_offer()</field>
+            <field name="numbercall">-1</field>
+            <field name="priority">0</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="False"/>
+        </record>
+
+        <record model="ir.module.category" id="approval_vendor_offer">
+             <field name="name">Offer Approval</field>
+             <field name="description">User access levels for Vendor offer for approval</field>
+             <field name="sequence">10</field>
+        </record>
+        <record id="offerapproval_user_access" model="res.groups">
+            <field name="name">Appraisal</field>
+            <field name="category_id" ref="approval_vendor_offer"/>
+        </record>
+
+
         <!-- explicit list view definition -->
         <record model="ir.ui.view" id="vendor_offer.list_view">
             <field name="name">vendor.offer.purchase.order.list_view</field>
