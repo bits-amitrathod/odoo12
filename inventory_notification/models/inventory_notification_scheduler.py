@@ -443,22 +443,26 @@ class InventoryNotificationScheduler(models.TransientModel):
                         # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
                         if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
                             products[line.product_id.id] = line.product_id
-                subject = "SPS Updated In-Stock Product Report"
-                descrption =  Markup(""" 
-                
-                
+
+                subject = "Your Updated SPS Ordering List"
+
+                descrption =  Markup("""  
+
                  <strong>Good morning """ + customr.name + """,</strong>
-                                                                      <br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. 
-                                                                      You will also see two links to either download our
-                                                                      <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'> full catalog (Excel) </a> 
-                                                                      or go directly to our <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E;"> online portal </a> to place an order.
-                                                                      <br/> <a href="https://www.shopsps.com/downloadCatalog" style="color:#C4262E;"> Download – SPS Product Catalog </a>
-                                                                      <br/><center>
-                                                                      <br/><br/>
-                                                                      <div class="text-center" style="text-align: center;">
-                                                                      <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; 
-												border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px;
- 									font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
+                  <br/> <br/> Listed below are items you have previously requested or purchased with us that are 
+                  currently in stock. You will also see two links to either download our
+                  <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'> full catalog (Excel) </a> 
+                  or go directly to our <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E;"> 
+                  online portal </a> to place an order.
+                  Please reach out to your rep directly if there are any products they can add or remove from this report.
+                  <br/> 
+                  <br/><center>
+                  <br/><br/>
+                  <div class="text-center" style="text-align: center;">
+                  <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; 
+                  border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px;
+                  font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" 
+                  class="o_default_snippet_text">Order Online Here</a>
                                   </div>
                                   </center>
                 
@@ -467,11 +471,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                 
                 """)
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
-                          'Min Exp. Date',
-                          'Max Exp. Date', 'Unit Of Measure']
+                          'Min Exp. Date', 'Max Exp. Date', 'Unit Of Measure']
                 columnProps = ['product_brand_id.name', 'sku_code', 'name', 'customer_price_list', 'actual_quantity',
-                               'minExDate',
-                               'maxExDate', 'uom_id.name']
+                               'str_min', 'str_max', 'uom_id.name']
                 closing_content = Markup("""
                                     Please reply to this email or contact your Account Manager to hold product or place an order. If you would like to place an order on your own please click on the link "Order Online Here".
                                     <br/> Thank you <br/>
@@ -496,7 +498,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <p style="text-align: left;"><strong>Phil Kemp</strong></p>
                                     <p style="text-align: left;">412-745-1327</p>
                                     </td>
-                                    <td style="width: 123px; height: 78px;">&nbsp;</td>
+                                    <td style="width: 157px; height: 78px;">
+                                    <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
+                                    <p style="text-align: left;">(412) 745-0317</p>
+                                    </td>
+                                    
                                     </tr>
                                     <tr style="height: 76px;">
                                     <td style="width: 156px; height: 76px;">
@@ -1180,6 +1186,36 @@ class InventoryNotificationScheduler(models.TransientModel):
                         column = datetime.strptime(str(max), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
                     else:
                         column = ""
+                elif column_name == 'minmaxDate':
+                    if query_result and query_result['min'] and query_result['max']:
+                        if (query_result['max'] - query_result['min']).days > 365:
+                            column = datetime.strptime(str(query_result['min']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y') + ' - ' +"1 Year+"
+                        else:
+                            column = datetime.strptime(str(query_result['min']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y') + ' - ' \
+                                     + datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                    else:
+                        column = ""
+                elif column_name == 'str_min':
+                    if query_result and query_result['min']:
+                        min = str(query_result['min'])
+                        if ((query_result['min'].date() > fields.Datetime.today().date())
+                                and ((query_result['min'].date() - fields.Datetime.today().date()).days > 365)
+                                and ((query_result['max'].date() - query_result['min'].date()).days > 365)):
+                            column = "-"
+                        else:
+                            column = datetime.strptime(str(min), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                    else:
+                        column = ""
+
+                elif column_name == 'str_max':
+                    if query_result and query_result['min'] and query_result['max']:
+                        if (query_result['max'] - query_result['min']).days > 365:
+                            column = "1 Year+"
+                        else:
+                            column = datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
+                    else:
+                        column = ""
+
                 elif column_name == 'customer_price_list':
                     print("Inside customer_price_list ")
                     column = '$' + " {0:.2f}".format(

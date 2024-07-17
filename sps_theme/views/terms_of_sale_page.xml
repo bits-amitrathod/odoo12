@@ -1,13 +1,413 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="terms_of_sales_template" name="Terms Of Sale">
+<!--    <template id="terms_of_sales_template" name="Terms Of Sale">-->
+<!--        <t t-name="website.terms_of_sales">-->
+<!--            <t t-call="website.layout">-->
+<!--                <div id="wrap" class="oe_structure oe_empty"/>-->
+<!--                <section class="about-us-section">-->
+<!--                    <div class="container">-->
+<!--                        <div class="text-center pt32 pb32">-->
+<!--                            <h1  class="about-header"> Terms Of Sale </h1>-->
+<!--                          </div>-->
+<!--                        <div class="row">-->
+<!--                            <div class="col-md-12 mb32">-->
+<!--                                <div class="about-us-description">-->
+<!--                                    <div class="subtitle text-center">-->
+<!--                                        <span class="s1">SURGICAL PRODUCT SOLUTIONS LLC</span>-->
+<!--                                    </div>-->
+<!--                                    <div class="subtitle-light text-center">-->
+<!--                                        <span class="s2">STANDARD Terms and Conditions OF SALE</span>-->
+<!--                                    </div>-->
+<!--                                    <div class="subtitle text-center">-->
+<!--                                        <span class="s1">Last Updated October 12, 2018</span>-->
+<!--                                    </div>-->
+<!--                                      <div class="section-description mt-5">-->
+<!--                                        <ol class="ol1">-->
+<!--                                        <li class="li2">-->
+<!--                                             <span class="s3">APPLICABILITY.</span>-->
+<!--                                            <ol class="ol2">-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">These Standard Terms and Conditions of Sale (these-->
+<!--                                                        "<span>Terms</span>") are the only terms which govern the sale of the-->
+<!--                                                        goods (the "<span>Goods</span>") by Surgical Product Solutions LLC-->
+<!--                                                        ("<span>Seller</span>") to the buyer ("<span>Buyer</span>") named on the-->
+<!--                                                        accompanying invoice and/or sales confirmation (each, a "<span>-->
+<!--                                                            Sales Confirmation</span>"). Notwithstanding anything herein to-->
+<!--                                                        the contrary, if a written contract signed by both parties is in-->
+<!--                                                        existence covering the sale of the Goods covered hereby, the-->
+<!--                                                        terms and conditions of said contract shall prevail to the-->
+<!--                                                        extent they are inconsistent with these Terms.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">The applicable Sales Confirmation and these Terms-->
+<!--                                                        (collectively, this "<span>Agreement</span>") comprise the entire-->
+<!--                                                        agreement between the parties, and supersede all prior or-->
+<!--                                                        contemporaneous understandings, agreements, negotiations,-->
+<!--                                                        representations and warranties, and communications, both written-->
+<!--                                                        and oral. These Terms prevail over any of Buyer's general terms-->
+<!--                                                        and conditions of purchase. Fulfillment of Buyer's order does-->
+<!--                                                        not constitute acceptance of any of Buyer's terms and conditions-->
+<!--                                                        and does not serve to modify or amend these Terms.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                            </ol>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">DELIVERY.</span>-->
+<!--                                            <ol class="ol2" style="list-style-type: lower-alpha;">-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">The goods will be delivered within a reasonable-->
+<!--                                                        time after the receipt of Buyer's purchase order, subject to-->
+<!--                                                        availability of the Goods. Seller shall not be liable for any-->
+<!--                                                        delays, loss or damage in transit.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">Seller may, in its sole discretion, without-->
+<!--                                                        liability or penalty, make partial shipments of Goods to Buyer.-->
+<!--                                                        Each shipment will constitute a separate sale, and Buyer shall-->
+<!--                                                        pay for the units shipped whether such shipment is in whole or-->
+<!--                                                        partial fulfillment of Buyer's purchase order.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                            </ol>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">QUANTITY.</span>-->
+<!--                                            <p class="s1">If Seller delivers to-->
+<!--                                                Buyer a quantity of Goods of up to 5% more or less than the quantity set-->
+<!--                                                forth in the Sales Confirmation (or at least 75% of the quantity set-->
+<!--                                                forth in the Sales Confirmation if the undelivered Goods are on back-->
+<!--                                                order), Buyer shall not be entitled to object to or reject the Goods or-->
+<!--                                                any portion of them by reason of the surplus or shortfall and shall pay-->
+<!--                                                for such Goods the price set forth in the Sales Confirmation adjusted-->
+<!--                                                pro rata.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">SHIPPING TERMS AND RISK OF LOSS.</span>-->
+<!--                                            <p class="s1">-->
+<!--                                                Delivery shall be made, and risk of loss shall pass to Buyer, FOB-->
+<!--                                                Seller’s place of business.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">AMENDMENT AND MODIFICATION.</span>-->
+<!--                                            <p class="s1">These Terms may only be-->
+<!--                                                amended or modified in a writing which specifically states that it-->
+<!--                                                amends these Terms and is signed by an authorized representative of each-->
+<!--                                                party.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">PRICE.</span>-->
+<!--                                            <p class="s1">Buyer shall purchase-->
+<!--                                                the Goods from Seller at the price (the "<b>Price</b>") set forth in the-->
+<!--                                                Sales Confirmation. All Prices are exclusive of all sales, use and-->
+<!--                                                excise taxes, and any other similar taxes, duties and charges of any-->
+<!--                                                kind imposed by any governmental authority on any amounts payable by-->
+<!--                                                Buyer. Buyer shall be responsible for all such charges, costs and taxes;-->
+<!--                                                provided that, Buyer shall not be responsible for any taxes imposed on,-->
+<!--                                                or with respect to, Seller's income, revenues, gross receipts, personnel-->
+<!--                                                or real or personal property or other assets.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">PAYMENT TERMS.</span>-->
+<!--                                            <ol class="ol2" style="list-style-type: lower-alpha;">-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">If Buyer is an approved customer, Buyer shall pay-->
+<!--                                                        all invoiced amounts due to Seller within 30 days from the date-->
+<!--                                                        of Seller's invoice unless otherwise stated in the Sales-->
+<!--                                                        Confirmation. If Buyer is not an approved customer, Buyer shall-->
+<!--                                                        make payment of all invoiced amounts due to Seller prior to-->
+<!--                                                        shipment of the Goods by Seller. If Buyer is-->
+<!--                                                        an international customer, all payments hereunder shall be made-->
+<!--                                                        by wire transfer or paypal transfer.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">Buyer shall pay interest on all late payments at-->
+<!--                                                        the lesser of the rate of 1.5% per month or the highest rate-->
+<!--                                                        permissible under applicable law, calculated daily and-->
+<!--                                                        compounded monthly. Buyer shall reimburse Seller for all costs-->
+<!--                                                        incurred in collecting any late payments, including, without-->
+<!--                                                        limitation, attorneys' fees. In addition to all other remedies-->
+<!--                                                        available under these Terms or at law (which Seller does not-->
+<!--                                                        waive by the exercise of any rights hereunder), Seller shall be-->
+<!--                                                        entitled to suspend the delivery of any Goods if Buyer fails to-->
+<!--                                                        pay any amounts when due hereunder and such failure continues-->
+<!--                                                        for ten (10) days following written notice thereof.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">Buyer shall not withhold payment of any amounts due-->
+<!--                                                        and payable by reason of any set-off of any claim or dispute-->
+<!--                                                        with Seller, whether relating to Seller's breach, bankruptcy or-->
+<!--                                                        otherwise.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                            </ol>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">LIMITED WARRANTY.</span>-->
+<!--                                            <ol class="ol2" style="list-style-type: lower-alpha;">-->
+<!--                                                <li class="li3">-->
+<!--                                                    <p class="s1">Seller warrants to Buyer that the Goods will-->
+<!--                                                        conform to Seller’s Quality Assurance &amp; Service Guarantee,-->
+<!--                                                        available at <a class="word-break red-color"-->
+<!--                                                                href="http://www.surgicalproductsolutions.com/docs/SPS-Quality-Assurance.pdf">-->
+<!--                                                            http://www.surgicalproductsolutions.com/docs/SPS-Quality-Assurance.pdf-->
+<!--                                                        </a> and incorporated herein by reference, for a period-->
+<!--                                                        beginning on the date of shipment and expiring on the earlier of-->
+<!--                                                        (i) one (1) year from the date of shipment of the Goods and (ii)-->
+<!--                                                        the expiration date of the applicable Good (the "<span>Warranty-->
+<!--                                                            Period</span>").&amp;nbsp;-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">The Goods consist of products manufactured by a-->
+<!--                                                        third party ("<span>Third Party Product</span>"). For the avoidance of-->
+<!--                                                        doubt,-->
+<!--                                                        <span>EXCEPT FOR THE WARRANTY SET FORTH IN SECTION 8(a), SELLER-->
+<!--                                                            MAKES NO REPRESENTATIONS OR WARRANTIES WITH RESPECT TO ANY-->
+<!--                                                            THIRD PARTY PRODUCT, INCLUDING ANY (a) WARRANTY OF-->
+<!--                                                            MERCHANTABILITY; (b) WARRANTY OF FITNESS FOR A PARTICULAR-->
+<!--                                                            PURPOSE; (c) WARRANTY OF TITLE; OR (d) WARRANTY AGAINST-->
+<!--                                                            INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS OF A THIRD-->
+<!--                                                            PARTY, WHETHER EXPRESS OR IMPLIED BY LAW, COURSE OF DEALING,-->
+<!--                                                            COURSE OF PERFORMANCE, USAGE OF TRADE OR OTHERWISE.-->
+<!--                                                        </span>-->
+<!--                                                        Notwithstanding the foregoing, upon request, Seller shall use-->
+<!--                                                        its commercially reasonable efforts to pass through to Buyer any-->
+<!--                                                        manufacturer, distributor, or other third party warranties-->
+<!--                                                        covering such Third Party Products included in the Goods and in-->
+<!--                                                        favor of Seller.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">With respect to any such Goods being in breach of-->
+<!--                                                        the limited warranty set forth in Section 8(a) hereof during the-->
+<!--                                                        Warranty Period, Seller shall, in its sole discretion, either:-->
+<!--                                                        (i) repair or replace such Goods (or the defective part) or (ii)-->
+<!--                                                        credit or refund the price of such Goods at the pro rata-->
+<!--                                                        contract rate; provided that, if Seller so requests, Buyer-->
+<!--                                                        shall, at Seller's expense, return such Goods to Seller.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">-->
+<!--                                                        <span>THE REMEDIES SET FORTH IN SECTION 8(c) SHALL BE BUYER'S SOLE-->
+<!--                                                            AND EXCLUSIVE REMEDY AND SELLER'S ENTIRE LIABILITY FOR ANY-->
+<!--                                                            BREACH OF THE LIMITED WARRANTY SET FORTH IN SECTION 8(a).&amp;nbsp;-->
+<!--                                                        </span>-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                            </ol>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">LIMITATION OF LIABILITY.</span>-->
+<!--                                            <ol class="ol2">-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">-->
+<!--                                                        <span>IN NO EVENT SHALL SELLER BE LIABLE TO BUYER OR ANY THIRD-->
+<!--                                                            PARTY FOR ANY LOSS OF USE, REVENUE OR PROFIT, OR FOR ANY-->
+<!--                                                            CONSEQUENTIAL, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR-->
+<!--                                                            PUNITIVE DAMAGES WHETHER ARISING OUT OF BREACH OF CONTRACT,-->
+<!--                                                            TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF-->
+<!--                                                            WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT-->
+<!--                                                            SELLER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES,-->
+<!--                                                            AND NOTWITHSTANDING THE FAILURE OF ANY AGREED OR OTHER-->
+<!--                                                            REMEDY OF ITS ESSENTIAL PURPOSE.-->
+<!--                                                        </span>-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">-->
+<!--                                                        <span>IN NO EVENT SHALL SELLER'S AGGREGATE LIABILITY ARISING OUT OF-->
+<!--                                                            OR RELATED TO THIS AGREEMENT, WHETHER ARISING OUT OF OR-->
+<!--                                                            RELATED TO BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE)-->
+<!--                                                            OR OTHERWISE, EXCEED THE TOTAL OF THE AMOUNTS PAID TO SELLER-->
+<!--                                                            FOR THE GOODS SOLD HEREUNDER.-->
+<!--                                                        </span>-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                                <li class="li2">-->
+<!--                                                    <p class="s1">The limitation of liability set forth in Section-->
+<!--                                                        9(b) above shall not apply to liability resulting from Seller's-->
+<!--                                                        gross negligence or willful misconduct.-->
+<!--                                                    </p>-->
+<!--                                                </li>-->
+<!--                                            </ol>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">COMPLIANCE WITH LAW.</span>-->
+<!--                                            <p class="s1">-->
+<!--                                                Buyer shall comply with all applicable laws, regulations and ordinances.-->
+<!--                                                Buyer shall maintain in effect all the licenses, permissions,-->
+<!--                                                authorizations, consents and permits that it needs to carry out its-->
+<!--                                                obligations under this Agreement.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">TERMINATION.</span>-->
+<!--                                            <p class="s1">In addition to any-->
+<!--                                                remedies that may be provided under these Terms, Seller may terminate-->
+<!--                                                this Agreement with immediate effect upon written notice to Buyer, if-->
+<!--                                                Buyer: (i) fails to pay any amount when due under this Agreement and-->
+<!--                                                such failure continues for ten (10) days after Buyer's receipt of-->
+<!--                                                written notice of nonpayment; (ii) has not otherwise performed or-->
+<!--                                                complied with any of these Terms, in whole or in part; or (iii) becomes-->
+<!--                                                insolvent, files a petition for bankruptcy or commences or has commenced-->
+<!--                                                against it proceedings relating to bankruptcy, receivership,-->
+<!--                                                reorganization or assignment for the benefit of creditors.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">WAIVER.</span>-->
+<!--                                            <p class="s1">No waiver by Seller of-->
+<!--                                                any of the provisions of this Agreement is effective unless explicitly-->
+<!--                                                set forth in writing and signed by Seller. No failure to exercise, or-->
+<!--                                                delay in exercising, any right, remedy, power or privilege arising from-->
+<!--                                                this Agreement operates, or may be construed, as a waiver thereof. No-->
+<!--                                                single or partial exercise of any right, remedy, power or privilege-->
+<!--                                                hereunder precludes any other or further exercise thereof or the-->
+<!--                                                exercise of any other right, remedy, power or privilege.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">CONFIDENTIAL INFORMATION.</span>-->
+<!--                                            <p class="s1">All non-public,-->
+<!--                                                confidential or proprietary information of Seller, including but not-->
+<!--                                                limited to documents, data, business operations, customer lists,-->
+<!--                                                pricing, discounts or rebates, disclosed by Seller to Buyer, whether-->
+<!--                                                disclosed orally or disclosed or accessed in written, electronic or-->
+<!--                                                other form or media, and whether or not marked, designated or otherwise-->
+<!--                                                identified as "confidential" in connection with this Agreement is-->
+<!--                                                confidential, solely for the use of performing this Agreement, and may-->
+<!--                                                not be disclosed or copied unless authorized in advance by Seller in-->
+<!--                                                writing. Seller shall be entitled to injunctive relief for any violation-->
+<!--                                                of this Section. This Section does not apply to information that is: (a)-->
+<!--                                                in the public domain; (b) known to Buyer at the time of disclosure; or-->
+<!--                                                (c) rightfully obtained by Buyer on a non-confidential basis from a-->
+<!--                                                third party.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">FORCE MAJEURE.</span>-->
+<!--                                            <p class="s1">The Seller shall not be-->
+<!--                                                liable or responsible to Buyer, nor be deemed to have defaulted or-->
+<!--                                                breached this Agreement, for any failure or delay in fulfilling or-->
+<!--                                                performing any term of this Agreement when and to the extent such-->
+<!--                                                failure or delay is caused by or results from acts or circumstances-->
+<!--                                                beyond the reasonable control of Seller including, without limitation,-->
+<!--                                                acts of God, flood, fire, earthquake, explosion, governmental actions,-->
+<!--                                                war, invasion or hostilities (whether war is declared or not), terrorist-->
+<!--                                                threats or acts, riot, or other civil unrest, national emergency,-->
+<!--                                                revolution, insurrection, epidemic, lockouts, strikes or other labor-->
+<!--                                                disputes (whether or not relating to either party's workforce), or-->
+<!--                                                restraints or delays affecting carriers or inability or delay in-->
+<!--                                                obtaining supplies of adequate or suitable materials, materials or-->
+<!--                                                telecommunication breakdown or power outage.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">RELATIONSHIP OF THE PARTIES.</span>-->
+<!--                                            <p class="s1">The relationship-->
+<!--                                                between the parties is that of independent contractors. Nothing-->
+<!--                                                contained in this Agreement shall be construed as creating any agency,-->
+<!--                                                partnership, joint venture or other form of joint enterprise, employment-->
+<!--                                                or fiduciary relationship between the parties, and neither party shall-->
+<!--                                                have authority to contract for or bind the other party in any manner-->
+<!--                                                whatsoever.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">NO THIRD-PARTY BENEFICIARIES.</span>-->
+<!--                                            <p class="s1">This Agreement is for-->
+<!--                                                the sole benefit of the parties hereto and their respective successors-->
+<!--                                                and permitted assigns and nothing herein, express or implied, is-->
+<!--                                                intended to or shall confer upon any other person or entity any legal or-->
+<!--                                                equitable right, benefit or remedy of any nature whatsoever under or by-->
+<!--                                                reason of these Terms.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">GOVERNING LAW.</span>-->
+<!--                                            <p class="s1">All matters arising out-->
+<!--                                                of or relating to this Agreement is governed by and construed in-->
+<!--                                                accordance with the internal laws of the Commonwealth of Pennsylvania-->
+<!--                                                without giving effect to any choice or conflict of law provision or rule-->
+<!--                                                (whether of the Commonwealth of Pennsylvania or any other jurisdiction)-->
+<!--                                                that would cause the application of the laws of any jurisdiction other-->
+<!--                                                than those of the Commonwealth of Pennsylvania.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">SUBMISSION TO JURISDICTION.</span>-->
+<!--                                            <p class="s1">Any legal suit, action-->
+<!--                                                or proceeding arising out of or relating to this Agreement shall be-->
+<!--                                                instituted in the federal courts of the United States of America or the-->
+<!--                                                courts of the Commonwealth of Pennsylvania in each case located in the-->
+<!--                                                City of Pittsburgh and County of Allegheny, and each party irrevocably-->
+<!--                                                submits to the exclusive jurisdiction of such courts in any such suit,-->
+<!--                                                action or proceeding.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">NOTICES.</span>-->
+<!--                                            <p class="s1">All notices, request,-->
+<!--                                                consents, claims, demands, waivers and other communications hereunder-->
+<!--                                                (each, a "<span>Notice</span>") shall be in writing and addressed to the-->
+<!--                                                parties at the addresses set forth on the face of the Sales Confirmation-->
+<!--                                                or to such other address that may be designated by the receiving party-->
+<!--                                                in writing. All Notices shall be delivered by personal delivery,-->
+<!--                                                nationally recognized overnight courier (with all fees pre-paid),-->
+<!--                                                facsimile (with confirmation of transmission) or certified or registered-->
+<!--                                                mail (in each case, return receipt requested, postage prepaid). Except-->
+<!--                                                as otherwise provided in this Agreement, a Notice is effective only (a)-->
+<!--                                                upon receipt of the receiving party, and (b) if the party giving the-->
+<!--                                                Notice has complied with the requirements of this Section.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">SEVERABILITY.</span>-->
+<!--                                            <p class="s1">If any term or-->
+<!--                                                provision of this Agreement is invalid, illegal or unenforceable in any-->
+<!--                                                jurisdiction, such invalidity, illegality or unenforceability shall not-->
+<!--                                                affect any other term or provision of this Agreement or invalidate or-->
+<!--                                                render unenforceable such term or provision in any other jurisdiction.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                        <li class="li2">-->
+<!--                                                <span class="s3">SURVIVAL.</span>-->
+<!--                                            <p class="s1">-->
+<!--                                                Provisions of these Terms which by their nature should apply beyond-->
+<!--                                                their terms will remain in force after any termination or expiration of-->
+<!--                                                this Agreement including, but not limited to, the following provisions:-->
+<!--                                                Compliance with Laws, Confidential Information Governing Law, Submission-->
+<!--                                                to Jurisdiction, and Survival.-->
+<!--                                            </p>-->
+<!--                                        </li>-->
+<!--                                    </ol>-->
+<!--                                      </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </section>-->
+<!--            </t>-->
+<!--        </t>-->
+<!--    </template>-->
+    <template id="terms_of_sales_template_new" name="Terms Of Sale">
         <t t-name="website.terms_of_sales">
             <t t-call="website.layout">
                 <div id="wrap" class="oe_structure oe_empty"/>
                 <section class="about-us-section">
                     <div class="container">
                         <div class="text-center pt32 pb32">
-                            <h1  class="about-header"> Terms Of Sale </h1>
+                            <h1  class="about-header"> Terms Of Product Sale </h1>
                           </div>
                         <div class="row">
                             <div class="col-md-12 mb32">
@@ -16,380 +416,539 @@
                                         <span class="s1">SURGICAL PRODUCT SOLUTIONS LLC</span>
                                     </div>
                                     <div class="subtitle-light text-center">
-                                        <span class="s2">STANDARD Terms and Conditions OF SALE</span>
+                                        <span class="s2">STANDARD Terms and Conditions OF PRODUCT SALE</span>
                                     </div>
                                     <div class="subtitle text-center">
-                                        <span class="s1">Last Updated October 12, 2018</span>
+                                        <span class="s1">Last Updated June 1, 2024</span>
                                     </div>
                                       <div class="section-description mt-5">
                                         <ol class="ol1">
                                         <li class="li2">
-                                             <span class="s3">APPLICABILITY.</span>
-                                            <ol class="ol2">
-                                                <li class="li2">
-                                                    <p class="s1">These Standard Terms and Conditions of Sale (these
-                                                        "<span>Terms</span>") are the only terms which govern the sale of the
-                                                        goods (the "<span>Goods</span>") by Surgical Product Solutions LLC
-                                                        ("<span>Seller</span>") to the buyer ("<span>Buyer</span>") named on the
-                                                        accompanying invoice and/or sales confirmation (each, a "<span>
-                                                            Sales Confirmation</span>"). Notwithstanding anything herein to
-                                                        the contrary, if a written contract signed by both parties is in
-                                                        existence covering the sale of the Goods covered hereby, the
-                                                        terms and conditions of said contract shall prevail to the
-                                                        extent they are inconsistent with these Terms.
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
-                                                    <p class="s1">The applicable Sales Confirmation and these Terms
-                                                        (collectively, this "<span>Agreement</span>") comprise the entire
-                                                        agreement between the parties, and supersede all prior or
-                                                        contemporaneous understandings, agreements, negotiations,
-                                                        representations and warranties, and communications, both written
-                                                        and oral. These Terms prevail over any of Buyer's general terms
-                                                        and conditions of purchase. Fulfillment of Buyer's order does
-                                                        not constitute acceptance of any of Buyer's terms and conditions
-                                                        and does not serve to modify or amend these Terms.
-                                                    </p>
-                                                </li>
-                                            </ol>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">DELIVERY.</span>
-                                            <ol class="ol2" style="list-style-type: lower-alpha;">
-                                                <li class="li2">
-                                                    <p class="s1">The goods will be delivered within a reasonable
-                                                        time after the receipt of Buyer's purchase order, subject to
-                                                        availability of the Goods. Seller shall not be liable for any
-                                                        delays, loss or damage in transit.
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
-                                                    <p class="s1">Seller may, in its sole discretion, without
-                                                        liability or penalty, make partial shipments of Goods to Buyer.
-                                                        Each shipment will constitute a separate sale, and Buyer shall
-                                                        pay for the units shipped whether such shipment is in whole or
-                                                        partial fulfillment of Buyer's purchase order.
-                                                    </p>
-                                                </li>
-                                            </ol>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">QUANTITY.</span>
-                                            <p class="s1">If Seller delivers to
-                                                Buyer a quantity of Goods of up to 5% more or less than the quantity set
-                                                forth in the Sales Confirmation (or at least 75% of the quantity set
-                                                forth in the Sales Confirmation if the undelivered Goods are on back
-                                                order), Buyer shall not be entitled to object to or reject the Goods or
-                                                any portion of them by reason of the surplus or shortfall and shall pay
-                                                for such Goods the price set forth in the Sales Confirmation adjusted
-                                                pro rata.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">SHIPPING TERMS AND RISK OF LOSS.</span>
-                                            <p class="s1">
-                                                Delivery shall be made, and risk of loss shall pass to Buyer, FOB
-                                                Seller’s place of business.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">AMENDMENT AND MODIFICATION.</span>
-                                            <p class="s1">These Terms may only be
-                                                amended or modified in a writing which specifically states that it
-                                                amends these Terms and is signed by an authorized representative of each
-                                                party.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">PRICE.</span>
-                                            <p class="s1">Buyer shall purchase
-                                                the Goods from Seller at the price (the "<b>Price</b>") set forth in the
-                                                Sales Confirmation. All Prices are exclusive of all sales, use and
-                                                excise taxes, and any other similar taxes, duties and charges of any
-                                                kind imposed by any governmental authority on any amounts payable by
-                                                Buyer. Buyer shall be responsible for all such charges, costs and taxes;
-                                                provided that, Buyer shall not be responsible for any taxes imposed on,
-                                                or with respect to, Seller's income, revenues, gross receipts, personnel
-                                                or real or personal property or other assets.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">PAYMENT TERMS.</span>
-                                            <ol class="ol2" style="list-style-type: lower-alpha;">
-                                                <li class="li2">
-                                                    <p class="s1">If Buyer is an approved customer, Buyer shall pay
-                                                        all invoiced amounts due to Seller within 30 days from the date
-                                                        of Seller's invoice unless otherwise stated in the Sales
-                                                        Confirmation. If Buyer is not an approved customer, Buyer shall
-                                                        make payment of all invoiced amounts due to Seller prior to
-                                                        shipment of the Goods by Seller. If Buyer is
-                                                        an international customer, all payments hereunder shall be made
-                                                        by wire transfer or paypal transfer.
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
-                                                    <p class="s1">Buyer shall pay interest on all late payments at
-                                                        the lesser of the rate of 1.5% per month or the highest rate
-                                                        permissible under applicable law, calculated daily and
-                                                        compounded monthly. Buyer shall reimburse Seller for all costs
-                                                        incurred in collecting any late payments, including, without
-                                                        limitation, attorneys' fees. In addition to all other remedies
-                                                        available under these Terms or at law (which Seller does not
-                                                        waive by the exercise of any rights hereunder), Seller shall be
-                                                        entitled to suspend the delivery of any Goods if Buyer fails to
-                                                        pay any amounts when due hereunder and such failure continues
-                                                        for ten (10) days following written notice thereof.
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
-                                                    <p class="s1">Buyer shall not withhold payment of any amounts due
-                                                        and payable by reason of any set-off of any claim or dispute
-                                                        with Seller, whether relating to Seller's breach, bankruptcy or
-                                                        otherwise.
-                                                    </p>
-                                                </li>
-                                            </ol>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">LIMITED WARRANTY.</span>
-                                            <ol class="ol2" style="list-style-type: lower-alpha;">
-                                                <li class="li3">
-                                                    <p class="s1">Seller warrants to Buyer that the Goods will
-                                                        conform to Seller’s Quality Assurance &amp; Service Guarantee,
-                                                        available at <a class="word-break red-color"
-                                                                href="http://www.surgicalproductsolutions.com/docs/SPS-Quality-Assurance.pdf">
-                                                            http://www.surgicalproductsolutions.com/docs/SPS-Quality-Assurance.pdf
-                                                        </a> and incorporated herein by reference, for a period
-                                                        beginning on the date of shipment and expiring on the earlier of
-                                                        (i) one (1) year from the date of shipment of the Goods and (ii)
-                                                        the expiration date of the applicable Good (the "<span>Warranty
-                                                            Period</span>").&amp;nbsp;
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
-                                                    <p class="s1">The Goods consist of products manufactured by a
-                                                        third party ("<span>Third Party Product</span>"). For the avoidance of
-                                                        doubt,
-                                                        <span>EXCEPT FOR THE WARRANTY SET FORTH IN SECTION 8(a), SELLER
-                                                            MAKES NO REPRESENTATIONS OR WARRANTIES WITH RESPECT TO ANY
-                                                            THIRD PARTY PRODUCT, INCLUDING ANY (a) WARRANTY OF
-                                                            MERCHANTABILITY; (b) WARRANTY OF FITNESS FOR A PARTICULAR
-                                                            PURPOSE; (c) WARRANTY OF TITLE; OR (d) WARRANTY AGAINST
-                                                            INFRINGEMENT OF INTELLECTUAL PROPERTY RIGHTS OF A THIRD
-                                                            PARTY, WHETHER EXPRESS OR IMPLIED BY LAW, COURSE OF DEALING,
-                                                            COURSE OF PERFORMANCE, USAGE OF TRADE OR OTHERWISE.
-                                                        </span>
-                                                        Notwithstanding the foregoing, upon request, Seller shall use
-                                                        its commercially reasonable efforts to pass through to Buyer any
-                                                        manufacturer, distributor, or other third party warranties
-                                                        covering such Third Party Products included in the Goods and in
-                                                        favor of Seller.
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
-                                                    <p class="s1">With respect to any such Goods being in breach of
-                                                        the limited warranty set forth in Section 8(a) hereof during the
-                                                        Warranty Period, Seller shall, in its sole discretion, either:
-                                                        (i) repair or replace such Goods (or the defective part) or (ii)
-                                                        credit or refund the price of such Goods at the pro rata
-                                                        contract rate; provided that, if Seller so requests, Buyer
-                                                        shall, at Seller's expense, return such Goods to Seller.
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
+                                        <span class="s3">APPLICABILITY</span>
+                                        <p class="s1">
+                                            These general terms and conditions (these “Terms”) govern SPS’ provision
+                                            of the applicable Services to Customer. The cover page these Terms
+                                            and the applicable Addendum comprise the entire agreement (the “Agreement”)
+                                            between the parties and supersede all prior or contemporaneous
+                                            understandings agreements negotiations representations and warranties
+                                            and communications both written and oral.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">TERM AND TERMINATION</span>
+                                        <p class="s1">
+                                            This Agreement commences on the Effective Date as indicated on
+                                            the cover page. The Initial Term will be as indicated on the
+                                            cover page. Upon the expiration of the Initial Term this Agreement
+                                            will automatically renew for successive terms of twelve (12) months
+                                            (each a “Renewal Term” and together with the Initial Term the “Term”).
+                                            Either party may terminate this Agreement by notifying the other
+                                            party in writing at least ninety (90) days prior to the expiration
+                                            of the then current Term. Each party shall be responsible for
+                                            the payment of applicable fees owed the other party through the
+                                            termination date. In the event of a breach of the obligations
+                                            of a party the non-breaching party may terminate this Agreement
+                                            if the breaching party fails to cure within 30 days of written
+                                            notice of the breach. Any breach of Customer’s payment obligations
+                                            shall be deemed a material breach and SPS may terminate this Agreement
+                                            immediately with notice. Sections including arbitration governing law
+                                            indemnification confidential information compliance with applicable laws
+                                            and such other sections which by their terms reasonably include performance
+                                            after expiration or termination of this Agreement shall survive
+                                            such expiration or termination.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">REPRESENTATIONS AND WARRANTIES</span>
+                                        <p class="s1">
+                                            Each party represents and warrants that it has the legal power
+                                            and authority to enter into this Agreement.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">INDEMNIFICATION</span>
+                                        <p class="s1">
+                                            Customer shall indemnify defend and hold SPS and its officers
+                                            directors employees and agents harmless from and against any and
+                                            all claims costs damages losses liabilities and expenses (including
+                                            reasonable attorneys’ fees and costs) arising out of or in connection
+                                            with a claim brought by a third party arising directly or indirectly
+                                            from (a) Customer’s negligence or misconduct (b) a breach by Customer
+                                            this Agreement (c) Customer’s use of the Products off-label (d) Customer’s
+                                            failure to maintain the Products or (e) Customer’s failure to use
+                                            the Product in accordance with the manufacturer’s specifications. SPS
+                                            shall indemnify defend and hold Customer and its officers directors
+                                            employees and agents harmless from and against any and all claims
+                                            costs damages losses liabilities and expenses (including reasonable
+                                            attorneys’ fees and costs) arising out or in connection with a claim
+                                            brought by a third party alleging personal injury including death
+                                            or tangible property damage as a result of SPS’s negligence or
+                                            breach of its obligations under this Agreement.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">DISCLAIMER OF WARRANTIES</span>
+                                        <p class="s1">
+                                            EXCEPT AS OTHERWISE PROVIDED HEREIN SPS MAKES NO REPRESENTATION
+                                            WARRANTY OR GUARANTY AS TO THE RELIABILITY QUALITY SUITABILITY
+                                            MERCHANTABILITY AVAILABILITY ACCURACY OR COMPLETENESS OF THE PRODUCTS
+                                            AND/OR SERVICES; THAT THE PRODUCTS OR SERVICES WILL MEET CUSTOMER’S
+                                            REQUIREMENTS OR EXPECTATIONS. ALL CONDITIONS REPRESENTATIONS AND WARRANTIES
+                                            WHETHER EXPRESS IMPLIED STATUTORY OR OTHERWISE INCLUDING WITHOUT
+                                            LIMITATION ANY IMPLIED WARRANTY OF MERCHANTABILITY FITNESS FOR A
+                                            PARTICULAR PURPOSE ARE HEREBY DISCLAIMED TO THE MAXIMUM EXTENT
+                                            PERMITTED BY APPLICABLE LAW.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">LIMITATION OF LIABILITY</span>
+                                        <p class="s1">
+                                            EXCEPT FOR ACTUAL FEE’S OWED TO A PARTY AND INDEMNIFICATION
+                                            OBLIGATIONS IN NO EVENT SHALL EITHER PARTY’S AGGREGATE LIABILITY
+                                            EXCEED THE AMOUNTS ACTUALLY PAID BY AND/OR DUE FROM CUSTOMER TO
+                                            SPS IN THE TWELVE (12) MONTH PERIOD IMMEDIATELY PRECEDING OR
+                                            SUBSEQUENT TO THE EVENT GIVING RISE TO SUCH CLAIM WHICHEVER IS
+                                            GREATER. IN NO EVENT SHALL CUSTOMER OR SPS BE LIABLE TO ANYONE
+                                            FOR ANY INDIRECT PUNITIVE SPECIAL EXEMPLARY INCIDENTAL CONSEQUENTIAL
+                                            OR OTHER DAMAGES OF ANY TYPE OR KIND (INCLUDING LOSS OF DATA REVENUE
+                                            PROFITS USE OR OTHER ECONOMIC ADVANTAGE) ARISING OUT OF OR IN ANY
+                                            WAY CONNECTED WITH THIS AGREEMENT INCLUDING WITHOUT LIMITATION
+                                            THE SERVICES OR PRODUCTS EVEN IF SUCH PARTY HAD PREVIOUSLY ADVISED
+                                            OF THE POSSIBILITY OF SUCH DAMAGES.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">LAWS AND EXPORT CONTROL</span>
+                                        <p class="s1">
+                                            SPS sells Products that may be subject to U.S. export controls
+                                            administered by the U.S. Department of Commerce the U.S. Department
+                                            of Treasury Office of Foreign Assets Control and other U.S. agencies.
+                                            Customer is solely responsible for compliance with all applicable
+                                            laws regulations and statutes including without limitation all
+                                            requirements of the United States Department of Transportation.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">NOTICE</span>
+                                        <p class="s1">
+                                            Either Party may give notice by written communication sent by first
+                                            class mail or pre-paid post to the other at the address provided
+                                            on the cover page or as otherwise indicated by a Party. Such
+                                            notice shall be deemed to have been given upon the expiration
+                                            of 96 hours after mailing or posting (if sent by first class
+                                            mail or pre-paid post).
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">MODIFICATION TO TERMS</span>
+                                        <p class="s1">
+                                            Neither party may modify the Agreement including these Terms without
+                                            the prior written consent of the other party.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">ASSIGNMENT; CHANGE IN CONTROL</span>
+                                        <p class="s1">
+                                            This Agreement may not be assigned by Customer by operation of law
+                                            change of control merger acquisition of all or substantially all
+                                            of the Customer’s assets or otherwise without the prior written
+                                            approval of SPS which may not be unreasonably withheld conditioned
+                                            or delayed. Any purported assignment in violation of this section
+                                            shall be void.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">CONFIDENTIAL INFORMATION</span>
+                                        <p class="s1">
+                                            All non-public confidential or proprietary information of the disclosing
+                                            party specifications designs plans documents data business operations
+                                            pricing or discounts whether disclosed orally or disclosed or accessed
+                                            in written electronic or other form or media and whether or not
+                                            marked designated or otherwise identified as “confidential” in connection
+                                            with this Agreement is confidential solely for the use of performing
+                                            this Agreement and may not be disclosed or copied unless authorized
+                                            in advance by the disclosing party. Upon the disclosing party's
+                                            request the receiving party shall promptly return all documents
+                                            and other materials received from the disclosing party. The disclosing
+                                            party shall be entitled to injunctive relief for any violation
+                                            of this Section. This Section does not apply to information that
+                                            is: (a) in the public domain; (b) known to the receiving party
+                                            at the time of disclosure; or (c) rightfully obtained by the receiving
+                                            party on a non-confidential basis from a third-party. Notwithstanding
+                                            anything in here to the contrary SPS shall not be responsible
+                                            for the protection of any personal health information (“PHI”) or
+                                            personally identifiable information (“PII”). Customer covenants that
+                                            it shall not provide any PHI or PII to SPS.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">COMPLIANCE WITH LAWS</span>
+                                        <p class="s1">
+                                            Each party represents warrants certifies and covenants (collectively
+                                            “Covenants”) that it will comply with all laws applicable to the
+                                            goods and/or the activities contemplated or provided pursuant to
+                                            this Agreement and under each Purchase Order including but not
+                                            limited to any national international federal state provincial or
+                                            local law treaty convention protocol common law regulation directive
+                                            or ordinance and all lawful orders including judicial orders rules
+                                            and regulations issued thereunder including without limitation those
+                                            dealing with the health and safety records retention and the transportation
+                                            or storage of hazardous materials. Each party shall also comply
+                                            with good industry practices. With respect to all Product sold
+                                            or otherwise transferred the selling party shall provide all relevant
+                                            information including without limitation material safety data sheets
+                                            in the language and the legally required format of the location
+                                            to which the Products will be shipped and mandated labeling information
+                                            required pursuant to applicable requirements.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">DISPUTE RESOLUTION</span>
+                                        <p class="s1">
+                                            Except for claims seeking equitable relief the parties shall attempt
+                                            to amicably resolve any controversy dispute or difference arising
+                                            out of the Agreement and/or a Purchase Order. Except for claims
+                                            seeking equitable relief any unresolved dispute shall be referred
+                                            to a qualified independent arbitrator acceptable to both parties.
+                                            Any arbitration under the Agreement shall take place in Chicago
+                                            Illinois. The arbitrator will have no authority to award any damages
+                                            that are excluded by the terms of the Agreement. In the event that
+                                            a suitable independent arbitrator cannot be identified and agreed
+                                            on by both parties within twenty (20) days of the first demand
+                                            by a party for arbitration then the parties agree that a single
+                                            arbitrator will be appointed by the American Arbitration Association
+                                            (AAA). All arbitration proceedings shall be conducted in accordance
+                                            with the Commercial Arbitration Rules of the AAA but shall be administered
+                                            by AAA only if AAA appoints the arbitrator. The arbitrator may
+                                            award attorney’s fees and costs as part of the award. The award
+                                            of the arbitrator shall be final and binding and may be entered
+                                            as a judgment in any court of competent jurisdiction. All proceedings
+                                            shall be conducted in the English language unless otherwise stated
+                                            in the applicable Purchase Order. The award shall be final and
+                                            binding on both Customer and SPS and the parties hereby waive the
+                                            right of appeal to any court for amendment or modification of the
+                                            arbitrator’s award.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">FORCE MAJEURE</span>
+                                        <p class="s1">
+                                            Neither party shall be liable in any manner for failure to perform
+                                            or delay in performing all or any part of this Agreement which
+                                            is directly or indirectly due to any cause or circumstance beyond
+                                            the control of such party including without limitation acts of God
+                                            fire flood storms earthquake typhoon tidal wave plague or other
+                                            epidemics governmental laws orders regulations sanctions or restrictions
+                                            war (whether declared or not) armed conflict or the serious threat
+                                            of the same hostilities mobilization blockade embargo detention revolution
+                                            riot looting lockout strike or other labor dispute unavailability
+                                            of transportation or severe economic dislocation.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">GENERAL</span>
+                                        <p class="s1">
+                                            This Agreement shall be governed by laws of the Commonwealth of
+                                            Pennsylvania. No text or information set forth on any other purchase
+                                            order preprinted form or document shall add to or vary the terms
+                                            and conditions of this Agreement. If any provision of this Agreement
+                                            is held by a court of competent jurisdiction to be invalid or unenforceable
+                                            then such provision(s) shall be construed as nearly as possible
+                                            to reflect the intentions of the invalid or unenforceable provision(s)
+                                            with all other provisions remaining in full force and effect. No
+                                            joint venture partnership employment or agency relationship exists
+                                            between Customer and SPS as a result of this Agreement. The failure
+                                            of SPS to enforce any right or provision in this Agreement shall
+                                            not constitute a waiver of such right or provision unless acknowledged
+                                            and agreed to by SPS in writing. This Agreement together with any
+                                            applicable Purchase Order the Quality Assurance &amp;nbsp Service Guarantee
+                                            available at
+                                             <a class="word-break red-color" href="http://www.surgicalproductsolutions.com/docs/SPS-Quality-Assurance.pdf">
+                                                http://www.surgicalproductsolutions.com/docs/SPS-Quality-Assurance.pdf</a>
+                                            are incorporated herein by reference comprises the entire agreement
+                                            between Customer and SPS and supersedes all prior or contemporaneous
+                                            negotiations discussions or agreements whether written or oral between
+                                            the parties regarding the subject matter contained herein. In the
+                                            event of a conflict between these Terms and the Addendum the Addendum
+                                            shall take precedence.
+                                        </p>
+                                    </li>
+                                        </ol>
+                                          <br></br><br></br><br></br>
+                                       <ol  class="ol1">
+                                           <div class="subtitle text-center">
+                                                <span class="s1">ADDENDUM 1</span>
+                                            </div>
+                                           <div class="subtitle text-center">
+                                                <span class="s1">TERMS AND CONDITIONS OF PRODUCT SALE</span>
+                                            </div>
+                                              <div class="subtitle">
+                                                   <span class="s3">PRODUCT SALE TERMS</span>
                                                     <p class="s1">
-                                                        <span>THE REMEDIES SET FORTH IN SECTION 8(c) SHALL BE BUYER'S SOLE
-                                                            AND EXCLUSIVE REMEDY AND SELLER'S ENTIRE LIABILITY FOR ANY
-                                                            BREACH OF THE LIMITED WARRANTY SET FORTH IN SECTION 8(a).&amp;nbsp;
-                                                        </span>
+                                                        The Agreement, these Terms and Conditions of Product Sale (“Sale Terms and
+                                                        Conditions”) along with any purchase orders or purchase offers (each, a “Purchase Order”),
+                                                        any releases, requisitions, work orders, shipping instructions, supplemental terms and
+                                                        conditions and any other document of SPS, will exclusively govern the sale of Product to
+                                                        Customer and represents the entire agreement between SPS and Customer. Acceptance of
+                                                        SPS’s Purchase Order shall constitute Customer’s agreement to comply with and be bound by
+                                                        the Agreement.
                                                     </p>
-                                                </li>
-                                            </ol>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">LIMITATION OF LIABILITY.</span>
-                                            <ol class="ol2">
-                                                <li class="li2">
-                                                    <p class="s1">
-                                                        <span>IN NO EVENT SHALL SELLER BE LIABLE TO BUYER OR ANY THIRD
-                                                            PARTY FOR ANY LOSS OF USE, REVENUE OR PROFIT, OR FOR ANY
-                                                            CONSEQUENTIAL, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-                                                            PUNITIVE DAMAGES WHETHER ARISING OUT OF BREACH OF CONTRACT,
-                                                            TORT (INCLUDING NEGLIGENCE) OR OTHERWISE, REGARDLESS OF
-                                                            WHETHER SUCH DAMAGES WERE FORESEEABLE AND WHETHER OR NOT
-                                                            SELLER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES,
-                                                            AND NOTWITHSTANDING THE FAILURE OF ANY AGREED OR OTHER
-                                                            REMEDY OF ITS ESSENTIAL PURPOSE.
-                                                        </span>
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
-                                                    <p class="s1">
-                                                        <span>IN NO EVENT SHALL SELLER'S AGGREGATE LIABILITY ARISING OUT OF
-                                                            OR RELATED TO THIS AGREEMENT, WHETHER ARISING OUT OF OR
-                                                            RELATED TO BREACH OF CONTRACT, TORT (INCLUDING NEGLIGENCE)
-                                                            OR OTHERWISE, EXCEED THE TOTAL OF THE AMOUNTS PAID TO SELLER
-                                                            FOR THE GOODS SOLD HEREUNDER.
-                                                        </span>
-                                                    </p>
-                                                </li>
-                                                <li class="li2">
-                                                    <p class="s1">The limitation of liability set forth in Section
-                                                        9(b) above shall not apply to liability resulting from Seller's
-                                                        gross negligence or willful misconduct.
-                                                    </p>
-                                                </li>
-                                            </ol>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">COMPLIANCE WITH LAW.</span>
-                                            <p class="s1">
-                                                Buyer shall comply with all applicable laws, regulations and ordinances.
-                                                Buyer shall maintain in effect all the licenses, permissions,
-                                                authorizations, consents and permits that it needs to carry out its
-                                                obligations under this Agreement.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">TERMINATION.</span>
-                                            <p class="s1">In addition to any
-                                                remedies that may be provided under these Terms, Seller may terminate
-                                                this Agreement with immediate effect upon written notice to Buyer, if
-                                                Buyer: (i) fails to pay any amount when due under this Agreement and
-                                                such failure continues for ten (10) days after Buyer's receipt of
-                                                written notice of nonpayment; (ii) has not otherwise performed or
-                                                complied with any of these Terms, in whole or in part; or (iii) becomes
-                                                insolvent, files a petition for bankruptcy or commences or has commenced
-                                                against it proceedings relating to bankruptcy, receivership,
-                                                reorganization or assignment for the benefit of creditors.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">WAIVER.</span>
-                                            <p class="s1">No waiver by Seller of
-                                                any of the provisions of this Agreement is effective unless explicitly
-                                                set forth in writing and signed by Seller. No failure to exercise, or
-                                                delay in exercising, any right, remedy, power or privilege arising from
-                                                this Agreement operates, or may be construed, as a waiver thereof. No
-                                                single or partial exercise of any right, remedy, power or privilege
-                                                hereunder precludes any other or further exercise thereof or the
-                                                exercise of any other right, remedy, power or privilege.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">CONFIDENTIAL INFORMATION.</span>
-                                            <p class="s1">All non-public,
-                                                confidential or proprietary information of Seller, including but not
-                                                limited to documents, data, business operations, customer lists,
-                                                pricing, discounts or rebates, disclosed by Seller to Buyer, whether
-                                                disclosed orally or disclosed or accessed in written, electronic or
-                                                other form or media, and whether or not marked, designated or otherwise
-                                                identified as "confidential" in connection with this Agreement is
-                                                confidential, solely for the use of performing this Agreement, and may
-                                                not be disclosed or copied unless authorized in advance by Seller in
-                                                writing. Seller shall be entitled to injunctive relief for any violation
-                                                of this Section. This Section does not apply to information that is: (a)
-                                                in the public domain; (b) known to Buyer at the time of disclosure; or
-                                                (c) rightfully obtained by Buyer on a non-confidential basis from a
-                                                third party.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">FORCE MAJEURE.</span>
-                                            <p class="s1">The Seller shall not be
-                                                liable or responsible to Buyer, nor be deemed to have defaulted or
-                                                breached this Agreement, for any failure or delay in fulfilling or
-                                                performing any term of this Agreement when and to the extent such
-                                                failure or delay is caused by or results from acts or circumstances
-                                                beyond the reasonable control of Seller including, without limitation,
-                                                acts of God, flood, fire, earthquake, explosion, governmental actions,
-                                                war, invasion or hostilities (whether war is declared or not), terrorist
-                                                threats or acts, riot, or other civil unrest, national emergency,
-                                                revolution, insurrection, epidemic, lockouts, strikes or other labor
-                                                disputes (whether or not relating to either party's workforce), or
-                                                restraints or delays affecting carriers or inability or delay in
-                                                obtaining supplies of adequate or suitable materials, materials or
-                                                telecommunication breakdown or power outage.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">RELATIONSHIP OF THE PARTIES.</span>
-                                            <p class="s1">The relationship
-                                                between the parties is that of independent contractors. Nothing
-                                                contained in this Agreement shall be construed as creating any agency,
-                                                partnership, joint venture or other form of joint enterprise, employment
-                                                or fiduciary relationship between the parties, and neither party shall
-                                                have authority to contract for or bind the other party in any manner
-                                                whatsoever.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">NO THIRD-PARTY BENEFICIARIES.</span>
-                                            <p class="s1">This Agreement is for
-                                                the sole benefit of the parties hereto and their respective successors
-                                                and permitted assigns and nothing herein, express or implied, is
-                                                intended to or shall confer upon any other person or entity any legal or
-                                                equitable right, benefit or remedy of any nature whatsoever under or by
-                                                reason of these Terms.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">GOVERNING LAW.</span>
-                                            <p class="s1">All matters arising out
-                                                of or relating to this Agreement is governed by and construed in
-                                                accordance with the internal laws of the Commonwealth of Pennsylvania
-                                                without giving effect to any choice or conflict of law provision or rule
-                                                (whether of the Commonwealth of Pennsylvania or any other jurisdiction)
-                                                that would cause the application of the laws of any jurisdiction other
-                                                than those of the Commonwealth of Pennsylvania.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">SUBMISSION TO JURISDICTION.</span>
-                                            <p class="s1">Any legal suit, action
-                                                or proceeding arising out of or relating to this Agreement shall be
-                                                instituted in the federal courts of the United States of America or the
-                                                courts of the Commonwealth of Pennsylvania in each case located in the
-                                                City of Pittsburgh and County of Allegheny, and each party irrevocably
-                                                submits to the exclusive jurisdiction of such courts in any such suit,
-                                                action or proceeding.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">NOTICES.</span>
-                                            <p class="s1">All notices, request,
-                                                consents, claims, demands, waivers and other communications hereunder
-                                                (each, a "<span>Notice</span>") shall be in writing and addressed to the
-                                                parties at the addresses set forth on the face of the Sales Confirmation
-                                                or to such other address that may be designated by the receiving party
-                                                in writing. All Notices shall be delivered by personal delivery,
-                                                nationally recognized overnight courier (with all fees pre-paid),
-                                                facsimile (with confirmation of transmission) or certified or registered
-                                                mail (in each case, return receipt requested, postage prepaid). Except
-                                                as otherwise provided in this Agreement, a Notice is effective only (a)
-                                                upon receipt of the receiving party, and (b) if the party giving the
-                                                Notice has complied with the requirements of this Section.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">SEVERABILITY.</span>
-                                            <p class="s1">If any term or
-                                                provision of this Agreement is invalid, illegal or unenforceable in any
-                                                jurisdiction, such invalidity, illegality or unenforceability shall not
-                                                affect any other term or provision of this Agreement or invalidate or
-                                                render unenforceable such term or provision in any other jurisdiction.
-                                            </p>
-                                        </li>
-                                        <li class="li2">
-                                                <span class="s3">SURVIVAL.</span>
-                                            <p class="s1">
-                                                Provisions of these Terms which by their nature should apply beyond
-                                                their terms will remain in force after any termination or expiration of
-                                                this Agreement including, but not limited to, the following provisions:
-                                                Compliance with Laws, Confidential Information Governing Law, Submission
-                                                to Jurisdiction, and Survival.
-                                            </p>
-                                        </li>
+                                           </div>
+                                    <li class="li2">
+                                        <span class="s3">PRODUCT</span>
+                                        <p class="s1">
+                                            <b>(a) Sale.</b> The Agreement is being entered into in connection with the proposal
+                                            for the sale of the Product by SPS, which is attached hereto and made a part of the
+                                            Agreement (the “Proposal”). In the event of any conflict or inconsistency between the
+                                            Agreement and the Proposal, the terms of the Agreement shall govern and control. The
+                                            Product specifications and requirements set forth on Exhibit A are referred to herein,
+                                            respectively, as the “Specifications” and the “Requirements”. Notwithstanding anything to
+                                            the contrary contained herein, the Specifications or Requirements may be modified (i) upon
+                                            the mutual agreement of the parties, or (ii) by Customer upon written request to SPS,
+                                            provided that Customer agrees to pay all cost increases incurred by SPS in connection with
+                                            any such changes.
+                                        </p>
+                                        <p class="s1">
+                                            <b>(b) Installation.</b> The sale of the Product to Customer does not include
+                                            installation, training or additional services unless otherwise agreed to in writing by the
+                                            parties.
+                                        </p>
+                                        <p class="s1">
+                                            <b>(c) Exclusions.</b> The following are specifically excluded from SPS's obligations
+                                            under this Agreement:
+                                        </p>
+                                        <p class="s1">
+                                            (i) Any exclusions or Customer scope items identified in the Agreement or Proposal,
+                                            including the exhibits and attachments.
+                                        </p>
+                                        <p class="s1">
+                                            (ii) SPS expressly excludes from its obligations related to the Product all
+                                            responsibility and liability for the performance of any required regulatory compliance
+                                            analyses, and for Customer's compliance with such regulatory requirements. Customer fully
+                                            indemnifies and holds harmless SPS for any and all costs, penalties, fines and expenses
+                                            related to or caused by an alleged failure of owner or operator to comply with the
+                                            applicable regulations.
+                                        </p>
+                                        <p class="s1">
+                                            (iii) Changes to design, fabrication, construction and inspection which may be
+                                            required by Customer will be incorporated by change order with price adjustment.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">PRICING</span>
+                                        <p class="s1">
+                                            All prices for Products set forth of this Agreement are firm through the last day of
+                                            the agreement term. SPS shall have the right upon thirty (30) days' written notice to
+                                            Customer, to increase all or a portion of Product prices annually.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">BILLING AND PAYMENT TERMS</span>
+                                        <p class="s1">
+                                            Delivery and payment terms shall be Ex Works SPS location with freight and insurance
+                                            prepaid (Triose), net 30 days from the date of invoice. Invoices shall be issued to Customer
+                                            at the address specified on the cover page of the Agreement unless notified in writing of a
+                                            different address. Customer hereby agrees to be liable for any payments due hereunder to SPS
+                                            for Products. All payments shall be made payable to Surgical Product Solutions by Customer.
+                                            Customer shall be responsible for all taxes, including, but not limited to, state and local
+                                            sales taxes, excise taxes and usage taxes. Any overdue invoices shall bear the rate of interest
+                                            on the face of the invoice.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">GUARANTEE</span>
+                                        <p class="s1">
+                                            Subject to Section 6 of these Sale Terms and Conditions, SPS warrants and represents
+                                            that at the time of sale, all Products sold hereunder will be free from all material defects as
+                                            per SPS’s quality assurance process (Quality Assurance &amp;nbsp Service Guarantee in Exhibit (AA)).
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">LIMITED WARRANTY</span>
+                                        <p class="s1">
+                                            <b>(a) Equipment Warranty.</b> Except for consumable Products, as noted in (b) below SPS
+                                            warrants that the Product will be free from material defects in material and workmanship for a
+                                            period of fifteen (15) months from the date that SPS notifies Customer that the Product is
+                                            ready for shipment (the “Warranty Period”). SPS's warranty is contingent upon (i) operation
+                                            and maintenance of the Product during the entire Warranty Period in accordance with the
+                                            manufacturer’s recommended operating procedures; and (ii) daily operational run logs that
+                                            demonstrate proper Product operation and maintenance during the Warranty Period. Customer
+                                            must notify SPS in writing within a reasonable time period, but not later than five (5) business
+                                            days following Customer’s observation of non-conformity that the warranted component(s) is not
+                                            in conformity with this limited warranty during the stated warranty period. SPS's obligation and
+                                            Customer's sole remedy, under this limited warranty is, at SPS's option, the repair, replacement
+                                            or correction of any non-conforming component of the Product, or refund of fees paid for such
+                                            Product.
+                                        </p>
+                                        <p class="s1">
+                                            <b>(b) Consumable Items.</b> Consumable Products are warranted for thirty (30) days from the
+                                            date that SPS notifies Customer that the Product is ready for shipment or the duration of the
+                                            manufacturer's warranty, whichever is greater. SPS's sole obligation under this limited consumable
+                                            Product warranty is, at SPS's option, the repair, replacement or correction of any non-conforming
+                                            warranted consumable or the refund of fees paid for such consumable Product. Consumable
+                                            Products are defined as wear components or parts that are periodically replaced in conjunction with
+                                            normal maintenance procedures. These components or parts include, but are not limited to, items
+                                            such as drive belts, seals, valve seats, packings, filters, motors, etc.
+                                        </p>
+                                        <p class="s1">
+                                            <b>(c) Correction Period.</b> Customer will ensure that upon SPS's request a reasonable period
+                                            of time is allowed immediately following startup of the Product for SPS to repair or replace any
+                                            defective Product known at that time.
+                                        </p>
+                                        <p class="s1">
+                                            <b>(d) Warranty Exclusions and Disclaimer.</b> The following are not covered by SPS’s warranty:
+                                        </p>
+                                        <p class="s1">
+                                            (i) Damage caused by use of the Product for purposes other than those for which it was
+                                            designed, and/or in violation of the manufacturer’s specification. All operation of Product
+                                            outside these procedures and specifications will be in violation of SPS's limited warranty and
+                                            will void such limited warranties.
+                                        </p>
+                                        <p class="s1">
+                                            (ii) Damage caused by disasters such as fire, flood, tornado, wind and lightning.
+                                        </p>
+                                        <p class="s1">
+                                            (iii) Damage or failure caused by improper maintenance, unauthorized attachments,
+                                            modifications.
+                                        </p>
+                                        <p class="s1">
+                                            (iv) Use in a manner not in accordance with any operation manual or recommended
+                                            operating procedure (as such may be amended or supplemented from time to time, with notice to
+                                            Customer).
+                                        </p>
+                                        <p class="s1">
+                                            (v) Any other abuse or misuse by Customer.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">CHANGES IN PRODUCTS</span>
+                                        <p class="s1">
+                                            If a Product is discontinued or SPS no longer acquires this Product on acquisition, SPS may
+                                            delete that Product from the Product list by written notice to Customer. SPS retains the right, in
+                                            its sole discretion, to modify or discontinue any Product at any time, provided however that SPS
+                                            shall not cancel any shipment of Product after accepting a Customer Purchase Order without the
+                                            written consent of the Parties. Additional Products may be added to this Agreement with the
+                                            written consent of both parties. All Products offered pursuant to this Agreement are subject to
+                                            availability.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">SHIPPING TERMS</span>
+                                        <p class="s1">
+                                            <b>(a)</b> The Product shall be shipped when SPS provides written notice to Customer that the
+                                            Product is ready for shipment to Customer.
+                                        </p>
+                                        <p class="s1">
+                                            <b>(b)</b> Shipments shall be through Riverview Health’s 3rd Party partnership with Triose
+                                            unless otherwise stated by Riverview Health. Risk of loss to the Product shall pass to Customer
+                                            when SPS makes the Product available for delivery through Riverview Health’s carrier account.
+                                            Title to the Product shall pass to Customer when Customer pays for the Product. Except as
+                                            otherwise provided herein, Customer shall be responsible for paying all costs and charges
+                                            associated with the delivery of the Product, including but not limited to all freight, unloading,
+                                            import/export, tariffs, taxes, duties and packaging costs.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">TERMINATION</span>
+                                        <p class="s1">
+                                            SPS may terminate this Agreement pursuant to the Sales Terms and Condition at any time
+                                            and without cause or penalty by giving sixty (60) days' prior written notice to Customer, provided
+                                            however that any SPS accepted Customer Purchase Order unfulfilled at the time of termination shall
+                                            be fulfilled and this Agreement shall continue to apply until such time as the last remaining Customer
+                                            Purchase Order is closed out.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">DIRECT AGREEMENT</span>
+                                        <p class="s1">
+                                            The Agreement is being made directly between SPS and Customer and not pursuant to any
+                                            agreement with a group purchasing organization of which Customer may be a member. Accordingly,
+                                            SPS shall not pay administrative fees to any group purchasing organization for any purchases made
+                                            by Customer under this Agreement.
+                                        </p>
+                                    </li>
+
+                                    <li class="li2">
+                                        <span class="s3">RETURNED GOODS POLICY</span>
+                                        <p class="s1">
+                                            Contact: SPS’s Customer Service at: 412-564-1280, Monday through Friday 8:00 A.M. to 5:00
+                                            P.M. (EST).
+                                        </p>
+                                        <p class="s1">
+                                            · All returns must be pre-approved and accompanied by a Return Merchandise Authorization
+                                            ("RMA"), provided such RMA shall not be unreasonably withheld, conditioned, or delayed.
+                                        </p>
+                                        <p class="s1">
+                                            o RMA numbers can be obtained by contacting the SPS Customer Service Department or your
+                                            account manager.
+                                        </p>
+                                        <p class="s1">
+                                            o The lot number must be provided for each item to obtain a RMA number.
+                                        </p>
+                                        <p class="s1">
+                                            o The RMA number must be noted on the outside of the return. In the event an item is
+                                            defective or damaged upon arrival, opening, or use, Buyer will contact sales representative
+                                            immediately.
+                                        </p>
+                                        <p class="s1">
+                                            o Seller will replace the item at their expense. If supply is not available, Seller will issue a full
+                                            credit
+                                        </p>
+                                        <p class="s1">
+                                            · In the event of a facility ordering error, items can be returned in the condition they were shipped
+                                            for a credit within 14 days of delivery and will be subject to the following criteria.
+                                        </p>
+                                        <p class="s1">
+                                            o Upon receipt and inspection of items, a credit will be issued less a 10% restocking fee.
+                                        </p>
+                                        <p class="s1">
+                                            o Only items and lot numbers listed on RMA will be eligible for credit.
+                                        </p>
+                                        <p class="s1">
+                                            o Freight charges are the responsibility of the Buyer.
+                                        </p>
+                                        <p class="s1">
+                                            · Products must be free from damage, customer labels and markings to be eligible for credit.
+                                        </p>
+                                        <p class="s1">
+                                            o All tamper-evident seals must be intact.
+                                        </p>
+                                        <p class="s1">
+                                            o All products with Tag/Alert temperature monitors must display "OK".
+                                        </p>
+                                        <p class="s1">
+                                            · All SPS provided products must have at least 6 months of shelf life remaining to be eligible for
+                                            return or the sale is final.
+                                        </p>
+                                        <p class="s1">
+                                            · Item(s) purchased that are subject to an FDA or Manufacturer recall, whether voluntary or
+                                            involuntary, will be replaced with a non-recalled item at no charge. If supply is unavailable, Seller
+                                            will issue a credit upon the return of items. Freight charges are the responsibility of the Seller.
+                                        </p>
+                                    </li>
+
                                     </ol>
                                       </div>
                                 </div>

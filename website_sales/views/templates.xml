@@ -169,9 +169,9 @@
                 <b><p class="expiration-title m-0">Expiration :</p></b>
                 <p class="m-0">
                     <span>Min -</span>
-                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['min'] is not None">
-                        <span t-esc="productExpiration[product.product_variant_id.id]['min']"
-                      t-options="{'widget': 'date'}"/>
+
+                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['str_min'] is not None">
+                        <span t-esc="productExpiration[product.product_variant_id.id]['str_min']" />
                     </t>
                     <t t-else="">
                        <span> N/A</span>
@@ -179,14 +179,27 @@
                 </p>
                 <p class="m-0">
                     <span>Max -</span>
-                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">
-                        <span t-esc="productExpiration[product.product_variant_id.id]['max']"
-                              t-options="{'widget': 'date'}"/>
+                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['str_max'] is not None">
+                        <span t-esc="productExpiration[product.product_variant_id.id]['str_max']" />
                     </t>
                     <t t-else="">
                         <span>N/A</span>
                     </t>
                 </p>
+
+<!--                <p>-->
+<!--                    <span>Min - Max : </span>-->
+<!--                    <t t-if="product.product_variant_id.id in productExpiration and productExpiration[product.product_variant_id.id]['max'] is not None">-->
+<!--                        <span t-esc="productExpiration[product.product_variant_id.id]['str_min_max']" />-->
+<!--                    </t>-->
+
+<!--                    <t t-else="">-->
+<!--                        <span>N/A</span>-->
+<!--                    </t>-->
+<!--                </p>-->
+                <!--<span t-esc="productExpiration"/>-->
+                <!--product-->
+                <!--<span t-esc="product.id"/> <span t-esc="product.product_variant_id.id"/>-->
             </div>
         </t>
     </template>

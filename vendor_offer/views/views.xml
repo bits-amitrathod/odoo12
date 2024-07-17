@@ -16,7 +16,7 @@
         </record>
 
         <record model="ir.module.category" id="approval_vendor_offer">
-             <field name="name">OfferApproval</field>
+             <field name="name">Offer Approval</field>
              <field name="description">User access levels for Vendor offer for approval</field>
              <field name="sequence">10</field>
         </record>
