@@ -2,19 +2,17 @@ sonarqube-check:
   image: 
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
+    
   variables:
-    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  # Defines the location of the analysis task cache
-    GIT_DEPTH: "0"  # Tells git to fetch all the branches of the project, required by the analysis task
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"  
+    GIT_DEPTH: "0" 
+    SONAR_TOKEN: "sqp_b2ee609e207cb60c963803067963f8f9cc5eb6eb"
   cache:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
   script: 
-    - |
-      sonar-scanner \
-        -Dsonar.projectKey=sps_odoo \
-        -Dsonar.qualitygate.wait=true \
-        -Dsonar.login=sqp_b2ee609e207cb60c963803067963f8f9cc5eb6eb
+    - sonar-scanner -Dsonar.projectKey=sps_odoo -Dsonar.qualitygate.wait=true -Dsonar.login=${SONAR_TOKEN}
   allow_failure: true
   only:
-    - main
+    - bits_merge_all
