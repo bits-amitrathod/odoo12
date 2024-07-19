@@ -11,6 +11,8 @@ sonarqube-check:
     key: "${CI_JOB_NAME}"
     paths:
       - .sonar/cache
+  tags:
+    - dev  
   script: 
     - sonar-scanner -Dsonar.projectKey=sps_odoo -Dsonar.qualitygate.wait=true -Dsonar.login=${SONAR_TOKEN}
   allow_failure: true
