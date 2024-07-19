@@ -14,7 +14,7 @@ sonarqube-check:
   tags:
     - dev  
   script: 
-    - sonar-scanner -Dsonar.projectKey=sps_odoo -Dsonar.qualitygate.wait=true -Dsonar.login=${SONAR_TOKEN}
+    - sonar-scanner -Dsonar.projectKey=sps_odoo -Dsonar.qualitygate.wait=true -Dsonar.login=${SONAR_TOKEN} -Dsonar.host.url=http://10.108.0.9:9000
   allow_failure: true
   only:
     - bits_merge_all
