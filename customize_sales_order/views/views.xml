@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <odoo>
-  <data>
+    <data>
 
-      <!-- sale order Views -->
-      <record id="view_form_import_template_stockhawk" model="ir.ui.view">
+        <!-- sale order Views -->
+        <record id="view_form_import_template_stockhawk" model="ir.ui.view">
             <field name="name">Import Template customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -33,81 +33,84 @@
         </record>
 
 
-    <record id="view_order_form_inherit" model="ir.ui.view">
+        <record id="view_order_form_inherit" model="ir.ui.view">
             <field name="name">sale.order.form</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/sheet/notebook" position="inside">
-                  <page string="Note">
-                      <field name="sale_note" string="Note" placeholder="Add an internal note that will be printed on the Stock Operations sheet"/>
-                  </page>
+                    <page string="Note">
+                        <field name="sale_note" string="Note"
+                               placeholder="Add an internal note that will be printed on the Stock Operations sheet"/>
+                    </page>
                 </xpath>
             </field>
-    </record>
+        </record>
 
-      <record id="view_order_form_with_carrier_tracking_ref1" model="ir.ui.view">
+        <record id="view_order_form_with_carrier_tracking_ref1" model="ir.ui.view">
             <field name="name">sale.order.form.view.with_carrier_tracking_ref</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                   <field name="payment_term_id" position="after">
-                        <field name="carrier_track_ref"/>
-                   </field>
+                <field name="payment_term_id" position="after">
+                    <field name="carrier_track_ref"/>
+                </field>
             </field>
-       </record>
+        </record>
 
 
-      <record id="sale_order_view_form_inherit" model="ir.ui.view">
-        <field name="name">sale.order.form</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="arch" type="xml">
-            <field name="partner_id" position="replace">
-                <field name="partner_id" widget="res_partner_many2one"  context="{'search_default_customer':1, 'show_address': 1, 'show_vat': True}" options="{&quot;always_reload&quot;: True}"/>
+        <record id="sale_order_view_form_inherit" model="ir.ui.view">
+            <field name="name">sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <field name="partner_id" position="replace">
+                    <field name="partner_id" widget="res_partner_many2one"
+                           context="{'search_default_customer':1, 'show_address': 1, 'show_vat': True}"
+                           options="{&quot;always_reload&quot;: True}"/>
+                </field>
             </field>
-        </field>
-    </record>
+        </record>
 
 
-      <record id="view_order_form_with_carrier_inherited" model="ir.ui.view">
+        <record id="view_order_form_with_carrier_inherited" model="ir.ui.view">
             <field name="name">delivery.sale.order.form.view.with_carrier</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="delivery.view_order_form_with_carrier"/>
             <field name="arch" type="xml">
                 <data>
                     <xpath expr="//button[@name='action_open_delivery_wizard'][1]" position="replace">
-                            <field name="delivery_method_readonly_flag" invisible="1"/>
-                            <button
+                        <field name="delivery_method_readonly_flag" invisible="1"/>
+                        <button
                                 string="Add shipping"
                                 name="action_open_delivery_wizard"
                                 type="object"
                                 attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('order_line', '=', []), ('delivery_set', '=', True)]}"
-                            />
+                        />
                     </xpath>
                     <xpath expr="//button[@name='action_open_delivery_wizard'][2]" position="replace">
                         <button
-                               string="Update shipping cost"
-                               name="action_open_delivery_wizard"
-                               context="{'carrier_recompute':True}"
-                               type="object"
-                               class="text-warning btn-secondary"
-                               attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('recompute_delivery_price', '=', False), ('delivery_set', '=', False)]}"
-                           />
+                                string="Update shipping cost"
+                                name="action_open_delivery_wizard"
+                                context="{'carrier_recompute':True}"
+                                type="object"
+                                class="text-warning btn-secondary"
+                                attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('recompute_delivery_price', '=', False), ('delivery_set', '=', False)]}"
+                        />
                     </xpath>
                     <xpath expr="//button[@name='action_open_delivery_wizard'][3]" position="replace">
                         <button
-                            string="Update shipping cost"
-                            name="action_open_delivery_wizard"
-                            context="{'carrier_recompute':True}"
-                            type="object"
-                            attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('recompute_delivery_price', '=', True), ('delivery_set', '=', False)]}"
+                                string="Update shipping cost"
+                                name="action_open_delivery_wizard"
+                                context="{'carrier_recompute':True}"
+                                type="object"
+                                attrs="{'invisible': ['|', '|', '|', ('delivery_method_readonly_flag', '=', 0), ('is_all_service', '=', True), ('recompute_delivery_price', '=', True), ('delivery_set', '=', False)]}"
                         />
                     </xpath>
                 </data>
             </field>
-      </record>
-      <record id="view_picking_form_mark_all_button" model="ir.ui.view">
+        </record>
+        <record id="view_picking_form_mark_all_button" model="ir.ui.view">
             <field name="name">stock.picking.form.mark.all.button</field>
             <field name="model">stock.picking</field>
             <field name="inherit_id" ref="stock.view_picking_form"/>
@@ -116,14 +119,25 @@
                     <xpath expr="/form/sheet/notebook/page[@name='note']" position="replace">
                         <page string="Note" name="note">
                             <field name="note_readonly_flag" invisible="1"/>
-                            <field name="note" string="Note" placeholder="Add an internal note that will be printed on the Picking Operations sheet" attrs="{'readonly':[('note_readonly_flag','=',1)]}"/>
+                            <field name="note" string="Note"
+                                   placeholder="Add an internal note that will be printed on the Picking Operations sheet"
+                                   attrs="{'readonly':[('note_readonly_flag','=',1)]}"/>
                         </page>
                     </xpath>
+                    <!--    Schedule date and Source document make both fields readonly for transfer operation PICK,PULL,OUT     -->
+                    <xpath expr="//field[@name='scheduled_date']" position="replace">
+                        <field name="scheduled_date" readonly="1"/>
+                    </xpath>
+
+                    <xpath expr="//field[@name='origin']" position="replace">
+                        <field name="origin" readonly="1"/>
+                    </xpath>
+
                 </data>
             </field>
         </record>
 
-      <record id="view_order_list_inherit" model="ir.ui.view">
+        <record id="view_order_list_inherit" model="ir.ui.view">
             <field name="name">sale.order.list</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_tree"/>
@@ -147,7 +161,7 @@
             </field>
         </record>
 
-      <record id="view_order_quotation_tree_inherit" model="ir.ui.view">
+        <record id="view_order_quotation_tree_inherit" model="ir.ui.view">
             <field name="name">sale.order.quotation.tree.cstm</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_quotation_tree"/>
@@ -171,135 +185,149 @@
             </field>
         </record>
 
-      <!-- Adding Account Manager field into group by and filter-->
+        <!-- Adding Account Manager field into group by and filter-->
         <record id="view_sales_order_filter_custom" model="ir.ui.view">
             <field name="name">sale.order.common.search.inherit</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_sales_order_filter"/>
             <field name="arch" type="xml">
                 <xpath expr="/search/group/filter[@name='salesperson']" position="replace">
-		            <filter string="Business Development" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>
-		        </xpath>
+                    <filter string="Business Development" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>
+                </xpath>
                 <xpath expr="/search/group/filter[@name='order_month']" position="after">
-                    <filter name="account_manager" string="Key Account" domain="[]" context="{'group_by':'account_manager'}"/>
-                    <filter name="national_account" string="National Account" domain="[]" context="{'group_by':'national_account'}"/>
+                    <filter name="account_manager" string="Key Account" domain="[]"
+                            context="{'group_by':'account_manager'}"/>
+                    <filter name="national_account" string="National Account" domain="[]"
+                            context="{'group_by':'national_account'}"/>
                     <filter name="sales_level" string="Sales Level" domain="[]" context="{'group_by':'sale_margine'}"/>
                     <filter name="is_shared" string="Is Shared" domain="[]" context="{'group_by':'is_share'}"/>
                 </xpath>
-                    <xpath expr="/search/field[@name='user_id']" position="replace">
-                       <field name="user_id"/>
-                    </xpath>
+                <xpath expr="/search/field[@name='user_id']" position="replace">
+                    <field name="user_id"/>
+                </xpath>
                 <xpath expr="/search" position="inside">
-                        <field name="account_manager"/>
-                        <field name="national_account"/>
+                    <field name="account_manager"/>
+                    <field name="national_account"/>
                 </xpath>
                 <xpath expr="//filter[@name='activities_overdue']" position="replace">
                     <separator/>
                     <filter string="My Activities" name="activities_my"
-                        domain="[('activity_ids.user_id', '=', uid)]"/>
+                            domain="[('activity_ids.user_id', '=', uid)]"/>
                     <separator/>
                     <filter string="Late Activities" name="activities_overdue"
-                        domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
-                        help="Show all records which has next action date is before today"/>
+                            domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                            help="Show all records which has next action date is before today"/>
                 </xpath>
                 <xpath expr="//filter[@name='activities_today']" position="replace">
                     <filter string="Today Activities" name="activities_today"
-                        domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                            domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
                 </xpath>
                 <xpath expr="//filter[@name='activities_upcoming_all']" position="replace">
                     <filter string="Future Activities" name="activities_upcoming_all"
-                        domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
+                            domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))]"/>
                     <separator/>
                     <filter name="carrier" string="Carrier Tracking Ref" domain="[]"/>
                 </xpath>
             </field>
         </record>
 
-      <record id="view_order_form_ex2" model="ir.ui.view">
+        <record id="view_order_form_ex2" model="ir.ui.view">
             <field name="name">sale.order.form_ex</field>
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_order_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//group[@name='sales_person']/field[@name='user_id']"  position="replace">
+                <xpath expr="//group[@name='sales_person']/field[@name='user_id']" position="replace">
                     <field name="field_read_only" invisible="1"/>
-                    <field name="user_id" string="Business Development(BD)" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
+                    <field name="user_id" string="Business Development(BD)"
+                           attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="account_manager" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
                     <field name="national_account" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
+                    <field name="customer_success" attrs="{'readonly': [('field_read_only', '==', 1)]}"/>
+
                 </xpath>
-                <xpath expr="//group[@name='sales_person']/field[@name='team_id']"  position="before">
-                   <field name="original_team_id" readonly="1" options="{'no_create': True,'no_edit': True,'no_open' : True}"/>
+                <xpath expr="//group[@name='sales_person']/field[@name='team_id']" position="before">
+                    <field name="original_team_id" readonly="1"
+                           options="{'no_create': True,'no_edit': True,'no_open' : True}"/>
                 </xpath>
             </field>
-      </record>
+        </record>
 
-      <!-- Res partner Views -->
-      <record id="view_res_partner_filter_inherit" model="ir.ui.view">
+        <!-- Res partner Views -->
+        <record id="view_res_partner_filter_inherit" model="ir.ui.view">
             <field name="name">res.partner.select</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
                 <xpath expr="/search/group/filter[@name='salesperson']" position="replace">
-                    <filter name="user_id" string="Business Development(BD)" domain="[]" context="{'group_by' : 'user_id'}" />
-		        </xpath>
+                    <filter name="user_id" string="Business Development(BD)" domain="[]"
+                            context="{'group_by' : 'user_id'}"/>
+                </xpath>
             </field>
-      </record>
+        </record>
 
-      <record id="view_res_partner_facility_tpcd" model="ir.ui.view">
+        <record id="view_res_partner_facility_tpcd" model="ir.ui.view">
             <field name="name">res.partner.form.facility.type</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field eval="20" name="priority"/>
             <field name="arch" type="xml">
-                  <field name="lang" position="after">
-                      <field name="facility_tpcd" />
-                  </field>
+                <field name="lang" position="after">
+                    <field name="facility_tpcd"/>
+                </field>
             </field>
         </record>
 
-      <record id="res_partner_view_search_cstm" model="ir.ui.view">
+        <record id="res_partner_view_search_cstm" model="ir.ui.view">
             <field name="name">res.partner.search.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="account.res_partner_view_search"/>
             <field name="arch" type="xml">
                 <xpath expr="//filter[@name='customer']" position="replace">
-                   <filter string="Customer" name="customer" domain="[('customer_rank','>', 0), ('parent_id', '=', False)]"/>
+                    <filter string="Customer" name="customer"
+                            domain="[('customer_rank','>', 0), ('parent_id', '=', False)]"/>
                 </xpath>
                 <xpath expr="//filter[@name='supplier']" position="replace">
-                   <filter string="Vendor" name="supplier" domain="[('supplier_rank','>', 0), ('parent_id', '=', False)]"/>
-                   <separator/>
+                    <filter string="Vendor" name="supplier"
+                            domain="[('supplier_rank','>', 0), ('parent_id', '=', False)]"/>
+                    <separator/>
                 </xpath>
             </field>
         </record>
 
-      <record id="click_to_dial_field_partner" model="ir.ui.view">
-        <field name="name">res.partner.form</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form"/>
-        <field eval="20" name="priority"/>
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']/field[@name='user_id']" position="replace">
-                <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                <field name="user_id" string="Business Development(BD)"/>
-                <field name="account_manager_cust"/>
-                <field name="national_account_rep"/>
-                <field name="message_bounce"/>
-            </xpath>
-            <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='misc']/field[@name='ref']" position="after">
-                <field name="barcode"/>
-            </xpath>
-            <xpath expr="//field[@name='saleforce_ac']" position="after">
-                <field name="order_quota"/>
-                <field name="revenue_quota"/>
-            </xpath>
-            <xpath expr="//sheet/group/group[2]/field[@name='category_id']" position="after">
-                <field name="display_reinstated_date_flag" invisible="1"/>
-                <field name="reinstated_date" attrs="{'invisible': [('display_reinstated_date_flag', '=', 0)]}"/>
-            </xpath>
-            <xpath expr="//field[@name='is_broker']" position="after">
-                <field name="charity"/>
-            </xpath>
-        </field>
+        <record id="click_to_dial_field_partner" model="ir.ui.view">
+            <field name="name">res.partner.form</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field eval="20" name="priority"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']/field[@name='user_id']"
+                       position="replace">
+                    <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="user_id" string="Business Development(BD)"/>
+                    <field name="account_manager_cust"/>
+                    <field name="national_account_rep"/>
+                    <field name="customer_success"
+                           domain="['|',['comment','=','Internal'],'&amp;',['active','=',True],['share','=',False]]"
+                           can_create="true" can_write="true" modifiers="{}" id="customer_success"/>
+                    <field name="message_bounce"/>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='misc']/field[@name='ref']"
+                       position="after">
+                    <field name="barcode"/>
+                </xpath>
+                <xpath expr="//field[@name='saleforce_ac']" position="after">
+                    <field name="order_quota"/>
+                    <field name="revenue_quota"/>
+                </xpath>
+                <xpath expr="//sheet/group/group[2]/field[@name='category_id']" position="after">
+                    <field name="display_reinstated_date_flag" invisible="1"/>
+                    <field name="reinstated_date" attrs="{'invisible': [('display_reinstated_date_flag', '=', 0)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='is_broker']" position="after">
+                    <field name="charity"/>
+                </xpath>
+            </field>
         </record>
 
-  </data>
+    </data>
 </odoo>
