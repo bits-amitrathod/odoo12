@@ -34,11 +34,15 @@ class StockPicking(models.Model):
                         inv_notification.pick_notification_for_user(self)
                         self.email_after_pick_validate()
                     elif self.picking_type_id.name == 'Pack' or self.picking_type_id.name == 'Pull' and self.state == 'done':
-                        inv_notification.pull_notification_for_user(self)
+                        # Check if 'AA' tag is not present and execute notification if true
+                        if not any(tag.name == 'AA' for tag in picking.sale_id.tag_ids):
+                            inv_notification.pull_notification_for_user(self)
                     elif self.picking_type_id.name == 'Delivery Orders' and self.state == 'done':
                         _logger.info(" Delivery Orders ******** Start********")
                         _logger.info(" Delivery Orders ******** Delivery Done ***** Start********")
-                        inv_notification.out_notification_for_sale(self)
+                        # Check if 'AA' tag is not present and execute notification if true
+                        if not any(tag.name == 'AA' for tag in picking.sale_id.tag_ids):
+                            inv_notification.out_notification_for_sale(self)
                         _logger.info(" Delivery Orders ******** Delivery Done ***** End********")
                         _logger.info(" Delivery Orders ********low Stock ***** Start ********")
                         product_ids = self.unique(self.env['stock.move.line'].search([('picking_id', '=', self.id)]))
