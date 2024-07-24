@@ -249,7 +249,7 @@ def ks_dashboard_ninja_queries(cr):
         GROUP BY
             rp1.saleforce_ac, rp1.name, rp1.street, rp1.city, rcs.name, rp2.name, rp3.name, rp4.name
         ORDER BY
-            Most_Recent_GHX_Order DESC, rp1.name ASC
+            Most_Recent_GHX_Order DESC, rp1.name ASC'
         WHERE id = 122;
     """)
 
@@ -565,4 +565,4 @@ def ks_dashboard_ninja_queries(cr):
     """)
 
 
-    cr.execute("""UPDATE UPDATE ir_ui_menu set action = concat('ir.actions.client,',  (SELECT id FROM ir_actions WHERE name ->> 'en_US' = 'My Dashboard' AND type = 'ir.actions.client'))  WHERE id = 1355;""")
+    cr.execute("""UPDATE ir_ui_menu set action = concat('ir.actions.client,',  (SELECT id FROM ir_actions WHERE name ->> 'en_US' = 'My Dashboard' AND type = 'ir.actions.client'))  WHERE id = 1355;""")
