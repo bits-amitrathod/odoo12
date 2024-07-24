@@ -124,7 +124,7 @@
                             Equipment is present in product list </span>
                         <br/> <br/> <br/>
                         <button name="action_recalculate_vendor_offer" class="btn-primary"
-                                     string="Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': ['|', ('import_type_ven', '==', 'all_field_import'),('import_type_ven', '=', False)]}" type="object"/>
+                                     string="Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': [('import_type_ven', '==', 'all_field_import')]}" type="object"/>
                         <button name="action_manual_recalculate_vendor_offer" class="btn-primary"
                                      string="Manual Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': ['|',('import_type_ven', '=', 'new_appraisal'),('import_type_ven', '=', False)]}" type="object"/>
 
@@ -217,7 +217,7 @@
                                         <field name="consider_dropping_tier" optional="hide"/>
                                         <field name="average_retail_last_year" widget="percentage" optional="hide"/>
                                         <field name="product_qty_app_new" optional="hide"/>
-                                        <field name="dont_recalculate_offer_price" optional="hide"/>
+                                        <field name="dont_recalculate_offer_price" invisible="1" />
                                         <field name="is_pddo" optional="hide"/>
                                         <field name="product_note" string="Note" optional="hide"/>
                                     </tree>
