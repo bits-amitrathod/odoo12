@@ -220,6 +220,8 @@
                                         <field name="dont_recalculate_offer_price" invisible="1" />
                                         <field name="is_pddo" optional="hide"/>
                                         <field name="product_note" string="Note" optional="hide"/>
+                                        <field name="do_not_change_retail" invisible="1"/>
+                                        <field name="do_not_change_offer" invisible="1"/>
                                     </tree>
 
                                 </field>

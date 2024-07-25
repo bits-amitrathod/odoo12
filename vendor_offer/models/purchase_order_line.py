@@ -108,17 +108,17 @@ class VendorOfferProduct(models.Model):
     def onchange_order_line_multiplier(self):
         for line in self:
             if line.id.origin:
-                line.dont_recalculate_offer_price = True
+                line.update({'dont_recalculate_offer_price': True})
     @api.onchange('product_unit_price')
     def onchange_order_line_product_unit_price(self):
         for line in self:
             if line.id.origin:
-                line.do_not_change_retail = True
+                line.update({'do_not_change_retail': True})
     @api.onchange('product_offer_price')
     def onchange_order_line_product_offer_price(self):
         for line in self:
             if line.id.origin:
-                line.do_not_change_offer = True
+                line.update({'do_not_change_offer': True})
     @api.depends('product_id')
     def onchange_product_id_vendor_offer(self):
         for line in self:
