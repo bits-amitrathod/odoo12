@@ -39,7 +39,7 @@ class TrendingReportListView(models.Model):
         return [('id', '=', [x.id for x in la])]
 
     def _compute_commercial_entity(self):
-        if any(item in ['action','active_test'] for item in self.env.context.keys()):
+        if any(item in ['action','active_test', 'trending_report'] for item in self.env.context.keys()):
             for customer in self:
                 customer.commercial_entity = customer.parent_id.name if customer.parent_id else customer.name
         else:
@@ -50,7 +50,6 @@ class TrendingReportListView(models.Model):
 
     #@api.onchange('')
     def _compute_sales_vals(self):
-        if any(item in ['action','active_test'] for item in self.env.context.keys()):
             if 's_date' in self.env.context:
                 start_date = self.string_to_date(self.env.context['s_date'])
             else:
@@ -98,7 +97,7 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('trend_val')
     def _get_total_value(self):
-        if any(item in ['action','active_test'] for item in self.env.context.keys()):
+        if any(item in ['action','active_test', 'trending_report'] for item in self.env.context.keys()):
             if 'code' in self.env.context:
                 code = self.env.context['code']
             else:
@@ -113,7 +112,7 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('month_count')
     def _first_purchase_date(self):
-        if any(item in ['action','active_test'] for item in self.env.context.keys()):
+        if any(item in ['action','active_test', 'trending_report'] for item in self.env.context.keys()):
             self._compute_sales_vals()
             for customer in self:
                 if(self.get_day_from_purchase(customer.id)):
@@ -127,7 +126,7 @@ class TrendingReportListView(models.Model):
 
 
     def get_day_from_purchase(self,customer_id):
-        if any(item in ['action','active_test'] for item in self.env.context.keys()):
+        if any(item in ['action','active_test', 'trending_report'] for item in self.env.context.keys()):
             if 's_date' in self.env.context:
                 start_date = self.string_to_date(self.env.context['s_date'])
             else:
@@ -153,13 +152,14 @@ class TrendingReportListView(models.Model):
 
     @api.onchange('month_total')
     def _total_purchased_month(self):
-        if any(item in ['action','active_test'] for item in self.env.context.keys()):
-            if 's_date' in self.env.context:
-                start_date = self.env.context['s_date']
-            else:
-                popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-                start_date = popup.start_date
-            for customer in self:
+        for customer in self:
+            if any(item in ['action','active_test', 'trending_report'] for item in self.env.context.keys()):
+                if 's_date' in self.env.context:
+                    start_date = self.env.context['s_date']
+                else:
+                    popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                    start_date = popup.start_date
+
                 groupby_dict_month = {}
                 sale_order_dict= {}
                 sale_orders = self.env['sale.order'].search([('partner_id', '=', customer.id), ('state', '=', 'sale'), ('date_order','<=', start_date)])
@@ -174,12 +174,12 @@ class TrendingReportListView(models.Model):
                     else:
                         groupby_dict_month[confirmation_date.strftime('%b-%Y')]=1
                 customer.month_total = len(groupby_dict_month)
-        else:
+            else:
                 customer.month_total = 0
 
     @api.onchange('total_sale')
     def _get_trend_value(self):
-        if any(item in ['action','active_test'] for item in self.env.context.keys()):
+        if any(item in ['action','active_test', 'trending_report'] for item in self.env.context.keys()):
             for customer in self:
                 if(customer.average_sale <= customer.month1):
                     customer.trend_val='UP'
@@ -193,7 +193,7 @@ class TrendingReportListView(models.Model):
 
     # @api.onchange('average_sale')
     def _get_average_value(self):
-        if any(item in ['action','active_test'] for item in self.env.context.keys()):
+        if any(item in ['action','active_test', 'trending_report'] for item in self.env.context.keys()):
             if 'code' in self.env.context:
                 code=self.env.context['code']
             else:
@@ -216,73 +216,128 @@ class TrendingReportListView(models.Model):
                 self.average_sale = 0
 
 
-    def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    # def fields_view_get(self, view_id=None, view_type='form', toolbar=False, submenu=False):
+    #
+    #     self.check_access_rights('read')
+    #     view = self.env['ir.ui.view'].sudo().browse(view_id)
+    #
+    #     # Get the view arch and all other attributes describing the composition of the view
+    #     result = self._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+    #
+    #     # Override context for postprocessing
+    #     if view_id and result.get('base_model', self._name) != self._name:
+    #         view = view.with_context(base_model_name=result['base_model'])
+    #
+    #     # Apply post processing, groups and modifiers etc...
+    #     xarch, xfields = view.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
+    #     result['arch'] = xarch
+    #     result['fields'] = xfields
+    #
+    #     # Add related action information if aksed
+    #     if toolbar:
+    #         vt = 'list' if view_type == 'tree' else view_type
+    #         bindings = self.env['ir.actions.actions'].get_bindings(self._name)
+    #         resreport = [action
+    #                      for action in bindings['report']
+    #                      if vt in (action.get('binding_view_types') or vt).split(',')]
+    #         resaction = [action
+    #                      for action in bindings['action']
+    #                      if vt in (action.get('binding_view_types') or vt).split(',')]
+    #
+    #         result['toolbar'] = {
+    #             'print': resreport,
+    #             'action': resaction,
+    #         }
+    #
+    #         if result['name'] == "purchase.vendor.view.list":
+    #             doc = etree.XML(result['arch'])
+    #             if 's_date' in self.env.context:
+    #                 start_date = self.string_to_date(self.env.context['s_date'])
+    #             else:
+    #                 popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+    #                 start_date = self.string_to_date(popup.start_date)
+    #
+    #             for node in doc.xpath("//field[@name='month1']"):
+    #                 node.set('string', (start_date).strftime('%b-%y'))
+    #             for node in doc.xpath("//field[@name='month2']"):
+    #                 node.set('string', (start_date - relativedelta(months=1)).strftime('%b-%y'))
+    #             for node in doc.xpath("//field[@name='month3']"):
+    #                 node.set('string', (start_date - relativedelta(months=2)).strftime('%b-%y'))
+    #             for node in doc.xpath("//field[@name='month4']"):
+    #                 node.set('string', (start_date - relativedelta(months=3)).strftime('%b-%y'))
+    #             for node in doc.xpath("//field[@name='month5']"):
+    #                 node.set('string', (start_date - relativedelta(months=4)).strftime('%b-%y'))
+    #             for node in doc.xpath("//field[@name='month6']"):
+    #                 node.set('string', (start_date - relativedelta(months=5)).strftime('%b-%y'))
+    #             if self.env.context['code'] == 12:
+    #                 for node in doc.xpath("//field[@name='month7']"):
+    #                     node.set('string', (start_date - relativedelta(months=6)).strftime('%b-%y'))
+    #                 for node in doc.xpath("//field[@name='month8']"):
+    #                     node.set('string', (start_date - relativedelta(months=7)).strftime('%b-%y'))
+    #                 for node in doc.xpath("//field[@name='month9']"):
+    #                     node.set('string', (start_date - relativedelta(months=8)).strftime('%b-%y'))
+    #                 for node in doc.xpath("//field[@name='month10']"):
+    #                     node.set('string', (start_date - relativedelta(months=9)).strftime('%b-%y'))
+    #                 for node in doc.xpath("//field[@name='month11']"):
+    #                     node.set('string', (start_date - relativedelta(months=10)).strftime('%b-%y'))
+    #                 for node in doc.xpath("//field[@name='month12']"):
+    #                     node.set('string', (start_date - relativedelta(months=11)).strftime('%b-%y'))
+    #             result['arch'] = etree.tostring(doc, encoding='unicode')
+    #     return result
 
-        self.check_access_rights('read')
-        view = self.env['ir.ui.view'].sudo().browse(view_id)
+    def get_view(self, view_id=None, view_type='form', **options):
+        result = super(TrendingReportListView, self).get_view(view_id=view_id, view_type=view_type, **options)
 
-        # Get the view arch and all other attributes describing the composition of the view
-        result = self._fields_view_get(view_id=view_id, view_type=view_type, toolbar=toolbar, submenu=submenu)
+        if result and view_id:
+            # Load view and apply month name update logic
+            view = self.env['ir.ui.view'].sudo().browse(view_id)
+            arch_str = result.get('arch', '')
 
-        # Override context for postprocessing
-        if view_id and result.get('base_model', self._name) != self._name:
-            view = view.with_context(base_model_name=result['base_model'])
+            if arch_str:
+                # Parse the XML string into an XML tree
+                arch = etree.fromstring(arch_str)
 
-        # Apply post processing, groups and modifiers etc...
-        xarch, xfields = view.postprocess_and_fields(etree.fromstring(result['arch']), model=self._name)
-        result['arch'] = xarch
-        result['fields'] = xfields
+                start_date = None
 
-        # Add related action information if aksed
-        if toolbar:
-            vt = 'list' if view_type == 'tree' else view_type
-            bindings = self.env['ir.actions.actions'].get_bindings(self._name)
-            resreport = [action
-                         for action in bindings['report']
-                         if vt in (action.get('binding_view_types') or vt).split(',')]
-            resaction = [action
-                         for action in bindings['action']
-                         if vt in (action.get('binding_view_types') or vt).split(',')]
-
-            result['toolbar'] = {
-                'print': resreport,
-                'action': resaction,
-            }
-
-            if result['name'] == "purchase.vendor.view.list":
-                doc = etree.XML(result['arch'])
                 if 's_date' in self.env.context:
                     start_date = self.string_to_date(self.env.context['s_date'])
                 else:
-                    popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
+                    popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1,
+                                                                     order="id desc")
                     start_date = self.string_to_date(popup.start_date)
 
-                for node in doc.xpath("//field[@name='month1']"):
-                    node.set('string', (start_date).strftime('%b-%y'))
-                for node in doc.xpath("//field[@name='month2']"):
-                    node.set('string', (start_date - relativedelta(months=1)).strftime('%b-%y'))
-                for node in doc.xpath("//field[@name='month3']"):
-                    node.set('string', (start_date - relativedelta(months=2)).strftime('%b-%y'))
-                for node in doc.xpath("//field[@name='month4']"):
-                    node.set('string', (start_date - relativedelta(months=3)).strftime('%b-%y'))
-                for node in doc.xpath("//field[@name='month5']"):
-                    node.set('string', (start_date - relativedelta(months=4)).strftime('%b-%y'))
-                for node in doc.xpath("//field[@name='month6']"):
-                    node.set('string', (start_date - relativedelta(months=5)).strftime('%b-%y'))
-                if self.env.context['code'] == 12:
-                    for node in doc.xpath("//field[@name='month7']"):
-                        node.set('string', (start_date - relativedelta(months=6)).strftime('%b-%y'))
-                    for node in doc.xpath("//field[@name='month8']"):
-                        node.set('string', (start_date - relativedelta(months=7)).strftime('%b-%y'))
-                    for node in doc.xpath("//field[@name='month9']"):
-                        node.set('string', (start_date - relativedelta(months=8)).strftime('%b-%y'))
-                    for node in doc.xpath("//field[@name='month10']"):
-                        node.set('string', (start_date - relativedelta(months=9)).strftime('%b-%y'))
-                    for node in doc.xpath("//field[@name='month11']"):
-                        node.set('string', (start_date - relativedelta(months=10)).strftime('%b-%y'))
-                    for node in doc.xpath("//field[@name='month12']"):
-                        node.set('string', (start_date - relativedelta(months=11)).strftime('%b-%y'))
-                result['arch'] = etree.tostring(doc, encoding='unicode')
+                if start_date:
+                    # Update month fields
+                    for node in arch.xpath("//field[@name='month1']"):
+                        node.set('string', start_date.strftime('%b-%y'))
+                    for node in arch.xpath("//field[@name='month2']"):
+                        node.set('string', (start_date - relativedelta(months=1)).strftime('%b-%y'))
+                    for node in arch.xpath("//field[@name='month3']"):
+                        node.set('string', (start_date - relativedelta(months=2)).strftime('%b-%y'))
+                    for node in arch.xpath("//field[@name='month4']"):
+                        node.set('string', (start_date - relativedelta(months=3)).strftime('%b-%y'))
+                    for node in arch.xpath("//field[@name='month5']"):
+                        node.set('string', (start_date - relativedelta(months=4)).strftime('%b-%y'))
+                    for node in arch.xpath("//field[@name='month6']"):
+                        node.set('string', (start_date - relativedelta(months=5)).strftime('%b-%y'))
+
+                    if self.env.context.get('code') == 12:
+                        for node in arch.xpath("//field[@name='month7']"):
+                            node.set('string', (start_date - relativedelta(months=6)).strftime('%b-%y'))
+                        for node in arch.xpath("//field[@name='month8']"):
+                            node.set('string', (start_date - relativedelta(months=7)).strftime('%b-%y'))
+                        for node in arch.xpath("//field[@name='month9']"):
+                            node.set('string', (start_date - relativedelta(months=8)).strftime('%b-%y'))
+                        for node in arch.xpath("//field[@name='month10']"):
+                            node.set('string', (start_date - relativedelta(months=9)).strftime('%b-%y'))
+                        for node in arch.xpath("//field[@name='month11']"):
+                            node.set('string', (start_date - relativedelta(months=10)).strftime('%b-%y'))
+                        for node in arch.xpath("//field[@name='month12']"):
+                            node.set('string', (start_date - relativedelta(months=11)).strftime('%b-%y'))
+
+                    # Convert the XML tree back to a string
+                    result['arch'] = etree.tostring(arch, encoding='unicode')
+
         return result
 
     @staticmethod

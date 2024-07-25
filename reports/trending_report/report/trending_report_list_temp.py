@@ -13,5 +13,6 @@ class ReportTrendingReportList(models.AbstractModel):
     def _get_report_values(self, docids, data=None):
 
         popup = self.env['popup.trending.report'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
-
-        return {'data': self.env['res.partner'].browse(docids),'start_date': popup.start_date, 'code': popup.code}
+        data = self.env['res.partner'].browse(docids)
+        data._compute_sales_vals()
+        return {'data': data,'start_date': popup.start_date, 'code': popup.code}
