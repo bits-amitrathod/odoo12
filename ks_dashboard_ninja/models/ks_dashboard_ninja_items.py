@@ -9,7 +9,7 @@ import csv
 import os
 import tempfile
 import binascii
-import pandas as pd
+# import pandas as pd
 import babel
 import ast
 from datetime import timedelta
@@ -1039,7 +1039,8 @@ class KsDashboardNinjaItems(models.Model):
                         if 'Date' in field or 'Deadline' in field or self.ks_group_by_lines[value].ttype in ['datetime','date']:
                             if line[value]:
                                 if self.ks_group_by_lines[value].ttype in['datetime','date']:
-                                    final_date = pd.to_timedelta(float(line[value]), unit='D') + pd.to_datetime('1899-12-30')
+                                    final_date = None
+                                    # final_date = pd.to_timedelta(float(line[value]), unit='D') + pd.to_datetime('1899-12-30')
                                     while (value < len(line)):
                                         values.update({
                                             field: final_date,
