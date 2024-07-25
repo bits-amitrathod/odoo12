@@ -115,9 +115,10 @@ Best Odoo Dashboard Apps
 	'external_dependencies': {'python': ['mysql-connector']},
 
 	'data': ['security/ir.model.access.csv',
-		'views/ks_dashboard_ninja_item_view_inherit.xml',
-			 'views/ks_dashboard_form_view_inherit.xml',
-			 'views/ks_mail_template.xml'],
+				# 'views/ks_dashboard_ninja_item_view_inherit.xml',
+			 	# 'views/ks_dashboard_form_view_inherit.xml',
+			 	# 'views/ks_mail_template.xml'
+			 ],
 
 	'assets': {'web.assets_backend': ['ks_dn_advance/static/src/css/ks_tv_dashboard.css',
 									  'ks_dn_advance/static/lib/css/owl.carousel.min.css',
