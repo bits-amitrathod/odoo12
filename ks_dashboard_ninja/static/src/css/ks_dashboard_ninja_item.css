@@ -154,21 +154,13 @@
     width: 100%;
     bottom: 0;
 }
-.ks-progress-bar {
-padding: 0 20px 0 10px;
-}
-.ks-progress-bar-value {
-    padding-right: 10px;
-}
-.ks-progress-bar, .ks-progress-bar #ks_progressbar {
-    width:100%;
-}
+
  .ks_progress progress {
     background-color: #000;
     border: 0;
-    width: 100%;
-    height: 8px;
-    border-radius: 8px;
+    width: 80%;
+    height: 5px;
+    border-radius: 9px;
 }
  .ks_progress progress::-webkit-progress-bar {
     background-color: #000;
@@ -193,13 +185,4 @@ padding: 0 20px 0 10px;
     color: #666666 !important;
     background-color: rgba(0, 0, 0, 0.26) !important;
 
-}
-.ks_map_card_body{
-    z-index:1;
-}
-.ks_progress {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
 }

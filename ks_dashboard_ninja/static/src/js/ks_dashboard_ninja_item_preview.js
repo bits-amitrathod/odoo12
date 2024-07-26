@@ -1,27 +1,30 @@
-/** @odoo-module */
+odoo.define('ks_dashboard_ninja_list.ks_dashboard_item_preview', function(require) {
+    "use strict";
 
-import { formatDate, parseDateTime } from "@web/core/l10n/dates";
-import { CharField } from "@web/views/fields/char/char_field";
-import { registry } from "@web/core/registry";
-import field_utils from 'web.field_utils';
-import { qweb } from 'web.core';
-import utils from 'web.utils';
-import session from 'web.session';
-var KsGlobalFunction = require('ks_dashboard_ninja.KsGlobalFunction');
+    var registry = require('web.field_registry');
+    var AbstractField = require('web.AbstractField');
+    var core = require('web.core');
+    var field_utils = require('web.field_utils');
+    var session = require('web.session');
+    var utils = require('web.utils');
+    var KsGlobalFunction = require('ks_dashboard_ninja.KsGlobalFunction');
 
-const { useEffect, useRef, xml, onWillUpdateProps} = owl;
+    var QWeb = core.qweb;
 
-class KsItemPreview extends CharField {
+    var KsItemPreview = AbstractField.extend({
 
-        file_type_magic_word= {
+        supportedFieldTypes: ['integer'],
+        resetOnAnyFieldChange: true,
+
+        file_type_magic_word: {
             '/': 'jpg',
             'R': 'gif',
             'i': 'png',
             'P': 'svg+xml',
-        }
+        },
 
         //        Number Formatter into shorthand function
-        ksNumFormatter(num, digits) {
+        ksNumFormatter: function(num, digits) {
             var negative;
             var si = [{
                     value: 1,
@@ -68,9 +71,9 @@ class KsItemPreview extends CharField {
             } else {
                 return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
             }
-        }
+        },
 
-        ksNumColombianFormatter(num, digits, ks_precision_digits) {
+        ksNumColombianFormatter: function(num, digits, ks_precision_digits) {
             var negative;
             var si = [{
                     value: 1,
@@ -135,10 +138,10 @@ class KsItemPreview extends CharField {
                     }
                 }
 
-        }
+        },
 
 //        Indian format shorthand function
-        ksNumIndianFormatter(num, digits) {
+        ksNumIndianFormatter: function(num, digits) {
             var negative;
             var si = [{
                 value: 1,
@@ -178,46 +181,26 @@ class KsItemPreview extends CharField {
                 return (num / si[i].value).toFixed(digits).replace(rx, "$1") + si[i].symbol;
             }
 
-        }
+        },
 
-        ks_get_dark_color(color, opacity, percent) { // deprecated. See below.
+        ks_get_dark_color: function(color, opacity, percent) { // deprecated. See below.
             var num = parseInt(color.slice(1), 16),
                 amt = Math.round(2.55 * percent),
                 R = (num >> 16) + amt,
                 G = (num >> 8 & 0x00FF) + amt,
                 B = (num & 0x0000FF) + amt;
             return "#" + (0x1000000 + (R < 255 ? R < 1 ? 0 : R : 255) * 0x10000 + (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 + (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1) + "," + opacity;
-        }
-        setup() {
-        super.setup();
-        const self = this;
-        const inputRef = useRef("input");
-        useEffect(
-            (input) => {
-                if (input) {
-                    self.tile_render();
-                }
-            },
-            () => [inputRef.el]
+        },
 
-        );
-        onWillUpdateProps(this.onWillUpdateProps);
-
-    }
-    onWillUpdateProps(){
-        this.tile_render()
-    }
-
-        tile_render() {
+        _render: function() {
             var self = this;
-            var field = self.props.record.data;
+            var field = self.recordData;
+            this.tile_data = JSON.parse(field.ks_tile_data)
             var $val;
             var item_info;
-            $(this.input.el.parentElement).find('div').remove()
-            $(this.input.el.parentElement).find('input').addClass('d-none')
             var ks_rgba_background_color, ks_rgba_font_color, ks_rgba_icon_color;
+            self.$el.empty();
             ks_rgba_background_color = self._get_rgba_format(field.ks_background_color)
-
             ks_rgba_font_color = self._get_rgba_format(field.ks_font_color)
             ks_rgba_icon_color = self._get_rgba_format(field.ks_default_icon_color)
             item_info = {
@@ -234,21 +217,21 @@ class KsItemPreview extends CharField {
 
                 if (!utils.is_bin_size(field.ks_icon)) {
                     // Use magic-word technique for detecting image type
-                    item_info['img_src'] = 'data:image/' + (self.file_type_magic_word[field.ks_icon] || 'png') + ';base64,' + field.ks_icon;
+                    item_info['img_src'] = 'data:image/' + (self.file_type_magic_word[field.ks_icon[0]] || 'png') + ';base64,' + field.ks_icon;
                 } else {
                     item_info['img_src'] = session.url('/web/image', {
-                        model: self.env.model.root.resModel,
-                        id: JSON.stringify(this.props.record.data.id),
+                        model: self.model,
+                        id: JSON.stringify(self.res_id),
                         field: "ks_icon",
                         // unique forces a reload of the image when the record has been updated
-                        unique: String(this.props.record.data.__last_update.ts),
+                        unique: field_utils.format.datetime(self.recordData.__last_update).replace(/[^0-9]/g, ''),
                     });
                 }
 
             }
             if (!field.name) {
                 if (field.ks_model_name) {
-                    item_info['name'] = field.ks_model_id[1];
+                    item_info['name'] = field.ks_model_id.data.display_name;
                 } else {
                     item_info['name'] = "Name";
                 }
@@ -268,14 +251,14 @@ class KsItemPreview extends CharField {
             }else{
             var ks_record_count = field.ks_record_count
             }
-            var ks_selection = field.ks_unit_selection;
+            var ks_selection = self.tile_data.ks_selection;
             if (ks_selection === 'monetary') {
-            var ks_currency_id = field.ks_currency_id[0];
+            var ks_currency_id = self.tile_data.ks_currency;
             var ks_data = self._onKsGlobalFormatter(ks_record_count, field.ks_data_format, field.ks_precision_digits);
             ks_data = KsGlobalFunction.ks_monetary(ks_data, ks_currency_id);
             item_info['count'] = ks_data;
             } else if (ks_selection === 'custom') {
-            var ks_field = field.ks_chart_unit;
+            var ks_field = self.tile_data.ks_field;
             item_info['count']= ks_field+" "+self._onKsGlobalFormatter(ks_record_count, field.ks_data_format, field.ks_precision_digits);
             }else {
             item_info['count']= self._onKsGlobalFormatter(ks_record_count, field.ks_data_format, field.ks_precision_digits);
@@ -287,7 +270,7 @@ class KsItemPreview extends CharField {
 
             switch (field.ks_layout) {
                 case 'layout1':
-                    $val = $(qweb.render('ks_db_list_preview_layout1', item_info));
+                    $val = $(QWeb.render('ks_db_list_preview_layout1', item_info));
                     $val.css({
                         "background-color": ks_rgba_background_color,
                         "color": ks_rgba_font_color
@@ -295,7 +278,7 @@ class KsItemPreview extends CharField {
                     break;
 
                 case 'layout2':
-                    $val = $(qweb.render('ks_db_list_preview_layout2', item_info));
+                    $val = $(QWeb.render('ks_db_list_preview_layout2', item_info));
                     var ks_rgba_dark_background_color_l2 = self._get_rgba_format(self.ks_get_dark_color(field.ks_background_color.split(',')[0], field.ks_background_color.split(',')[1], -10));
                     $val.find('.ks_dashboard_icon_l2').css({
                         "background-color": ks_rgba_dark_background_color_l2,
@@ -307,7 +290,7 @@ class KsItemPreview extends CharField {
                     break;
 
                 case 'layout3':
-                    $val = $(qweb.render('ks_db_list_preview_layout3', item_info));
+                    $val = $(QWeb.render('ks_db_list_preview_layout3', item_info));
                     $val.css({
                         "background-color": ks_rgba_background_color,
                         "color": ks_rgba_font_color
@@ -315,7 +298,7 @@ class KsItemPreview extends CharField {
                     break;
 
                 case 'layout4':
-                    $val = $(qweb.render('ks_db_list_preview_layout4', item_info));
+                    $val = $(QWeb.render('ks_db_list_preview_layout4', item_info));
                     $val.find('.ks_dashboard_icon_l4').css({
                         "background-color": ks_rgba_background_color,
                     });
@@ -332,7 +315,7 @@ class KsItemPreview extends CharField {
                     break;
 
                 case 'layout5':
-                    $val = $(qweb.render('ks_db_list_preview_layout5', item_info));
+                    $val = $(QWeb.render('ks_db_list_preview_layout5', item_info));
                     $val.css({
                         "background-color": ks_rgba_background_color,
                         "color": ks_rgba_font_color
@@ -341,7 +324,7 @@ class KsItemPreview extends CharField {
 
                 case 'layout6':
                     //                        item_info['icon_color'] = self._get_rgba_format(self.ks_get_dark_color(field.ks_background_color.split(',')[0],field.ks_background_color.split(',')[1],-10));
-                    $val = $(qweb.render('ks_db_list_preview_layout6', item_info));
+                    $val = $(QWeb.render('ks_db_list_preview_layout6', item_info));
                     $val.css({
                         "background-color": ks_rgba_background_color,
                         "color": ks_rgba_font_color
@@ -350,16 +333,16 @@ class KsItemPreview extends CharField {
                     break;
 
                 default:
-                    $val = $(qweb.render('ks_db_list_preview'));
+                    $val = $(QWeb.render('ks_db_list_preview'));
                     break;
 
             }
 
-            $(this.input.el.parentElement).append($val);
-            $(this.input.el.parentElement).append(qweb.render('ks_db_item_preview_footer_note'));
-        }
+            self.$el.append($val);
+            self.$el.append(QWeb.render('ks_db_item_preview_footer_note'));
+        },
 
-        _onKsGlobalFormatter(ks_record_count, ks_data_format, ks_precision_digits){
+        _onKsGlobalFormatter: function(ks_record_count, ks_data_format, ks_precision_digits){
             var self = this;
             if (ks_data_format == 'exact'){
 //                return ks_record_count;
@@ -373,12 +356,24 @@ class KsItemPreview extends CharField {
                     return self.ksNumFormatter(ks_record_count, 1);
                 }
             }
-        }
+        },
+
+        _renderReadonly: function($val) {
+            var self = this;
+            var ks_icon_url;
+            this._rpc({
+                model: 'ks_dashboard_ninja.item',
+                method: 'ks_set_preview_image',
+                args: [self.res_id],
+            }).then(function(data) {
+                ks_icon_url = 'data:image/' + (self.file_type_magic_word[data[0]] || 'png') + ';base64,' + data;
+                $val.find('.ks_db_list_image').attr('src', ks_icon_url)
+                self.$el.append($val)
+            });
+        },
 
 
-
-
-        _get_rgba_format(val) {
+        _get_rgba_format: function(val) {
             var rgba = val.split(',')[0].match(/[A-Za-z0-9]{2}/g);
             rgba = rgba.map(function(v) {
                 return parseInt(v, 16)
@@ -387,9 +382,11 @@ class KsItemPreview extends CharField {
         }
 
 
- }
- registry.category("fields").add('ks_dashboard_item_preview_owl', KsItemPreview);
+    });
+    registry.add('ks_dashboard_item_preview', KsItemPreview);
 
     return {
         KsItemPreview: KsItemPreview
-    }
+    };
+
+});

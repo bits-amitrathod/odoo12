@@ -13,10 +13,7 @@ from dateutil.relativedelta import relativedelta
 
 
 def ks_get_date(ks_date_filter_selection, self, type):
-    try:
-        timezone = self._context.get('tz')
-    except Exception as e:
-        timezone = self.env.user.tz
+    timezone = self._context.get('tz') or self.env.user.tz
 
     if not timezone:
         ks_tzone = os.environ.get('TZ')
@@ -35,16 +32,11 @@ def ks_get_date(ks_date_filter_selection, self, type):
 
     series = ks_date_filter_selection
     if ks_date_filter_selection in ['t_fiscal_year', 'n_fiscal_year', 'ls_fiscal_year']:
-        function_name = globals()["ks_date_series_" + series.split("_")[0]]
-        return function_name(series.split("_")[1], timezone, type, self)
+        return eval("ks_date_series_" + series.split("_")[0])(series.split("_")[1], timezone, type,self)
     else:
-        function_name = globals()["ks_date_series_" + series.split("_")[0]]
-        return function_name(series.split("_")[1], timezone, type, self)
-
-
+        return eval("ks_date_series_" + series.split("_")[0])(series.split("_")[1], timezone, type, self)
 def ks_date_series_td(ks_date_selection, timezone, type, self=None):
-    ks_function_name = globals()["ks_get_date_range_from_td_" + ks_date_selection]
-    return ks_function_name(timezone, type, self)
+    return eval("ks_get_date_range_from_td_" + ks_date_selection)(timezone, type, self)
 
 def ks_get_date_range_from_td_year(timezone, type,self):
     ks_date_data = {}
@@ -135,20 +127,17 @@ def ks_date_series_l(ks_date_selection, timezone, type, self=None):
 
 # Current Date Ranges : Week, Month, Quarter, year
 def ks_date_series_t(ks_date_selection, timezone, type, self=None):
-    ks_function_name = globals()["ks_get_date_range_from_" + ks_date_selection]
-    return ks_function_name("current", timezone, type,self)
+    return eval("ks_get_date_range_from_" + ks_date_selection)("current", timezone, type,self)
 
 
 # Previous Date Ranges : Week, Month, Quarter, year
 def ks_date_series_ls(ks_date_selection, timezone, type,self=None):
-    ks_function_name = globals()["ks_get_date_range_from_" + ks_date_selection]
-    return ks_function_name("previous", timezone, type,self)
+    return eval("ks_get_date_range_from_" + ks_date_selection)("previous", timezone, type,self)
 
 
 # Next Date Ranges : Day, Week, Month, Quarter, year
 def ks_date_series_n(ks_date_selection, timezone, type,self=None):
-    ks_function_name = globals()["ks_get_date_range_from_" + ks_date_selection]
-    return ks_function_name("next", timezone, type, self)
+    return eval("ks_get_date_range_from_" + ks_date_selection)("next", timezone, type, self)
 
 
 def ks_get_date_range_from_day(date_state, timezone, type,self):
