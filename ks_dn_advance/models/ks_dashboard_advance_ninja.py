@@ -1,13 +1,8 @@
-from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
-from odoo.exceptions import ValidationError
 from odoo import models, fields, api, _
-import traceback
-import logging
+from odoo.exceptions import ValidationError
+from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 import datetime
 import json
-from odoo.tools.safe_eval import safe_eval
-
-_logger = logging.getLogger(__name__)
 
 
 class KsDashboardNinjaAdvance(models.Model):
@@ -21,20 +16,12 @@ class KsDashboardNinjaAdvance(models.Model):
                                           ('45000', '45 Seconds'),
                                           ('60000', '1 minute'),
                                           ], string="Slide Interval", default = '5000')
-    ks_mail_to_partner = fields.Many2one('res.partner', string='Email To', domain=[('email', '!=', False)])
-    ks_mail_to_cc_partner = fields.Many2many('res.partner', 'res_partner_dashboard_ninja', 'partner_id', 'board_id',
-                                             domain=[('email', '!=', False)], string='Email Cc')
-    ks_mail_email_cc_value = fields.Text(string='Email CC Value')
 
     def ks_fetch_item_data(self, rec, params={}):
          item = super(KsDashboardNinjaAdvance, self).ks_fetch_item_data(rec, params)
 
          item["ks_data_calculation_type"] = rec.ks_data_calculation_type
          item['ks_list_view_layout'] = rec.ks_list_view_layout
-         item['ks_is_external_api']= rec.ks_is_external_api,
-         item['ks_url']= rec.ks_url,
-         item['ks_api_header'] = rec.ks_api_header
-         item['data_source'] = rec.data_source
 
          return item
 
@@ -51,26 +38,7 @@ class KsDashboardNinjaAdvance(models.Model):
                 DEFAULT_SERVER_DATETIME_FORMAT) if rec.ks_query_start_date else False
         item['ks_query_end_date'] = rec.ks_query_end_date.strftime(
                 DEFAULT_SERVER_DATETIME_FORMAT) if rec.ks_query_end_date else False
-        item['ks_is_external_db'] = rec.ks_is_external_db
-        item['ks_host'] = rec.ks_host
-        item['ks_port'] = rec.ks_port
-        item['ks_db_name'] = rec.ks_db_name
-        item['ks_db_password'] =rec.ks_db_password
-        item['ks_db_user']=rec.ks_db_user
-        item['ks_external_db_type'] = rec.ks_external_db_type
-        ks_api_data_lines = []
-        for res in rec.ks_api_data_lines:
-            ks_api_data_line = {
-                'name': res.name,
-                'ttype': res.ttype,
-                'ks_dashboard_datatype_id': rec.id,
-            }
-            ks_api_data_lines.append(ks_api_data_line)
-        item['ks_is_external_api']= rec.ks_is_external_api,
-        item['ks_url'] = rec.ks_url,
-        item['ks_api_header'] = rec.ks_api_header
-        item['data_source'] = rec.data_source
-        item['ks_api_data_lines'] = ks_api_data_lines if ks_api_data_lines else False
+
         return item
 
     @api.model
@@ -95,7 +63,6 @@ class KsDashboardNinjaAdvance(models.Model):
         ks_action_lines = item['ks_action_liness'].copy() if item.get('ks_action_liness', False) else False
         ks_dn_header_line = item['ks_dn_header_line'].copy() if item.get('ks_dn_header_line', False) else False
         ks_multiplier_lines = item['ks_multiplier_lines'].copy() if item.get('ks_multiplier_lines', False) else False
-        ks_api_data_lines = item['ks_api_data_lines'].copy() if item.get('ks_api_data_lines', False) else False
 
         # Creating dashboard items
         item = self.ks_prepare_item(item)
@@ -113,9 +80,6 @@ class KsDashboardNinjaAdvance(models.Model):
             del item['ks_dn_header_line']
         if 'ks_multiplier_lines' in item:
             del item['ks_multiplier_lines']
-        if 'ks_api_data_lines' in item:
-            del item['ks_api_data_lines']
-
 
 
         ks_item = self.env['ks_dashboard_ninja.item'].create(item)
@@ -165,10 +129,6 @@ class KsDashboardNinjaAdvance(models.Model):
                     rec['ks_multiplier_fields'] = ks_multiplier_field_id.id
                     rec['ks_dashboard_item_id'] = ks_item.id
                     self.env['ks_dashboard_item.multiplier'].create(rec)
-        if ks_api_data_lines and len(ks_api_data_lines) != 0:
-            for rec in ks_api_data_lines:
-                rec['ks_dashboard_datatype_id'] = ks_item.id
-                self.env['ks.dashboard.api'].create(rec)
 
         return ks_item
 
@@ -183,16 +143,6 @@ class KsDashboardNinjaAdvance(models.Model):
         if 'ks_file_format' in ks_dashboard_file_read and ks_dashboard_file_read[
             'ks_file_format'] == 'ks_dashboard_ninja_export_file':
             ks_dashboard_data = ks_dashboard_file_read['ks_dashboard_data']
-            for i in range(len(ks_dashboard_data)):
-                if 'ks_set_interval' in ks_dashboard_data[i].keys() and ks_dashboard_data[i].get('ks_item_data', False):
-                    # del ks_dashboard_data[i]['ks_set_interval']
-                    for j in range(len(ks_dashboard_data[i].get('ks_item_data', False))):
-                        if 'ks_update_items_data' in ks_dashboard_data[i].get('ks_item_data', False)[j].keys():
-                            del ks_dashboard_data[i].get('ks_item_data', False)[j]['ks_update_items_data']
-                        if 'ks_auto_update_type' in ks_dashboard_data[i].get('ks_item_data', False)[j].keys():
-                            del ks_dashboard_data[i].get('ks_item_data', False)[j]['ks_auto_update_type']
-                        if 'ks_show_live_pop_up' in ks_dashboard_data[i].get('ks_item_data', False)[j].keys():
-                            del ks_dashboard_data[i].get('ks_item_data', False)[j]['ks_show_live_pop_up']
         else:
             raise ValidationError(_("Current Json File is not properly formatted according to Dashboard Ninja Model."))
 
@@ -218,7 +168,7 @@ class KsDashboardNinjaAdvance(models.Model):
             dashboard_id = self.create(vals)
 
             if data['ks_gridstack_config']:
-                ks_gridstack_config = safe_eval(data['ks_gridstack_config'])
+                ks_gridstack_config = eval(data['ks_gridstack_config'])
             ks_grid_stack_config = {}
 
             item_ids = []
@@ -248,55 +198,3 @@ class KsDashboardNinjaAdvance(models.Model):
 
         return "Success"
         # separate function to make item for import
-    def ks_dashboard_send_mail(self, file):
-        ks_mail_validate = self.ks_email_validation()
-        if ks_mail_validate:
-            try:
-                pdf_b64 = file
-                attachment = {
-                    'name': str(self.name),
-                    'datas': pdf_b64,
-                    'res_model': 'ks_dashboard_ninja_board',
-                    'type': 'binary',
-                    'mimetype': 'application/pdf',
-
-                }
-                self.env.user
-                ks_attachment = self.env['ir.attachment'].create(attachment)
-                ks_mail_template = self.env.ref('ks_dn_advance.ks_mail_templates')
-                ks_mail_template.attachment_ids = [(6, 0, [ks_attachment.id])]
-                ks_ctx = {'ks_report_name': self.name if self.name else "My Dashboard"}
-                if ks_mail_template:
-                    try:
-                        ks_mail_template.with_context(ks_ctx).send_mail(self.id, force_send=True)
-                        return {'ks_is_send': True,
-                                'ks_massage': _("Email has been sent")
-                                }
-                    except Exception as e:
-                        _logger.error(traceback.format_exc())
-                        return {'ks_is_send': False,
-                                'ks_massage': _("Email has not been sent.Please check your console log")
-                                }
-            except Exception as e:
-                return {'ks_is_send': False,
-                        'ks_massage': _("Email has not been sent.Please check your console log.")
-                        }
-                _logger.error(traceback.format_exc())
-        else:
-            return {'ks_is_send': False,
-                    'ks_massage': _("Please fill the email to form the dashboard configuration")
-                    }
-
-    def ks_email_validation(self):
-        if not self.ks_mail_to_partner:
-            # raise ValidationError()
-            return False
-        else:
-            return True
-
-    @api.onchange('ks_mail_to_cc_partner')
-    def onchange_ks_mail_to_cc_partner(self):
-        ks_user_mails = ''
-        for partner in self.ks_mail_to_cc_partner:
-            ks_user_mails += partner.email + ' ' + ','
-        self.ks_mail_email_cc_value = ks_user_mails

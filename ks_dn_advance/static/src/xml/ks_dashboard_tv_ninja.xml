@@ -62,22 +62,17 @@
     </t>
 
     <t t-extend="ksDashboardNinjaHeader">
-        <t t-jquery="div.ks_custom_date_filter" t-operation="after">
+        <t t-jquery="div.ks_am_content_element" t-operation="after">
             <t t-if='!play_button'>
-                <button class="btn btn-primary ks_start_tv_dashboard d-md-block" aria-expanded="false" data-toggle="tooltip" data-placement="top" title="Play"
-                        >
-                    <img src="/ks_dashboard_ninja/static/description/images/icons/play-btn.svg" alt=""/>
-<!--                    <span id="play_button">Play</span>-->
+                <button class="btn btn-primary ks_start_tv_dashboard mr-2 d-md-block" aria-expanded="false">
+                    <span class="fa fa-md fa-play"/>
+                    Play
                 </button>
-                <button class="btn btn-primary ks_dashboard_print_pdf d-md-block" aria-expanded="false" data-toggle="tooltip" data-placement="top" title="Print Dashboard"
-                        >
-                    <img src="/ks_dashboard_ninja/static/description/images/icons/print-btn.svg" alt=""/>
-<!--                    <span id="print_dashboard">Print Dashboard</span>-->
+                <button class="btn btn-primary ks_dashboard_print_pdf mr-2 d-md-block" aria-expanded="false">
+                    <span class="fa fa-md fa-print"/>
+                    Print Dashboard
                 </button>
             </t>
-            <button class="btn btn-primary ks_dashboard_send_email d-md-block" aria-expanded="false" data-toggle="tooltip" data-placement="top" title="Email">
-                <img src="/ks_dashboard_ninja/static/description/images/icons/mail-btn.svg" alt=""/>
-            </button>
         </t>
     </t>
     <t t-extend="ks_main_body_container">
@@ -344,7 +339,6 @@
                 <t t-foreach="table_row['data']" t-as="row_data">
                     <t t-if="table_row['ks_column_type'][ks_rec_count]==='html'">
                         <td class="ks_list_canvas_click">
-<!--                            <t t-out="row_data"/>-->
                             <t t-raw="row_data"/>
                         </td>
                         <t t-set="ks_rec_count" t-value="ks_rec_count+1"/>
@@ -374,10 +368,8 @@
         <t t-jquery="table#ksListViewTable.table.table-hover.ks_list_view_layout_1" t-operation="replace">
 
             <t t-if="list_view_data">
-
                 <table id="ksListViewTable" class="table table-hover ks_dn_table ks_list_view_layout_1"
                        t-att-data-model="list_view_data['model']">
-
                     <thead class="ks_dn_thead">
 
                         <t t-call="ks_dns_list_view_header"></t>
@@ -396,7 +388,7 @@
     </t>
     <t t-name="ks_dns_list_view_header">
         <t t-if="calculation_type == 'custom' &amp; !isDrill">
-            <tr style="color:black">
+            <tr>
                 <t t-set="count" t-value="0"/>
                 <t t-foreach="list_view_data['label']" t-as="table_header">
                     <th class="ks_dn_th list_header ks_dn_asc" t-att-data-item-id="item_id"
@@ -432,7 +424,7 @@
             </tr>
         </t>
         <t t-else="">
-            <tr style="color:black">
+            <tr>
 
                 <t t-foreach="list_view_data['label']" t-as="table_header">
                     <th class="ks_dn_th">
