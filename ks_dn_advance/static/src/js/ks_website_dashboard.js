@@ -5,7 +5,6 @@ odoo.define('ks_dn_advance.ks_tv_website_dashboard', function(require){
     var QWeb = core.qweb;
     var ajax = require('web.ajax');
     var _t = core._t;
-    var config = require('web.config');
 
     ajax.loadXML('/ks_dn_advance/static/src/xml/ks_dashboard_tv_ninja.xml', QWeb);
     ajax.loadXML('/ks_dn_advance/static/src/xml/ks_query_templates.xml', QWeb);
@@ -54,12 +53,7 @@ odoo.define('ks_dn_advance.ks_tv_website_dashboard', function(require){
             $ks_gridstack_container.find('.card-body').append($ksItemContainer);
             item.$el = $ks_gridstack_container;
             if (item_id in ks_self.gridstackConfig) {
-                if (config.device.isMobile){
-                    grid.addWidget($ks_gridstack_container[0], {x:ks_self.gridstackConfig[item_id].x, y:ks_self.gridstackConfig[item_id].y, w:ks_self.gridstackConfig[item_id].w, h:ks_self.gridstackConfig[item_id].h, autoPosition:true, minW:3, maxW:null, minH:3, maxH:null, id:item_id});
-                }
-                else{
-                    grid.addWidget($ks_gridstack_container[0], {x:ks_self.gridstackConfig[item_id].x, y:ks_self.gridstackConfig[item_id].y, w:ks_self.gridstackConfig[item_id].w, h:ks_self.gridstackConfig[item_id].h, autoPosition:false, minW:3, maxW:null, minH:3, maxH:null, id:item_id});
-                }
+                grid.addWidget($ks_gridstack_container[0], {x:ks_self.gridstackConfig[item_id].x, y:ks_self.gridstackConfig[item_id].y, w:ks_self.gridstackConfig[item_id].w, h:ks_self.gridstackConfig[item_id].h, autoPosition:false, minW:3, maxW:null, minH:3, maxH:null, id:item_id});
             } else {
                 grid.addWidget($ks_gridstack_container[0], {x:0, y:0, w:5, h:4, autoPosition:true, minW:3, maxW:null, minH:3, maxH:null, id:item_id});
             }
@@ -80,7 +74,7 @@ odoo.define('ks_dn_advance.ks_tv_website_dashboard', function(require){
                             var date = list_view_data.data_rows[j]["data"][index]
                              if (date) {
                                 if (list_view_data.fields_type[index] === 'date'){
-                                    list_view_data.data_rows[j]["data"][index] = moment(new Date(date)).format(this.date_format) , {}, {timezone: false};
+                                    list_view_data.data_rows[j]["data"][index] = moment(new Date(date+" UTC")).format(this.date_format) , {}, {timezone: false};
                                 }else{
                                     list_view_data.data_rows[j]["data"][index] = moment(new Date(date+" UTC")).format(this.datetime_format), {}, {timezone: false};
                                 }

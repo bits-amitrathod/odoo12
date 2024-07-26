@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<templates xml:space="preserve">
-    <t t-name="ks_dashboard_ninja.KsMapPreview" owl="1">
-        <h2 id="text"/>
-        <div id="map_chart" t-ref="mapContainer"></div>
-    </t>
-</templates>

@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<templates xml:space="preserve">
-    <t t-name="ks_dashboard_ninja.KsRadialBarChart" owl="1">
-        <h2 id="text"/>
-        <div id="chart1" t-ref="radialContainer"/>
-    </t>
-</templates>
