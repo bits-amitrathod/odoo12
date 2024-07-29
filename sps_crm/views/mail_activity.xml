@@ -1,157 +1,160 @@
 <odoo>
     <data>
-       <record id="sh_mail_activity_view_tree_child" model="ir.ui.view">
-        <field name="name">sh.mail.activity.view.tree</field>
-        <field name="model">mail.activity</field>
-        <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree" />
-        <field name="arch" type="xml">
-              <!--<field name="summary" position="replace">
-                    <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
-                </field>-->
-            <field name="user_id" position="after">
-                <field name="sh_state" invisible="1" />
+        <record id="sh_mail_activity_view_tree_child" model="ir.ui.view">
+            <field name="name">sh.mail.activity.view.tree</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree"/>
+            <field name="arch" type="xml">
+                <!--<field name="summary" position="replace">
+                      <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
+                  </field>-->
+                <field name="user_id" position="after">
+                    <field name="sh_state" invisible="1"/>
 
-            </field>
-             <field name="state" position="replace">
-                <field name="state" string="Status" />
+                </field>
+                <field name="state" position="replace">
+                    <field name="state" string="Status"/>
 
+                </field>
             </field>
-        </field>
-    </record>
+        </record>
         <!-- Create Activity Using My Activity Page -->
         <record id="sh_mail_activity_view_form_custom" model="ir.ui.view">
             <field name="name">sh.mail.activity.view.form.add</field>
             <field name="model">mail.activity</field>
-            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n"/>
             <field name="arch" type="xml">
                 <field name="summary" position="replace">
                     <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
                 </field>
                 <field name="note" position="replace">
-                <notebook>
-                    <page name="detail_tab" string="Details">
-                        <group>
-                            <field name="reference"  string="Account"></field>
-                            <field name="related_partner_activity" string="Contact" options="{'no_create': True}"></field>
-                        </group>
-                        <group name="parent_group">
-                            <group name="group_left">
-                                <field name="activity_type_id" options="{'no_create': True}"/>
-                                <field name="summary" string="Subject"/>
-                                <field name="activity_priority"/>
-                                <field name="email" widget="email"/>
-                                <field name="function" string="Job Title"/>
-                                <field name="phone" widget="phone"/>
-                                <field name="direct_line"/>
-                                <field name="mobile" widget="phone"/>
-                                <field name="tags" widget="many2many_tags"/>
-                                <field name="request_partner_id"/>
+                    <notebook>
+                        <page name="detail_tab" string="Details">
+                            <group>
+                                <field name="reference" string="Account"></field>
+                                <field name="related_partner_activity" string="Contact"
+                                       options="{'no_create': True}"></field>
                             </group>
-                            <group name="group_right">
-                                <field name="date_deadline"/>
-                                <field name="date_done"/>
-                                <field name="create_date"/>
-                                <field name="user_id"/>
-                                <field name="time_zone"/>
+                            <group name="parent_group">
+                                <group name="group_left">
+                                    <field name="activity_type_id" options="{'no_create': True}"/>
+                                    <field name="summary" string="Subject"/>
+                                    <field name="activity_priority"/>
+                                    <field name="email" widget="email"/>
+                                    <field name="function" string="Job Title"/>
+                                    <field name="phone" widget="phone"/>
+                                    <field name="direct_line"/>
+                                    <field name="mobile" widget="phone"/>
+                                    <field name="tags" widget="many2many_tags"/>
+                                    <field name="request_partner_id"/>
+                                </group>
+                                <group name="group_right">
+                                    <field name="date_deadline"/>
+                                    <field name="date_done"/>
+                                    <field name="create_date"/>
+                                    <field name="user_id"/>
+                                    <field name="time_zone"/>
+                                </group>
                             </group>
-                        </group>
-                    </page>
-                    <page name="salesactnotes" string="Sales Notes">
-                 <group>
-                  <field name="sales_activity_notes" String ="Sales Activity Notes"/>
-                 </group>
-                 </page>
-                    <page name="acqactnotes" string="Acquisition Notes">
-                 <group>
-                   <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
-                 </group>
-                 </page>
-                    <page name="actnotes" string="Notes">
-                         <group>
-                           <field name="note" placeholder="Log a note..." />
-                         </group>
-                     </page>
-                    <page name="comment_tab" string="NA or Comments">
-                        <group> <field name="comment"/></group>
-                    </page>
-                </notebook>
-            </field>
+                        </page>
+                        <page name="salesactnotes" string="Sales Notes">
+                            <group>
+                                <field name="sales_activity_notes" String="Sales Activity Notes"/>
+                            </group>
+                        </page>
+                        <page name="acqactnotes" string="Acquisition Notes">
+                            <group>
+                                <field name="acq_activity_notes" String="Acquisition Activity Notes"/>
+                            </group>
+                        </page>
+                        <page name="actnotes" string="Notes">
+                            <group>
+                                <field name="note" placeholder="Log a note..."/>
+                            </group>
+                        </page>
+                        <page name="comment_tab" string="NA or Comments">
+                            <group>
+                                <field name="comment"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </field>
                 <field name="reference" position="replace">
                     <field name="reference" string="Account"></field>
-                    <field name="activity_priority" ></field>
+                    <field name="activity_priority"></field>
                     <field name="related_partner_activity" string="Contact"></field>
-                    <field name="email" ></field>
-                    <field name="phone" ></field>
+                    <field name="email"></field>
+                    <field name="phone"></field>
                     <field name="mobile"></field>
                 </field>
                 <field name="summary" position="after">
-                    <field name="tags" widget="many2many_tags" ></field>
+                    <field name="tags" widget="many2many_tags"></field>
                 </field>
                 <xpath expr="/form[1]/sheet[1]/group[3]" position="attributes">
                     <attribute name="invisible">1</attribute>
                 </xpath>
-        </field>
+            </field>
         </record>
 
         <record id="sh_mail_activity_view_tree_child_priority" model="ir.ui.view">
-        <field name="name">sh.mail.activity.view.tree</field>
-        <field name="model">mail.activity</field>
-        <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree" />
-        <field name="arch" type="xml">
-<!--             <field name="res_name" position="after">-->
-<!--                 <field name="related_partner_activity" string="Contact"></field>-->
-<!--             </field>-->
-            <field name="date_done" position="after">
-                <field name="activity_priority"/>
-                <field name="email" optional="hide"/>
-                <field name="phone"  optional="hide"/>
-                <field name="mobile"  optional="hide"/>
+            <field name="name">sh.mail.activity.view.tree</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_tree"/>
+            <field name="arch" type="xml">
+                <!--             <field name="res_name" position="after">-->
+                <!--                 <field name="related_partner_activity" string="Contact"></field>-->
+                <!--             </field>-->
+                <field name="date_done" position="after">
+                    <field name="activity_priority"/>
+                    <field name="email" optional="hide"/>
+                    <field name="phone" optional="hide"/>
+                    <field name="mobile" optional="hide"/>
 
+                </field>
             </field>
-        </field>
-    </record>
+        </record>
 
         <!-- Search  -->
         <record id="crm_mail_activity_view_search" model="ir.ui.view">
             <field name="name">mail.activity.view.search</field>
             <field name="model">mail.activity</field>
-            <field name="inherit_id" ref="mail.mail_activity_view_search" />
+            <field name="inherit_id" ref="mail.mail_activity_view_search"/>
             <field name="arch" type="xml">
                 <field name="res_model" position="after">
-                   <field name="sales_activity_notes"/>
+                    <field name="sales_activity_notes"/>
                     <field name="acq_activity_notes"/>
-                    
+
                 </field>
             </field>
-       </record>
+        </record>
 
         <!-- Activity Popup View on customer page,
         both popup views are same, Customer page- Schedule Activity popup and My Activity-Edit popup  -->
         <record id="sh_mail_activity_type_view_form_inherit" model="ir.ui.view">
             <field name="name">sh.mail.activity.inherit</field>
             <field name="model">mail.activity</field>
-            <field name="inherit_id" ref="mail.mail_activity_view_form_popup" />
+            <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
             <field name="arch" type="xml">
                 <xpath expr="//field[@name='user_id']" position="after">
-                   <field name="activity_priority"  />
+                    <field name="activity_priority"/>
                     <field name="reference" string="Account"></field>
-                   <field name="related_partner_activity" string="Contact"></field>
+                    <field name="related_partner_activity" string="Contact"></field>
                 </xpath>
                 <!-- TODO: ODOO_16 SH_mig -->
-<!--                <field name="supervisor_id" position="replace">
-                    <field name="supervisor_id" invisible="1"/>
-                </field>
-                <field name="company_id" position="replace">
-                    <field name="company_id" invisible="1"/>
-                </field>
-                <field name="sh_activity_tags" position="replace">
-                    <field name="sh_activity_tags" invisible="1"/>
-                </field>-->
+                <!--                <field name="supervisor_id" position="replace">
+                                    <field name="supervisor_id" invisible="1"/>
+                                </field>
+                                <field name="company_id" position="replace">
+                                    <field name="company_id" invisible="1"/>
+                                </field>
+                                <field name="sh_activity_tags" position="replace">
+                                    <field name="sh_activity_tags" invisible="1"/>
+                                </field>-->
                 <field name="summary" position="replace">
                     <field name="summary" string="Subject" placeholder="e.g. Discuss proposal"/>
                 </field>
             </field>
-    </record>
+        </record>
 
         <record id="mail_activity_view_form_popup1" model="ir.ui.view">
             <field name="name">mail.activity.view.form.popup</field>
@@ -165,81 +168,87 @@
                     <notebook>
                         <!-- studio Changes Added-->
                         <page name="detail_tab" string="Details">
-                        <group>
-                            <field name="reference"  string="Account"></field>
-                            <field name="related_partner_activity" string="Contact" options="{'no_create': True}"></field>
-                        </group>
-                        <group name="parent_group">
-                            <group name="group_left">
-                                <field name="activity_type_id" options="{'no_create': True}"/>
-                                <field name="summary" string="Subject"/>
-                                <field name="activity_priority"/>
-                                <field name="email" widget="email"/>
-                                <field name="function" string="Job Title"/>
-                                <field name="phone" widget="phone"/>
-                                <field name="direct_line"/>
-                                <field name="mobile" widget="phone"/>
-                                <field name="tags" widget="many2many_tags"/>
+                            <group>
+                                <field name="reference" string="Account"></field>
+                                <field name="related_partner_activity" string="Contact"
+                                       options="{'no_create': True}"></field>
+                            </group>
+                            <group name="parent_group">
+                                <group name="group_left">
+                                    <field name="activity_type_id" options="{'no_create': True}"/>
+                                    <field name="summary" string="Subject"/>
+                                    <field name="activity_priority"/>
+                                    <field name="email" widget="email"/>
+                                    <field name="function" string="Job Title"/>
+                                    <field name="phone" widget="phone"/>
+                                    <field name="direct_line"/>
+                                    <field name="mobile" widget="phone"/>
+                                    <field name="tags" widget="many2many_tags"/>
 
+                                </group>
+                                <group name="group_right">
+                                    <field name="date_deadline"/>
+                                    <field name="date_done"/>
+                                    <field name="create_date"/>
+                                    <field name="user_id"/>
+                                    <field name="request_partner_id"/>
+                                </group>
                             </group>
-                            <group name="group_right">
-                                <field name="date_deadline"/>
-                                <field name="date_done"/>
-                                <field name="create_date"/>
-                                <field name="user_id"/>
-                                <field name="request_partner_id"/>
-                            </group>
-                        </group>
-                    </page>
+                        </page>
                         <page name="salesactnotes" string="Sales Notes">
                             <group>
-                                <field name="sales_activity_notes" String ="Sales Activity Notes"/>
+                                <field name="sales_activity_notes" String="Sales Activity Notes"/>
                             </group>
                         </page>
                         <page name="acqactnotes" string="Acquisition Notes">
                             <group>
-                                <field name="acq_activity_notes" String ="Acquisition Activity Notes" />
+                                <field name="acq_activity_notes" String="Acquisition Activity Notes"/>
                             </group>
-                         </page>
+                        </page>
                         <!-- studio Changes Added-->
                         <page name="comment_tab" string="NA or Comments">
-                            <group> <field name="comment"/></group>
+                            <group>
+                                <field name="comment"/>
+                            </group>
                         </page>
 
-<!--                    <page name="actnotes" string="Notes">-->
-<!--                         <group>-->
-<!--                           <field name="note" placeholder="Log a note..." />-->
-<!--                         </group>-->
-<!--                        </page>-->
+                        <!--                    <page name="actnotes" string="Notes">-->
+                        <!--                         <group>-->
+                        <!--                           <field name="note" placeholder="Log a note..." />-->
+                        <!--                         </group>-->
+                        <!--                        </page>-->
                     </notebook>
                 </field>
             </field>
-    </record>
+        </record>
 
         <record id="sh_mail_activity_view_tree_popup12" model="ir.ui.view">
-        <field name="name">sh.mail.activity.view.popup.tree.popup</field>
-        <field name="model">mail.activity</field>
-        <field name="arch" type="xml">
-            <tree string="Activities" decoration-danger="date_deadline &lt; current_date"
-                    decoration-success="date_deadline == current_date"
-                    default_order="date_deadline" create="false">
-                <field name="res_name"/>
-                <field name="related_partner_activity" string="Contact"></field>
-                <field name="activity_type_id"/>
-                 <field name="user_id"/>
-                <field name="summary" string="Subject"/>
-                <field name="date_deadline"/>
-                <field name="state"  string="Status" />
-                <field name="sh_state" invisible="1"/>
-                <field name="date_done" />
-                <field name="activity_priority"/>
-                <field name="active" invisible="1"/>
+            <field name="name">sh.mail.activity.view.popup.tree.popup</field>
+            <field name="model">mail.activity</field>
+            <field name="arch" type="xml">
+                <tree string="Activities" decoration-danger="date_deadline &lt; current_date"
+                      decoration-success="date_deadline == current_date"
+                      default_order="date_deadline" create="false">
+                    <field name="res_name"/>
+                    <field name="related_partner_activity" string="Contact"></field>
+                    <field name="activity_type_id"/>
+                    <field name="user_id"/>
+                    <field name="summary" string="Subject"/>
+                    <field name="date_deadline"/>
+                    <field name="state" string="Status"/>
+                    <field name="sh_state" invisible="1"/>
+                    <field name="date_done"/>
+                    <field name="activity_priority"/>
+                    <field name="active" invisible="1"/>
 
-                <button type="object" string="View" name="action_view_activity_popup" class="btn btn-primary" icon="fa-eye" />
-                <button type="object" string="Edit" name="action_edit_activity" class="btn btn-primary" icon="fa-pencil" attrs="{'invisible':[('active','=',False)]}"/>
-            	<button type="object" string="Origin" name="action_view_activity" class="btn btn-primary" icon="fa-history"/>
-            </tree>
-        </field>
+                    <button type="object" string="View" name="action_view_activity_popup" class="btn btn-primary"
+                            icon="fa-eye"/>
+                    <button type="object" string="Edit" name="action_edit_activity" class="btn btn-primary"
+                            icon="fa-pencil" attrs="{'invisible':[('active','=',False)]}"/>
+                    <button type="object" string="Origin" name="action_view_activity" class="btn btn-primary"
+                            icon="fa-history"/>
+                </tree>
+            </field>
         </record>
 
         <record model="ir.ui.view" id="sps_crm_done_and_duplicate_button">
@@ -248,9 +257,24 @@
             <field eval="40" name="priority"/>
             <field name="inherit_id" ref="mail.mail_activity_view_form"/>
             <field name="arch" type="xml">
+
+                <field name="request_partner_id" position="after">
+                    <field name="time_zone"/>
+                </field>
+
                 <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="replace">
-                    <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Duplicate" name="action_done_duplicate_act" type="object" class="btn-secondary"  />
+                    <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Duplicate"
+                            name="action_done_duplicate_act" type="object" class="btn-secondary"/>
                 </xpath>
+
+                <xpath expr="/form/sheet/notebook" position="inside">
+                    <page name="dup_poc" string="Dup POC">
+                        <group>
+                            <field name="dup_poc_note"/>
+                        </group>
+                    </page>
+                </xpath>
+
             </field>
         </record>
         <record id="mail_activity_view_form_popup_done_duplicate" model="ir.ui.view">
@@ -262,25 +286,26 @@
                     <footer>
                         <field name="id" invisible="1"/>
                         <button string="Schedule" name="action_close_dialog" type="object" class="btn-primary"
-                            attrs="{'invisible': [('id', '!=', False)]}"/>
+                                attrs="{'invisible': [('id', '!=', False)]}"/>
                         <button string="Save" name="action_close_dialog" type="object" class="btn-primary"
-                            attrs="{'invisible': [('id', '=', False)]}"/>
-                        <button  string="Mark as Done" name="action_done"
-                            type="object" class="btn-secondary"
-                            context="{'mail_activity_quick_update': True}"/>
-                        <button  string="Done &amp; Duplicate" name="action_done_duplicate_act_popup" type="object" class="btn-secondary"  />
-<!--                        <button attrs="{'invisible': [('force_next', '=', True)]}" string="Done &amp; Schedule Next" name="action_done_schedule_next"-->
-<!--                            type="object" class="btn-secondary"-->
-<!--                            context="{'mail_activity_quick_update': True}"/>-->
-<!--                        <button attrs="{'invisible': [('force_next', '=', False)]}" string="Done &amp; Launch Next" name="action_done_schedule_next"-->
-<!--                            type="object" class="btn-secondary"-->
-<!--                            context="{'mail_activity_quick_update': True}"/>-->
-                        <button string="Discard" class="btn-secondary" special="cancel" />
+                                attrs="{'invisible': [('id', '=', False)]}"/>
+                        <button string="Mark as Done" name="action_done"
+                                type="object" class="btn-secondary"
+                                context="{'mail_activity_quick_update': True}"/>
+                        <button string="Done &amp; Duplicate" name="action_done_duplicate_act_popup" type="object"
+                                class="btn-secondary"/>
+                        <!--                        <button attrs="{'invisible': [('force_next', '=', True)]}" string="Done &amp; Schedule Next" name="action_done_schedule_next"-->
+                        <!--                            type="object" class="btn-secondary"-->
+                        <!--                            context="{'mail_activity_quick_update': True}"/>-->
+                        <!--                        <button attrs="{'invisible': [('force_next', '=', False)]}" string="Done &amp; Launch Next" name="action_done_schedule_next"-->
+                        <!--                            type="object" class="btn-secondary"-->
+                        <!--                            context="{'mail_activity_quick_update': True}"/>-->
+                        <button string="Discard" class="btn-secondary" special="cancel"/>
                     </footer>
                 </xpath>
             </field>
-    </record>
+        </record>
 
- </data>
+    </data>
 </odoo>
 
