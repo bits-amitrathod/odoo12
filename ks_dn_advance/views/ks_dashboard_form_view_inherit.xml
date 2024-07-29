@@ -9,17 +9,6 @@
                 <xpath expr="//field[@name='ks_dashboard_end_date']" position="after">
                     <field name="ks_croessel_speed" required="1"/>
                 </xpath>
-                <xpath expr="//page[@name='advance_setting']" position="after">
-                    <page string="Mail Configuration">
-                        <group>
-                            <group>
-                                <field name="ks_mail_to_partner"/>
-                                <field name="ks_mail_to_cc_partner" widget="many2many_tags"/>
-                                <field name="ks_mail_email_cc_value" invisible="1"/>
-                            </group>
-                        </group>
-                    </page>
-                </xpath>
             </field>
         </record>
     </data>

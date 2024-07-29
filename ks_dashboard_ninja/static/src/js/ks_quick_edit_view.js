@@ -8,7 +8,7 @@ odoo.define('ks_dashboard_ninja.quick_edit_view', function(require) {
     var data = require('web.data');
     var QuickCreateFormView = require('web.QuickCreateFormView');
     var AbstractAction = require('web.AbstractAction');
-    const session = require('web.session');
+
 
     var QuickEditView = Widget.extend({
 
@@ -24,7 +24,7 @@ odoo.define('ks_dashboard_ninja.quick_edit_view', function(require) {
 
             this.ksOriginalItemData = $.extend({}, options.item);
             this.item = options.item;
-            this.item_name = options.item ? options.item.name:false;
+            this.item_name = options.item.name;
 
         },
 
@@ -39,7 +39,7 @@ odoo.define('ks_dashboard_ninja.quick_edit_view', function(require) {
         _ksCreateController: function() {
             var self = this;
 
-            self.context = $.extend({}, session.user_context);
+            self.context = $.extend({}, odoo.session_info.user_context);
             self.context['form_view_ref'] = 'ks_dashboard_ninja.item_quick_edit_form_view';
             self.context['res_id'] = this.item.id;
             self.res_model = "ks_dashboard_ninja.item";
@@ -129,7 +129,6 @@ odoo.define('ks_dashboard_ninja.quick_edit_view', function(require) {
             var self = this;
             self.ksDashboardController.ksUpdateDashboardItem([self.item.id]);
             self.item_el = $.find('#' + self.item.id + '.ks_dashboarditem_id');
-
         },
 
         ksDiscardChanges: function() {
@@ -162,6 +161,7 @@ odoo.define('ks_dashboard_ninja.quick_edit_view', function(require) {
             this._super();
         },
     });
+
 
     return {
         QuickEditView: QuickEditView,

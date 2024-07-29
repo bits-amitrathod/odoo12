@@ -1,7 +1,7 @@
 <templates>
 <t t-name="ks_select_labels">
         <t t-if="mode == 'edit'">
-            <select t-att-id="class" class="o_input o_group_selector o_add_group ks_label_select'">
+            <select t-att-id="class" class="o_input o_group_selector o_add_group ks_label_select'" >
                 <t t-foreach="Object.keys(ks_columns_list)" t-as="ks_columns">
                     <option t-att-value="ks_columns">
                         <t t-if="ks_columns_list[ks_columns]">

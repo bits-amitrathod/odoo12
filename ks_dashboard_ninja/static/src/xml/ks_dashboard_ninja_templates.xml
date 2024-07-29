@@ -7,13 +7,13 @@
             <t t-if="ks_dashboard_manager">
                 <div class="dropdown config_dropdown">
                     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                             style="color: black;">
                         <i class="fa fa-sliders"></i>
                     </button>
                     <!-- HTML !-->
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"
-                         style="background-color: rgba(255,255,255);">
+                         style="background-color: rgba(255,255,255,0.96);">
                         <div class="dropdown-item-lable" style="color: #71639e;">Configure this dashboard</div>
                         <a class="dropdown-item" href="#" id="dashboard_settings">
                             <i class="fa fa-wrench mr-2"></i>
@@ -44,7 +44,7 @@
                     </div>
                 </div>
             </t>
-            <div id="ks_dashboard_title" class="manage_width_threedots">
+            <div id="ks_dashboard_title" style="position:absolute; left:80px;">
                 <t t-if="ks_show_layout">
                     <t t-call="ks_dn_layout_container"/>
                 </t>
@@ -60,18 +60,13 @@
                 />
                 <t t-if="ks_dashboard_manager">
                     <div class="ks_dashboard_top_settings dropdown d-md-block d-lg-none">
-                        <span class="ks_dashboard_ninja_toggle_menu"
-                              title="Customize Dashboard" data-bs-toggle="dropdown"
+                        <span class="ks_dashboard_ninja_toggle_menu  m-2"
+                              title="Customize Dashboard" data-toggle="dropdown"
                               aria-expanded="false"/>
-                        <ul class="oe_dashboard_links ks_dashboard_links dropdown-menu dropdown-menu-right threedots_databox"
-                            role="menu">
-                            <li class="ks_dashboard_setting_container ks_dashboard_add_ai_layout" title="Add Item">
-                                <i class="fa fa-plus-circle"/>
-                                <span>Generate With AI</span>
-                            </li>
+                        <ul class="oe_dashboard_links ks_dashboard_links dropdown-menu dropdown-menu-right" role="menu">
                             <li class="ks_dashboard_setting_container ks_dashboard_add_layout" title="Add Item">
                                 <i class="fa fa-plus-circle"/>
-                                <span>Create new item</span>
+                                <span>Add Item</span>
                             </li>
                             <li class="ks_dashboard_setting_container ks_dashboard_edit_layout ks_hide"
                                 title="Edit Layout">
@@ -86,379 +81,195 @@
                         </ul>
                     </div>
                 </t>
-                <div class="welcome_note">
-                    <h3 style="color:black;">Welcome
-                        <span>
-                            <t t-esc="ks_user_name"/>
-                        </span>
-                        <img src="ks_dashboard_ninja/static/description/images/hand_wave.png" class="img-fluid" alt=""/>
-                    </h3>
-                </div>
             </div>
 
+            <t t-call="ks_dn_filter_container"/>
+            <div class="ks_dashboard_top_menu ks_select_none">
 
-            <!--            <t t-call="ks_dn_filter_container"/>-->
-            <div class="ks_new_button_div">
-                <t t-if="ks_dashboard_manager">
-                    <div class="ks_dashboard_top_settings dropdown d-none d-lg-block">
-                        <button class="btn  btn-outline-secondary ks_add_item_type_button">
+                <!--  Date Filter Selection Options (Hide default for no content view)-->
+                <div class="ks_dashboard_link ks_am_content_element ks_hide mr-4">
+                    <div class="ks_date_filter_selection_input">
+                        <div class="ks_date_selection_box">
+                            <div class="btn-group ">
+                                <button class="o_dropdown_toggler_btn btn btn-secondary dropdown-toggle ks_date_filter_dropdown"
+                                        data-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <span class="fa fa-lg fa-calendar"/>
+                                    <span id="ks_date_filter_selection"/>
+                                    <span class="caret"/>
+                                </button>
 
-                            <span>
-                                Create new chart
-                            </span>
-                        </button>
-                    </div>
-                </t>
-                <div class="ks_dashboard_top_menu ks_select_none">
-
-                    <!--  Date Filter Selection Options (Hide default for no content view)-->
-                    <div class="ks_dashboard_link ks_am_content_element ks_custom_date_filter ks_hide mr-4 ">
-                        <div class="ks_date_filter_selection_input">
-                            <div class="ks_date_selection_box">
-                                <div class="btn-group ">
-                                    <button class="o_dropdown_toggler_btn btn btn-secondary dropdown-toggle ks_date_filter_dropdown"
-                                            data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                        <span class="fa fa-lg fa-calendar"/>
-                                        <span id="ks_date_filter_selection"/>
-                                        <span class="caret"/>
-                                    </button>
-
-                                    <ul id="ks_date_selector_container"
-                                        class="dropdown-menu ks_date_filters_menu_drop_down ks_dashboard_custom_srollbar ks_date_filters_menu dropdown-max-height"
-                                        role="menu">
-                                        <li id="l_none">
-                                            <span class="df_selection_text">All Time</span>
+                                <ul id="ks_date_selector_container"
+                                    class="dropdown-menu ks_date_filters_menu_drop_down ks_dashboard_custom_srollbar ks_date_filters_menu dropdown-max-height"
+                                    role="menu">
+                                    <li id="l_none">
+                                        <span class="df_selection_text">All Time</span>
+                                    </li>
+                                    <li class="divider"/>
+                                    <t t-foreach="date_selection_order" t-as="date_id">
+                                        <li t-att-id="date_id">
+                                            <span class="df_selection_text">
+                                                <t t-esc="date_selection_data[date_id]"/>
+                                            </span>
                                         </li>
-                                        <li class="divider"/>
-                                        <t t-foreach="date_selection_order" t-as="date_id">
-                                            <li t-att-id="date_id">
-                                                <span class="df_selection_text">
-                                                    <t t-esc="date_selection_data[date_id]"/>
-                                                </span>
-                                            </li>
-                                        </t>
-                                    </ul>
-                                </div>
-                            </div>
-
-                            <!--Date input fields are shown only when Date Filter : Custom-->
-                            <div class="ks_date_input_fields ks_hide">
+                                    </t>
+                                </ul>
                             </div>
                         </div>
-                        <div class="ks_date_apply_clear_print">
-                            <!--Apply and Clear buttons will only be shown when Date filter : Custom-->
-                            <button type='button' class='button btn btn-primary apply-dashboard-date-filter ks_hide'
-                            >Apply
-                            </button>
-                            <button type='button' class='button btn btn-primary clear-dashboard-date-filter ks_hide'
-                            >Clear
-                            </button>
-                            <button type='button'
-                                    class='btn btn-primary d-none d-lg-block fa fa-print print-dashboard-btn m-1 ml-3'
-                                    title="Print"/>
+
+                        <!--Date input fields are shown only when Date Filter : Custom-->
+                        <div class="ks_date_input_fields ks_hide">
                         </div>
                     </div>
+                    <div class="ks_date_apply_clear_print">
+                        <!--Apply and Clear buttons will only be shown when Date filter : Custom-->
+                        <button type='button' class='button btn btn-primary apply-dashboard-date-filter ks_hide'
+                        >Apply
+                        </button>
+                        <button type='button' class='button btn btn-primary clear-dashboard-date-filter ks_hide'
+                        >Clear
+                        </button>
+                        <button type='button'
+                                class='btn btn-primary d-none d-lg-block fa fa-print print-dashboard-btn m-1 ml-3'
+                                title="Print"/>
+                    </div>
+                </div>
 
-                    <t t-if="ks_dashboard_manager">
+                <t t-if="ks_dashboard_manager">
 
-                        <!-- Add and Edit buttons-->
-                        <div class="ks_dashboard_top_settings dropdown d-none d-lg-block">
+                    <!-- Add and Edit buttons-->
+                    <div class="ks_dashboard_top_settings dropdown d-none d-lg-block">
 
-                            <!--                        <button class="btn btn-primary ks_add_item_type_button dropdown-toggle mr-1"-->
-                            <!--                                data-bs-toggle="dropdown"-->
-                            <!--                                aria-expanded="false">-->
-                            <!--                            <span class="fa fa-lg fa-plus-circle"/>-->
-                            <!--                            Add-->
-                            <!--                            <span class="caret"/>-->
-                            <!--                        </button>-->
-                            <!--                        <ul id="ks_add_item_selection" class="dropdown-menu"-->
-                            <!--                            role="menu">-->
-                            <!--                            <li id="ks_tile" data-item="ks_tile">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Tile-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_bar_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Bar Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_horizontalBar_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Horizontal Bar Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_line_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Line Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_area_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Area Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_pie_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Pie Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_doughnut_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Doughnut Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_polarArea_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Polar Area Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_scatter_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Scatter Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                             <li data-item="ks_radar_view">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Radar View-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_radialBar_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Radial Bar Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_flower_view">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Flower View-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_funnel_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Funnel Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_bullet_chart">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Bullet Chart-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_list_view">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    List View-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_map_view">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Map View-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_kpi">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    KPI-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_to_do">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    To Do-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <li data-item="ks_json">-->
-                            <!--                                <span class="df_selection_text">-->
-                            <!--                                    Import Item-->
-                            <!--                                </span>-->
-                            <!--                            </li>-->
-                            <!--                            <input accept=".json " t-attf-id="file_#{_id}"-->
-                            <!--                                   name="file" class="ks_input_import_item_button" type="file" style="display:none;"/>-->
-                            <!--                        </ul>-->
-                            <!--                        <button class="btn btn btn-primary" id="ks_import_item">-->
-                            <!--                             <img src="ks_dashboard_ninja/static/description/images/icons/import-btn.svg" alt=""/>-->
-                            <!--                        </button>-->
+                        <button class="btn btn-primary ks_add_item_type_button dropdown-toggle mr-1"
+                                data-toggle="dropdown"
+                                aria-expanded="false">
+                            <span class="fa fa-lg fa-plus-circle"/>
+                            Add
+                            <span class="caret"/>
+                        </button>
+                        <ul id="ks_add_item_selection" class="dropdown-menu"
+                            role="menu">
+                            <li data-item="ks_tile">
+                                <span class="df_selection_text">
+                                    Tile
+                                </span>
+                            </li>
+                            <li data-item="ks_bar_chart">
+                                <span class="df_selection_text">
+                                    Bar Chart
+                                </span>
+                            </li>
+                            <li data-item="ks_horizontalBar_chart">
+                                <span class="df_selection_text">
+                                    Horizontal Bar Chart
+                                </span>
+                            </li>
+                            <li data-item="ks_line_chart">
+                                <span class="df_selection_text">
+                                    Line Chart
+                                </span>
+                            </li>
+                            <li data-item="ks_area_chart">
+                                <span class="df_selection_text">
+                                    Area Chart
+                                </span>
+                            </li>
+                            <li data-item="ks_pie_chart">
+                                <span class="df_selection_text">
+                                    Pie Chart
+                                </span>
+                            </li>
+                            <li data-item="ks_doughnut_chart">
+                                <span class="df_selection_text">
+                                    Doughnut Chart
+                                </span>
+                            </li>
+                            <li data-item="ks_polarArea_chart">
+                                <span class="df_selection_text">
+                                    Polar Area Chart
+                                </span>
+                            </li>
+                            <li data-item="ks_list_view">
+                                <span class="df_selection_text">
+                                    List View
+                                </span>
+                            </li>
+                            <li data-item="ks_kpi">
+                                <span class="df_selection_text">
+                                    KPI
+                                </span>
+                            </li>
+                            <li data-item="ks_to_do">
+                                <span class="df_selection_text">
+                                    To Do
+                                </span>
+                            </li>
+                            <li data-item="ks_json">
+                                <span class="df_selection_text">
+                                    Import Item
+                                </span>
+                            </li>
                             <input accept=".json " t-attf-id="file_#{_id}"
                                    name="file" class="ks_input_import_item_button" type="file" style="display:none;"/>
-                            <!--                         <button class="btn  btn-outline-secondary ks_add_item_type_button">-->
-                            <!--                             <span>-->
-                            <!--                                Create-->
-                            <!--                            </span>-->
-                            <!--                        </button>-->
-
-                            <!--                        <button id="ks_dashboard_layout_edit" class="btn btn-primary ks_dashboard_edit_layout"-->
-                            <!--                        data-toggle="tooltip" data-placement="top" title="Edit Layout">-->
-                            <!--                            <img src="/ks_dashboard_ninja/static/description/images/icons/edit-btn.svg" alt=""/>-->
-
-                            <!--                        </button>-->
-                        </div>
-                        <!--            <t t-name="ks_dn_filter_container">-->
-                        <div class="ks_dashboard_top_menu ks_select_none filter_design">
-
-                            <!--  Date Filter Selection Options (Hide default for no content view)-->
-                            <div class="ks_dashboard_link ks_am_content_element ks_hide mr-4"
-                                 t-if="_(ks_dashboard_data.ks_dashboard_custom_domain_filter).keys().length || _(ks_dashboard_data.ks_dashboard_pre_domain_filter).keys().length"
-                            >
-                                <div class="ks_dn_filter_selection_input">
-                                    <div class="ks_dn_selection_box">
-                                        <div class="btn-group ">
-                                            <button class="o_dropdown_toggler_btn btn btn-secondary dropdown-toggle ks_date_filter_dropdown"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false">
-                                                <span class="fa fa-lg fa-filter"/>
-                                                <span class="ks_dn_filter_selection">Filter</span>
-                                                <span class="caret"/>
-                                            </button>
-                                            <div class="ks_dn_filter_dropdown_container dropdown-menu dropdown-max-height ks_date_filters_menu_drop_down ks_dashboard_custom_srollbar">
-                                                <div>
-                                                    <ul id="ks_dn_filter_pre_domain_selector_container"
-                                                        class="ks_dn_pre_filter_menu"
-                                                        role="menu">
-                                                        <t t-foreach="ks_dn_pre_defined_filters"
-                                                           t-as="pre_filter">
-                                                            <t t-if="pre_filter['type']==='filter'">
-                                                                <li t-att-class="pre_filter['active'] ? 'dn_dynamic_filter_selected dn_filter_click_event_selector': 'dn_filter_click_event_selector' "
-                                                                    t-att-data-ks-categ="pre_filter['categ']"
-                                                                    t-att-data-filter-id="pre_filter['id']">
-                                                                    <span class="df_selection_text">
-                                                                        <t t-esc="pre_filter['name']"/>
-                                                                        <span class="ks_dn_pre_model_text">
-                                                                            <t t-esc="'(' + pre_filter['model_name'] + ')'"/>
-                                                                        </span>
-                                                                    </span>
-
-                                                                </li>
-                                                            </t>
-                                                            <t t-else="">
-                                                                <hr/>
-                                                            </t>
-                                                        </t>
-                                                        <hr t-if="_(ks_dashboard_data.ks_dashboard_custom_domain_filter).keys().length"/>
-                                                    </ul>
-
-                                                    <div class="o_generator_menu"
-                                                         t-if="_(ks_dashboard_data.ks_dashboard_custom_domain_filter).keys().length">
-                                                        <span>Custom Filter</span>
-                                                        <div id="ks_dn_custom_filters_container"
-                                                             class="o_filter_condition dropdown-item-text">
-
-                                                        </div>
-                                                        <div class="o_add_filter_menu dropdown-item-text">
-                                                            <button type="button"
-                                                                    class="btn btn-primary o_apply_filter ks_dn_filter_apply">
-                                                                Apply
-                                                            </button>
-                                                            <button type="button"
-                                                                    class="btn btn-secondary ks_custom_filter_add_condition">
-                                                                <i class="fa fa-plus-circle"/>
-                                                                Add a condition
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div t-att-class="_(ks_dashboard_data.ks_dashboard_domain_data).keys().length ? 'ks_dn_filter_applied_container': 'ks_dn_filter_applied_container ks_hide'">
-                                                    <t t-foreach="_(ks_dashboard_data.ks_dashboard_domain_data).keys()"
-                                                       t-as="data_key">
-                                                        <t t-call="ks_dn_filter_section_container_template">
-                                                            <t t-set="ks_domain_data"
-                                                               t-value="ks_dashboard_data.ks_dashboard_domain_data[data_key]"/>
-                                                            <t t-set="ks_model" t-value="data_key"/>
-                                                        </t>
-                                                    </t>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--            </t>-->
-                        <button class="btn btn btn-primary" id="ks_import_item" data-toggle="tooltip"
-                                data-placement="top" title="Import-item">
-                            <img src="ks_dashboard_ninja/static/description/images/icons/import-btn.svg" alt=""/>
+                        </ul>
+                        <button id="ks_dashboard_layout_edit" class="btn btn-primary ks_dashboard_edit_layout">
+                            <span class="fa fa-lg fa-pencil"/>
+                            Edit Layout
                         </button>
-                        <button id="ks_dashboard_layout_edit"
-                                class="btn btn-primary ks_dashboard_edit_layout ks_edit_layout"
-                                data-toggle="tooltip" data-placement="top" title="Edit Layout">
-                            <img src="/ks_dashboard_ninja/static/description/images/icons/edit-btn.svg" alt=""/>
+                    </div>
 
-                        </button>
-                        <!-- This should only be shown on : Edit Mode Layout-->
-                        <div class="ks_dashboard_edit_mode_settings ks_hide">
-                            <div class="oe_dashboard_links ">
-                                <!--                            <button t-if="ks_show_create_layout_option" type="button"-->
-                                <!--                                    class="button ks_dashboard_create_new_layout btn btn-primary o_form_button_save"-->
-                                <!--                                    title="Save Changes as a New Layout">-->
-                                <!--                                <span>Save as New Layout</span>-->
-                                <!--                            </button>-->
-                                <t t-if="ks_multi_layout">
-                                    <button t-if="ks_show_create_layout_option" type="button"
-                                            class="button ks_dashboard_create_new_layout btn btn-primary o_form_button_save"
-                                            title="Save Changes as a New Layout">
-                                        <span>Save as New Layout</span>
-                                    </button>
-                                </t>
-
-                                <button type="button"
-                                        class="button ks_dashboard_save_layout btn btn-primary o_form_button_save"
-                                        title="Save Changes">
-                                    <span>Save</span>
+                    <!-- This should only be shown on : Edit Mode Layout-->
+                    <div class="ks_dashboard_edit_mode_settings ks_hide">
+                        <div class="oe_dashboard_links ">
+                            <t t-if="ks_multi_layout">
+                                <button t-if="ks_show_create_layout_option" type="button"
+                                        class="button ks_dashboard_create_new_layout btn btn-primary o_form_button_save"
+                                        title="Save Changes as a New Layout">
+                                    <span>Save as New Layout</span>
                                 </button>
+                            </t>
 
-                                <button type="button"
-                                        class="button ks_dashboard_cancel_layout btn btn-secondary o_form_button_cancel"
-                                        title="Discard Changes">
-                                    <span>Discard</span>
-                                </button>
-                            </div>
+                            <button type="button"
+                                    class="button ks_dashboard_save_layout btn btn-primary o_form_button_save"
+                                    title="Save Changes">
+                                <span>Save</span>
+                            </button>
+
+                            <button type="button"
+                                    class="button ks_dashboard_cancel_layout btn btn-secondary o_form_button_cancel"
+                                    title="Discard Changes">
+                                <span>Discard</span>
+                            </button>
                         </div>
+                    </div>
 
-                        <!-- This should only be shown on : Dn Layout Edit Mode Layout-->
-                        <div class="ks_dashboard_layout_edit_mode_settings ks_hide">
-                            <div class="oe_dashboard_links ">
-                                <button type="button"
-                                        class="button ks_dashboard_set_current_layout btn btn-primary o_form_button_save"
-                                        title="Save Changes">
-                                    <span>Set Current Layout</span>
-                                </button>
-                                <button type="button"
-                                        class="button ks_dashboard_cancel_current_layout btn btn-secondary o_form_button_cancel"
-                                        title="Discard Changes">
-                                    <span>Discard</span>
-                                </button>
-                            </div>
+                    <!-- This should only be shown on : Dn Layout Edit Mode Layout-->
+                    <div class="ks_dashboard_layout_edit_mode_settings ks_hide">
+                        <div class="oe_dashboard_links ">
+                            <button type="button"
+                                    class="button ks_dashboard_set_current_layout btn btn-primary o_form_button_save"
+                                    title="Save Changes">
+                                <span>Set Current Layout</span>
+                            </button>
+                            <button type="button"
+                                    class="button ks_dashboard_cancel_current_layout btn btn-secondary o_form_button_cancel"
+                                    title="Discard Changes">
+                                <span>Discard</span>
+                            </button>
                         </div>
-                    </t>
+                    </div>
+                </t>
 
-                </div>
             </div>
         </div>
     </t>
 
 
     <t t-name="ks_dn_layout_container">
-        <!--        <div class="ks_am_element">-->
-        <!--            <button id="ks_dn_layout_button" class="o_dropdown_toggler_btn btn btn-secondary dropdown-toggle"-->
-        <!--                    data-toggle="dropdown" aria-expanded="false">-->
-        <!--                <span>-->
-        <!--                    <t t-esc="ks_child_boards[ks_selected_board_id][0]"/>-->
-        <!--                </span>-->
-        <!--                <span class="caret"></span>-->
-        <!--            </button>-->
-        <!--            <ul id="ks_dashboard_layout_dropdown_container"-->
-        <!--                class="dropdown-menu ks_dashboard_custom_srollbar dropdown-max-height"-->
-        <!--                role="menu">-->
-        <!--                <t t-foreach="_(ks_child_boards).keys()" t-as="layout_id">-->
-        <!--                    <li t-att-class="ks_selected_board_id === layout_id ? 'ks_dashboard_layout_event ks_layout_selected': 'ks_dashboard_layout_event'"-->
-        <!--                        t-att-data-ks_layout_id="layout_id">-->
-        <!--                        <span class="df_selection_text">-->
-        <!--                            <t t-esc="ks_child_boards[layout_id][0]"/>-->
-        <!--                        </span>-->
-        <!--                    </li>-->
-        <!--                </t>-->
-        <!--            </ul>-->
-        <!--        </div>-->
         <t t-if="ks_multi_layout">
             <div class="ks_am_element">
                 <button id="ks_dn_layout_button" class="o_dropdown_toggler_btn btn btn-secondary dropdown-toggle"
-                        data-bs-toggle="dropdown" aria-expanded="false">
+                        data-toggle="dropdown" aria-expanded="false">
                     <span>
                         <t t-esc="ks_child_boards[ks_selected_board_id][0]"/>
                     </span>
@@ -487,8 +298,8 @@
     <!--    Dashboard Main Body Container -->
     <t t-name="ks_main_body_container">
 
-        <div class="ks_dashboard_main_content">
-            <div class="ks_dashboard_item_content grid-stack ks_dashboard_items_list m-3" gs-w="36"/>
+        <div class="ks_dashboard_main_content" id="ks_dash1">
+            <div class="ks_dashboard_item_content grid-stack ks_dashboard_items_list m-3"/>
         </div>
     </t>
 
@@ -523,7 +334,8 @@
 
                     <t t-if="item.ksIsDashboardManager">
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -571,7 +383,7 @@
                             <i class="fa fa-times"/>
                         </button>
                         <div class="ks_chart_inner_buttons dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -599,7 +411,7 @@
                     </t>
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -622,40 +434,25 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
 
                 <div class="ks_dashboard_item_main_body">
@@ -717,7 +514,7 @@
                      t-att-data-item_id="item.id">
                     <t t-if="item.ksIsDashboardManager">
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -765,7 +562,7 @@
                             <i class="fa fa-times"/>
                         </button>
                         <div class="ks_chart_inner_buttons dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -793,7 +590,7 @@
                     </t>
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -816,42 +613,26 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
-
             </div>
         </div>
     </t>
@@ -868,7 +649,7 @@
                     <t t-if="item.ksIsDashboardManager">
 
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -918,7 +699,7 @@
 
 
                         <div class="ks_chart_inner_buttons  dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -946,7 +727,7 @@
                     </t>
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -969,40 +750,25 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
                 <div class="ks_dashboard_item_main_body">
                     <div class="ks_dashboard_icon_l3">
@@ -1062,7 +828,7 @@
                      t-att-data-item_id="item.id">
                     <t t-if="item.ksIsDashboardManager">
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1110,7 +876,7 @@
                             <i class="fa fa-times"/>
                         </button>
                         <div class="ks_chart_inner_buttons  dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1138,7 +904,7 @@
                     </t>
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1161,42 +927,26 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
-
             </div>
         </div>
     </t>
@@ -1227,13 +977,12 @@
                     </div>
                 </div>
 
-
                 <div class="ks_dashboard_item_button_container ks_dropdown_container ks_dashboard_item_header_l2 ks_dashboard_item_header_hover"
                      t-att-data-item_id="item.id">
 
                     <t t-if="item.ksIsDashboardManager">
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1281,7 +1030,7 @@
                             <i class="fa fa-times"/>
                         </button>
                         <div class="ks_chart_inner_buttons dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1309,7 +1058,7 @@
                     </t>
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1332,40 +1081,25 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1406,7 +1140,7 @@
                      t-att-data-item_id="item.id">
                     <t t-if="item.ksIsDashboardManager">
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1456,7 +1190,7 @@
 
 
                         <div class="ks_chart_inner_buttons  dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1485,7 +1219,7 @@
 
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1508,42 +1242,26 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
-
             </div>
         </div>
     </t>
@@ -1570,10 +1288,10 @@
     </t>
 
     <t t-name="ks_kpi_template">
-        <div class="ks_item_click grid-stack-item" t-att-id="id">
+        <div class="ks_item_click grid-stack-item">
             <div t-att-id="id"
                  class="ks_dashboard_kpi ks_dashboard_kpi_dashboard ks_dashboard_custom_srollbar ks_dashboarditem_id ks_dashboard_item_hover ks_db_item_preview_color_picker grid-stack-item-content"
-                 t-att-title="item.ks_info">
+                t-att-title="item.ks_info">
                 <div class="ks_dashboard_icon_l5 ks_dashboard_icon_color_picker ">
                     <t t-if="icon_select=='Custom'">
                         <t t-if="ks_icon_url">
@@ -1628,7 +1346,7 @@
                      t-att-data-item_id="item.id">
                     <t t-if="item.ksIsDashboardManager">
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1676,7 +1394,7 @@
                             <i class="fa fa-times"/>
                         </button>
                         <div class="ks_chart_inner_buttons dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1704,7 +1422,7 @@
                     </t>
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1727,40 +1445,25 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
 
             </div>
@@ -1771,7 +1474,7 @@
         <div class="ks_item_click grid-stack-item">
             <div t-att-id="id"
                  class="ks_dashboard_kpi ks_dashboard_custom_srollbar ks_dashboarditem_id ks_dashboard_item_hover ks_db_item_preview_color_picker grid-stack-item-content"
-                 t-att-title="item.ks_info">
+                t-att-title="item.ks_info">
                 <div class="ks_dashboard_icon_l5 ks_dashboard_icon_color_picker ">
                     <t t-if="icon_select=='Custom'">
                         <t t-if="ks_icon_url">
@@ -1797,11 +1500,11 @@
                         </span>
                     </div>
                 </div>
-                <div class="ks_progress">
-                    <div class="ks-progress-bar">
+                <div class="text-center ks_progress">
+                    <div>
                         <progress id="ks_progressbar" value="0" max="100"/>
                     </div>
-                    <div class="ks-progress-bar-value">
+                    <div class="text-center">
                         <t t-esc="target_progress_deviation"/>%
                     </div>
                 </div>
@@ -1824,7 +1527,7 @@
                      t-att-data-item_id="item.id">
                     <t t-if="item.ksIsDashboardManager">
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1872,7 +1575,7 @@
                             <i class="fa fa-times"/>
                         </button>
                         <div class="ks_chart_inner_buttons dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1900,7 +1603,7 @@
                     </t>
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -1923,40 +1626,25 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
 
             </div>
@@ -1967,7 +1655,7 @@
         <div class="ks_item_click grid-stack-item">
             <div t-att-id="id"
                  class="ks_dashboard_kpi ks_dashboard_kpi_dashboard ks_dashboard_custom_srollbar ks_dashboarditem_id ks_dashboard_item_hover ks_db_item_preview_color_picker grid-stack-item-content"
-                 t-att-title="item.ks_info">
+                t-att-title="item.ks_info">
                 <div class="ks_dashboard_icon_l5 ks_dashboard_icon_color_picker ">
                     <t t-if="icon_select=='Custom'">
                         <t t-if="ks_icon_url">
@@ -2024,7 +1712,7 @@
                      t-att-data-item_id="item.id">
                     <t t-if="item.ksIsDashboardManager">
                         <!--  Dashboard Item Move/Copy Feature -->
-                        <button title="Move/Duplicate" data-bs-toggle="dropdown"
+                        <button title="Move/Duplicate" data-toggle="dropdown"
                                 class="ks_dashboard_item_action btn dropdown-toggle btn-xs d-md-block d-none"
                                 type="button"
                                 t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -2072,7 +1760,7 @@
                             <i class="fa fa-times"/>
                         </button>
                         <div class="ks_chart_inner_buttons dropdown d-md-none dn-setting-panel">
-                            <button data-bs-toggle="dropdown"
+                            <button data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -2100,7 +1788,7 @@
                     </t>
                     <t t-if="item.ksIsUser">
                         <div class="ks_chart_inner_buttons d-md-block d-none">
-                            <button title="Export Item" data-bs-toggle="dropdown"
+                            <button title="Export Item" data-toggle="dropdown"
                                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                                     type="button"
                                     t-att-style="'color:'+ ks_rgba_button_color + ';'"
@@ -2123,40 +1811,25 @@
                             </div>
                         </div>
                     </t>
-                    <t t-if="item.ksIsUser">
-                        <div class="ks_chart_inner_buttons dropdown">
-                            <button title="Info" data-bs-toggle="dropdown"
-                                    class="ks_item_description btn dropdown-toggle btn-xs o-no-caret btn"
-                                    type="button"
-                                    t-att-style="'color:'+ ks_rgba_button_color + ';'"
-                                    aria-expanded="true">
-                                <i class="fa fa-book"/>
-                            </button>
-                            <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
-                                <!--Dynamic Rendering-->
-                                <div class="ks_chart_export_menu">
-                                    <div class="ks_chart_export_menu_header" style="margin-left:-10px">
-                                        <span>Info</span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <span>Company:
-                                            <t t-esc="item.ks_company"/>
-                                        </span>
-                                    </div>
-                                    <div class="ks_info" style="margin-left:10px">
-                                        <t t-if="ks_info">
-                                            <t t-foreach="ks_info" t-as="ks_description">
-                                                <span>
-                                                    <t t-esc="ks_description"/>
-                                                </span>
-                                                <br></br>
-                                            </t>
-                                        </t>
-                                    </div>
+                    <div class="ks_chart_inner_buttons dropdown">
+                        <button title="Item description" data-toggle="dropdown"
+                                class="ks_item_info btn dropdown-toggle btn-xs o-no-caret btn"
+                                type="button"
+                                t-att-style="'color:'+ ks_rgba_button_color + ';'"
+                                aria-expanded="true">
+                            <i class="fa fa-book"/>
+                        </button>
+                        <div role="menu" class="dropdown-menu dropdown-menu-right" style="width:20rem">
+                            <!--Dynamic Rendering-->
+                            <div class="ks_chart_export_menu">
+                                <div class="ks_chart_export_menu_header" style="margin-left:-10px">
+                                    <span>Item Description</span>
+                                </div>
+                                <div class="ks_info" style="margin-left:10px">
                                 </div>
                             </div>
                         </div>
-                    </t>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2166,7 +1839,7 @@
     <t t-name="ksQuickEditButtonContainer">
         <div class="ks_dashboard_quick_edit_action grid-stack-item" t-att-gs-x="grid.x"
              t-att-gs-y="grid.y" t-att-gs-w="grid.w" t-att-gs-h="grid.h">
-            <button title="Quick Customize" data-bs-toggle="dropdown"
+            <button title="Quick Customize" data-toggle="dropdown"
                     class="ks_dashboard_item_action  btn dropdown-toggle btn-xs o-no-caret btn"
                     type="button"
                     aria-expanded="true">

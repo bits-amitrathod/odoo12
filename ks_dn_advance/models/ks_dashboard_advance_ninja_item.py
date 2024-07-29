@@ -5,12 +5,8 @@ from dateutil import relativedelta
 from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
 from odoo.addons.ks_dashboard_ninja.common_lib.ks_date_filter_selections import ks_get_date, ks_convert_into_utc, \
     ks_convert_into_local
-from datetime import datetime
-import json
-import psycopg2
-import mysql.connector
-import requests
 
+import json
 
 
 class KsDashboardNinjaItemAdvance(models.Model):
@@ -40,157 +36,6 @@ class KsDashboardNinjaItemAdvance(models.Model):
                                        help=' Checkbox to apply default date range filter. The date filter applied will also reflect on the main page.')
     ks_query_start_date = fields.Datetime()
     ks_query_end_date = fields.Datetime()
-    ks_is_external_db = fields.Boolean(string="External Database")
-    ks_external_db_type = fields.Selection([('ks_postgres', 'Postgres DB'), ('ks_sql', 'MYSQL DB')],
-                                           string="Type of External DB")
-    ks_host = fields.Char(string="Host" ,help="database server address e.g.,localhost or an IP address.")
-    ks_db_name = fields.Char(string="Database Name", help=" the name of the database that you want to connect.")
-    ks_db_password = fields.Char(string="Password", help="password used to authenticate db.")
-    ks_db_user = fields.Char(string="Database User", help="the username used to authenticate db.")
-    ks_port = fields.Char(string="Port", help="the port number that defaults to 5432(postgres) and 3306(MYSQL) if it is not provided")
-    ks_is_external_api = fields.Boolean(string="External API")
-    ks_url = fields.Char(string="URL")
-    ks_api_header = fields.Text(string="API header")
-    ks_api_data_lines = fields.One2many('ks.dashboard.api', 'ks_dashboard_datatype_id', string=" Data-Type Lines")
-    data_source = fields.Selection(selection_add=[('external_api', 'External API')])
-
-    @api.onchange('data_source')
-    def make_invisible(self):
-        if self.data_source == 'excel':
-            self.excel_bool = True
-            self.model_bool = False
-            self.csv_bool = False
-            self.ks_is_external_api = False
-        elif self.data_source == 'odoo':
-            self.model_bool = True
-            self.excel_bool = False
-            self.csv_bool = False
-            self.ks_is_external_api = False
-        elif self.data_source == 'csv':
-            self.csv_bool = True
-            self.model_bool = False
-            self.excel_bool = False
-            self.ks_is_external_api = False
-        elif self.data_source == 'external_api':
-            self.csv_bool = False
-            self.model_bool = False
-            self.excel_bool = False
-            self.ks_is_external_api = True
-        elif not self.data_source:
-            self.model_bool = False
-            self.excel_bool = False
-            self.csv_bool = False
-            self.ks_is_external_api = False
-
-    @api.onchange('ks_url', 'ks_api_header')
-    def ks_get_data_from_api(self):
-        try:
-            if self.ks_url and self.ks_api_header:
-                header = json.loads("".join(self.ks_api_header.split()))
-                ks_api_response = requests.get(self.ks_url, headers=header)
-                if ks_api_response.status_code == 200:
-                    data = ks_api_response.json()
-                    data_key = data['data'][0].keys()
-                    self.ks_api_data_lines = [(5, 0, 0)]
-                    for rec in data_key:
-                        self.write({
-                            'ks_api_data_lines': [(0, 0, {
-                                'name': rec
-                            })]
-                        })
-                    self.ks_model_id = False
-                else:
-                    raise ValidationError(_("API Responds with the following status %s") % ks_api_response.status_code)
-            else:
-                self.ks_api_data_lines = [(5, 0, 0)]
-        except Exception as e:
-            raise ValidationError(_("Please request to API that generates response in format  {'data':[{...},{...},]}"))
-
-
-    def api_create_table(self):
-            tablemodel = 'x_' + 'usa.data_' + self.name_seq
-            tablename = 'usa_data' + self.name_seq
-            ks_api_model = self.env['ir.model'].search([('model', '=', tablemodel)])
-            if ks_api_model:
-                self.ks_model_id = ks_api_model.id
-            else:
-                if self.ks_api_data_lines:
-                    values = []
-                    for rec in self.ks_api_data_lines:
-                        ks_dict = {}
-                        if not rec.ttype:
-                            raise ValidationError('Please Enter the type under Column Data Type Tab')
-                        ks_dict['name'] = rec.name.lower().replace(' ', '_')
-                        ks_dict['type'] = rec.ttype
-                        values.append(ks_dict)
-
-                    model_creation = self.env['ir.model'].sudo().create({
-                        'name': tablename,
-                        'model': tablemodel,
-                        'order': 'x_name asc, id desc',  # valid order
-                    })
-                    self.ks_model_id = model_creation.id
-                    for value in values:
-                        column_name = value.get('name')
-                        column_type = value.get('type')
-                        model_creation.write({
-                            'field_id': [(0, 0, {
-                                'name': 'x_' + column_name,
-                                'ttype': column_type,
-                                'field_description': column_name.replace('_', ' ')
-                            })]
-                        })
-                    self.env['ir.model.access'].sudo().create({
-                        'name': model_creation.name + ' all_user',
-                        'model_id': model_creation.id,
-                        'perm_read': True,
-                        'perm_write': True,
-                        'perm_create': True,
-                        'perm_unlink': True,
-                    })
-
-                    if self.ks_url and self.ks_api_header:
-                        header = json.loads("".join(self.ks_api_header.split()))
-                        ks_api_response = requests.get(self.ks_url,headers=header)
-                        if ks_api_response.status_code == 200:
-                            data = ks_api_response.json()
-                            ks_new_data = []
-                            for ks_item in data['data']:
-                                ks_new_dict = {}
-                                for key, value in ks_item.items():
-                                    new_key = 'x_' + key.lower().replace(' ', '_')
-                                    if (self.env['ir.model.fields'].search(
-                                            [('model', '=', tablemodel), ('name', '=', new_key)])).ttype == "date":
-                                        try:
-                                            # Try to parse the date string as a full date
-                                            ks_new_dict[new_key] = datetime.strptime(str(value), "%Y-%m-%d")
-                                        except ValueError:
-                                            try:
-                                                # Try to parse the date string as a year and month
-                                                ks_new_dict[new_key] = datetime.strptime(str(value), "%Y-%m")
-                                            except ValueError:
-                                                try:
-                                                    # Try to parse the date string as a year
-                                                    ks_new_dict[new_key] = datetime.strptime(str(value), "%Y")
-                                                except ValueError:
-                                                    ks_new_dict[new_key] = None
-                                    else:
-                                        ks_new_dict[new_key] = value
-                                ks_new_data.append(ks_new_dict)
-
-                            for ks_item in ks_new_data:
-                                try:
-                                    self.env[tablemodel].create(ks_item)
-                                except Exception as e:
-                                    raise ValidationError(_("%s. Please enter correct data-type of item") %e)
-                        else:
-                            raise ValidationError(
-                                _("API Responds with the following status %s") % ks_api_response.status_code)
-                    else:
-                        raise ValidationError(_("Please Enter correct Url"))
-                else:
-                    self.ks_api_data_lines = [(5, 0, 0)]
-
 
     @api.depends('ks_dashboard_item_type', 'ks_goal_enable', 'ks_standard_goal_value', 'ks_record_count',
                  'ks_record_count_2', 'ks_previous_period', 'ks_compare_period', 'ks_year_period',
@@ -217,31 +62,11 @@ class KsDashboardNinjaItemAdvance(models.Model):
             ks_kpi_data = False
         return ks_kpi_data
 
-    @api.depends('ks_chart_measure_field', 'ks_map_record_field', 'ks_funnel_record_field', 'ks_chart_cumulative_field', 'ks_chart_relation_groupby',
-                 'ks_chart_date_groupby', 'ks_domain', 'ks_dashboard_item_type', 'ks_model_id', 'ks_sort_by_field', 'ks_sort_by_order',
-                 'ks_record_data_limit', 'ks_chart_data_count_type', 'ks_chart_measure_field_2', 'ks_goal_enable',
-                 'ks_standard_goal_value', 'ks_goal_bar_line', 'ks_chart_relation_sub_groupby', 'ks_chart_date_sub_groupby',
-                 'ks_date_filter_field', 'ks_item_start_date', 'ks_item_end_date', 'ks_compare_period', 'ks_year_period',
-                 'ks_unit', 'ks_unit_selection', 'ks_chart_unit', 'ks_fill_temporal', 'ks_domain_extension', 'ks_multiplier_active',
-                 'ks_multiplier_lines', 'ks_scatter_measure_x_id', 'ks_scatter_measure_y_id',
-                 'ks_custom_query', 'ks_data_calculation_type', 'ks_query_result', 'ks_xlabels', 'ks_ylabels',
+    @api.depends('ks_custom_query', 'ks_data_calculation_type', 'ks_query_result', 'ks_xlabels', 'ks_ylabels',
                  'ks_bar_chart_stacked')
     def ks_get_chart_data(self):
         for rec in self:
-            if rec.ks_dashboard_item_type == "ks_funnel_chart":
-                rec.ks_sort_by_order = "DESC"
-                rec.ks_sort_by_field = rec.ks_funnel_record_field
-                rec.ks_chart_measure_field = rec.ks_funnel_record_field
-                rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
-            elif rec.ks_dashboard_item_type == "ks_map_view":
-                rec.ks_chart_measure_field = rec.ks_map_record_field
-                rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
-            elif rec.ks_dashboard_item_type == "ks_scatter_chart":
-                rec.ks_chart_measure_field = rec.ks_scatter_measure_x_id
-                rec.ks_chart_relation_groupby = rec.ks_scatter_measure_y_id
-                rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
-            else:
-                rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
+            rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
 
     def _ks_get_chart_data(self, domain=[]):
         for rec in self:
@@ -349,52 +174,8 @@ class KsDashboardNinjaItemAdvance(models.Model):
         else:
             return ks_list_view_data
 
-
-
-    # def ks_test_connection(self):
-    #     try:
-    #         if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_postgres':
-    #             connection = psycopg2.connect(
-    #                 host=self.ks_host,
-    #                 database=self.ks_db_name,
-    #                 user=self.ks_db_user,
-    #                 password=self.ks_db_password,
-    #                 port=self.ks_port
-    #             )
-    #             cursor = connection.cursor()
-    #
-    #         else:
-    #             connection = mysql.connector.connect(
-    #                 host=self.ks_host,
-    #                 database=self.ks_db_name,
-    #                 user=self.ks_db_user,
-    #                 password=self.ks_db_password,
-    #                 port=self.ks_port,
-    #                 auth_plugin='mysql_native_password'
-    #             )
-    #             cursor = connection.cursor()
-    #     except Exception as e:
-    #         raise ValidationError(_("Error: Unable to connect to the database. Reason: %s") %e)
-    #
-    #     finally:
-    #     # Close the cursor and the database connection in the finally block
-    #         if 'connection' in locals():
-    #             cursor.close()
-    #             connection.close()
-    #             self.ks_db_connection = True
-    #             return {
-    #                 'type': 'ir.actions.client',
-    #                 'tag': 'display_notification',
-    #                 'params': {
-    #                     'title': _('Success'),
-    #                     'message': 'Connection Successful',
-    #                     'sticky': False,
-    #                 }
-    #             }
-
-
     @api.depends('ks_custom_query', 'ks_data_calculation_type', 'ks_query_start_date', 'ks_query_end_date',
-                 'ks_is_date_ranges', 'ks_dashboard_item_type', 'ks_is_external_db')
+                 'ks_is_date_ranges', 'ks_dashboard_item_type')
     def ks_run_query(self):
         selected_start_date = False
         selected_end_date = False
@@ -438,240 +219,125 @@ class KsDashboardNinjaItemAdvance(models.Model):
                 ks_is_group_column = True
             else:
                 ks_is_group_column = False
-            # with api.Environment.manage():
-            ks_query = rec.ks_custom_query
-            if rec.ks_data_calculation_type == 'query' and rec.ks_dashboard_item_type not in ['ks_tile', 'ks_kpi'] \
-                    and rec.ks_custom_query:
-                if ks_query and "{#MYCOMPANY}" in ks_query:
-                    ks_query = ks_query.replace("{#MYCOMPANY}", str(self.env.company.id))
-                if ks_query and "{#UID}" in ks_query:
-                    ks_query = ks_query.replace("{#UID}", str(self.env.user.id))
+            with api.Environment.manage():
+                ks_query = rec.ks_custom_query
+                if rec.ks_data_calculation_type == 'query' and rec.ks_dashboard_item_type not in ['ks_tile', 'ks_kpi'] \
+                        and rec.ks_custom_query:
+                    if ks_query and "{#MYCOMPANY}" in ks_query:
+                        ks_query = ks_query.replace("{#MYCOMPANY}", str(self.env.company.id))
+                    if ks_query and "{#UID}" in ks_query:
+                        ks_query = ks_query.replace("{#UID}", str(self.env.user.id))
 
-                if rec.ks_dashboard_item_type == 'ks_list_view':
-                    rec.ks_query_result = rec.ks_get_list_query_result(ks_query, selected_start_date,
-                                                                       selected_end_date)
-                else:
-                    # with api.Environment.manage():
-                    try:
-                        type_code = []
-                        # conn = sql_db.db_connect(self.env.cr.dbname)
-                        if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_postgres':
-                            connection = psycopg2.connect(
-                                host=self.ks_host,
-                                database=self.ks_db_name,
-                                user=self.ks_db_user,
-                                password=self.ks_db_password,
-                                port=self.ks_port
-                            )
-                            new_env = connection.cursor()
-                        elif self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                            connection = mysql.connector.connect(
-                                host=self.ks_host,
-                                database=self.ks_db_name,
-                                user=self.ks_db_user,
-                                password=self.ks_db_password,
-                                port=self.ks_port,
-                                auth_plugin='mysql_native_password'
-                            )
-                            new_env = connection.cursor()
-                        else:
-                            new_env = self.pool.cursor()
-                        if rec.ks_is_date_ranges:
-                            start_date = rec.ks_query_start_date
-                            end_date = rec.ks_query_end_date
-                            if selected_end_date or selected_start_date:
-                                start_date = selected_start_date if selected_start_date else selected_end_date - relativedelta.relativedelta(
-                                    years=1000)
-                                end_date = selected_end_date if selected_end_date else selected_start_date + relativedelta.relativedelta(
-                                    years=1000)
-                            if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                                new_env.execute(
-                                    "select * from (" + ks_query + ")" + "as ks_chart_query limit %(ks_limit)s",
-                                    {ks_start_date: str(
-                                        start_date - relativedelta.relativedelta(years=10)),
-                                        ks_end_date: str(
-                                            end_date + relativedelta.relativedelta(years=10)),
-                                        'ks_limit': 5000})
-                                header_rec = [col[0] for col in new_env.description]
-                            else:
+                    if rec.ks_dashboard_item_type == 'ks_list_view':
+                        rec.ks_query_result = rec.ks_get_list_query_result(ks_query, selected_start_date,
+                                                                           selected_end_date)
+                    else:
+
+                        try:
+                            type_code = []
+                            # conn = sql_db.db_connect(self.env.cr.dbname)
+                            new_env = self.env.cr
+                            if rec.ks_is_date_ranges:
+                                start_date = rec.ks_query_start_date
+                                end_date = rec.ks_query_end_date
+                                if selected_end_date or selected_start_date:
+                                    start_date = selected_start_date if selected_start_date else selected_end_date - relativedelta.relativedelta(
+                                        years=1000)
+                                    end_date = selected_end_date if selected_end_date else selected_start_date + relativedelta.relativedelta(
+                                        years=1000)
+
                                 new_env.execute("with ks_chart_query as (" + ks_query + ")" +
                                                 "select * from ks_chart_query limit %(ks_limit)s",
                                                 {ks_start_date: str(
                                                     start_date - relativedelta.relativedelta(years=10)),
-                                                    ks_end_date: str(
-                                                        end_date + relativedelta.relativedelta(years=10)),
-                                                    'ks_limit': 5000})
+                                                 ks_end_date: str(end_date + relativedelta.relativedelta(years=10)),
+                                                 'ks_limit': 5000})
                                 header_rec = [col.name for col in new_env.description]
-                            if self.ks_is_external_db == True:
-                                rows = new_env.fetchall()
-                                result = [dict(zip(header_rec, row)) for row in rows]
-                            else:
                                 result = new_env.dictfetchall()
-                            if result:
-                                for header_key in header_rec:
-                                    if type(result[0][header_key]).__name__ == 'float' or \
-                                            type(result[0][header_key]).__name__ == 'int':
-                                        type_code.append('numeric')
-                                    else:
-                                        type_code.append('string')
-                            if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                                new_env.execute(
-                                    "select * from (" + ks_query + ")" + "as ks_chart_query limit %(ks_limit)s",
-                                    {ks_start_date: str(start_date),
-                                     ks_end_date: str(end_date), 'ks_limit': 5000, })
-                                header = [col[0] for col in new_env.description]
-                            else:
+                                if result:
+                                    for header_key in header_rec:
+                                        if type(result[0][header_key]).__name__ == 'float' or \
+                                                type(result[0][header_key]).__name__ == 'int':
+                                            type_code.append('numeric')
+                                        else:
+                                            type_code.append('string')
+
                                 new_env.execute("with ks_chart_query as (" + ks_query + ")" +
                                                 "select * from ks_chart_query limit %(ks_limit)s",
                                                 {ks_start_date: str(start_date),
                                                  ks_end_date: str(end_date), 'ks_limit': 5000, })
                                 header = [col.name for col in new_env.description]
-                        else:
-                            if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                                new_env.execute(
-                                    "select * from (" + ks_query + ")" + "as ks_chart_query limit %(ks_limit)s",
-                                    {'ks_limit': 5000})
-                                header = [col[0] for col in new_env.description]
                             else:
                                 new_env.execute("with ks_chart_query as (" + ks_query + ")" +
                                                 "select * from ks_chart_query limit %(ks_limit)s",
                                                 {'ks_limit': 5000})
                                 header = [col.name for col in new_env.description]
-                        if self.ks_is_external_db == True:
-                            rows = new_env.fetchall()
-                            records = [dict(zip(header, row)) for row in rows]
-                        else:
+
                             records = new_env.dictfetchall()
-                        if records:
-                            type_code.clear()
-                            for header_key in header:
-                                if type(records[0][header_key]).__name__ == 'float' or \
-                                        type(records[0][header_key]).__name__ == 'int' or\
-                                        type(records[0][header_key]).__name__ == 'Decimal':
-                                    type_code.append('numeric')
-                                else:
-                                    type_code.append('string')
+                            if records:
+                                type_code.clear()
+                                for header_key in header:
+                                    if type(records[0][header_key]).__name__ == 'float' or \
+                                            type(records[0][header_key]).__name__ == 'int':
+                                        type_code.append('numeric')
+                                    else:
+                                        type_code.append('string')
 
-                    except ProgrammingError as e:
-                        if e.args[0] == 'no results to fetch':
-                            raise ValidationError(_("You can only read the Data from Database"))
-                        else:
+                        except ProgrammingError as e:
+                            if e.args[0] == 'no results to fetch':
+                                raise ValidationError(_("You can only read the Data from Database"))
+                            else:
+                                raise ValidationError(_(e))
+                        except Exception as e:
+                            if type(e).__name__ == 'KeyError':
+                                raise ValidationError(_(
+                                    'Wrong date variables, Please use ks_start_date and ks_end_date in custom query'))
                             raise ValidationError(_(e))
-                    except Exception as e:
-                        if type(e).__name__ == 'KeyError':
-                            raise ValidationError(_(
-                                'Wrong date variables, Please use ks_start_date and ks_end_date in custom query'))
-                        raise ValidationError(_(e))
-                    else:
-                        if self.ks_is_external_db == True:
-                            connection.close()
-                            new_env.close()
-                    finally:
-                        if self.ks_is_external_db != True:
-                            new_env.close()
 
 
-                    for res in records:
-                        keys_to_delete = []
-                        for key in res:
-                            if type(res[key]).__name__ == 'datetime':
-                                res[key] = res[key].strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                            elif type(res[key]).__name__ == 'date':
-                                res[key] = res[key].strftime(DEFAULT_SERVER_DATE_FORMAT)
-                            elif type(res[key]).__name__ == 'Decimal':
-                                res[key] = int(res[key])
-                            elif type(res[key]).__name__ == 'time':
-                                res[key] = res[key].strftime("%H-%M-%S")
-                            elif type(res[key]).__name__ not in ['char','Decimal','str','float','int','text','bool','binary','date','datetime']:
-                                res[key] = None
+                        for res in records:
+                            for key in res:
+                                if type(res[key]).__name__ == 'datetime':
+                                    res[key] = res[key].strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                                elif type(res[key]).__name__ == 'date':
+                                    res[key] = res[key].strftime(DEFAULT_SERVER_DATE_FORMAT)
+                        rec.ks_query_result = json.dumps({'header': header,
+                                                          'records': records, 'type_code': type_code,
+                                                              'ks_is_group_column': ks_is_group_column})
+                elif rec.ks_dashboard_item_type in ['ks_kpi'] \
+                        and rec.ks_custom_query:
+                    if rec.ks_is_date_ranges and not (selected_start_date or selected_end_date):
+                        selected_start_date = rec.ks_query_start_date
+                        selected_end_date = rec.ks_query_end_date
+                    ks_query_result = rec.ks_get_kpi_result(ks_query, selected_start_date, selected_end_date,
+                                                            ks_start_date=ks_start_date, ks_end_date=ks_end_date)
 
-
-                    rec.ks_query_result = json.dumps({'header': header,
-                                                      'records': records, 'type_code': type_code,
-                                                      'ks_is_group_column': ks_is_group_column})
-
-            elif rec.ks_dashboard_item_type in ['ks_kpi'] \
-                    and rec.ks_custom_query:
-                if rec.ks_is_date_ranges and not (selected_start_date or selected_end_date):
-                    selected_start_date = rec.ks_query_start_date
-                    selected_end_date = rec.ks_query_end_date
-                ks_query_result = rec.ks_get_kpi_result(ks_query, selected_start_date, selected_end_date,
-                                                        ks_start_date=ks_start_date, ks_end_date=ks_end_date)
-
-                rec.ks_query_result = json.dumps(ks_query_result)
-            else:
-                rec.ks_query_result = False
+                    rec.ks_query_result = json.dumps(ks_query_result)
+                else:
+                    rec.ks_query_result = False
 
     def ks_get_kpi_result(self, ks_query, selected_start_date, selected_end_date, ks_start_date=False,
                           ks_end_date=False):
 
-        if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_postgres':
-            connection = psycopg2.connect(
-                host=self.ks_host,
-                database=self.ks_db_name,
-                user=self.ks_db_user,
-                password=self.ks_db_password,
-                port=self.ks_port
-            )
-            new_env = connection.cursor()
-        elif self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-            connection = mysql.connector.connect(
-                host=self.ks_host,
-                database=self.ks_db_name,
-                user=self.ks_db_user,
-                password=self.ks_db_password,
-                port=self.ks_port,
-                auth_plugin='mysql_native_password'
-            )
-            new_env = connection.cursor()
-        else:
-            new_env = self.pool.cursor()
-
+        new_env = self.env
         if ks_query and "{#MYCOMPANY}" in ks_query:
             ks_query = ks_query.replace("{#MYCOMPANY}", str(self.env.user.company_id.id))
         if ks_query and "{#UID}" in ks_query:
             ks_query = ks_query.replace("{#UID}", str(self.env.user.id))
-
         start_date = selected_start_date
         end_date = selected_end_date
-
-        if not selected_start_date and selected_end_date:
-            start_date = selected_end_date - relativedelta.relativedelta(
-                years=1000)
-        if not selected_end_date and selected_start_date:
-            end_date = selected_start_date + relativedelta.relativedelta(
-                years=1000)
-
         self.ks_validate_kpi_query(ks_query, start_date, end_date, ks_start_date=ks_start_date,
                                    ks_end_date=ks_end_date)
         if self.ks_is_date_ranges:
-            if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                new_env.execute(
-                    "select * from (" + ks_query + ")" + "as ks_list_query",
-                    {ks_start_date: str(start_date),
-                     ks_end_date: str(end_date)})
-                header_rec = [col[0] for col in new_env.description]
-            else:
-                new_env.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query"
-                            , {ks_start_date: str(start_date),
-                               ks_end_date: str(end_date)})
-                header_rec = [col.name for col in new_env.description]
-        else:
-            if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                new_env.execute(
-                    "select * from (" + ks_query + ")" + "as ks_list_query")
-                header_rec = [col[0] for col in new_env.description]
-            else:
-                new_env.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query")
-                header_rec = [col.name for col in new_env.description]
 
-        if self.ks_is_external_db == True:
-            row = new_env.fetchone()
-            result = dict(zip(header_rec, row))
-            if type(result[header_rec[0]]).__name__ == 'Decimal':
-                result[header_rec[0]] = str(result[header_rec[0]])
+            new_env.cr.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query"
+                               , {ks_start_date: str(start_date),
+                                  ks_end_date: str(end_date)})
         else:
-            result = new_env.dictfetchone()
+            new_env.cr.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query")
+
+        result = new_env.cr.dictfetchone()
+
         if len(result.keys()) == 1:
             return result
         else:
@@ -680,54 +346,15 @@ class KsDashboardNinjaItemAdvance(models.Model):
     def ks_validate_kpi_query(self, ks_query, start_date, end_date, ks_start_date=False,
                               ks_end_date=False):
         try:
-            if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_postgres':
-                connection = psycopg2.connect(
-                    host=self.ks_host,
-                    database=self.ks_db_name,
-                    user=self.ks_db_user,
-                    password=self.ks_db_password,
-                    port=self.ks_port
-                )
-                new_env = connection.cursor()
-            elif self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                connection = mysql.connector.connect(
-                    host=self.ks_host,
-                    database=self.ks_db_name,
-                    user=self.ks_db_user,
-                    password=self.ks_db_password,
-                    port=self.ks_port,
-                    auth_plugin='mysql_native_password'
-                )
-                new_env = connection.cursor()
-            else:
-                new_env = self.pool.cursor()
 
+            new_env = self.env
             if self.ks_is_date_ranges:
-                if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                    new_env.execute(
-                        "select * from (" + ks_query + ")" + "as ks_list_query limit 5",
-                        {ks_start_date: str(start_date),
-                         ks_end_date: str(end_date)})
-                    header_rec = [col[0] for col in new_env.description]
-                else:
-                    new_env.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query limit 5"
-                                , {ks_start_date: str(start_date),
-                                   ks_end_date: str(end_date)})
-                    header_rec = [col.name for col in new_env.description]
+                new_env.cr.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query limit 5"
+                                   , {ks_start_date: str(start_date),
+                                      ks_end_date: str(end_date)})
             else:
-                if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                    new_env.execute(
-                        "select * from (" + ks_query + ")" + "as ks_list_query limit 5")
-                    header_rec = [col[0] for col in new_env.description]
-                else:
-                    new_env.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query limit 5")
-                    header_rec = [col.name for col in new_env.description]
-
-            if self.ks_is_external_db == True:
-                rows = new_env.fetchall()
-                result = [dict(zip(header_rec, row)) for row in rows]
-            else:
-                result = new_env.dictfetchall()
+                new_env.cr.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query limit 5")
+            result = new_env.cr.dictfetchall()
             if len(result) != 1:
                 raise ValidationError(_("Query must be return single entity value"))
             elif len(result[0].keys()) != 1:
@@ -745,89 +372,61 @@ class KsDashboardNinjaItemAdvance(models.Model):
                     _('Wrong date variables, Please use ks_start_date and ks_end_date in custom query'))
             raise ValidationError(_(e))
 
+
+
     def ks_get_list_query_result(self, ks_query, selected_start_date, selected_end_date, ks_offset=0,
                                  ks_export_all=False):
-        # with api.Environment.manage():
-        try:
-            type_code = []
-            # new_cr = self.pool.cursor()
-            # conn = sql_db.db_connect(self.env.cr.dbname)
-            if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_postgres':
-                connection = psycopg2.connect(
-                    host=self.ks_host,
-                    database=self.ks_db_name,
-                    user=self.ks_db_user,
-                    password=self.ks_db_password,
-                    port=self.ks_port
-                )
-                new_env = connection.cursor()
-            elif self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                connection = mysql.connector.connect(
-                    host=self.ks_host,
-                    database=self.ks_db_name,
-                    user=self.ks_db_user,
-                    password=self.ks_db_password,
-                    port=self.ks_port,
-                    auth_plugin='mysql_native_password'
-                )
-                new_env = connection.cursor()
-            else:
-                new_env = self.pool.cursor()
-            if self.ks_is_date_ranges:
-                ks_start_date = 'ks_start_date'
-                ks_end_date = 'ks_end_date'
-                if self.ks_custom_query and (
-                        ("%(ks_start_date)" in self.ks_custom_query) or ("%(ks_end_date)" in self.ks_custom_query)):
-                    ks_type = 'date'
+        with api.Environment.manage():
+            try:
+                type_code = []
+                new_env = self.env.cr
+                if self.ks_is_date_ranges:
                     ks_start_date = 'ks_start_date'
                     ks_end_date = 'ks_end_date'
-                if self.ks_custom_query and (("%(ks_start_datetime)" in self.ks_custom_query) or (
-                        "%(ks_start_datetime)" in self.ks_custom_query)):
-                    ks_type = 'datetime'
-                    ks_start_date = 'ks_start_datetime'
-                    ks_end_date = 'ks_end_datetime'
-            limit = self.ks_pagination_limit
-            if ks_query and "{#MYCOMPANY}" in ks_query:
-                ks_query = ks_query.replace("{#MYCOMPANY}", str(self.env.company.id))
-            if ks_query and "{#UID}" in ks_query:
-                ks_query = ks_query.replace("{#UID}", str(self.env.user.id))
+                    if self.ks_custom_query and (
+                            ("%(ks_start_date)" in self.ks_custom_query) or ("%(ks_end_date)" in self.ks_custom_query)):
+                        ks_type = 'date'
+                        ks_start_date = 'ks_start_date'
+                        ks_end_date = 'ks_end_date'
+                    if self.ks_custom_query and (("%(ks_start_datetime)" in self.ks_custom_query) or (
+                            "%(ks_start_datetime)" in self.ks_custom_query)):
+                        ks_type = 'datetime'
+                        ks_start_date = 'ks_start_datetime'
+                        ks_end_date = 'ks_end_datetime'
+                limit = self.ks_pagination_limit
+                if ks_query and "{#MYCOMPANY}" in ks_query:
+                    ks_query = ks_query.replace("{#MYCOMPANY}", str(self.env.company.id))
+                if ks_query and "{#UID}" in ks_query:
+                    ks_query = ks_query.replace("{#UID}", str(self.env.user.id))
 
-            if ks_export_all:
-                if self._context.get('ksDateFilterSelection', False):
-                    ksDateFilterSelection = self._context.get('ksDateFilterSelection', False)
-                    if ksDateFilterSelection == 'l_custom':
-                        ks_timezone = self._context.get('tz') or self.env.user.tz
-                        selected_start_date = self._context['ksDateFilterStartDate']
-                        selected_end_date = self._context['ksDateFilterEndDate']
-                        ks_is_def_custom_filter = self._context.get('ksIsDefultCustomDateFilter', False)
-                        if selected_start_date and selected_end_date and not ks_is_def_custom_filter and ks_type == 'datetime':
-                            selected_start_date = ks_convert_into_utc(selected_start_date, ks_timezone)
-                            selected_end_date = ks_convert_into_utc(selected_end_date, ks_timezone)
-                        if ks_type == 'date' and ks_is_def_custom_filter:
-                            selected_start_date = ks_convert_into_local(selected_start_date, ks_timezone)
-                            selected_end_date = ks_convert_into_local(selected_end_date, ks_timezone)
-                    if ksDateFilterSelection not in ['l_custom', 'l_none']:
-                        ks_get_date_ranges = ks_get_date(ksDateFilterSelection, self, 'datetime')
-                        selected_start_date = ks_get_date_ranges['selected_start_date']
-                        selected_end_date = ks_get_date_ranges['selected_end_date']
+                if ks_export_all:
+                    if self._context.get('ksDateFilterSelection', False):
+                        ksDateFilterSelection = self._context.get('ksDateFilterSelection', False)
+                        if ksDateFilterSelection == 'l_custom':
+                            ks_timezone = self._context.get('tz') or self.env.user.tz
+                            selected_start_date = self._context['ksDateFilterStartDate']
+                            selected_end_date = self._context['ksDateFilterEndDate']
+                            ks_is_def_custom_filter = self._context.get('ksIsDefultCustomDateFilter', False)
+                            if selected_start_date and selected_end_date and not ks_is_def_custom_filter and ks_type == 'datetime':
+                                selected_start_date = ks_convert_into_utc(selected_start_date, ks_timezone)
+                                selected_end_date = ks_convert_into_utc(selected_end_date, ks_timezone)
+                            if ks_type == 'date' and ks_is_def_custom_filter:
+                                selected_start_date = ks_convert_into_local(selected_start_date, ks_timezone)
+                                selected_end_date = ks_convert_into_local(selected_end_date, ks_timezone)
+                        if ksDateFilterSelection not in ['l_custom', 'l_none']:
+                            ks_get_date_ranges = ks_get_date(ksDateFilterSelection, self, 'datetime')
+                            selected_start_date = ks_get_date_ranges['selected_start_date']
+                            selected_end_date = ks_get_date_ranges['selected_end_date']
 
-            if self.ks_is_date_ranges:
-                start_date = self.ks_query_start_date
-                end_date = self.ks_query_end_date
-                if selected_end_date or selected_start_date:
-                    start_date = selected_start_date if selected_start_date else selected_end_date - relativedelta.relativedelta(
-                        years=1000)
-                    end_date = selected_end_date if selected_end_date else selected_start_date + relativedelta.relativedelta(
-                        years=1000)
-                if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                    new_env.execute(
-                        "select * from (" + ks_query + ")" + "as ks_chart_query limit %(ks_limit)s offset %(ks_offset)s",
-                        {ks_start_date: str(start_date - relativedelta.relativedelta(years=10)),
-                         ks_end_date: str(end_date + relativedelta.relativedelta(years=10)),
-                         'ks_limit': limit, 'ks_offset': ks_offset
-                         })
-                    header_rec = [col[0] for col in new_env.description]
-                else:
+                if self.ks_is_date_ranges:
+                    start_date = self.ks_query_start_date
+                    end_date = self.ks_query_end_date
+                    if selected_end_date or selected_start_date:
+                        start_date = selected_start_date if selected_start_date else selected_end_date - relativedelta.relativedelta(
+                            years=1000)
+                        end_date = selected_end_date if selected_end_date else selected_start_date + relativedelta.relativedelta(
+                            years=1000)
+
                     new_env.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query limit "
                                                                                  "%(ks_limit)s offset %(ks_offset)s",
                                     {ks_start_date: str(start_date - relativedelta.relativedelta(years=10)),
@@ -835,41 +434,20 @@ class KsDashboardNinjaItemAdvance(models.Model):
                                      'ks_limit': limit, 'ks_offset': ks_offset
                                      })
                     header_rec = [col.name for col in new_env.description]
-                if self.ks_is_external_db == True:
-                    rows = new_env.fetchall()
-                    result = [dict(zip(header_rec, row)) for row in rows]
-                else:
                     result = new_env.dictfetchall()
-                if result:
-                    for header_key in header_rec:
-                        if type(result[0][header_key]).__name__ == 'float' or \
-                                type(result[0][header_key]).__name__ == 'int':
-                            type_code.append('numeric')
-                        else:
-                            type_code.append('string')
-                if ks_export_all:
-                    if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                        new_env.execute(
-                            "select * from (" + ks_query + ")" + "as ks_chart_query offset %(ks_offset)s",
-                            {ks_start_date: str(start_date),
-                             ks_end_date: str(end_date),
-                             'ks_offset': ks_offset})
-                        header = [col[0] for col in new_env.description]
-                    else:
+                    if result:
+                        for header_key in header_rec:
+                            if type(result[0][header_key]).__name__ == 'float' or \
+                                    type(result[0][header_key]).__name__ == 'int':
+                                type_code.append('numeric')
+                            else:
+                                type_code.append('string')
+                    if ks_export_all:
                         new_env.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query "
                                                                                      " offset %(ks_offset)s",
                                         {ks_start_date: str(start_date),
                                          ks_end_date: str(end_date),
                                          'ks_offset': ks_offset})
-                        header = [col.name for col in new_env.description]
-                else:
-                    if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                        new_env.execute(
-                            "select * from (" + ks_query + ")" + "as ks_chart_query limit %(ks_limit)s offset %(ks_offset)s",
-                            {ks_start_date: str(start_date),
-                             ks_end_date: str(end_date),
-                             'ks_limit': limit, 'ks_offset': ks_offset})
-                        header = [col[0] for col in new_env.description]
                     else:
                         new_env.execute(
                             "with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query limit "
@@ -877,83 +455,50 @@ class KsDashboardNinjaItemAdvance(models.Model):
                             {ks_start_date: str(start_date),
                              ks_end_date: str(end_date),
                              'ks_limit': limit, 'ks_offset': ks_offset})
-                        header = [col.name for col in new_env.description]
-            else:
-                if ks_export_all:
-                    if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                        new_env.execute(
-                            "select * from (" + ks_query + ")" + "as ks_chart_query offset %(ks_offset)s",
-                            {'ks_offset': ks_offset})
-                        header = [col[0] for col in new_env.description]
-                    else:
+                    header = [col.name for col in new_env.description]
+                else:
+                    if ks_export_all:
                         new_env.execute("with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query "
                                                                                      " offset %(ks_offset)s",
                                         {'ks_offset': ks_offset})
-                        header = [col.name for col in new_env.description]
-                else:
-                    if self.ks_is_external_db == True and self.ks_external_db_type == 'ks_sql':
-                        new_env.execute(
-                            "select * from (" + ks_query + ")" + "as ks_chart_query limit %(ks_limit)s offset %(ks_offset)s",
-                            {'ks_limit': limit, 'ks_offset': ks_offset})
-                        header = [col[0] for col in new_env.description]
                     else:
                         new_env.execute(
                             "with ks_list_query as (" + ks_query + ")" + "select * from ks_list_query limit "
                                                                          "%(ks_limit)s offset %(ks_offset)s",
                             {'ks_limit': limit, 'ks_offset': ks_offset})
-                        header = [col.name for col in new_env.description]
-            if self.ks_is_external_db == True:
-               rows = new_env.fetchall()
-               records = [dict(zip(header, row)) for row in rows]
-            else:
-               records = new_env.dictfetchall()
-            if records:
-                type_code.clear()
-                for header_key in header:
-                    if type(records[0][header_key]).__name__ == 'float' or \
-                            type(records[0][header_key]).__name__ == 'int' or \
-                            type(records[0][header_key]).__name__ == 'Decimal':
-                        type_code.append('numeric')
-                    else:
-                        type_code.append('string')
+                    header = [col.name for col in new_env.description]
 
-        except ProgrammingError as e:
-            if e.args[0] == 'no results to fetch':
-                raise ValidationError(_("You can only read the Data from Database"))
-            else:
+                records = new_env.dictfetchall()
+                if records:
+                    type_code.clear()
+                    for header_key in header:
+                        if type(records[0][header_key]).__name__ == 'float' or \
+                                type(records[0][header_key]).__name__ == 'int':
+                            type_code.append('numeric')
+                        else:
+                            type_code.append('string')
+
+            except ProgrammingError as e:
+                if e.args[0] == 'no results to fetch':
+                    raise ValidationError(_("You can only read the Data from Database"))
+                else:
+                    raise ValidationError(_(e))
+            except Exception as e:
+                if type(e).__name__ == 'KeyError':
+                    raise ValidationError(
+                        _('Wrong date variables, Please use ks_start_date and ks_end_date in custom query'))
                 raise ValidationError(_(e))
-        except Exception as e:
-            if type(e).__name__ == 'KeyError':
-                raise ValidationError(
-                    _(
-                        'Wrong date variables, Please use ks_start_date and ks_end_date or ks_start_datetime and ks_end_datetime in custom query'))
-            raise ValidationError(_(e))
 
-        else:
-            if self.ks_is_external_db == True:
-                connection.close()
-                new_env.close()
-        finally:
-            if self.ks_is_external_db != True:
-                new_env.close()
-        for res in records:
-            keys_to_delete=[]
-            for key in res:
-                if type(res[key]).__name__ == 'datetime':
-                    res[key] = res[key].strftime(DEFAULT_SERVER_DATETIME_FORMAT)
-                elif type(res[key]).__name__ == 'date':
-                    res[key] = res[key].strftime(DEFAULT_SERVER_DATE_FORMAT)
-                elif type(res[key]).__name__ == 'Decimal':
-                    res[key] = str(res[key])
-                elif type(res[key]).__name__ == 'time':
-                    res[key] = res[key].strftime("%H-%M-%S")
-                elif type(res[key]).__name__ not in ['char', 'Decimal','str', 'float', 'int', 'text', 'bool', 'binary',
-                                                         'date', 'datetime']:
-                    res[key] = None
 
-        return json.dumps({'header': header,
-                           'records': records, 'type_code': type_code,
-                           'ks_is_group_column': False})
+            for res in records:
+                for key in res:
+                    if type(res[key]).__name__ == 'datetime':
+                        res[key] = res[key].strftime(DEFAULT_SERVER_DATETIME_FORMAT)
+                    elif type(res[key]).__name__ == 'date':
+                        res[key] = res[key].strftime(DEFAULT_SERVER_DATE_FORMAT)
+            return json.dumps({'header': header,
+                               'records': records, 'type_code': type_code,
+                               'ks_is_group_column': False})
 
     @api.model
     def ks_get_next_offset(self, ks_item_id, offset, item_domain=[]):
@@ -999,7 +544,7 @@ class KsDashboardNinjaItemAdvance(models.Model):
                 if rec.ks_query_start_date >= rec.ks_query_end_date:
                     raise ValidationError(_("Start Date should be less than End Date"))
 
-    @api.onchange('ks_custom_query','ks_is_external_db','ks_external_db_type')
+    @api.onchange('ks_custom_query')
     def ks_empty_labels(self):
         for rec in self:
             rec.ks_xlabels = False
@@ -1009,16 +554,6 @@ class KsDashboardNinjaItemAdvance(models.Model):
     def ks_onchange_date_ranges(self):
         for rec in self:
             rec.ks_custom_query = False
-
-    @api.onchange('ks_is_external_db','ks_external_db_type')
-    def ks_onchange_external_db(self):
-        for rec in self:
-            rec.ks_custom_query = False
-            rec.ks_host = False
-            rec.ks_db_name = False
-            rec.ks_db_password = False
-            rec.ks_db_user = False
-            rec.ks_port = False
 
     #   function to handle the sorting for list view
     def ks_get_list_data_orderby_extend(self, domain={}):
@@ -1061,13 +596,3 @@ class KsDashboardNinjaItemAdvance(models.Model):
         list_view_data = self.get_list_view_record(orderby, sort_order, ks_domain, ksoffset=initial_count - 1,
                                                    initial_count=initial_count)
         return list_view_data
-
-class KsDashboardAPI(models.Model):
-    _name = 'ks.dashboard.api'
-    _description = 'Dashboard Ninja API datatype'
-
-    ks_dashboard_datatype_id = fields.Many2one('ks_dashboard_ninja.item', string="API Dashboard Item Id")
-    name = fields.Char(string="Name")
-    ttype = fields.Selection([('char', 'char'), ('date', 'date'), ('float', 'float'),
-                              ('integer', 'integer')],
-                             string='Type')
