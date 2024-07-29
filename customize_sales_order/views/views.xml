@@ -133,6 +133,11 @@
                         <field name="origin" readonly="1"/>
                     </xpath>
 
+<!--                    <xpath expr="//div[hasclass('oe_chatter')]" position="after">-->
+<!--                        <field name="_barcode_scanned" widget="picking_barcode_handler" on_change="1" modifiers="{}"-->
+<!--                               id="_barcode_scanned"/>-->
+<!--                    </xpath>-->
+
                 </data>
             </field>
         </record>
@@ -331,3 +336,4 @@
 
     </data>
 </odoo>
+

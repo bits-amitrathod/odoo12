@@ -246,7 +246,7 @@
             <field name="name">Done &amp; Duplicate</field>
             <field name="model">mail.activity</field>
             <field eval="40" name="priority"/>
-            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n"/>
+            <field name="inherit_id" ref="mail.mail_activity_view_form"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="replace">
                     <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Duplicate" name="action_done_duplicate_act" type="object" class="btn-secondary"  />
