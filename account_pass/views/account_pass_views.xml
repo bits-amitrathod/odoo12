@@ -45,11 +45,11 @@
 				<sheet>
                     <group>
                         <group>
-							<field name="partner_id"/>
+							<field name="partner_id" required="1" />
 							<field name="saleforce_ac" readonly="1"/>
-							<field name="sales_rep"/>
-							<field name="reinstated_or_new" readonly="False"/>
-							<field name="customer_status"/>
+							<field name="sales_rep" required="1"/>
+							<field name="reinstated_or_new" readonly="False" required="1"/>
+							<field name="customer_status" required="1"/>
 
 						</group>
                         <group>
