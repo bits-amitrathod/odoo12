@@ -11,9 +11,7 @@
                         table {
                             font-size: 14px !important;
                         }
-                        <!--.table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {-->
-                        <!--border: 1px solid #000;-->
-                        <!--}-->
+
                     </style>
                     <div class="oe_structure"/>
                     <div>
@@ -122,12 +120,7 @@
                                                             <span t-esc="len(packing_list.package_ids)"></span>
                                                         </p>
                                                     </td>
-                                                    <!-- Below line is commented because requested_date has been removed in Odoo12 -->
-                                                    <td>
-<!--                                                        <p style="font-weight: lighter">-->
-<!--                                                            <span t-esc="packing_list.sale_id.requested_date" t-options='{"widget": "datetime"}'></span>-->
-<!--                                                        </p>-->
-                                                    </td>
+
                                                     <td>
                                                         <p style="font-weight: 400">
                                                             <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
@@ -172,12 +165,6 @@
                                                         )
                                                     </t>
                                                 </t>
-                                                <!--<a style="float:right" t-att-href="packing_list.carrier_tracking_url"
-                                                   target="_blank">
-                                                    <t t-if="packing_list.carrier_id.name !='Normal Delivery Charges' ">
-                                                        <span t-esc="packing_list.carrier_id.name"></span>
-                                                    </t>
-                                                </a>-->
                                                 <hr style="margin:0px;padding:0px"></hr>
                                             </p>
                                         </div>
