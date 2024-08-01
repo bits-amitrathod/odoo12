@@ -34,10 +34,13 @@ class StockPicking(models.Model):
                         inv_notification.pick_notification_for_user(self)
                         self.email_after_pick_validate()
                     elif self.picking_type_id.name == 'Pack' or self.picking_type_id.name == 'Pull' and self.state == 'done':
-                        inv_notification.pull_notification_for_user(self)
+                        # Check if 'AA' tag is not present and execute notification if true
+                        if not any(tag.name == 'AA' for tag in picking.sale_id.tag_ids):
+                            inv_notification.pull_notification_for_user(self)
                     elif self.picking_type_id.name == 'Delivery Orders' and self.state == 'done':
                         _logger.info(" Delivery Orders ******** Start********")
                         _logger.info(" Delivery Orders ******** Delivery Done ***** Start********")
+                        # Check if 'AA' tag is not present and execute notification if true
                         inv_notification.out_notification_for_sale(self)
                         _logger.info(" Delivery Orders ******** Delivery Done ***** End********")
                         _logger.info(" Delivery Orders ********low Stock ***** Start ********")
@@ -79,3 +82,9 @@ class StockPicking(models.Model):
                                'so_name': self.sale_id.name,
                                'access_url': base_url}
                     template.with_context(context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
+
+    def _send_confirmation_email(self):
+        for stock_pick in self.filtered(lambda p: p.company_id.stock_move_email_validation and p.picking_type_id.code == 'outgoing'):
+            delivery_template_id = stock_pick.company_id.stock_mail_confirmation_template_id.id
+            if not any(tag.name == 'AA' for tag in stock_pick.sale_id.tag_ids):
+                stock_pick.with_context(force_send=True).message_post_with_template(delivery_template_id, email_layout_xmlid='mail.mail_notification_light')
