@@ -272,7 +272,8 @@
             <field eval="20" name="priority"/>
             <field name="arch" type="xml">
                 <field name="lang" position="after">
-                    <field name="facility_tpcd"/>
+                    <field name="facility_tpcd" required="1">
+                    </field>
                 </field>
             </field>
         </record>
