@@ -1268,8 +1268,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     if query_result and query_result['min']:
                         min = str(query_result['min'])
                         if ((query_result['min'].date() > fields.Datetime.today().date())
-                                and ((query_result['min'].date() - fields.Datetime.today().date()).days > 365)
-                                and ((query_result['max'].date() - query_result['min'].date()).days > 365)):
+                                and ((query_result['min'].date() - fields.Datetime.today().date()).days > 365)):
                             column = "-"
                         else:
                             column = datetime.strptime(str(min), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
@@ -1278,7 +1277,7 @@ class InventoryNotificationScheduler(models.TransientModel):
 
                 elif column_name == 'str_max':
                     if query_result and query_result['min'] and query_result['max']:
-                        if (query_result['max'] - query_result['min']).days > 365:
+                        if (query_result['max'] - fields.Datetime.today().date()).days > 365:
                             column = "1 Year+"
                         else:
                             column = datetime.strptime(str(query_result['max']), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')
