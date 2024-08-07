@@ -48,7 +48,7 @@
                 <form>
                     <group>
                         <group>
-                            <span> Click on View Report to show the hierarchy of Accounts </span>
+                            <span style="white-space: nowrap;">Click on View Report to show the hierarchy of Accounts</span>
 
                         </group>
                     </group>
