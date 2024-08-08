@@ -51,15 +51,14 @@ class VendorOfferNewAppraisal(models.Model):
         for objList in self:
             for obj in objList:
                 for obj_line in obj.order_line:
-                    #if obj_line.import_type_ven_line != 'new_appraisal':
                     obj_line.set_values()
                     obj_line.compute_new_fields_vendor_line()
                     obj_line.set_default_multiplier()
-                    if obj.is_change_tier1_to_premium:
-                        obj_line.upgrade_multiplier_tier1_to_premium()
                     if obj_line.dont_recalculate_offer_price is not True:
                         obj_line.multiplier_adjustment_criteria() if obj.is_dynamic_tier_adjustment else obj_line.no_tier_multiplier_adjustment_criteria()
                         obj_line.overstock_threshold()
+                        if obj.is_change_tier1_to_premium:
+                            obj_line.upgrade_multiplier_tier1_to_premium()
                     obj_line.copy_product_qty_column()
                     obj_line._cal_offer_price()
                     obj_line._set_offer_price()

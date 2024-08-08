@@ -37,9 +37,20 @@
             <field name="model">account.payment</field>
             <field name="inherit_id" ref="account.view_account_payment_form"></field>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='payment_type']" position="after">
+                     <field name="partner_type" widget="selection" attrs="{'readonly': [('state', '!=', 'draft')], 'invisible': [('is_internal_transfer', '=', True)]}"/>
+                </xpath>
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="destination_account_id" options="{'no_create': True}" required="1" attrs="{'readonly': ['|', ('state', '!=', 'draft'), ('is_internal_transfer', '=', True)]}"/>
+                      <field name="company_id" groups="base.group_multi_company"/>
+                </xpath>
+
                 <xpath expr="//group/group/field[@name='partner_id']" position="replace">
                     <field name="partner_id" attrs="{'required': [('state', '=', 'draft'), ('payment_type', 'in', ('inbound', 'outbound'))], 'invisible': [('payment_type', 'not in', ('inbound', 'outbound'))], 'readonly': [('state', '!=', 'draft')]}"
                            context="{'default_is_company': True, 'default_supplier': payment_type == 'outbound', 'default_customer': payment_type == 'inbound','vendor_payment_partner_name_display_name': True}"/>
+                </xpath>
+                 <xpath expr="//field[@name='payment_method_line_id']" position="after">
+                     <field name="move_id" required="0" attrs="{'invisible': [('id', '=', False)]}" groups="account.group_account_readonly"/>
                 </xpath>
             </field>
         </record>
@@ -120,5 +131,9 @@
                 </div>
             </xpath>
         </template>
+
+        <record id="account_followup.action_view_list_customer_statements" model="ir.actions.act_window">
+            <field name="context">{'search_default_filter_in_need_of_action': 1, 'search_default_customer': 1, 'res_partner_search_mode': 'customer'}</field>
+        </record>
     </data>
 </odoo>
