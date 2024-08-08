@@ -183,6 +183,7 @@ class VendorOfferProductLineNew(models.Model):
             average_aging = po_line.average_aging
             inv_ratio_90_days = po_line.inv_ratio_90_days
             product_sales_total_amount_yr = po_line.product_sales_amount_yr
+            PDDO = True if qty_sold_90_days == 0 else False
             multiplier = None
             if qty_in_stock == 0 and product_sales_count == 0:
                 if 0 < open_quotations_cnt < 5:
@@ -191,13 +192,16 @@ class VendorOfferProductLineNew(models.Model):
                     multiplier = 'T 2 GOOD - 35 PRCT'
                 elif open_quotations_cnt > 15:
                     multiplier = 'T 1 GOOD - 45 PRCT'
-            elif tier and tier.code == '1' and inv_ratio_90_days < 1:
-                if product_sales_total_amount_yr >= 100000 or open_quotations_cnt >= 20 or qty_in_stock == 0:
+            elif tier and tier.code == '1' and inv_ratio_90_days < 1 and not PDDO:
+                if product_sales_total_amount_yr >= 100000 or open_quotations_cnt >= 20:
                     multiplier = 'PREMIUM - 50 PRCT'
-            elif tier and tier.code == '2' and inv_ratio_90_days < 1:
-                if open_quotations_cnt >= 10 or (qty_in_stock == 0 and qty_sold_90_days > 0):
-                    multiplier = 'T 1 GOOD - 45 PRCT'
-            elif qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 and product_sales_count != 0 and average_aging > 30:
+            elif tier and tier.code == '1' and qty_in_stock == 0 and open_quotations_cnt >= 20:
+                multiplier = 'PREMIUM - 50 PRCT'
+            elif tier and tier.code == '2' and inv_ratio_90_days < 1 and not PDDO and open_quotations_cnt >= 10:
+                multiplier = 'T 1 GOOD - 45 PRCT'
+            elif (tier and tier.code == '2' and qty_in_stock == 0 and qty_sold_90_days > 0 and open_quotations_cnt >= 10):
+                multiplier = 'T 1 GOOD - 45 PRCT'
+            elif qty_sold_yr >= qty_in_stock > 0 and qty_sold_90_days == 0 and product_sales_count != 0 and int(average_aging) > 30:
                 multiplier = 'TIER 3'
             elif qty_in_stock == 0 and qty_sold_yr == 0 and product_sales_count != 0 and open_quotations_cnt < 5:
                 multiplier = 'TIER 3'

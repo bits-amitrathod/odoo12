@@ -323,7 +323,7 @@ class MailActivityNotesCustom(models.Model):
             messages |= record.sudo().message_ids[0]
 
             view_id = self.env.ref(
-                'sh_activities_management.sh_mail_activity_view_form_n').id
+                'mail.mail_activity_view_form').id
             if copy_of_activity:
                 context = dict(self.env.context)
                 context['form_view_initial_mode'] = 'edit'
