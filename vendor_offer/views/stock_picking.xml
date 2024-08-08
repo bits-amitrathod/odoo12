@@ -51,7 +51,7 @@
 <!--                        <field name="reserved_availability" string="Reserved" attrs="{'column_invisible': (['|','|', ('parent.state','=', 'done'), ('parent.picking_type_code', '=', 'incoming'),'&amp;',('parent.immediate_transfer', '=', True), ('parent.is_locked', '=', True)])}"/>-->
 <!--                        <field name="quantity_done" string="Done" attrs="{'readonly': [('is_quantity_done_editable', '=', False)]}"/>-->
 <!--                        <field name="product_uom" attrs="{'readonly': [('state', '!=', 'draft'), ('additional', '=', False)]}" options="{'no_open': True, 'no_create': True}" string="Unit of Measure" groups="uom.group_uom"/>-->
-<!--                        <button name="action_show_details" string="Register lots, packs, location" type="object" icon="fa-list" attrs="{'invisible': [('show_details_visible', '=', False)]}" options='{"warn": true}'/>-->
+<!--                        <button name="action_show_details" string="Register lots, packs, location" type="object" title="Show Details" icon="fa-list" attrs="{'invisible': [('show_details_visible', '=', False)]}" options='{"warn": true}'/>-->
 <!--                    </tree>-->
 <!--                </field>-->
                 <field name="move_ids_without_package" mode="tree,kanban"
@@ -101,7 +101,7 @@
                             context="{'default_company_id': company_id, 'default_product_id': product_id, 'active_picking_id': parent.id}"
                             domain="[('product_id','=',product_id)]"
                         />
-                        <button name="action_show_details" type="object" icon="fa-list"
+                        <button name="action_show_details" type="object" icon="fa-list" title="Show Details"
                                  options='{"warn": true}'/>
                         <button name="action_assign_serial" type="object"
                                 icon="fa-plus-square"
