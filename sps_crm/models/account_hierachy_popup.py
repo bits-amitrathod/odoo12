@@ -128,6 +128,8 @@ class AccountHierarchyReport(models.TransientModel):
             # l = ["<span style='color: #C4262E;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
             s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
             list_data = list_data or '""'
+
+            # UPG_ODOO16_NOTE: code commented because it was causing a TYPEERROR can only concatenate str (not "bool") to str
             # if customer.id == current_partner_record.id and flag:
             #     data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
             #                           " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
@@ -141,6 +143,7 @@ class AccountHierarchyReport(models.TransientModel):
             #                           "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
             #         final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
             #                                                  " " + list_data + " </a>"+ s1 + " | " + facility_name + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
+
             if customer.id == current_partner_record.id and flag:
                 data_val += f"<tr><td class='o_data_cell o_field_cell o_list_char o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'><b><a style='color:blue !important;' target='_blank' href='{url}/web#id={final_data_name[x].id}&model=res.partner&view_type=form&menu_id=519'>{list_data}</a></b> {s1} | {facility_name} | {purchase_mngr} | {sale_mngr} | {state}</td></tr>"
                 flag = False

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+<!--    UPG_ODOO16_NOTE: code commented because it was causing an issue -->
 <!--        <record id="view_picking_form_inherit_website_sale_stock_arrival" model="ir.ui.view">-->
 <!--            <field name="name">stock.picking.form.inherit.show.date.done</field>-->
 <!--            <field name="model">stock.picking</field>-->
@@ -114,7 +115,7 @@
             </field>
         </record>
 
-
+<!--    UPG_ODOO16_NOTE: code commented because it was causing an issue -->
 <!--        <record id="view_picking_form_inherit_detailed_operation_flip" model="ir.ui.view">-->
 <!--            <field name="name">stock.picking.form.inherit.detailed.operation.flip</field>-->
 <!--            <field name="model">stock.picking</field>-->
