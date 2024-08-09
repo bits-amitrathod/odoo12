@@ -109,11 +109,11 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
                     query_result = self.fetch_lot_expirydates(val.id)
                     str_min_date = query_result['min'].strftime('%m/%d/%Y')
                     str_max_date = query_result['max'].strftime('%m/%d/%Y')
-                    if (query_result['max'] - query_result['min']).days > 365:
+                    #  This is responsible to show on website product list expiration date
+                    if (query_result['max'].date() - fields.Datetime.today().date()).days > 365:
                         str_max_date = "1 Year+"
                     if ((query_result['min'].date() > fields.Datetime.today().date())
-                            and ((query_result['min'].date() - fields.Datetime.today().date()).days > 365)
-                            and ((query_result['max'].date() - query_result['min'].date()).days > 365)):
+                            and ((query_result['min'].date() - fields.Datetime.today().date()).days > 365)):
                         str_min_date = "-"
                     productMaxMinDates[val.id] = {"min": fields.Datetime.from_string(query_result['min']),
                                                   "max": fields.Datetime.from_string(query_result['max']),
@@ -157,11 +157,11 @@ class WebsiteSales(odoo.addons.website_sale.controllers.main.WebsiteSale):
             query_result = self.fetch_lot_expirydates(payload['product'].product_variant_id.id)
             str_min_date = query_result['min'].strftime('%m/%d/%Y')
             str_max_date = query_result['max'].strftime('%m/%d/%Y')
-            if (query_result['max'] - query_result['min']).days > 365:
+            #  this is responsible for show expiration date after open specific product on the website
+            if (query_result['max'].date() - fields.Datetime.today().date()).days > 365:
                 str_max_date = "1 Year+"
             if ((query_result['min'].date() > fields.Datetime.today().date())
-                    and ((query_result['min'].date() - fields.Datetime.today().date()).days > 365)
-                    and ((query_result['max'].date() - query_result['min'].date()).days > 365)):
+                    and ((query_result['min'].date() - fields.Datetime.today().date()).days > 365)):
                 str_min_date = "-"
             productMaxMinDates[payload['product'].product_variant_id.id] = {
                 "min": fields.Datetime.from_string(query_result['min']),
