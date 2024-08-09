@@ -68,7 +68,7 @@ class Lead(models.Model):
     competitors = fields.Many2many('competitors.tag', string="Competitors")
     po_ref = fields.Many2one('purchase.order', string="PO#")
 
-    product_list_doc = fields.Many2many('ir.attachment', string='Upload File', attachment=True)
+    product_list_doc = fields.Many2many('ir.attachment', string='Upload File')
     # file_name = fields.Char("File Name")
 
     purchase_lost_reason = fields.Many2one(

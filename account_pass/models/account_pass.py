@@ -69,6 +69,9 @@ class account_pass(models.Model):
 
     no_past_due_invoices = fields.Boolean(string="No Past Due Invoices")
 
+    def _valid_field_parameter(self, field, name):
+        return name == 'tracking' or super()._valid_field_parameter(field, name)
+
     @api.model
     def _read_group_stage_ids(self, stages, domain, order):
         return stages.browse(self.env['account.pass.stage'].search([]).ids)
