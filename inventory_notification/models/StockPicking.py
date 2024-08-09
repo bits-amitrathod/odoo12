@@ -55,4 +55,25 @@ class StockPicking(models.Model):
             # check if exists in unique_list or not
             if x.product_id not in unique_list:
                 unique_list.append(x.product_id)
+
         return unique_list
+
+    # PICK transfer has been validated then
+    def email_after_pick_validate(self):
+        if self.sale_id:
+            if self.sale_id.account_manager and self.sale_id.customer_success:
+                am = self.sale_id.account_manager.login if self.sale_id.account_manager.login else None
+                cs = self.sale_id.customer_success.login if self.sale_id.customer_success.login else None
+                if cs and am:
+                    to = f"{am},{cs}"
+                    base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+                    # base_url = base_url + '/my/orders/' + str(self.sale_id.id)
+                    base_url = base_url + '/web#id=' + str(self.sale_id.id) + '&action=315&model=sale.order&view_type=form&cids=1%2C3&menu_id=201'
+                    template = self.env.ref("inventory_notification.pick_done_ka_and_cs_email_template")
+                    context = {'email_from': 'info@surgicalproductsolutions.com',
+                               'email_to': to,
+                               'subject': 'Pick Done Internal',
+                               'facility_name': self.sale_id.partner_id.display_name,
+                               'so_name': self.sale_id.name,
+                               'access_url': base_url}
+                    template.with_context(context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)

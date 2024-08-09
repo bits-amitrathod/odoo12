@@ -13,12 +13,15 @@ class website_cstm(models.Model):
     email = fields.Char()
     product_tmpl_id = fields.Many2one('product.template', 'Product Template', ondelete='cascade', required=True)
     status = fields.Selection([('pending', 'Pending'),('done', 'Done')])
+    is_new = fields.Boolean('Is New', default=False)
 
     @api.model
     def send_email_product_instock(self):
         StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
         subcribers = StockNotifcation.search([
-            ('status', '=', 'pending'),
+            '|',
+            '&', ('status', '=', 'pending'), ('x_studio_reoccuring', '=', 'True'),
+            '&', ('status', '=', 'pending'), ('is_new', '=', 'True')
         ])
         notificationList = {}
         template = self.env.ref('sps_theme.mail_template_product_instock_notification_email')
@@ -28,6 +31,7 @@ class website_cstm(models.Model):
                     notificationList[subcriber.email] = []
                 notificationList[subcriber.email].append(subcriber)
                 subcriber.status = 'done'
+                subcriber.is_new = False
 
         for email in notificationList:
             products = notificationList[email]
@@ -55,10 +59,11 @@ class PporoductTemplate(models.Model):
 
         """
         res = super(PporoductTemplate,self)._compute_qty_available()
-        for template in self:
-            if template.actual_quantity == 0:
-                StockNotifcation = template.env['sps_theme.product_instock_notify'].sudo()
-                subcribers = StockNotifcation.search([('product_tmpl_id', '=', template.id),('x_studio_reoccuring', '=', 'True')])
+
+        for temp in self:
+            if temp.actual_quantity == 0:
+                StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
+                subcribers = StockNotifcation.search([('product_tmpl_id', '=', temp.id), ('x_studio_reoccuring', '=', 'True')])
                 for sub in subcribers:
                     sub.status = 'pending'
         return res

@@ -23,9 +23,11 @@
                     <field name="email"/>
                     <field name="product_tmpl_id" string="Product"/>
                     <field name="status"/>
+                    <field name="is_new" invisible="1"/>
                 </tree>
             </field>
         </record>
+
 
         <!-- Email template -->
         <record id="mail_template_product_instock_notification_email" model="mail.template">
@@ -65,6 +67,7 @@
         </record>
 
 
+
         <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Email Notification Template ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
         <record id="website_order_placed_mail_template" model="mail.template">
             <field name="name">Email Notification: Online Product Purchase Details</field>
@@ -81,6 +84,7 @@
                            <p>Please find below a listing of orders that have been placed online:</p>
                         </div>
                         <center>
+
                         </center>
                     </div>
                     <br/>
