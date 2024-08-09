@@ -101,9 +101,6 @@ class AccountHierarchyReport(models.TransientModel):
         final_data, final_data_name = self.set_data(grand_parent, list_all, level, final_data,
                                                     final_data_name)
 
-
-        #_logger.info('--------- _compute_account_hierarchy_html  url ')
-        #_logger.info('--------- _compute_account_hierarchy_html %s', url)
         data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
                    "style='table-layout: fixed;'><tbody>"
         for x, list_data in enumerate(final_data):
@@ -125,28 +122,18 @@ class AccountHierarchyReport(models.TransientModel):
                     elif a.name =="ACQ Account":
                         l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>")
 
-            # l = ["<span style='color: #C4262E;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
             s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
+            list_data = list_data or '""'
 
             if customer.id == current_partner_record.id and flag:
-                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-                                      "<b><a style='color:blue !important;' target='_blank' href=' " + url + '/web#id=' + str(
-                    final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + "</a> </b>"+ s1 + " | " + facility_name + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
+                data_val += f"<tr><td class='o_data_cell o_field_cell o_list_char o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'><b><a style='color:blue !important;' target='_blank' href='{url}/web#id={final_data_name[x].id}&model=res.partner&view_type=form&menu_id=519'>{list_data}</a></b> {s1} | {facility_name} | {purchase_mngr} | {sale_mngr} | {state}</td></tr>"
                 flag = False
             else:
-                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-                                      "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
-                    final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + " </a>"+ s1 + " | " + facility_name + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
-            # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-            #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-            #                       "" + list_data + "</td></tr>"
+                data_val += f"<tr><td class='o_data_cell o_field_cell o_list_char o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'><a style='color:black !important;' target='_blank' href='{url}/web#id={final_data_name[x].id}&model=res.partner&view_type=form&menu_id=519'>{list_data}</a> {s1} | {facility_name} | {purchase_mngr} | {sale_mngr} | {state}</td></tr>"
+
+
 
         data_val = data_val + '</tbody></table>'
-        # self.account_hierarchy_html = data_val
         return data_val
 
     def get_facility_name(self, facility_code):

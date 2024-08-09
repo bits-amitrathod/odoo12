@@ -183,7 +183,7 @@ class VendorOfferProductLineNew(models.Model):
             average_aging = po_line.average_aging
             inv_ratio_90_days = po_line.inv_ratio_90_days
             product_sales_total_amount_yr = po_line.product_sales_amount_yr
-            PDDO = True if qty_sold_90_days == 0 else False
+            PDDO = po_line.is_pddo
             multiplier = None
             if qty_in_stock == 0 and product_sales_count == 0:
                 if 0 < open_quotations_cnt < 5:
