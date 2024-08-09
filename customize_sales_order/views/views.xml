@@ -132,7 +132,6 @@
                     <xpath expr="//field[@name='origin']" position="replace">
                         <field name="origin" readonly="1"/>
                     </xpath>
-
                 </data>
             </field>
         </record>
@@ -332,3 +331,4 @@
 
     </data>
 </odoo>
+
