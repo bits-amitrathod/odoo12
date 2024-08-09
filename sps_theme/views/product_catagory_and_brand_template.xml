@@ -36,7 +36,7 @@
 
     <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Product Item on list ~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
     <template id="sps_theme_website_product_item_inherit" inherit_id="website_sale.products_item">
-        <xpath expr="//h6[hasclass('o_wsale_products_item_title')]" position="after">
+        <xpath expr="//*[hasclass('o_wsale_products_item_title')]" position="after">
             <h5>
                 <strong t-out="product.product_brand_id.name"/>
             </h5>

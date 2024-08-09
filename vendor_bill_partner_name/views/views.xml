@@ -122,6 +122,59 @@
                 </xpath>
             </field>
         </record>
+        <record id="view_partner_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+               <field name="street" position="attributes">
+                    <attribute name="attrs">{'required': [('is_company', '=', True)]}</attribute>
+               </field>
+
+                <field name="street2" position="attributes">
+                    <attribute name="attrs">{'required': [('is_company', '=', True)]}</attribute>
+                </field>
+
+                <field name="city" position="attributes">
+                    <attribute name="attrs">{'required': [('is_company', '=', True)]}</attribute>
+                </field>
+
+                <field name="state_id" position="attributes">
+                    <attribute name="attrs">{'required': [('is_company', '=', True)]}</attribute>
+                </field>
+
+                <field name="zip" position="attributes">
+                    <attribute name="attrs">{'required': [('is_company', '=', True)]}</attribute>
+                </field>
+
+                <field name="phone" position="attributes">
+                    <attribute name="attrs">{'required': [('is_company', '=', True)]}</attribute>
+                </field>
+
+            </field>
+        </record>
+
+        <record id="view_res_partner_kanban_sorted" model="ir.ui.view">
+            <field name="name">res.partner.kanban.sorted</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="attributes">
+                    <attribute name="default_order">display_name asc</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_partner_tree_sorted" model="ir.ui.view">
+            <field name="name">res.partner.tree.sorted</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="default_order">display_name asc</attribute>
+                </xpath>
+            </field>
+        </record>
 
         <template id="report_invoice_document_inherited_for_due_dates" inherit_id="account.report_invoice_document">
             <xpath expr="//div[@class='page']/div[@id='informations']/div[@name='due_date']" position="after">
