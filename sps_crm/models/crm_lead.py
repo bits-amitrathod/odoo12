@@ -28,8 +28,7 @@ class CrmLeadLost(models.TransientModel):
 class Lead(models.Model):
     _inherit = 'crm.lead'
 
-    type = fields.Selection([
-        ('lead', 'Lead'), ('opportunity', 'Opportunity'), ('purchase_opportunity', 'Purchase Opportunity')],
+    type = fields.Selection(
         index=True, required=True,
         default=lambda self: 'lead' if self.env['res.users'].has_group('crm.group_use_lead') else 'opportunity')
 

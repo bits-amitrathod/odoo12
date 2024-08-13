@@ -14,24 +14,13 @@ class SaleOrder(models.Model):
     _inherit = "sale.order"
     cust_po = fields.Char("Customer PO", readonly=False)
     client_order_ref = fields.Char(string='Purchase Order#', copy=False)
-    state = fields.Selection([
-        ('draft', 'Quotation'),
-        ('engine', 'Prioritization'),
-        ('sent', 'Quotation Sent'),
-        ('return', 'Return'),
-        ('sale', 'Sales Order'),
-        ('done', 'Locked'),
-        ('cancel', 'Cancelled'),
-        ('void', 'Voided'),
-    ], string='Status', readonly=True, copy=False, index=True, tracking=True, default='draft')
+    state = fields.Selection(string='Status', readonly=True, copy=False, index=True, tracking=True, default='draft')
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True, store=True)
-    sale_margine = fields.Selection([
-        ('gifted', 'Gifted'),
-        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
+    sale_margine = fields.Selection(string='Sales Level', related='partner_id.sale_margine', readonly=True, store=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
 
     order_processor = fields.Many2one('res.users', string='Order Processor', index=True, tracking=True,
@@ -479,9 +468,7 @@ class AccountInvoice(models.Model):
     memo = fields.Char("Memo")
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
-    sale_margine = fields.Selection([
-        ('gifted', 'Gifted'),
-        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
+    sale_margine = fields.Selection(string='Sales Level', related='partner_id.sale_margine', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
 
