@@ -35,12 +35,12 @@
 &lt;!&ndash;                view_type="form"&ndash;&gt;
                TODO: UPG_ODOO16_NOTE  />-->
 
-        <act_window id="sh_merge_sale_order_multi_action"
-                    name="Merge Sale Orders"
-                    res_model="sh.mso.merge.sale.order.wizard"
-                    view_mode="form"
-                    target="new"
-        />
+    <record id="sh_merge_sale_order_multi_action" model="ir.actions.act_window">
+        <field name="name">Merge Sale Orders</field>
+        <field name="res_model">sh.mso.merge.sale.order.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
 
 
     </data>
