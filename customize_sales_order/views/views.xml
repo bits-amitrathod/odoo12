@@ -132,7 +132,6 @@
                     <xpath expr="//field[@name='origin']" position="replace">
                         <field name="origin" readonly="1"/>
                     </xpath>
-
                 </data>
             </field>
         </record>
@@ -272,7 +271,8 @@
             <field eval="20" name="priority"/>
             <field name="arch" type="xml">
                 <field name="lang" position="after">
-                    <field name="facility_tpcd"/>
+                    <field name="facility_tpcd" required="1">
+                    </field>
                 </field>
             </field>
         </record>
@@ -331,3 +331,4 @@
 
     </data>
 </odoo>
+
