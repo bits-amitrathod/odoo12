@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_picking_operation_report_extension,picking_operation_report_extension.picking_operation_report_extension,model_picking_operation_report_extension,,1,0,0,0
