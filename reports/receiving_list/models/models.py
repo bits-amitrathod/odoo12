@@ -41,6 +41,9 @@ class ReceivingListPopUp(models.TransientModel):
 
         return action
 
+    def _valid_field_parameter(self, field, name):
+        return name == 'order' or super()._valid_field_parameter(field, name)
+
 
 class ReceivingListPoReport(models.Model):
     _name = "report.receiving.list.po"
