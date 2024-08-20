@@ -132,6 +132,18 @@ class CustomerCreditNote(models.TransientModel):
 class AccountInvoiceVendorCredit(models.Model):
     _inherit = "account.move"
     vendor_credit_flag = fields.Boolean('Credit Note Flag', default=False)
+    # user_id = fields.Many2one('res.users', string='Business Development', tracking=True,
+    #                           readonly=True, states={'draft': [('readonly', False)]},
+    #                           default=lambda self: self.env.user, copy=False)
+
     user_id = fields.Many2one('res.users', string='Business Development', tracking=True,
                               readonly=True, states={'draft': [('readonly', False)]},
-                              default=lambda self: self.env.user, copy=False)
+                              copy=False)  # Remove the default here
+
+    @api.model
+    def create(self, vals):
+        #et user_id explicitly here by overriding create method
+        if 'user_id' not in vals:
+            vals['user_id'] = self.env.user.id
+        return super(AccountInvoiceVendorCredit, self).create(vals)
+
