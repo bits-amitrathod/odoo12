@@ -250,17 +250,10 @@
             <field eval="40" name="priority"/>
             <field name="inherit_id" ref="mail.mail_activity_view_form"/>
             <field name="arch" type="xml">
+
                 <field name="request_partner_id" position="after">
                     <field name="time_zone"/>
                 </field>
-
-                <xpath expr="/form/sheet/notebook" position="inside">
-                    <page name="dup_poc" string="Dup POC">
-                        <group>
-                            <field name="dup_poc_note"/>
-                        </group>
-                    </page>
-                </xpath>
 
             </field>
         </record>

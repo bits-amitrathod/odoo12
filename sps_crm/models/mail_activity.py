@@ -26,6 +26,7 @@ class MailActivityNotesCustom(models.Model):
 
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False, compute="_compute_act_note_field",
                                        search="pro_search_for_sales_activity_notes", readonly=False)
+
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, compute="_compute_act_note_field",
                                      search="pro_search_for_acq_activity_notes", readonly=False)
 
@@ -37,7 +38,9 @@ class MailActivityNotesCustom(models.Model):
         ('low', 'Low')], string='Priority', store=True)
 
     reference = fields.Reference(string='Related Document',
-                                 selection='_reference_models')
+                                 selection='_reference_models',
+                                 default='res.partner,1',  # Correct format with model and ID
+                                  )
 
     email = fields.Char(related="related_partner_activity.email", readonly=True, store=False)
     phone = fields.Char(related="related_partner_activity.phone", readonly=True, store=False)
@@ -47,13 +50,7 @@ class MailActivityNotesCustom(models.Model):
     tags = fields.Many2many(related="related_partner_activity.category_id", readonly=True, store=False)
     # related field id studio field need to change
     direct_line = fields.Char(related="related_partner_activity.x_studio_direct_line", readonly=True, store=False)
-    time_zone = fields.Selection([
-        ('est', 'EST'),
-        ('cst', 'CST'),
-        ('mst', 'MST'),
-        ('pst', 'PST'),
-        ('ast', 'AST'),
-        ('hast', 'HAST')],related="related_partner_activity.time_zone", readonly=True, store=False)
+    time_zone = fields.Selection(related="related_partner_activity.time_zone", readonly=True, store=False)
     function = fields.Char(related="related_partner_activity.function", readonly=True, store=False)
 
     comment = fields.Html(string='Comments')

@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 report_bd_account_closed,report.bd.account.closed,model_report_bd_account_closed,,1,1,1,1
 popup_bd_account_closed,popup.bd.account.closed,model_popup_bd_account_closed,,1,1,1,1
+access_report_bd_account_closed_export,report.bd.account.closed.export,model_report_bd_account_closed_export,,1,1,1,1
