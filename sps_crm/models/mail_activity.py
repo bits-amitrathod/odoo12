@@ -37,7 +37,9 @@ class MailActivityNotesCustom(models.Model):
         ('low', 'Low')], string='Priority', store=True)
 
     reference = fields.Reference(string='Related Document',
-                                 selection='_reference_models')
+                                 selection='_reference_models',
+                                 default='res.partner,1',  # Correct format with model and ID
+                                  )
 
     email = fields.Char(related="related_partner_activity.email", readonly=True, store=False)
     phone = fields.Char(related="related_partner_activity.phone", readonly=True, store=False)
