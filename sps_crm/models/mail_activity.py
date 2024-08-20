@@ -26,6 +26,7 @@ class MailActivityNotesCustom(models.Model):
 
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False, compute="_compute_act_note_field",
                                        search="pro_search_for_sales_activity_notes", readonly=False)
+
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, compute="_compute_act_note_field",
                                      search="pro_search_for_acq_activity_notes", readonly=False)
 

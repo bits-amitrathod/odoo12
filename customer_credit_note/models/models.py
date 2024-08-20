@@ -142,7 +142,7 @@ class AccountInvoiceVendorCredit(models.Model):
 
     @api.model
     def create(self, vals):
-        #et user_id explicitly here by overriding create method
+        # setting user_id explicitly here by overriding create method if user id not found then set as current users id as default
         if 'user_id' not in vals:
             vals['user_id'] = self.env.user.id
         return super(AccountInvoiceVendorCredit, self).create(vals)
