@@ -69,6 +69,12 @@
                            context="{'search_default_customer':1, 'show_address': 1, 'show_vat': True}"
                            options="{&quot;always_reload&quot;: True}"/>
                 </field>
+
+                    <!--  Rename tags field as CS Status-->
+                <xpath expr="//page[@name='other_information']//field[@name='tag_ids']" position="attributes">
+                    <attribute name="string">CS Status</attribute>
+                </xpath>
+
             </field>
         </record>
 
