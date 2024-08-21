@@ -9,6 +9,7 @@
 .ks_dashboard_main_content {
     overflow: auto;
     height:100%;
+    margin-top:40px;
 }
 .ks_dashboard_ninja_header{
     text-align : right;
@@ -317,7 +318,7 @@
 
 .ks_dashboard_item_main_body_l5{
     text-align: center;
-    padding: 0 30px;
+    padding: 0 10px;
     display: flex;
     flex-direction: column;
 }
@@ -377,13 +378,33 @@
     display: flex;
     align-items: center;
 }
+
+.welcome_note{
+margin-top:10px;
+}
+.welcome_note h3{
+    font-size: 32px;
+    font-weight: bold;
+}
+    .welcome_note h3 span{
+    color:#777777
+    }
+
+    .welcome_note img {
+    width: 40px;
+}
+
 @media (max-width: 1075px){
     .ks_dashboard_header_name {
         max-width: 100%;
     }
     .ks_dashboard_top_menu{
 
-      margin-top: 10px;
+      margin-top: 10px !important;
+    }
+    .ks_dashboard_top_menu.filter_design{
+
+      margin-top: 0 !important;
     }
 }
 
@@ -507,6 +528,17 @@ ul.nav li.dropdown:hover ul.dropdown-menu{ display: block; }
 #ks_dashboard_title{
     padding-left: 1rem !important;
 }
+#ks_dashboard_title{
+    position: absolute;
+    left: 60px !important;
+}
+
+.ks_preview_item {
+    width: calc(50% - 30px);
+    position: fixed;
+    margin-left:53%;
+    margin-top:3%;
+}
 
 
 .ks_dashboard_ninja_toggle_menu{
@@ -539,10 +571,23 @@ ul.nav li.dropdown:hover ul.dropdown-menu{ display: block; }
 }
 
 @media (max-width: 992px){
+
+
+.custom_filter_calender { background: #f3f7f0 !important; padding: 15px !important; padding-top: 0 !important; position: relative; z-index: 9999;}
+.custom_filter_calender .ks_dashboard_link{display:unset !important;width: 100% !important; margin-bottom: 10px !important}
+.custom_filter_calender .apply-dashboard-date-filter { margin-left: 0 !important; }
+.custom_filter_calender .ks_date_apply_clear_print, .custom_filter_calender .ks_date_filter_selection_input,.custom_filter_calender .ks_date_input_fields { display: unset !important; }
+.custom_filter_calender .ks_btn_middle_child{margin-right:0 !important;margin: 10px 0 !important;}
+.custom_filter_calender .ks_btn_last_child{margin-bottom:10px !important}
+.welcome_note{display:none}
     .ks_dashboard_ninja_toggle_menu:before {
         content: "\f142";
     }
-
+    .ks_dashboard_top_settings.dropdown.d-none.d-lg-block, .ks_dashboard_edit_layout.ks_edit_layout {
+        display: none !important;
+    }
+    .manage_width_threedots { width: calc(100% - 70px); }
+    .threedots_databox { min-width: 150px; }
 
     #ks_dashboard_title_label{
         font-size: 1.5rem;
@@ -621,9 +666,75 @@ ul.nav li.dropdown:hover ul.dropdown-menu{ display: block; }
   .button-50 {
     padding: 4px 15px;
   }
+
+}
+
+@media (max-width:767px){
+
+   .create_new_item_popup .ks-char-preview {
+    width: 100% !important;
+    }
+    .create_new_item_popup .o_group.row.align-items-start.col-lg-6 {
+        width: 100% !important;
+        padding: 20px 15px 0 !important;
+    }
+    .create_new_item_popup .ks_dashboard_ninja.ks_create_chart_body .o_notebook .nav{gap:5px !important}
+
 }
 
 
-.ks_global_filter_padding {
-    padding:10px;
+@media (max-width: 575px){
+    #ks_date_filter_selection{
+        display:none;
+    }
+}
+@media (max-width: 575px){
+    #play_button{
+        display:none;
+    }
+}
+@media (max-width: 575px){
+    #print_dashboard{
+        display:none;
+    }
+    #ks_dashboard_title_input {
+    width: 100%;
+}
+.filter_siderbar_flex ul.nav.nav-tabs.flex-row.flex-nowrap {
+    flex-wrap: wrap !important;
+}
+.ks-modal-body-inner .ks-modal-title{font-size:25px !important}
+.ks-modal-title span{padding:0}
+.generate_item_popup .o-autocomplete.dropdown, .generate_item_popup .o_field_selection{width:100% !important}
+.generate_item_popup .ks-generateAI-body .o_inner_group.grid.col-lg-6 .o_cell .o_field_many2one_selection{position:inherit !important}
+.ks-char-preview .ks-chart-inner, .ks-modal-body-inner{padding:15px !important}
+.ks_dashboard_top_menu .ks_date_filter_selection_input .ks_date_selection_box .ks_date_filter_dropdown .fa{display:inline-block !important; font-size: 15px;}
+.ks_dashboard_top_menu .ks_date_filter_selection_input .ks_date_selection_box .ks_date_filter_dropdown{padding:10px !important}
+.owl-nav .owl-prev {left: -30px !important;}
+.owl-nav .owl-next { right: -30px !important; }
+.custom_filter_calender .apply-dashboard-date-filter, .custom_filter_calender .clear-dashboard-date-filter{min-width:115px !important}
+}
+@media (max-width: 350px) {
+    .ks_dashboard_item_button_container {
+        flex-wrap: wrap;
+        position: relative;
+        z-index: 11
+    }
+    .ks_dashboard_top_menu .ks_dashboard_edit_mode_settings .ks_dashboard_cancel_layout{min-width: 100px !important;}
+    .ks_dashboard_top_menu .ks_dashboard_edit_mode_settings .oe_dashboard_links, .ks_dashboard_top_menu .ks_dashboard_edit_mode_settings .ks_dashboard_cancel_layout {
+    margin-left: 5px !important;
+}
+}
+
+
+.ks_dashboard_quick_edit_action .ks_qe_form_view .o_field_translate.btn.btn-link {
+    display: none;
+}
+
+.ks_import_dashboard_d_none .btn.btn-secondary.fa.fa-download {
+    display:none;
+}
+
+.ks_dashboard_ninja .o_view_nocontent {
+    background-image: NONE !important;
 }

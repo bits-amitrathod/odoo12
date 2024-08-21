@@ -5,7 +5,7 @@
             <field name="name">ks_dashboard_ninja View</field>
             <field name="model">ks_dashboard_ninja.board</field>
             <field name="arch" type="xml">
-                <form string="Dashboards">
+                <form string="Dashboards" duplicate="false">
                     <sheet>
                         <group>
                             <group>
@@ -16,9 +16,10 @@
 
                             </group>
                             <group>
-                                <!--                                <field name="ks_dashboard_default_template"-->
-                                <!--                                       attrs="{'readonly':[('id','>', 0)], 'required':[('id','&lt;', 1)]}"-->
-                                <!--                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>-->
+                                <field name="ks_dashboard_default_template"
+                                       attrs="{'readonly':[('id','>', 0)], 'required':[('id','&lt;', 1)]}"
+                                       options="{'no_create': True, 'no_create_edit':True, 'no_open': True}"/>
+                                <!--                                <field name="ks_set_interval"/>-->
                                 <field name="ks_dashboard_top_menu_id"
                                        options="{'no_create': True, 'no_create_edit':True, 'no_open': True}" attrs="{'readonly':[('ks_dashboard_state','=','Locked')],
                                                                                             'required':[('ks_dashboard_state','!=','Locked')]}"/>
@@ -65,18 +66,17 @@
                                     <group>
                                         <field name="ks_date_filter_selection" required="1"/>
                                         <field name="ks_dashboard_start_date"
-                                                attrs="{'invisible':[('ks_date_filter_selection','!=','l_custom')],'required':[('ks_date_filter_selection','=','l_custom')]}"/>
+                                               attrs="{'readonly':[('ks_date_filter_selection','!=','l_custom')], 'required':[('ks_date_filter_selection','=','l_custom')]}"/>
                                         <field name="ks_dashboard_end_date"
-                                               attrs="{'invisible':[('ks_date_filter_selection','!=','l_custom')],'required':[('ks_date_filter_selection','=','l_custom')]}"/>
+                                               attrs="{'readonly':[('ks_date_filter_selection','!=','l_custom')], 'required':[('ks_date_filter_selection','=','l_custom')]}"/>
                                     </group>
                                 </group>
                             </page>
                             <page string="Auto Update" name="update_settings" >
-                            <group>
-                                <field name="ks_set_interval"/>
-
-                            </group>
-                        </page>
+                                <group>
+                                    <field name="ks_set_interval"/>
+                                </group>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>
