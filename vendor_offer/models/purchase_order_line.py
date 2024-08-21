@@ -3,8 +3,6 @@ import logging
 from random import randint
 
 import math
-
-from gevent.subprocess import value
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from werkzeug.urls import url_encode
@@ -38,7 +36,6 @@ class VendorOfferProduct(models.Model):
     vendor_offer_data = fields.Boolean(related='order_id.vendor_offer_data')
     product_note = fields.Text(string="Notes")
 
-    margin = fields.Char(string="Cost %", readonly=True, compute='_cal_margin')
     margin = fields.Char(string="Cost %", readonly=True, compute='_cal_margin', compute_sudo=True)
     # product_unit_price = fields.Monetary(string="Retail Price",default='_cal_offer_price' , store=True)
     # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
