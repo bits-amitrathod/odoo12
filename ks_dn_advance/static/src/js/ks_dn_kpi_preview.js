@@ -1,37 +1,64 @@
-odoo.define('ks_dashboard_tv_ninja.ks_kpi_view_preview', function(require){
+/** @odoo-module */
 
-    var KsKpiPreview = require('ks_dashboard_ninja_list.ks_dashboard_kpi_preview');
-    var viewRegistry = require('web.view_registry');
-    var field_utils = require('web.field_utils');
-    var session = require('web.session');
-    var utils = require('web.utils');
-    var KsGlobalFunction = require('ks_dashboard_ninja.KsGlobalFunction');
-    var core = require('web.core');
-    var Qweb = core.qweb;
+import { patch } from "@web/core/utils/patch";
+import {KsKpiPreviewowl} from '@ks_dashboard_ninja/js/ks_dashboard_ninja_kpi_preview';
+import field_utils from 'web.field_utils';
+import { qweb } from 'web.core';
+import utils from 'web.utils';
+import session from 'web.session';
+const { useEffect, useRef, xml, onWillUpdateProps,onWillStart} = owl;
 
-    KsKpiPreview.KsKpiPreview.include({
+patch(KsKpiPreviewowl.prototype,"ks_dn_advance",{
 
-        _render: function(){
-            this.$el.empty();
-            var rec =  this.recordData;
+    ksNumFormatter(num, digits) {
+         return this._super(...arguments);
+        },
+        ksNumIndianFormatter(num, digits) {
+             return this._super(...arguments);
+        },
+
+        _get_rgba_format(val) {
+             return this._super(...arguments);
+        },
+        _onKsGlobalFormatter(ks_record_count, ks_data_format, ks_precision_digits){
+            return this._super(...arguments);
+        },
+        file_type_magic_word:{
+            '/': 'jpg',
+            'R': 'gif',
+            'i': 'png',
+            'P': 'svg+xml',
+        },
+
+        kpi_render(){
+        $(this.input.el.parentElement).find('div').remove()
+        $(this.input.el.parentElement).find('input').addClass('d-none')
+        var rec = this.props.record.data;
             if (rec.ks_dashboard_item_type === 'ks_kpi') {
                 if(rec.ks_data_calculation_type === "custom"){
-                    this._super.apply(this, arguments);
+                    this._super(...arguments);
                 } else {
-                    var kpi_data = JSON.parse(rec.ks_kpi_data)
-                    if (kpi_data){
+                if (rec.ks_kpi_data==""){
+                var kpi_data=false
+                }else
+                { var kpi_data = JSON.parse(rec.ks_kpi_data)}
+                 if (kpi_data){
                         this.KsRenderKpi();
                     }else{
-                        this.$el.append($('<div>').text("Please run the appropriate Query"));
+                       $(this.input.el.parentElement).append($('<div>').text("Please run the appropriate Query"));
                     }
                 }
             }
         },
 
-        KsRenderKpi: function(){
+        KsRenderKpi(){
             var self = this;
-            var field = this.recordData;
+            var field = this.props.record.data;
+            if (field.ks_kpi_data==""){
+            var kpi_data=false
+            }else{
             var kpi_data = JSON.parse(field.ks_kpi_data);
+            }
             var count_1 = kpi_data[0].record_data ? kpi_data[0].record_data:0;
             var count_2 = kpi_data[1] ? kpi_data[1].record_data : undefined;
             var target_1 = kpi_data[0].target;
@@ -47,7 +74,7 @@ odoo.define('ks_dashboard_tv_ninja.ks_kpi_view_preview', function(require){
                 var count_value = kpi_data[0]['record_data']
             }else
             {
-                var count_value = KsGlobalFunction._onKsGlobalFormatter(kpi_data[0]['record_data'], field.ks_data_format, field.ks_precision_digits);
+                var count_value = self._onKsGlobalFormatter(kpi_data[0]['record_data'], field.ks_data_format, field.ks_precision_digits);
             }
             var item_info = {
                 count_1: count_value,
@@ -69,18 +96,17 @@ odoo.define('ks_dashboard_tv_ninja.ks_kpi_view_preview', function(require){
                 target_view: field.ks_target_view,
             }
 
-
             if (field.ks_icon) {
                 if (!utils.is_bin_size(field.ks_icon)) {
                     // Use magic-word technique for detecting image type
                     item_info['img_src'] = 'data:image/' + (self.file_type_magic_word[field.ks_icon[0]] || 'png') + ';base64,' + field.ks_icon;
                 } else {
                     item_info['img_src'] = session.url('/web/image', {
-                        model: self.model,
-                        id: JSON.stringify(self.res_id),
+                        model: self.env.model.root.resModel,
+                        id: JSON.stringify(this.props.record.data.id),
                         field: "ks_icon",
                         // unique forces a reload of the image when the record has been updated
-                        unique: field_utils.format.datetime(self.recordData.__last_update).replace(/[^0-9]/g, ''),
+                        unique: String(this.props.record.data.__last_update.ts),
                     });
                 }
             }
@@ -88,9 +114,9 @@ odoo.define('ks_dashboard_tv_ninja.ks_kpi_view_preview', function(require){
             var $kpi_preview;
             if (!kpi_data[1]) {
                 if (target_view === "Number" || !field.ks_goal_enable) {
-                    $kpi_preview = $(Qweb.render("ks_kpi_preview_template", item_info));
+                    $kpi_preview = $(qweb.render("ks_kpi_preview_template", item_info));
                 } else if (target_view === "Progress Bar" && field.ks_goal_enable) {
-                    $kpi_preview = $(Qweb.render("ks_kpi_preview_template_3", item_info));
+                    $kpi_preview = $(qweb.render("ks_kpi_preview_template_3", item_info));
                     $kpi_preview.find('#ks_progressbar').val(parseInt(item_info.target_progress_deviation));
                 }
 
@@ -103,10 +129,7 @@ odoo.define('ks_dashboard_tv_ninja.ks_kpi_view_preview', function(require){
                 "background-color": ks_rgba_background_color,
                 "color": ks_rgba_font_color,
             });
-            this.$el.append($kpi_preview);
+             $(this.input.el.parentElement).append($kpi_preview);
         },
 
     });
-
-    return KsKpiPreview;
-});

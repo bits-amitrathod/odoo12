@@ -50,6 +50,17 @@
     top: 1vh;
 }
 
+button.btn.btn-primary.ks_start_tv_dashboard.mr-2.d-md-block {
+    margin-right:5px !important;
+}
+
+button.btn.btn-primary.ks_dashboard_print_pdf.mr-2.d-md-block {
+    margin-right:5px !important;
+}
+
+button.btn.btn-primary.ks_dashboard_send_email.mr-2.d-md-block {
+    margin-right:5px !important;
+}
 
 
 .ks_tv_item.d-flex{
@@ -143,10 +154,6 @@
 }
 
 .ks_dn_table .ks_dn_thead .ks_dn_th {
-    position: sticky;
-    top: -5px;
-}
-.ks_dn_table .ks_dn_thead .ks_dn_th_extra {
     position: sticky;
     top: -5px;
 }

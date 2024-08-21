@@ -1,89 +1,133 @@
-odoo.define('ks_dashboard_ninja_list.ks_labels', function (require) {
-    "use strict";
+/** @odoo-module */
 
-    var registry = require('web.field_registry');
-    var AbstractField = require('web.AbstractField');
-    var core = require('web.core');
-    var field_utils = require('web.field_utils');
-    var session = require('web.session');
-    var utils = require('web.utils');
+import { registry } from "@web/core/registry";
+import { qweb } from 'web.core';
+import core from 'web.core';
+import field_utils from 'web.field_utils';
+import session from 'web.session';
+import utils from 'web.utils';
+import { CharField } from "@web/views/fields/char/char_field";
+const { useEffect, useRef,onWillUpdateProps} = owl;
 
-    var QWeb = core.qweb;
 
-    var KsLabels = AbstractField.extend({
-        resetOnAnyFieldChange: true,
-        supportedFieldTypes: ['char'],
+class KsXLabels extends CharField{
 
-        events: _.extend({}, AbstractField.prototype.events, {
-            'change select': 'ks_toggle_icon_input_click',
-        }),
-        init: function(){
-            this.ks_columns = {};
-            this._super.apply(this, arguments);
-        },
+//        events: _.extend({}, AbstractField.prototype.events, {
+//            'change select': 'ks_toggle_icon_input_click',
+//        }),
+        setup() {
+        super.setup();
+        const self = this;
+        const inputRef = useRef("input");
+        useEffect(
+            (input) => {
+                if (input) {
+                if(this.props.readonly==true){
+                self._ks_render_readonly()
+                }else{
+                self._Ks_render_edit()
+                }
+                }
+            },
+            () => [inputRef.el]
 
-        _renderEdit : function(){
-            var self = this;
-            self.$el.empty();
-            var field = self.recordData;
+        );
+        document.body.addEventListener('change', function(evt) {
+        if ($(evt.target).hasClass("ks_label_select'")) {
+       self.ks_toggle_icon_input_click(evt);
+    }
+}, false);
 
+
+
+        onWillUpdateProps(this.onWillUpdateProps);
+//        onWillStart(this.onWillStart);
+
+}
+    onWillUpdateProps(){
+    this._Ks_render_edit()
+
+
+}
+
+        _Ks_render_edit(){
+        var self = this;
+        $(this.input.el.parentElement).find('div').remove()
+        $(this.input.el.parentElement).find('input').addClass('d-none')
+        $(this.input.el.parentElement).find("select").remove()
+        var field = this.props.record.data;
             if(field.ks_query_result && field.ks_dashboard_item_type !== 'ks_kpi'){
                 var ks_query_result = JSON.parse(field.ks_query_result);
                 if (ks_query_result.header.length){
                     self.ks_check_for_labels();
-                    var $view = $(QWeb.render('ks_select_labels',{
+                    var $view = $(qweb.render('ks_select_labels',{
                         ks_columns_list: self.ks_columns,
-                        mode: self.mode,
+                        mode: self.props.record.mode,
                     }));
 
-                    if (self.value) {
-                        $view.val(self.value);
+                    if (this.props.record.data.ks_xlabels=="") {
+                        $view.val(false)
+                    }else{
+                    $view.val(this.props.record.data.ks_xlabels)
                     }
-                    this.$el.append($view)
+                    if(document.querySelector(".o_group_selector")==null){
+                    $(this.input.el.parentElement).append($view)
+                    }else{
+//                    document.querySelector(".o_group_selector").remove()
+                    $(this.input.el.parentElement).append($view)
+                     }
 
-                    if (this.mode === 'readonly') {
-                        this.$el.find('.ks_label_select').addClass('ks_not_click');
+                    if (this.props.record.mode === 'readonly') {
+                        $(self.input.el.parentElement).find('.ks_label_select').addClass('ks_not_click');
                     }
                 } else {
-                    this.$el.append("No Data Available");
+                    $(self.input.el.parentElement).append($('<div>').text("No Data Available"));
                 }
             } else {
-               this.$el.append("Please Enter the Appropriate Query for this");
+               $(self.input.el.parentElement).append($('<div>').text("Please Enter the Appropriate Query for this"));
             }
-        },
-        _renderReadonly : function(){
+
+        }
+        _ks_render_readonly(){
             var self = this;
-            self.$el.empty();
-            var field = self.recordData;
+        $(this.input.el.parentElement).find('div').remove()
+        $(this.input.el.parentElement).find('input').addClass('d-none')
+            var field = self.props.record.data;
 
             if(field.ks_query_result){
                 var ks_query_result = JSON.parse(field.ks_query_result);
-                if (field.ks_dashboard_item_type !== 'ks_kpi' && ks_query_result.header.length){
+                if (field.ks_dashboard_item_type !== 'ks_kpi' && ks_query_result.records.length){
                     self.ks_check_for_labels();
-                    var $view = $(QWeb.render('ks_select_labels',{
+                    var $view = $(qweb.render('ks_select_labels',{
                         ks_columns_list: self.ks_columns,
                         value: self.ks_columns[self.value],
-                        mode: self.mode,
+                        mode: self.props.record.mode,
                     }));
-                    self.$el.append($view);
+                    if(document.querySelector(".o_group_selector")==null){
+                    $(this.input.el.parentElement).append($view)
+                    }else{
+                    document.querySelector(".o_group_selector").remove()
+                    $(this.input.el.parentElement).append($view)
+                     }
                 } else {
-                    this.$el.append("No Data Available");
+                   $(self.input.el.parentElement).append($('<div>').text("No Data Available"));
                 }
             } else {
-               this.$el.append("Please Enter the Appropriate Query for this")
+               $(self.input.el.parentElement).append($('<div>').text("Please Enter the Appropriate Query for this"))
             }
-        },
-
-        ks_toggle_icon_input_click: function(e){
+        }
+        ks_toggle_icon_input_click(e){
             var self = this;
-            self._setValue(e.currentTarget.value);
-        },
+            if (e.target.id==""){
+            this.props.update(e.target.value);
+            }
+            }
 
-        ks_check_for_labels: function(){
+        ks_check_for_labels(){
             var self = this;
             self.ks_columns = {false:false};
-            var query_result = JSON.parse(self.recordData.ks_query_result);
-            if (self.name === "ks_ylabels"){
+            var query_result = JSON.parse(self.props.record.data.ks_query_result);
+            if (self.props.name === "ks_ylabels"){
                 query_result.header.forEach(function(key){
                     if(typeof(query_result[0][key]) === "number") {
                         self.ks_columns[key] = self.ks_title(key.replace("_", " "));
@@ -94,9 +138,9 @@ odoo.define('ks_dashboard_ninja_list.ks_labels', function (require) {
                     self.ks_columns[key] = self.ks_title(key.replace("_", " "));
                 });
             }
-        },
+        }
 
-        ks_title: function(str) {
+        ks_title(str) {
             var split_str = str.toLowerCase().split(' ');
             for (var i = 0; i < split_str.length; i++) {
                 split_str[i] = split_str[i].charAt(0).toUpperCase() + split_str[i].substring(1);
@@ -104,9 +148,6 @@ odoo.define('ks_dashboard_ninja_list.ks_labels', function (require) {
             }
             return str;
         }
-    });
-    registry.add('ks_labels', KsLabels);
+    }
 
-    return KsLabels
-
-});
+registry.category("fields").add('ks_x_labels', KsXLabels);
