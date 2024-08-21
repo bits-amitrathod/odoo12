@@ -115,7 +115,7 @@ border-top: 1px solid #dcdada;
      }
 
  }
-  @media(max-width: 1000px){
+  @media(max-width: 768px){
      .ks_dashboard_header {
         height: 145px !important;
     }
@@ -148,3 +148,15 @@ border-top: 1px solid #dcdada;
 .ks_info_display {
 display: block !important;
 }
+
+/*.config_dropdown .dropdown-item, .config_dropdown .dropdown-item-studio {
+    padding: 6px 20px;
+    color: black;
+}
+
+.btn-secondary.dropdown-toggle {
+    color: #FFF;
+    background-color: #FFF;
+    border-color: #FFF;
+    box-shadow: 0;
+}*/
