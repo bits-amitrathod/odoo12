@@ -37,6 +37,9 @@ class MarginsReportPopup(models.TransientModel):
 
     include_shipping = fields.Boolean('Include Shipping', default=False, required=False)
 
+    def _valid_field_parameter(self, field, name):
+        return name == '_defaluts' or super()._valid_field_parameter(field, name)
+
     def open_table(self):
 
         tree_view_id = self.env.ref('margins.margins_list_view').id

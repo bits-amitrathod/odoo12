@@ -6,7 +6,7 @@ from odoo.modules import get_module_resource
 class VendorBillPartnerName(models.Model):
     _inherit = "res.partner"
 
-    type = fields.Selection(
+    type = fields.Selection(selection_add=
         [('contact', 'Contact'),
          ('invoice', 'Invoice address'),
          ('delivery', 'Shipping address'),
