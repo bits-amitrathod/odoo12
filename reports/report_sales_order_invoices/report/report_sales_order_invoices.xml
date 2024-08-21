@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_sales_order_invoices"
-                string="Sales Order Invoice"
-                model="account.invoice"
-                report_type="qweb-html"
-                file="report_sales_order_invoices.sales_order_invoices"
-                name="report_sales_order_invoices.sales_order_invoices"
-        />
+        <record id="action_report_sales_order_invoices" model="ir.actions.report">
+            <field name="name">Sales Order Invoice</field>
+            <field name="model">account.invoice</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">report_sales_order_invoices.sales_order_invoices</field>
+            <field name="report_file">report_sales_order_invoices.sales_order_invoices</field>
+        </record>
     </data>
 </odoo>

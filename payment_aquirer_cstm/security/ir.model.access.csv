@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_payment_aquirer_cstm_payment_aquirer_cstm,payment_aquirer_cstm.payment_aquirer_cstm,model_payment_aquirer_cstm_payment_aquirer_cstm,,1,0,0,0
 cstm_product_process_list,payment_aquirer_cstm.product_process_list,model_product_process_list,,1,0,0,0
+access_product_process_list,product.process.list,model_product_process_list,,1,1,1,1

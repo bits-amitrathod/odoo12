@@ -24,6 +24,7 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, tracking=True, default='draft')
+
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
@@ -479,9 +480,7 @@ class AccountInvoice(models.Model):
     memo = fields.Char("Memo")
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
-    sale_margine = fields.Selection([
-        ('gifted', 'Gifted'),
-        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
+    sale_margine = fields.Selection(string='Sales Level', related='partner_id.sale_margine', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
 

@@ -18,7 +18,7 @@ class VendorOfferProduct(models.Model):
     sku_code = fields.Char('Product SKU', compute='onchange_product_id_vendor_offer', store=False, compute_sudo=True)
     product_brand_id = fields.Many2one('product.brand', string='Manufacture',
                                        compute='onchange_product_id_vendor_offer',
-                                       help='Select a Manufacture for this product', store=False)
+                                       help='Select a Manufacture for this product', store=False,compute_sudo=True)
     product_sales_count = fields.Integer(string="Sales All", readonly=True, store=True)
     product_sales_count_month = fields.Integer(string="Sales Month", readonly=True, store=True)
     product_sales_count_90 = fields.Integer(string="Sales 90", readonly=True, store=True)
@@ -39,20 +39,23 @@ class VendorOfferProduct(models.Model):
     product_note = fields.Text(string="Notes")
 
     margin = fields.Char(string="Cost %", readonly=True, compute='_cal_margin')
+    margin = fields.Char(string="Cost %", readonly=True, compute='_cal_margin', compute_sudo=True)
+    # product_unit_price = fields.Monetary(string="Retail Price",default='_cal_offer_price' , store=True)
+    # product_offer_price = fields.Monetary(string="Offer Price", readonly=True, compute='cal_offer_price')
     for_print_product_offer_price = fields.Char(string="Offer Price")
     for_print_price_subtotal = fields.Char(string="Offer Price")
-    product_retail = fields.Monetary(string="Total Retail Price", compute='_compute_amount')
-    rt_price_total = fields.Monetary(compute='_compute_amount', string='Total')
-    rt_price_tax = fields.Monetary(compute='_compute_amount', string='Tax')
+    product_retail = fields.Monetary(string="Total Retail Price", compute='_compute_amount',compute_sudo=True)
+    rt_price_total = fields.Monetary(compute='_compute_amount', string='Total',compute_sudo=True)
+    rt_price_tax = fields.Monetary(compute='_compute_amount', string='Tax',compute_sudo=True)
     import_type_ven_line = fields.Char(string='Import Type of Product for calculation')
 
     delivered_product_offer_price = fields.Monetary("Total Received Qty Offer Price", store=False,
-                                                    compute="_calculat_delv_price")
+                                                    compute="_calculat_delv_price",compute_sudo=True)
     delivered_product_retail_price = fields.Monetary("Total Received Qty Retail Price", store=False,
-                                                     compute="_calculat_delv_price")
+                                                     compute="_calculat_delv_price",compute_sudo=True)
 
     billed_product_offer_price = fields.Monetary("Total Billed Qty Offer Price", store=False,
-                                                    compute="_calculat_bill_price")
+                                                    compute="_calculat_bill_price",compute_sudo=True)
     billed_product_retail_price = fields.Monetary("Total Billed Qty Retail Price", store=False,
                                                      compute="_calculat_bill_price")
 
