@@ -1,9 +1,17 @@
 # -*- coding: utf-8 -*-
 import dateutil
 import datetime as dt
+from datetime import timezone
 import pytz
 import json
+import xlrd
+import csv
+import os
+import tempfile
+import binascii
+import pandas as pd
 import babel
+import ast
 from datetime import timedelta
 from odoo.tools.safe_eval import safe_eval
 from odoo.tools.misc import DEFAULT_SERVER_DATETIME_FORMAT, DEFAULT_SERVER_DATE_FORMAT
@@ -14,15 +22,19 @@ from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.addons.ks_dashboard_ninja.common_lib.ks_date_filter_selections import ks_get_date, ks_convert_into_utc, \
     ks_convert_into_local
-
+from .ks_country_bounds import get_country_code
+import logging
+_logger = logging.getLogger("DS_NINJA")
 # TODO : Check all imports if needed
 
 
 read = fields.Many2one.read
 
 
+
 def ks_read(self, records):
-    if self.name == 'ks_list_view_fields' or self.name == 'ks_list_view_group_fields':
+    if self.name == 'ks_list_view_fields' or self.name == 'ks_list_view_group_fields' or \
+            self.name == 'ks_chart_measure_field' or self.name == 'ks_chart_measure_field_2':
         comodel = records.env[self.comodel_name]
 
         # String domains are supposed to be dynamic and evaluated on client-side
@@ -34,33 +46,48 @@ def ks_read(self, records):
         from_c, where_c, where_params = wquery.get_sql()
         query = """ SELECT {rel}.{id1}, {rel}.{id2} FROM {rel}, {from_c}
                     WHERE {where_c} AND {rel}.{id1} IN %s AND {rel}.{id2} = {tbl}.id
+                    
                 """.format(rel=self.relation, id1=self.column1, id2=self.column2,
-                           tbl=comodel._table, from_c=from_c, where_c=where_c or '1=1',
-                           limit=(' LIMIT %d' % self.limit) if hasattr(self, 'limit') else '',
-                           )
+                                   tbl=comodel._table, from_c=from_c, where_c=where_c or '1=1'
+                                   )
         where_params.append(tuple(records.ids))
 
         # retrieve lines and group them by record
         group = defaultdict(list)
         records._cr.execute(query, where_params)
-        rec_list = records._cr.fetchall()
-        for row in rec_list:
-            group[row[0]].append(row[1])
 
-        # store result in cache
-        cache = records.env.cache
         for record in records:
             if self.name == 'ks_list_view_fields':
                 field = 'ks_list_view_fields'
+            elif self.name == 'ks_chart_measure_field':
+                field = 'ks_chart_measure_field'
+            elif self.name == 'ks_chart_measure_field_2':
+                field = 'ks_chart_measure_field_2'
             else:
                 field = 'ks_list_view_group_fields'
             order = False
             if record.ks_many2many_field_ordering:
                 order = json.loads(record.ks_many2many_field_ordering).get(field, False)
 
-            if order:
+
+        rec_list = records._cr.fetchall()
+        if order:
+            for row in order:
+                group[record.id].append(row)
+
+        else:
+            for row in rec_list:
+                group[row[0]].append(row[1])
+
+        # store result in cache
+        cache = records.env.cache
+        if order:
+            try:
                 group[record.id].sort(key=lambda x: order.index(x))
-            cache.set(record, self, tuple(group[record.id]))
+            except Exception as e:
+                pass
+        cache.set(record, self, tuple(group[record.id]))
+
 
     else:
         context = {'active_test': False}
@@ -73,12 +100,11 @@ def ks_read(self, records):
         order_by = comodel._generate_order_by(None, wquery)
         from_c, where_c, where_params = wquery.get_sql()
         query = """ SELECT {rel}.{id1}, {rel}.{id2} FROM {rel}, {from_c}
-                    WHERE {where_c} AND {rel}.{id1} IN %s AND {rel}.{id2} = {tbl}.id
-                    {order_by} {limit} OFFSET {offset}
-                """.format(rel=self.relation, id1=self.column1, id2=self.column2,
-                           tbl=comodel._table, from_c=from_c, where_c=where_c or '1=1',
-                           limit=(' LIMIT %d' % self.limit) if hasattr(self, 'limit') else '',
-                           offset=0, order_by=order_by)
+                            WHERE {where_c} AND {rel}.{id1} IN %s AND {rel}.{id2} = {tbl}.id
+                            {order_by}
+                        """.format(rel=self.relation, id1=self.column1, id2=self.column2,
+                                   tbl=comodel._table, from_c=from_c, where_c=where_c or '1=1',
+                                   order_by=order_by)
         where_params.append(tuple(records.ids))
 
         # retrieve lines and group them by record
@@ -91,6 +117,7 @@ def ks_read(self, records):
         cache = records.env.cache
         for record in records:
             cache.set(record, self, tuple(group[record.id]))
+
 
 
 fields.Many2many.read = ks_read
@@ -155,6 +182,7 @@ def ks_time_addition(self, gb, query):
         'interval': time_intervals[gb_function or 'month'] if temporal else None,
         'tz_convert': tz_convert,
         'qualified_field': qualified_field,
+        'granularity': gb_function or 'month' if temporal else None,
     }
 
 
@@ -165,20 +193,20 @@ class KsDashboardNinjaItems(models.Model):
     _name = 'ks_dashboard_ninja.item'
     _description = 'Dashboard Ninja items'
 
-    name = fields.Char(string="Name", size=256, help="The item will be represented by this unique name.")
-    ks_info = fields.Char(string="Item Description",size=400)
+    name = fields.Char(string="Name", translate=True, help="The item will be represented by this unique name.")
+    ks_info = fields.Text(string="Item Description",  translate=True)
     ks_model_id = fields.Many2one('ir.model', string='Model',
                                   domain="[('access_ids','!=',False),('transient','=',False),"
-                                         "('model','not ilike','base_import%'),'|',('model','not ilike','ir.%'),('model','=ilike','_%ir.%'),"
+                                         "('model','not ilike','base_import%'),'|',('model','not ilike','ir.%'), ('model','ilike','repair.%'),"
                                          "('model','not ilike','web_editor.%'),('model','not ilike','web_tour.%'),"
-                                         "('model','!=','mail.thread'),('model','not ilike','ks_dash%'), ('model','not ilike','ks_to%')]",
+                                         "('model','!=','mail.thread'),('model','not ilike','ks_dash%'),('model','not ilike','ks_to%')]",
                                   help="Data source to fetch and read the data for the creation of dashboard items. ")
     ks_dashboard_board_template_id = fields.Many2one('ks_dashboard_ninja.board_template', string="Dashboard Template")
     ks_domain = fields.Char(string="Domain", help="Define conditions for filter. ")
 
     ks_model_id_2 = fields.Many2one('ir.model', string='Kpi Model',
                                     domain="[('access_ids','!=',False),('transient','=',False),"
-                                           "('model','not ilike','base_import%'),'|',('model','not ilike','ir.%'),('model','=ilike','_%ir.%'),"
+                                           "('model','not ilike','base_import%'),('model','not ilike','ir.%'),"
                                            "('model','not ilike','web_editor.%'),('model','not ilike','web_tour.%'),"
                                            "('model','!=','mail.thread'),('model','not ilike','ks_dash%'), ('model','not ilike','ks_to%')]")
 
@@ -193,7 +221,7 @@ class KsDashboardNinjaItems(models.Model):
     ks_default_icon = fields.Char(string="Icon", default="bar-chart", help='Select the icon to be displayed. ')
     ks_default_icon_color = fields.Char(default="#ffffff,0.99", string="Icon Color",
                                         help='Select the icon to be displayed. ')
-    ks_icon_select = fields.Char(string="Icon Option", default="Default", help='Choose the Icon option. ')
+    ks_icon_select = fields.Selection([("Default","Default"),("Custom","Custom"),],string="Icon Option", default=("Default"), help='Choose the Icon option. ')
     ks_font_color = fields.Char(default="#ffffff,0.99", string="Font Color", help='Select the font color. ')
     ks_dashboard_item_theme = fields.Char(string="Theme", default="white",
                                           help='Select the color theme for the display. ')
@@ -229,6 +257,9 @@ class KsDashboardNinjaItems(models.Model):
                                              "'|',('ttype','=','integer'),('ttype','=','float'),"
                                              "('ttype','=','monetary')]",
                                       string="Record Field")
+    ks_send_mail = fields.Boolean(string="Send Mail")
+    ks_email_to_ids = fields.Many2many('ks_dashboard_ninja.kpi_mail',string="Email Address")
+    ks_stop_mail_cron = fields.Boolean(string="Stop mail cron")
     ks_record_data_limit_visibility = fields.Boolean(string="Record Limit Data Visibility",
                                                      help="To enable the record data limit field")
 
@@ -321,8 +352,7 @@ class KsDashboardNinjaItems(models.Model):
         ('l_custom', 'Custom Filter'),
     ], string="Kpi Date Filter Selection", required=True, default='l_none')
 
-    ks_previous_period = fields.Boolean(string=" Compare With Previous Period ",
-                                        help='Checkbox to show comparison between the data of present day and the previous selected period. ')
+    ks_previous_period = fields.Boolean(string=" Compare With Previous Period ", help='Checkbox to show comparison between the data of present day and the previous selected period. ')
 
     # ------------------------ Pro Fields --------------------
     ks_dashboard_ninja_board_id = fields.Many2one('ks_dashboard_ninja.board', string="Dashboard",
@@ -339,12 +369,19 @@ class KsDashboardNinjaItems(models.Model):
                                                ('ks_pie_chart', 'Pie Chart'),
                                                ('ks_doughnut_chart', 'Doughnut Chart'),
                                                ('ks_polarArea_chart', 'Polar Area Chart'),
+                                               ('ks_radialBar_chart', 'Radial Bar Chart'),
+                                               ('ks_scatter_chart', 'Scatter Chart'),
                                                ('ks_list_view', 'List View'),
+                                               ('ks_radar_view', 'Radar View'),
+                                               ('ks_flower_view', 'Flower View'),
                                                ('ks_kpi', 'KPI'),
-                                               ('ks_to_do', 'To Do')
+                                               ('ks_to_do', 'To Do'),
+                                               ('ks_map_view', 'Map View'),
+                                               ('ks_funnel_chart', 'Funnel Chart'),
+                                               ('ks_bullet_chart', 'Bullet Chart')
                                                ], default=lambda self: self._context.get('ks_dashboard_item_type',
                                                                                          'ks_tile'), required=True,
-                                              string="Dashboard Item Type",
+
                                               help="Select the required type of dashboard to display. ")
     ks_chart_groupby_type = fields.Char(compute='get_chart_groupby_type', compute_sudo=False)
     ks_chart_sub_groupby_type = fields.Char(compute='get_chart_sub_groupby_type', compute_sudo=False)
@@ -429,16 +466,11 @@ class KsDashboardNinjaItems(models.Model):
         ('layout_2', 'Data Comparison'),
     ], string="Kpi Layout", default="layout_1")
 
-    ks_target_view = fields.Char(string="View", default="Number", help=' Select the view to compare target with data.')
+    ks_target_view = fields.Selection([("Number","Number"),("Progress Bar","Progress Bar"),],string="View", default="Number", help=' Select the view to compare target with data.')
 
-    ks_data_comparison = fields.Char(string="Kpi Data Type", default="None")
+    ks_data_comparison = fields.Selection([("None","None"),("Sum","Sum"),("Ratio","Ratio"),("Percentage","Percentage"),],string="Kpi Data Type", default="None")
 
     ks_kpi_data = fields.Char(string="KPI Data", compute="ks_get_kpi_data", compute_sudo=False)
-
-    # ------------------------ Tile  View Fields ------------------------------
-    ks_tile_data = fields.Char(string="TILE Data", compute="ks_get_tile_data", compute_sudo=False)
-
-
 
     ks_chart_item_color = fields.Selection(
         [('default', 'Default'), ('cool', 'Cool'), ('warm', 'Warm'), ('neon', 'Neon')],
@@ -504,14 +536,16 @@ class KsDashboardNinjaItems(models.Model):
     ks_year_period_2 = fields.Integer(string="KPI Same Period Previous Years")
 
     ks_multiplier_active = fields.Boolean(string="Apply Multiplier", default=False,
-                                          help="Provides the visibility of multiplier field")
-    ks_multiplier = fields.Float(string="Multiplier", default=1, help="Provides the multiplication of record value")
+                                        help="Provides the visibility of multiplier field")
+    ks_multiplier = fields.Float(string="Multiplier",default=1, help="Provides the multiplication of record value")
 
 
 
     # User can select custom units for measure
+    ks_currency_id= fields.Many2one("res.currency",string="Currency", domain="['|', ('active', '=', False), ('active', '=', True)]",
+                                    default=lambda self: self.env.company.currency_id)
+
     ks_unit = fields.Boolean(string="Show Custom Unit", default=False, help='Display the unit of the data.')
-    ks_currency_id= fields.Many2one("res.currency",string="Currency", domain="['|', ('active', '=', False), ('active', '=', True)]")
     ks_unit_selection = fields.Selection([
         ('monetary', 'Monetary'),
         ('custom', 'Custom'),
@@ -530,6 +564,7 @@ class KsDashboardNinjaItems(models.Model):
     ks_domain_extension_2 = fields.Char('KPI Domain Extension')
     # hide legend
     ks_hide_legend = fields.Boolean('Show Legend', help="Hide all legend from the chart item", default=True)
+    ks_radial_legend = fields.Boolean('Show Legend', help="Hide all legend from the chart item", default=True)
     ks_data_calculation_type = fields.Selection([('custom', 'Default Query'),
                                                  ('query', 'Custom Query')], string="Data Calculation Type",
                                                 default="custom",
@@ -551,7 +586,7 @@ class KsDashboardNinjaItems(models.Model):
     ks_is_client_action = fields.Boolean('Client Action', default=False)
     ks_client_action = fields.Many2one('ir.actions.client',
                                        string="Client Item Action",
-                                       domain="[('name','!=','App Store'),('name','!=','Updates')]",
+                                       domain="[('name','!=','App Store'),('name','!=','Updates'),('res_model','not ilike','ks_dashboard_ninja.%'),('name','!=','Discuss')]",
                                        help="This Action will be Performed at the end of Drill Down Action")
     ks_pagination_limit = fields.Integer('Pagination Limit', default=15)
 
@@ -562,16 +597,888 @@ class KsDashboardNinjaItems(models.Model):
 
     ks_precision_digits = fields.Integer('Digits', compute="_ks_compute_precision_digits", store=True, readonly=False)
 
+    ks_scatter_measure_x_id = fields.Many2one('ir.model.fields',
+                                              domain="[('model_id','=',ks_model_id),('name','!=','id'),('name','!=','sequence'),"
+                                                     "('store','=',True),'|','|',"
+                                                     "('ttype','=','integer'),('ttype','=','float'),"
+                                                     "('ttype','=','monetary')]",
+                                              string="Measure X")
+    # ks_scatter_ungroup_measure_y_id = fields.Many2one('ir.model.fields',
+    #                                                   domain="[('model_id','=',ks_model_id),('name','!=','id'),('name','!=','sequence'),"
+    #                                                          "('store','=',True),'|','|',"
+    #                                                          "('ttype','=','integer'),('ttype','=','float'),"
+    #                                                          "('ttype','=','monetary')]",
+    #                                                   string="Measure Y")
+    ks_is_scatter_group = fields.Boolean(string="Group By")
+    ks_scatter_measure_y_id = fields.Many2one('ir.model.fields',
+                                              domain="[('model_id','=',ks_model_id),('name','!=','id'),('name','!=','sequence'),"
+                                                     "('store','=',True),'|','|',"
+                                                     "('ttype','=','integer'),('ttype','=','float'),"
+                                                     "('ttype','=','monetary')]",
+                                              string="Measure Y")
+    ks_scatter_field_id = fields.Many2one('ir.model.fields',
+                                          domain="[('model_id','=',ks_model_id),('name','!=','id'),('name','!=','sequence'),"
+                                                 "('store','=',True),('ttype','!=','binary'),"
+                                                 "('ttype','!=','many2many'), ('ttype','!=','one2many')]",
+                                          string="Scatter Points")
+
     ks_data_label_type = fields.Selection([('percent', 'Percent'), ('value', 'Value')], string='Show Data Value Type',
                                           help='When "Show Data Value Type" selected this field enables to select label type in percent or value',
                                           default='percent')
     ks_as_of_now = fields.Boolean("Data Till Now",
                                   help="Display the total sum of each legends as it grows with times")
+    ks_radial_preview = fields.Char(string="Radial Preview", default="Radial Preview")
+    ks_radial_item_color = fields.Selection(
+        [('default', 'Default'), ('dark', 'Dark'), ('material', 'Material'), ('moonrise', 'Moonrise')],
+        string="Radial Chart Theme", default="default", help='Select the display preference. ')
+    ks_map_preview = fields.Char(string="Map Preview", default="Map Preview")
+    ks_partners_map = fields.Char(compute="_compute_map_partners")
+    ks_country_id = fields.Many2one('res.country', string="Country")
+    ks_country_code = fields.Char(related="ks_country_id.code", store=True)
+    ks_bounds = fields.Char(compute="_compute_bounds", store=True)
+
+    ks_funnel_preview = fields.Char(string="Funnel Preview", default="Funnel Preview")
+    ks_funnel_record_field = fields.Many2one('ir.model.fields',
+                                      domain="[('model_id','=',ks_model_id),('name','!=','id'),('store','=',True),'|',"
+                                             "'|',('ttype','=','integer'),('ttype','=','float'),"
+                                             "('ttype','=','monetary')]",
+                                      string="Funnel Record Field")
+    ks_map_record_field = fields.Many2one('ir.model.fields',
+                                             domain="[('model_id','=',ks_model_id),('name','!=','id'),('store','=',True),'|',"
+                                                    "'|',('ttype','=','integer'),('ttype','=','float'),"
+                                                    "('ttype','=','monetary')]",
+                                             string="Map Record Field")
+    ks_funnel_item_color = fields.Selection(
+        [('default', 'Default'), ('dark', 'Dark'), ('material', 'Material'), ('moonrise', 'Moonrise')],
+        string="Funnel Chart Theme", default="default", help='Select the display preference. ')
+    ks_bullet_preview = fields.Char(string="Bullet Preview", default="Bullet Preview")
+    ks_flower_view_preview = fields.Char(string="Flower Preview", default="Flower Preview")
+    ks_flower_item_color = fields.Selection(
+        [('default', 'Default'), ('dark', 'Dark'), ('material', 'Material'), ('moonrise', 'Moonrise')],
+        string="Flower Chart Theme", default="default", help='Select the display preference. ')
+
+    upload_excel = fields.Binary(string='Upload Excel File', attachment=False)
+    ks_csv_field = fields.Binary(string='Upload CSV File', attachment=False)
+    ks_group_by_lines = fields.One2many('ks.dashboard.group.by', 'ks_dashboard_group_by_id', string="Group By Lines")
+    ks_csv_group_by_lines = fields.One2many('ks.dashboard.csv.group.by', 'ks_dashboard_csv_group_by_id', string="Group By Lines")
+    filename = fields.Char(string='Filename')
+    name_seq = fields.Char(help="Sequential Queue ID", copy=False)
+    excel_bool = fields.Boolean(string='Excel Bool')
+    model_bool = fields.Boolean(string='Model Bool')
+    csv_bool = fields.Boolean(string='CSV Bool')
+    ks_is_external_db = fields.Boolean()
+    ks_host = fields.Char()
+    ks_port = fields.Char()
+    ks_db_name = fields.Char()
+    ks_db_password = fields.Char()
+    ks_db_user = fields.Char()
+    data_source = fields.Selection(
+        [('odoo', 'Odoo'), ('excel', 'Excel'), ('csv', 'CSV')],
+        string="Data Source",default='odoo')
+
+    @api.model
+    def create_ai_dash(self, data, ks_dash_id, model):
+        try:
+            result= []
+            for item in data:
+                ks_measure_field_ids = []
+                value = {}
+                chart_switch = {
+                    'bar': "ks_bar_chart",
+                    'pie': 'ks_pie_chart',
+                    'donut': 'ks_doughnut_chart',
+                    'area': 'ks_area_chart',
+                    'line': 'ks_line_chart',
+                    'polar': 'ks_polarArea_chart',
+                    'horizontalbar': 'ks_horizontalBar_chart',
+                    'table': "ks_list_view"
+                }
+                if item["chart_type"].lower() in ['bar', 'line', 'pie', 'area', 'donut', 'polar', 'horizontalbar']:
+                    ks_measure_id = self.env['ir.model.fields'].search(
+                        [('name', '=', item["aggregations"][0]["field"]), ('model', '=', model)])
+                    if ks_measure_id and ks_measure_id['ttype'] in ['integer','float','monetary']:
+                        ks_measure_field_ids.append(ks_measure_id.id)
+                        value["ks_chart_measure_field"] = [(6, 0, ks_measure_field_ids)]
+
+                    ks_record_id = self.env['ir.model.fields'].search(
+                        [('name', '=', item["group_by_column"]), ('model', '=', model)])
+                    if ks_record_id:
+                        value['ks_chart_relation_groupby'] = ks_record_id.id
+                        if ks_record_id['ttype'] == "datetime" or ks_record_id['ttype'] == "date":
+                            value['ks_chart_date_groupby'] = "month"
+
+                    value["name"] = item["chart_name"]
+
+                    ks_model_id = self.env['ir.model'].search([('model', '=', model)]).id
+                    value['ks_model_id'] = ks_model_id
+
+                    if item["aggregations"][0]["type"] == 'avg':
+                        value['ks_chart_data_count_type'] = 'average'
+                    else:
+                        value['ks_chart_data_count_type'] = item["aggregations"][0]["type"]
+
+                    value['ks_dashboard_item_type'] = chart_switch.get(item['chart_type'], False)
+                    value['ks_dashboard_ninja_board_id'] = ks_dash_id
+                    if ks_measure_field_ids and ks_record_id and ks_model_id:
+                        try:
+                            ks_result = self.create(value)
+                            result.append(ks_result)
+                        except Exception as e:
+                            result
+                elif item["chart_type"].lower() == "table":
+                    value["name"] = item["chart_name"]
+                    value['ks_dashboard_ninja_board_id'] = ks_dash_id
+                    value['ks_dashboard_item_type'] = chart_switch.get(item['chart_type'], False)
+
+                    ks_model_id = self.env['ir.model'].search([('model', '=', model)]).id
+                    value['ks_model_id'] = ks_model_id
+
+                    ks_measure_id = self.env['ir.model.fields'].search(
+                        [('name', '=', item["aggregations"][0]["field"]), ('model', '=', model)])
+                    if ks_measure_id and ks_measure_id['ttype'] in ['integer','float','monetary']:
+                        ks_measure_field_ids.append(ks_measure_id.id)
+                        value["ks_list_view_group_fields"] = [(6, 0, ks_measure_field_ids)]
+                    # value["ks_list_view_fields"] = [(6, 0, ks_measure_field_ids)]
+
+                    ks_record_id = self.env['ir.model.fields'].search(
+                        [('name', '=', item["group_by_column"]), ('model', '=', model)])
+                    if ks_record_id:
+                        value['ks_chart_relation_groupby'] = ks_record_id.id
+                        if ks_record_id['ttype'] == "datetime" or ks_record_id['ttype'] == "date":
+                            value['ks_chart_date_groupby'] = "month"
+                    value['ks_list_view_type'] = 'grouped'
+                    if ks_measure_field_ids and ks_record_id and ks_model_id:
+                        try:
+                            ks_result = self.create(value)
+                            result.append(ks_result)
+                        except Exception as e:
+                            result
+                elif item["chart_type"].lower() == "kpi":
+                    value["name"] = item["chart_name"]
+                    value['ks_dashboard_ninja_board_id'] = ks_dash_id
+                    value['ks_dashboard_item_type'] = "ks_kpi"
+
+                    ks_model_id = self.env['ir.model'].search([('model', '=', model)]).id
+                    value['ks_model_id'] = ks_model_id
+
+                    ks_measure_id = self.env['ir.model.fields'].search(
+                        [('name', '=', item["aggregations"][0]["field"]), ('model', '=', model)])
+                    if ks_measure_id:
+                        value["ks_record_field"] = ks_measure_id.id
+
+                    if item["aggregations"][0]["type"] == 'avg':
+                        value['ks_record_count_type'] = 'average'
+                    else:
+                        value['ks_record_count_type'] = item["aggregations"][0]["type"]
+                    value['ks_background_color'] = "#ffffff,0.99"
+                    value['ks_default_icon_color'] = "#000000,0.99"
+                    value['ks_font_color'] = "#000000,0.99"
+                    value['ks_button_color'] = "#000000,0.99"
+
+                    if ks_measure_id and ks_model_id:
+                        try:
+                            ks_result = self.create(value)
+                            result.append(ks_result)
+                        except Exception as e:
+                            result
+                else:
+                    pass
+            if len(result):
+                return "success"
+            else:
+                return "Abort"
+        except:
+            raise ValidationError(_("Getting invalid response from AI, please try again"))
+
+
+
+    @api.onchange('ks_chart_relation_groupby', 'ks_model_id','ks_dashboard_item_type')
+    def add_domain(self):
+        if self.ks_dashboard_item_type == 'ks_map_view':
+            return {
+                'domain': {'ks_chart_relation_groupby': ['&', '&', '&', '&', '&', '&', ('relation', '=', 'res.partner'),
+                                                         ('store', '=', True),
+                                                         ('ttype', '!=', 'many2many'),
+                                                         ('ttype', '!=', 'one2many'),
+                                                         ('name', '!=', 'sequence'),
+                                                         ('name', '!=', 'id'),
+                                                         ('model_id.name', '=', self.ks_model_id.name)
+                                                         ]}}
+
+     # Making model, csv and excel field invisible on condition.
+    @api.onchange('data_source')
+    def ks_make_invisible(self):
+        if self.data_source == 'excel':
+            self.excel_bool = True
+            self.model_bool = False
+            self.csv_bool = False
+        elif self.data_source == 'odoo':
+            self.model_bool = True
+            self.excel_bool = False
+            self.csv_bool = False
+        elif self.data_source == 'csv':
+            self.csv_bool = True
+            self.model_bool = False
+            self.excel_bool = False
+        elif not self.data_source:
+            self.model_bool = False
+            self.excel_bool = False
+            self.csv_bool = False
+
+        # Reading the Csv file
+    @api.onchange('ks_csv_field')
+    def read_csv(self):
+        if self.ks_csv_field:
+            if ' ' in self.filename or '_' in self.filename:
+                try:
+                    fp = tempfile.NamedTemporaryFile(delete=False, suffix=".csv")
+                    fp.write(binascii.a2b_base64(self.ks_csv_field))
+                    fp.seek(0)
+
+                    with open(fp.name, 'r', encoding='utf-8') as csvfile:
+                        csv_reader = csv.reader(csvfile)
+                        fields = []
+                        values = {}
+                        header_row = next(csv_reader)
+
+                        for row in header_row:
+                            fields.append(row)
+                            values[row] = None
+                            del_group_by_field = """delete from ks_dashboard_csv_new;"""
+                            self._cr.execute(del_group_by_field)
+                            self.env['ks.dashboard.csv.new'].search([])
+                            for rec in fields:
+                                self.env['ks.dashboard.csv.new'].create({
+                                    'name': rec,
+                                })
+
+                        for line in csv_reader:
+                            for i, field in enumerate(fields):
+                                values[field] = line[i]
+
+                            values = {}
+                            for field in fields:
+                                values[field] = None
+
+
+                except:
+                    raise ValidationError(_("Invalid file!"))
+            else:
+                raise ValidationError('Please add filename which contain Spaces and Underscore in there name only.')
+        else:
+            if self.ks_model_id:
+                model = self.env['ir.model'].search([('id', '=', self.ks_model_id.id)])
+                model.unlink()
+            if self.ks_csv_group_by_lines:
+                for rec in self.ks_csv_group_by_lines:
+                    rec.unlink()
+
+        # Reading the Excel file
+    @api.onchange('upload_excel')
+    def _read_xls(self):
+        if self.upload_excel:
+            if ' ' in self.filename or '_' in self.filename:
+                try:
+                    fp = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
+                    fp.write(binascii.a2b_base64(self.upload_excel))
+                    fp.seek(0)
+                    values = {}
+                    workbook = xlrd.open_workbook(fp.name)
+                    sheet = workbook.sheet_by_index(0)
+                except Exception as e:
+                    raise ValidationError(_(e))
+
+                for row_no in range(sheet.nrows):
+                    val = {}
+                    if row_no <= 0:
+                        fields = list(
+                            map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value),
+                                sheet.row(row_no)))
+                        del_group_by_field = """delete from ks_dashboard_new;"""
+                        self._cr.execute(del_group_by_field)
+                        self.env['ks.dashboard.new'].search([])
+                        for rec in fields:
+                            self.env['ks.dashboard.new'].create({
+                                'name': rec,
+                            })
+                    else:
+                        line = list(
+                            map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value),
+                                sheet.row(row_no)))
+                        value = 0
+                        for field in fields:
+                            while (value < len(line)):
+                                values.update({
+                                    field: line[value],
+                                })
+                                value = value + 1
+                                break
+            else:
+                raise ValidationError('Please add filename which contain Spaces and Underscore in there name only.')
+        else:
+            if self.ks_group_by_lines:
+                for rec in self.ks_group_by_lines:
+                    rec.unlink()
+            if self.ks_model_id:
+                model = self.env['ir.model'].search([('id', '=', self.ks_model_id.id)])
+                model.unlink()
+
+            # Syncing the data from table to page
+    def data_sync(self):
+        data = self.env['ks.dashboard.new'].search([])
+        for rec in data:
+            self.write({
+                'ks_group_by_lines': [(0, 0, {
+                    'name': rec.name
+                })]
+            })
+
+    def csv_data_sync(self):
+        data = self.env['ks.dashboard.csv.new'].search([])
+        for rec in data:
+            self.write({
+                'ks_csv_group_by_lines': [(0, 0, {
+                    'name': rec.name
+                })]
+            })
+
+        # Creating table in ir model and adding column in it.
+    def create_table(self):
+        records = self.ks_group_by_lines
+        dict = []
+        if records:
+            for rec in records:
+                values = {}
+                if not rec.ttype:
+                    raise ValidationError('Please Enter the type under Column Data Type Tab')
+                values.update({
+                    'name': rec.name.lower().replace(' ', '_'),
+                    'type': rec.ttype
+                })
+                dict.append(values)
+        if '_' and '-' in self.filename:
+            split = self.filename.lower().split('_')
+            split_value = ''
+            for res in split:
+                split_value += res
+            final_split = split_value.split('-')
+        elif' ' in self.filename:
+            final_split = self.filename.lower().split(' ')
+        elif'_' in self.filename:
+            final_split = self.filename.lower().split('_')
+        else:
+            final_split = self.filename.lower().split('.')
+        tablemodel = ('x_'+final_split[0]+'_'+self.name_seq).replace(' ','')
+        tablename = final_split[0]+' '+self.name_seq
+        model_creation = self.env['ir.model'].sudo().create({
+            'name': tablename,
+            'model': tablemodel,
+            'order': 'x_name asc, id desc',  # valid order
+        })
+        for value in dict:
+            column_name = value.get('name')
+            column_type = value.get('type')
+            if '/' in column_name:
+                column_name = value.get('name').replace('/', '_')
+            if ' ' in column_name:
+                column_name = value.get('name').replace(' ', '_')
+            if '(' and ')' in column_name:
+                column_name = value.get('name').replace(')', '').replace('(', '')
+            if column_name == 'name':
+                column_name = column_name.replace('name', 'name1')
+            model_creation.write({
+                    'field_id': [(0, 0, {
+                        'name': 'x_'+column_name,
+                        'ttype': column_type,
+                        'field_description': column_name.replace('_', ' ')
+                    })]
+                })
+        self.env['ir.model.access'].sudo().create({
+            'name': model_creation.name + ' all_user',
+            'model_id': model_creation.id,
+            'perm_read': True,
+            'perm_write': False,
+            'perm_create': False,
+            'perm_unlink': False,
+        })
+        self.ks_model_id = model_creation.id
+        self.insert_data_into_table(tablemodel)
+
+        # Inserting data into the ir model table.
+    def insert_data_into_table(self, tablemodel):
+        if self.upload_excel:
+            try:
+                fp = tempfile.NamedTemporaryFile(delete=False, suffix=".xlsx")
+                fp.write(binascii.a2b_base64(self.upload_excel))
+                fp.seek(0)
+                values = {}
+                workbook = xlrd.open_workbook(fp.name)
+                sheet = workbook.sheet_by_index(0)
+            except:
+                raise ValidationError(_("Invalid file!"))
+            for row_no in range(sheet.nrows):
+                val = {}
+                if row_no <= 0:
+                    fields = list(
+                        map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value),
+                            sheet.row(row_no)))
+                else:
+                    line = list(
+                        map(lambda row: isinstance(row.value, bytes) and row.value.encode('utf-8') or str(row.value),
+                            sheet.row(row_no)))
+                    value = 0
+                    for field in fields:
+                        if '/' in field:
+                            field = field.replace('/', ' ')
+                        if ' ' in field:
+                            field = field.replace(' ', '_')
+                        if '(' and ')' in field:
+                            field = field.replace(')', '').replace('(', '')
+                        if field == 'Name':
+                            field = field.replace('Name', 'name1')
+                        if 'Date' in field or 'Deadline' in field or self.ks_group_by_lines[value].ttype in ['datetime','date']:
+                            if line[value]:
+                                if self.ks_group_by_lines[value].ttype in['datetime','date']:
+                                    final_date = pd.to_timedelta(float(line[value]), unit='D') + pd.to_datetime('1899-12-30')
+                                    while (value < len(line)):
+                                        values.update({
+                                            field: final_date,
+                                        })
+                                        value = value + 1
+                                        break
+                                else:
+                                    while (value < len(line)):
+                                        values.update({
+                                            field: line[value],
+                                        })
+                                        value = value + 1
+                                        break
+                            else:
+                                while (value < len(line)):
+                                    values.update({
+                                        field: 'Null',
+                                    })
+                                    value = value + 1
+                                    break
+                        else:
+                            while (value < len(line)):
+                                if line[value]:
+                                    if '.' in line[value]:
+                                        if ',' in line[value]:
+                                            if self.ks_group_by_lines[value].ttype == 'char':
+                                                split = line[value].split(',')
+                                                split_value = ''
+                                                for res in split:
+                                                    split_value += res
+                                                final_split = split_value.split('.')
+                                                final_split_value = ''
+                                                for final_res in final_split:
+                                                    final_split_value += final_res
+                                                values.update({
+                                                    field: final_split_value,
+                                                })
+                                            else:
+                                                split = line[value].split(',')
+                                                split_value = split[0] + split[1]
+                                                final_value = float(split_value)
+                                                values.update({
+                                                    field: final_value,
+                                                })
+                                        elif '@' in line[value]:
+                                            values.update({
+                                                field: line[value],
+                                            })
+                                        else:
+                                            # final_value = (line[value])
+                                            if self.ks_group_by_lines[value].ttype == 'integer':
+                                                try:
+                                                    values.update({
+                                                        field: int(float(line[value])),
+                                                    })
+                                                except:
+                                                    values.update({
+                                                        field: 0,
+                                                    })
+
+                                            elif self.ks_group_by_lines[value].ttype == 'float':
+                                                try:
+                                                    values.update({
+                                                        field: float(line[value]),
+                                                    })
+                                                except:
+                                                    values.update({
+                                                        field: 0.00
+                                                    })
+
+                                            else:
+                                                values.update({
+                                                    field: line[value],
+                                                })
+                                    elif "'" and '+' in line[value]:
+                                        split_value = line[value].split('+')
+                                        final_split = '+' + split_value[1]
+                                        values.update({
+                                            field: final_split,
+                                        })
+                                    elif "'" in line[value]:
+                                        split_value = line[value].split("'")
+                                        final_split_value = ''
+                                        for res in split_value:
+                                            final_split_value += res
+                                        values.update({
+                                            field: final_split_value,
+                                        })
+                                    elif  self.ks_group_by_lines[value].ttype == 'integer':
+                                        try:
+                                            values.update({
+                                                field: int(float(line[value])),
+                                            })
+                                        except:
+                                            values.update({
+                                                field: 0,
+                                            })
+                                    elif self.ks_group_by_lines[value].ttype == 'float':
+                                        try:
+                                            values.update({
+                                                field: float(line[value]),
+                                            })
+                                        except:
+                                            values.update({
+                                                field: 0.00,
+                                            })
+                                    else:
+                                        values.update({
+                                            field: line[value],
+                                        })
+                                    value = value + 1
+                                    break
+                                else:
+                                    values.update({
+                                        field: 'Null',
+                                    })
+                                    value = value + 1
+                                    break
+                    final_values = []
+                    final_heading = []
+                    try:
+                        for final in values:
+                            if values.get(final) != 'Null':
+                                final_values.append(str(values.get(final)))
+                                final_heading.append('x_' + final.lower().replace(' ', '_'))
+                        resultString = ", ".join(["'{}'".format(item) for item in final_values if item])
+                        resultHeading = ", ".join(['{}'.format(item) for item in final_heading if item])
+                        if resultString and resultHeading != "":
+                            data_query = """INSERT INTO {} ({}) VALUES ({})""".format(tablemodel, resultHeading, resultString)
+                            self.env.cr.execute(data_query)
+                    except Exception as e:
+                        raise ValidationError("found error while Table creation {}".format(e))
+                    self._cr.commit()
+
+    def csv_create_table(self):
+        records = self.ks_csv_group_by_lines
+        dict = []
+        if records:
+            for rec in records:
+                values = {}
+                if not rec.ttype:
+                    raise ValidationError('Please Enter the type under Column Data Type Tab')
+                values.update({
+                    'name': rec.name.lower().replace(' ', '_'),
+                    'type': rec.ttype
+                })
+                dict.append(values)
+        if '_' and '-' in self.filename:
+            split = self.filename.lower().split('_')
+            split_value = ''
+            for res in split:
+                split_value += res
+            final_split = split_value.split('-')
+        elif ' ' in self.filename:
+            final_split = self.filename.lower().split(' ')
+        elif '_' in self.filename:
+            final_split = self.filename.lower().split('_')
+        else:
+            final_split = self.filename.lower().split('.')
+        tablemodel = 'x_'+final_split[0]+'_'+self.name_seq.replace(' ','')
+        tablename = final_split[0]+' '+self.name_seq
+        model_creation = self.env['ir.model'].sudo().create({
+            'name': tablename,
+            'model': tablemodel,
+            'order': 'x_name asc, id desc',  # valid order
+        })
+        for value in dict:
+            column_name = value.get('name')
+            column_type = value.get('type')
+            if '/' in column_name:
+                column_name = value.get('name').replace('/', '_')
+            if ' ' in column_name:
+                column_name = value.get('name').replace(' ', '_')
+            if '(' and ')' in column_name:
+                column_name = value.get('name').replace(')', '').replace('(', '')
+            if column_name == 'name':
+                column_name = column_name.replace('name', 'name1')
+            model_creation.write({
+                    'field_id': [(0, 0, {
+                        'name': 'x_'+column_name,
+                        'ttype': column_type,
+                        'field_description': column_name.replace('_', ' ')
+                    })]
+                })
+        self.env['ir.model.access'].sudo().create({
+            'name': model_creation.name + ' all_user',
+            'model_id': model_creation.id,
+            'perm_read': True,
+            'perm_write': False,
+            'perm_create': False,
+            'perm_unlink': False,
+        })
+        self.ks_model_id = model_creation.id
+        self.insert_data_into_csv_table(tablemodel)
+
+    def insert_data_into_csv_table(self, tablemodel):
+        if self.ks_csv_field:
+            fp = tempfile.NamedTemporaryFile(delete=False, suffix=".csv")
+            fp.write(binascii.a2b_base64(self.ks_csv_field))
+            fp.seek(0)
+
+            with open(fp.name, 'r', encoding='utf-8') as csvfile:
+                csv_reader = csv.reader(csvfile)
+                fields = []
+                values = {}
+                field_values = {}
+                header_row = next(csv_reader)
+                for row in header_row:
+                    fields.append(row)
+                    field_values[row] = None
+                for line in csv_reader:
+                    value = 0
+                    for field in fields:
+                        if ' ' in field:
+                            field = field.replace(' ', '_')
+                        if '/' in field:
+                            field = field.replace('/', ' ')
+                        if '(' and ')' in field:
+                            field = field.replace(')', '').replace('(', '')
+                        if field == 'Name':
+                            field = field.replace('Name', 'name1')
+                        if 'Date' in field or 'Deadline' in field or self.ks_csv_group_by_lines[value].ttype in ['datetime','date']:
+                            if line[value]:
+                                if self.ks_csv_group_by_lines[value].ttype == 'datetime':
+                                    final_date = line[value].split(' ')[0]
+                                    while (value < len(line)):
+                                        values.update({
+                                            field: final_date,
+                                        })
+                                        value = value + 1
+                                        break
+                                else:
+                                    try:
+                                        while (value < len(line)):
+                                            values.update({
+                                                field: line[value],
+                                            })
+                                            value = value + 1
+                                            break
+                                    except:
+                                        while (value < len(line)):
+                                            values.update({
+                                                field: 'Null',
+                                            })
+                                            value = value + 1
+                                            break
+
+                            else:
+                                while (value < len(line)):
+                                    values.update({
+                                        field: 'Null',
+                                    })
+                                    value = value + 1
+                                    break
+                        else:
+                            while (value < len(line)):
+                                if line[value]:
+                                    if '$' in line[value]:
+                                        line[value] = line[value].replace('$', '')
+                                    if '-' in line[value]:
+                                        line[value] = line[value].replace('-', '')
+                                    if '(' and ')' in line[value]:
+                                        line[value] = line[value].replace(')', '').replace('(', '')
+                                    if '.' in line[value]:
+                                        if ',' in line[value]:
+                                            if self.ks_csv_group_by_lines[value].ttype == 'char':
+                                                split = line[value].split(',')
+                                                split_value = ''
+                                                for res in split:
+                                                    split_value += res
+                                                final_split = split_value.split('.')
+                                                final_split_value = ''
+                                                for final_res in final_split:
+                                                    final_split_value += final_res
+                                                values.update({
+                                                    field: final_split_value,
+                                                })
+                                            else:
+                                                split = line[value].split(',')
+                                                split_value = split[0] + split[1]
+                                                if self.ks_csv_group_by_lines[value].ttype == 'float':
+                                                    try:
+                                                        values.update({
+                                                            field: float(split_value),
+                                                        })
+                                                    except:
+                                                        values.update({
+                                                            field: 0.00,
+                                                        })
+
+                                                elif self.ks_csv_group_by_lines[value].ttype == 'integer':
+                                                    try:
+                                                        values.update({
+                                                            field: int(float(split_value)),
+                                                        })
+                                                    except:
+                                                        values.update({
+                                                            field: 0,
+                                                        })
+
+                                                else:
+                                                    values.update({
+                                                        field: split_value,
+                                                    })
+                                        elif '@' in line[value]:
+                                            values.update({
+                                                field: line[value],
+                                            })
+                                        else:
+                                            if self.ks_csv_group_by_lines[value].ttype == 'float':
+                                                try:
+                                                    values.update({
+                                                        field: float(line[value]),
+                                                    })
+                                                except:
+                                                    values.update({
+                                                        field:0.00,
+                                                    })
+                                            elif self.ks_csv_group_by_lines[value].ttype == 'integer':
+                                                try:
+                                                    values.update({
+                                                        field: int(float(line[value])),
+                                                    })
+                                                except:
+                                                    values.update({
+                                                        field: 0,
+                                                    })
+                                            else:
+                                                values.update({
+                                                    field: line[value],
+                                                })
+                                    elif "'" and '+' in line[value]:
+                                        split_value = line[value].split('+')
+                                        final_split = '+' + split_value[1]
+                                        values.update({
+                                            field: final_split,
+                                        })
+                                    elif "'" in line[value]:
+                                        split_value = line[value].split("'")
+                                        final_split_value = ''
+                                        for res in split_value:
+                                            final_split_value += res
+                                        values.update({
+                                            field: final_split_value,
+                                        })
+                                    elif line[value] == '    ':
+                                        values.update({
+                                            field: 'Null',
+                                        })
+                                        value = value + 1
+                                        break
+                                    elif  self.ks_csv_group_by_lines[value].ttype == 'integer':
+                                        try:
+                                            values.update({
+                                                field: int(float(line[value])),
+                                            })
+                                        except:
+                                            values.update({
+                                                field: 0,
+                                            })
+                                    elif self.ks_csv_group_by_lines[value].ttype == 'float':
+                                        try:
+                                            values.update({
+                                                field: float(line[value]),
+                                            })
+                                        except:
+                                            values.update({
+                                                field: 0.00,
+                                            })
+                                    else:
+                                        values.update({
+                                            field: line[value],
+                                        })
+                                    value = value + 1
+                                    break
+                                else:
+                                    values.update({
+                                        field: 'Null',
+                                    })
+                                    value = value + 1
+                                    break
+                    final_values = []
+                    final_heading = []
+                    try:
+                        for final in values:
+                            if values.get(final) != 'Null':
+                                final_values.append(str(values.get(final)))
+                                final_heading.append('x_' + final.lower().replace(' ', '_'))
+                        resultString = ", ".join(["'{}'".format(item) for item in final_values if item])
+                        resultHeading = ", ".join(['{}'.format(item) for item in final_heading if item])
+                        if resultString and resultHeading != "":
+                            data_query = """INSERT INTO {} ({}) VALUES ({})""".format(tablemodel, resultHeading,
+                                                                                      resultString)
+                            self.env.cr.execute(data_query)
+                    except Exception as e:
+                        raise ValidationError("found error while Table creation error {}".format(e))
+                    self._cr.commit()
+
+
+    def check_target(self):
+        base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+        sales_target = self.env['ks_dashboard_ninja.item'].search([
+                ('ks_dashboard_item_type', '=', 'ks_kpi'),
+                ('ks_send_mail', '=', True),
+                ('ks_stop_mail_cron', '=' , False)
+            ])
+        menu_record = self.env.ref('ks_dashboard_ninja.board_menu_root')
+        menu_id_1 = menu_record.id
+        recipient_emails = []
+        email_from = self.env['res.company'].search([], limit=1)
+        for res in sales_target:
+            if res.ks_record_count >= res.ks_standard_goal_value:
+                dashboard_id = res.ks_dashboard_ninja_board_id.id
+                action_id = res.ks_dashboard_ninja_board_id.ks_dashboard_menu_id.action.id if res.ks_dashboard_ninja_board_id.ks_dashboard_menu_id.action and res.ks_dashboard_ninja_board_id.ks_dashboard_menu_id.action.id else menu_record.action.id
+                for partner in res.ks_email_to_ids:
+                    recipient_emails.append(partner.name)
+                kpi_mail = self.env['mail.mail'].create({
+                                                        'body_html': '<p>Congratulations! The Target of '+ str(res.ks_standard_goal_value) +' for '+ res.name +' is achieved!!</p>'
+                                                                     f"<p>Click here to check the dashboard: "
+                                                                     f"<a href='{base_url}/web#cids=1&menu_id={res.ks_dashboard_ninja_board_id.ks_dashboard_menu_id.id if res.ks_dashboard_ninja_board_id.ks_dashboard_menu_id.id else menu_id_1}"
+                                                                     f"&ks_dashboard_id={dashboard_id}&action={action_id}'>Dashboard Link</a></p>",
+                                                        'subject' : 'Commendable Achievement: Meeting and Exceeding Sales Targets',
+                                                        'email_from' : email_from.email,
+                                                        'email_to': ','.join(recipient_emails),
+                                                         })
+                kpi_mail.sudo().send()
+                res.ks_stop_mail_cron = True
+                recipient_emails = []
+
+    def write(self, vals):
+        if vals.get('ks_standard_goal_value') or vals.get('ks_record_count_type'):
+            self.ks_stop_mail_cron = False
+        return super(KsDashboardNinjaItems, self).write(vals)
+
 
     @api.onchange('ks_year_period', 'ks_year_period_2')
     def ks_year_neg_val_not_allow(self):
         for rec in self:
-            if rec.ks_year_period < 0 or rec.ks_year_period_2 < 0:
+            if rec.ks_year_period < 0 or rec.ks_year_period_2 < 0 :
                 raise ValidationError(_(" Negative periods are not allowed "))
 
     @api.onchange('ks_item_start_date', 'ks_item_end_date')
@@ -602,7 +1509,6 @@ class KsDashboardNinjaItems(models.Model):
                 rec.ks_precision_digits = ks_precision_digits
             except Exception as E:
                 rec.ks_precision_digits = 2
-
     # default = lambda self: self.sudo().env.ref('ks_dashboard_ninja.ks_dashboard_ninja_precision')
 
     @api.onchange('ks_multiplier_active', 'ks_chart_measure_field',
@@ -643,11 +1549,10 @@ class KsDashboardNinjaItems(models.Model):
 
             if len(rec.ks_chart_measure_field) == 0:
                 rec.ks_chart_cumulative_field = False
-            # if rec.ks_chart_cumulative_field:
-            #     ks_cumutative_temp = rec.ks_chart_cumulative_field
-            #     # rec.ks_chart_cumulative_field = False
-            #     rec.ks_chart_cumulative_field = ks_cumutative_temp
-                # rec.write({'ks_multiplier_lines': ks_temp_list})
+
+
+
+
 
     @api.onchange('ks_list_view_type')
     def _ks_onchange_ks_list_view_type(self):
@@ -670,14 +1575,16 @@ class KsDashboardNinjaItems(models.Model):
             elif rec.ks_goal_enable and not rec.ks_goal_lines:
                 rec.ks_pagination_limit = 15
 
+
     @api.onchange('ks_goal_enable')
     def ks_is_goal_enable(self):
         for rec in self:
-            if not rec.ks_goal_enable:
+            if not rec.ks_goal_enable :
                 rec.ks_goal_lines = False
                 rec.ks_pagination_limit = 15
             elif rec.ks_goal_enable and not rec.ks_goal_lines:
                 rec.ks_pagination_limit = 15
+
 
     @api.onchange('ks_pagination_limit')
     def ks_on_negativ_limit(self):
@@ -700,6 +1607,8 @@ class KsDashboardNinjaItems(models.Model):
         for rec in self:
             if not rec.ks_record_data_limit_visibility:
                 rec.ks_record_data_limit = 0
+
+
 
     @api.onchange('ks_fill_temporal')
     def ks_onchange_fill_temporal(self):
@@ -746,7 +1655,27 @@ class KsDashboardNinjaItems(models.Model):
 
         if 'ks_goal_lines' not in default:
             default['ks_goal_lines'] = [(0, 0, line.copy_data()[0]) for line in self.ks_goal_lines]
-
+        if 'ks_multiplier_lines' not in default:
+            default['ks_multiplier_lines'] = [(0, 0, line.copy_data()[0]) for line in self.ks_multiplier_lines]
+        ks_many2many_field_ordering = self.ks_many2many_field_ordering
+        ks_list_view_group_fields = []
+        ks_list_view_fields = []
+        ks_chart_measure_field = []
+        ks_chart_measure_field_2 = []
+        if ks_many2many_field_ordering:
+            ks_many2many_field_ordering = json.loads(ks_many2many_field_ordering)
+            ks_list_view_group_fields = ks_many2many_field_ordering.get('ks_list_view_group_fields', False)
+            ks_list_view_fields = ks_many2many_field_ordering.get('ks_list_view_fields', False)
+            ks_chart_measure_field = ks_many2many_field_ordering.get('ks_chart_measure_field', False)
+            ks_chart_measure_field_2 = ks_many2many_field_ordering.get('ks_chart_measure_field_2', False)
+        if 'ks_list_view_group_fields' not in default:
+            default['ks_list_view_group_fields'] = ks_list_view_group_fields
+        if 'ks_list_view_fields' not in default:
+            default['ks_list_view_fields'] = ks_list_view_fields
+        if 'ks_chart_measure_field' not in default:
+            default['ks_chart_measure_field'] = ks_chart_measure_field
+        if 'ks_chart_measure_field_2' not in default:
+            default['ks_chart_measure_field_2'] = ks_chart_measure_field_2
         return super(KsDashboardNinjaItems, self).copy_data(default)
 
     def copy(self, default=None):
@@ -780,40 +1709,110 @@ class KsDashboardNinjaItems(models.Model):
 
         return res
 
-    @api.model
+    @api.model_create_multi
     def create(self, values):
         """ Override to save list view fields ordering """
-        if values.get('ks_list_view_fields', False) and values.get('ks_list_view_group_fields', False):
-            ks_many2many_field_ordering = {
-                'ks_list_view_fields': values['ks_list_view_fields'][0][2],
-                'ks_list_view_group_fields': values['ks_list_view_group_fields'][0][2],
-            }
-            values['ks_many2many_field_ordering'] = json.dumps(ks_many2many_field_ordering)
-
+        for i in range(len(values)):
+            if not values[i].get('ks_many2many_field_ordering', False):
+                ks_list_view_group_fields_name = []
+                ks_list_view_fields_name = []
+                ks_chart_measure_field_name = []
+                ks_chart_measure_field_2_name = []
+                if values[i].get('ks_list_view_group_fields', False) and len(values[i]['ks_list_view_group_fields'][0][2]) > 0:
+                    for measure in values[i]['ks_list_view_group_fields'][0][2]:
+                        ks_measure_id = self.env['ir.model.fields'].search(
+                            [('id', '=', measure)])
+                        ks_list_view_group_fields_name.append(ks_measure_id.name)
+                if values[i].get('ks_list_view_fields', False) and len(values[i]['ks_list_view_fields'][0][2]) > 0:
+                    for measure in values[i]['ks_list_view_fields'][0][2]:
+                        ks_measure_id = self.env['ir.model.fields'].search(
+                            [('id', '=', measure)])
+                        ks_list_view_fields_name.append(ks_measure_id.name)
+                if values[i].get('ks_chart_measure_field', False) and len(values[i]['ks_chart_measure_field'][0][2]) > 0:
+                    for measure in values[i]['ks_chart_measure_field'][0][2]:
+                        ks_measure_id = self.env['ir.model.fields'].search(
+                            [('id', '=', measure)])
+                        ks_chart_measure_field_name.append(ks_measure_id.name)
+                if values[i].get('ks_chart_measure_field_2', False) and len(values[i]['ks_chart_measure_field_2'][0][2]) > 0:
+                    for measure in values[i]['ks_chart_measure_field_2'][0][2]:
+                        ks_measure_id = self.env['ir.model.fields'].search(
+                            [('id', '=', measure)])
+                        ks_chart_measure_field_2_name.append(ks_measure_id.name)
+                ks_many2many_field_ordering = {
+                    'ks_list_view_fields': values[i]['ks_list_view_fields'][0][2] if values[i].get('ks_list_view_fields', False) else [],
+                    'ks_list_view_fields_name': ks_list_view_fields_name,
+                    'ks_list_view_group_fields': values[i]['ks_list_view_group_fields'][0][2] if values[i].get('ks_list_view_group_fields', False) else [],
+                    'ks_list_view_group_fields_name': ks_list_view_group_fields_name ,
+                    'ks_chart_measure_field': values[i]['ks_chart_measure_field'][0][2] if values[i].get('ks_chart_measure_field', False) else [],
+                    'ks_chart_measure_field_name': ks_chart_measure_field_name,
+                    'ks_chart_measure_field_2': values[i]['ks_chart_measure_field_2'][0][2] if values[i].get('ks_chart_measure_field_2', False) else [],
+                    'ks_chart_measure_field_2_name': ks_chart_measure_field_2_name,
+                }
+                values[i]['ks_many2many_field_ordering'] = json.dumps(ks_many2many_field_ordering)
+        seq = self.env['ir.sequence'].next_by_code('ks_dashboard_ninja.item') or 'New'
+        values[0]['name_seq'] = seq
         return super(KsDashboardNinjaItems, self).create(
             values)
 
-    def write(self, values):
+    @api.onchange('ks_list_view_fields')
+    def ks_list_view_fields_onchange(self):
+        ks_many2many_field_ordering = {}
         for rec in self:
-            if rec['ks_many2many_field_ordering']:
-                ks_many2many_field_ordering = json.loads(rec['ks_many2many_field_ordering'])
-            else:
-                ks_many2many_field_ordering = {}
-            if values.get('ks_list_view_fields', False):
-                ks_many2many_field_ordering['ks_list_view_fields'] = values['ks_list_view_fields'][0][2]
-            if values.get('ks_list_view_group_fields', False):
-                ks_many2many_field_ordering['ks_list_view_group_fields'] = values['ks_list_view_group_fields'][0][2]
-            values['ks_many2many_field_ordering'] = json.dumps(ks_many2many_field_ordering)
+            if rec.ks_many2many_field_ordering:
+                ks_many2many_field_ordering = json.loads(rec.ks_many2many_field_ordering)
+            ks_many2many_field_ordering['ks_list_view_fields'] = rec.ks_list_view_fields.ids
+            ks_many2many_field_ordering['ks_list_view_fields_name'] = [x.name for x in rec.ks_list_view_fields]
 
-        return super(KsDashboardNinjaItems, self).write(
-            values)
+            rec.ks_many2many_field_ordering = json.dumps(ks_many2many_field_ordering)
 
-    @api.onchange('ks_layout')
+    @api.onchange('ks_list_view_group_fields')
+    def ks_list_view_group_fields_onchange(self):
+        ks_many2many_field_ordering = {}
+        for rec in self:
+            if rec.ks_many2many_field_ordering:
+                ks_many2many_field_ordering = json.loads(rec.ks_many2many_field_ordering)
+            ks_many2many_field_ordering['ks_list_view_group_fields'] = rec.ks_list_view_group_fields.ids
+            ks_many2many_field_ordering['ks_list_view_group_fields_name'] = [x.name for x in rec.ks_list_view_group_fields]
+            rec.ks_many2many_field_ordering = json.dumps(ks_many2many_field_ordering)
+
+    @api.onchange('ks_chart_measure_field')
+    def ks_chart_measure_field_onchange(self):
+        for rec in self:
+            ks_many2many_field_ordering = {}
+            if rec.ks_many2many_field_ordering:
+                ks_many2many_field_ordering = json.loads(rec.ks_many2many_field_ordering)
+            ks_many2many_field_ordering['ks_chart_measure_field'] = rec.ks_chart_measure_field.ids
+            ks_many2many_field_ordering['ks_chart_measure_field_name'] = [x.name for x in
+                                                                             rec.ks_chart_measure_field]
+            rec.ks_many2many_field_ordering = json.dumps(ks_many2many_field_ordering)
+
+    @api.onchange('ks_chart_measure_field_2')
+    def ks_chart_measure_field_2_onchange(self):
+        ks_many2many_field_ordering = {}
+        for rec in self:
+            if rec.ks_many2many_field_ordering:
+                ks_many2many_field_ordering = json.loads(rec.ks_many2many_field_ordering)
+            ks_many2many_field_ordering['ks_chart_measure_field_2'] = rec.ks_chart_measure_field_2.ids
+            ks_many2many_field_ordering['ks_chart_measure_field_2_name'] = [x.name for x in
+                                                                          rec.ks_chart_measure_field_2]
+            rec.ks_many2many_field_ordering = json.dumps(ks_many2many_field_ordering)
+
+
+
+    @api.onchange('ks_layout','ks_dashboard_item_theme')
     def layout_four_font_change(self):
         if self.ks_dashboard_item_theme != "white":
-            if self.ks_layout == 'layout4':
+            if self.ks_layout == 'layout4' and self.ks_dashboard_item_theme in ['red','blue','yellow','green']:
                 self.ks_font_color = self.ks_background_color
                 self.ks_default_icon_color = "#ffffff,0.99"
+            elif self.ks_layout == 'layout4' and self.ks_dashboard_item_theme not in ['red','blue','yellow','green']:
+                self.ks_font_color = '#000000,0.99'
+                if self.ks_background_color=="#000000,0.99":
+                    self.ks_default_icon_color="#ffffff,0.99"
+                else:
+                    self.ks_default_icon_color = "#000000,0.99"
+            elif self.ks_layout != 'layout4' and self.ks_dashboard_item_theme not in ['red', 'blue', 'yellow', 'green']:
+                self.ks_font_color = "#000000,0.99"
             elif self.ks_layout == 'layout6':
                 self.ks_font_color = "#ffffff,0.99"
                 self.ks_default_icon_color = self.ks_get_dark_color(self.ks_background_color.split(',')[0],
@@ -823,13 +1822,13 @@ class KsDashboardNinjaItems(models.Model):
                 self.ks_font_color = "#ffffff,0.99"
         else:
             if self.ks_layout == 'layout4':
-                self.ks_background_color = "#00000,0.99"
+                self.ks_background_color = "#000000,0.99"
                 self.ks_font_color = self.ks_background_color
                 self.ks_default_icon_color = "#ffffff,0.99"
             else:
                 self.ks_background_color = "#ffffff,0.99"
-                self.ks_font_color = "#00000,0.99"
-                self.ks_default_icon_color = "#00000,0.99"
+                self.ks_font_color = "#000000,0.99"
+                self.ks_default_icon_color = "#000000,0.99"
 
     # To convert color into 10% darker. Percentage amount is hardcoded. Change amt if want to change percentage.
     def ks_get_dark_color(self, color, opacity):
@@ -860,6 +1859,8 @@ class KsDashboardNinjaItems(models.Model):
             else:
                 rec.ks_date_filter_field = False
             # Pro
+            rec.ks_funnel_record_field = False
+            rec.ks_map_record_field = False
             rec.ks_record_field = False
             rec.ks_chart_measure_field = False
             rec.ks_chart_measure_field_2 = False
@@ -875,6 +1876,8 @@ class KsDashboardNinjaItems(models.Model):
             rec.ks_action_lines = False
             rec.ks_actions = False
             rec.ks_domain_extension = False
+            rec.ks_scatter_measure_x_id = False
+            rec.ks_scatter_measure_y_id = False
 
     @api.onchange('ks_record_count', 'ks_layout', 'name', 'ks_model_id', 'ks_domain', 'ks_icon_select',
                   'ks_default_icon', 'ks_icon',
@@ -1044,7 +2047,7 @@ class KsDashboardNinjaItems(models.Model):
                 if selected_start_date and selected_end_date:
                     if rec.ks_compare_period:
                         ks_compare_period = abs(rec.ks_compare_period)
-                        if ks_compare_period > 100 and rec.ks_date_filter_selection.split('_')[1] != 'day':
+                        if ks_compare_period > 100:
                             ks_compare_period = 100
                         if rec.ks_compare_period > 0:
                             selected_end_date = selected_end_date + (
@@ -1115,7 +2118,7 @@ class KsDashboardNinjaItems(models.Model):
             if "%MYCOMPANY" in ks_extensiom_domain:
                 ks_extensiom_domain = ks_extensiom_domain.replace("'%MYCOMPANY'", str(self.env.company.id))
 
-        ks_domain = eval(ks_extensiom_domain)
+        ks_domain = safe_eval(ks_extensiom_domain)
         return ks_domain
 
     @api.onchange('ks_domain_extension')
@@ -1220,13 +2223,6 @@ class KsDashboardNinjaItems(models.Model):
                 rec.ks_fill_temporal = False
                 rec.ks_as_of_now = False
 
-    # @api.onchange('ks_chart_cumulative_field')
-    # def ks_onchange_cumutive(self):
-    #     for rec in self:
-    #         ks_temp = rec.ks_chart_cumulative_field
-    #         if len(rec.ks_chart_cumulative_field) < len(rec.ks_chart_measure_field)  :
-    #             rec.ks_chart_cumulative_field = ks_temp
-
     @api.depends('ks_chart_relation_sub_groupby')
     def get_chart_sub_groupby_type(self):
         for rec in self:
@@ -1242,17 +2238,31 @@ class KsDashboardNinjaItems(models.Model):
             else:
                 rec.ks_chart_sub_groupby_type = 'other'
 
-    @api.depends('ks_chart_measure_field', 'ks_chart_cumulative_field', 'ks_chart_relation_groupby',
+    @api.depends('ks_chart_measure_field', 'ks_map_record_field', 'ks_funnel_record_field', 'ks_chart_cumulative_field', 'ks_chart_relation_groupby',
                  'ks_chart_date_groupby', 'ks_domain',
                  'ks_dashboard_item_type', 'ks_model_id', 'ks_sort_by_field', 'ks_sort_by_order',
                  'ks_record_data_limit', 'ks_chart_data_count_type', 'ks_chart_measure_field_2', 'ks_goal_enable',
                  'ks_standard_goal_value', 'ks_goal_bar_line', 'ks_chart_relation_sub_groupby',
                  'ks_chart_date_sub_groupby', 'ks_date_filter_field', 'ks_item_start_date', 'ks_item_end_date',
                  'ks_compare_period', 'ks_year_period', 'ks_unit', 'ks_unit_selection', 'ks_chart_unit',
-                 'ks_fill_temporal', 'ks_domain_extension', 'ks_multiplier_active', 'ks_multiplier_lines', )
+                 'ks_fill_temporal', 'ks_domain_extension', 'ks_multiplier_active', 'ks_multiplier_lines',
+                 'ks_scatter_measure_x_id', 'ks_scatter_measure_y_id')
     def ks_get_chart_data(self):
         for rec in self:
-            rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
+            if rec.ks_dashboard_item_type == "ks_funnel_chart":
+                rec.ks_sort_by_order = "DESC"
+                rec.ks_sort_by_field = rec.ks_funnel_record_field
+                rec.ks_chart_measure_field = rec.ks_funnel_record_field
+                rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
+            elif rec.ks_dashboard_item_type == "ks_map_view":
+                rec.ks_chart_measure_field = rec.ks_map_record_field
+                rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
+            elif rec.ks_dashboard_item_type == "ks_scatter_chart":
+                rec.ks_chart_measure_field = rec.ks_scatter_measure_x_id
+                rec.ks_chart_relation_groupby = rec.ks_scatter_measure_y_id
+                rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
+            else:
+                rec.ks_chart_data = rec._ks_get_chart_data(domain=[])
 
     def _ks_get_chart_data(self, domain=[]):
         rec = self
@@ -1286,6 +2296,7 @@ class KsDashboardNinjaItems(models.Model):
                         ks_chart_measure_field_with_type.append(rec.ks_sort_by_field.name + ':' + 'sum')
                     else:
                         ks_chart_measure_field_with_type.append(rec.ks_sort_by_field.name)
+
 
                 ks_chart_data['datasets'].append({'data': [], 'label': "Count"})
             else:
@@ -1674,10 +2685,11 @@ class KsDashboardNinjaItems(models.Model):
                                         labels.append(str(res[ks_chart_groupby_relation_fields[1]]))
                                 elif rec.ks_chart_sub_groupby_type == 'selection':
                                     selection = res[ks_chart_groupby_relation_fields[1]]
-                                    labels.append(dict(self.env[rec.ks_model_name].fields_get(
-                                        allfields=[ks_chart_groupby_relation_fields[1]])
-                                                       [ks_chart_groupby_relation_fields[1]]['selection'])[
-                                                      selection])
+                                    if selection:
+                                        labels.append(dict(self.env[rec.ks_model_name].fields_get(
+                                            allfields=[ks_chart_groupby_relation_fields[1]])
+                                                           [ks_chart_groupby_relation_fields[1]]['selection'])[
+                                                          selection])
                                 elif rec.ks_chart_sub_groupby_type == 'relational_type':
                                     if res[ks_chart_groupby_relation_fields[1]] is not False:
                                         labels.append(res[ks_chart_groupby_relation_fields[1]][1]._value)
@@ -1717,7 +2729,6 @@ class KsDashboardNinjaItems(models.Model):
                         value = data['value']
                         counter = 0
                         for seri in serie:
-
                             if seri not in values:
                                 values[seri] = {'ks_sub_domain': {}}
                             if label in values[seri]:
@@ -1738,7 +2749,7 @@ class KsDashboardNinjaItems(models.Model):
                     for dataset in final_datasets:
                         ks_dataset = {
                             'value': [],
-                            'key': dataset,
+                            'key': dataset
                         }
                         for label in xlabels:
                             ks_dataset['value'].append({
@@ -1807,7 +2818,7 @@ class KsDashboardNinjaItems(models.Model):
                             for dataset in final_datasets_2:
                                 ks_dataset = {
                                     'value': [],
-                                    'key': dataset,
+                                    'key': dataset
                                 }
                                 for label in xlabels:
                                     ks_dataset['value'].append({
@@ -1866,19 +2877,97 @@ class KsDashboardNinjaItems(models.Model):
                 for ks_multiplier in self.ks_multiplier_lines:
                     for i in range(0, len(ks_chart_data['datasets'])):
                         try:
-                            if ks_multiplier.ks_multiplier_fields.field_description != False and ks_multiplier.ks_multiplier_fields.field_description in \
-                                    ks_chart_data['datasets'][i][
-                                        'label']:
+                            if ks_multiplier.ks_multiplier_fields.field_description in ks_chart_data['datasets'][i][
+                                'label']:
                                 data_values = ks_chart_data['datasets'][i]['data']
                                 data_values = list(map(lambda x: ks_multiplier.ks_multiplier_value * x, data_values))
                                 ks_chart_data['datasets'][i]['data'] = data_values
                         except Exception as e:
                             raise ValidationError('JSON file not supported.')
-            # res_list = [i for n, i in enumerate(ks_chart_data.get('datasets',[])) if i not in ks_chart_data.get('datasets',[])[n + 1:]]
-            # ks_chart_data['datasets'] = res_list
             return json.dumps(ks_chart_data)
         else:
             return False
+    # def scatter_chart(self):
+    #     if ks_dashboard_item_type == 'ks_scatter_chart':
+    #         self.ks_scatter_chart_data
+    #     else:
+    #         self._ks_get_chart_data(item_domain1)
+    #
+    #
+    # def ks_scatter_chart_data(self,domain=[]):
+    #     for rec in self:
+    #         if (rec.ks_scatter_measure_x_id and rec.ks_scatter_measure_y_id):
+    #             ks_chart_data = {'labels': [], 'datasets': [],}
+    #             x_field = rec.ks_scatter_measure_x_id.name
+    #             y_field = rec.ks_scatter_measure_y_id.name
+    #             # y_group_field = rec.ks_scatter_measure_y_id.name
+    #             # ks_chart_domain = self.ks_convert_into_proper_domain(rec.ks_domain, rec, domain)
+    #             if not self.ks_is_scatter_group:
+    #                 # ks_chart_record = self.env[rec.ks_model_name].search_read([],
+    #                 #                                                           list(set(
+    #                 #                                                               [rec.ks_scatter_ungroup_measure_y_id.name,rec.ks_scatter_measure_x_id.name]
+    #                 #                                                              )), [])
+    #                 ks_chart_record = self.env[rec.ks_model_name].search_read([], [x_field, y_field], [])
+    #
+    #
+    #             else:
+    #                 # ks_chart_record = self.env[rec.ks_model_name].read_group([],
+    #                 #                                                          list(set(
+    #                 #                                                              [rec.ks_scatter_ungroup_measure_y_id.name,rec.ks_scatter_measure_x_id.name]
+    #                 #                                                             )), [x_field])
+    #                 ks_chart_domain = self.ks_convert_into_proper_domain(rec.ks_domain, rec, domain)
+    #                 ks_chart_data['previous_domain'] = ks_chart_domain
+    #                 # ks_chart_data = rec.ks_fetch_chart_data_1(rec.ks_model_name, ks_chart_domain,ks_chart_data,x_field,y_field)
+    #                 # res = self.env[rec.ks_model_name].search(ks_chart_domain)
+    #                 limit = rec.ks_record_data_limit if rec.ks_record_data_limit and rec.ks_record_data_limit > 0 else 5000
+    #                 ks_chart_record = self.env[rec.ks_model_name].read_group([], [x_field, y_field], [x_field])
+    #                 ks_chart_record = ks_chart_record[0:limit]
+    #
+    #
+    #             for ks_records in ks_chart_record:
+    #                 my_list = list(ks_records.values())
+    #                 if not self.ks_is_scatter_group:
+    #                     if isinstance(ks_records[x_field], float):
+    #                         ks_records[x_field] = str(ks_records[x_field])
+    #                     if isinstance(ks_records[x_field], bool):
+    #                         ks_records[x_field] = str(ks_records[x_field])
+    #                     # ks_chart_data['labels'].append(my_list[1])
+    #                     # data = {
+    #                     #     # 'label': ks_records[x_field][1],
+    #                     #     'label': my_list[1],
+    #                     #
+    #                     #     # 'data': [{'x': ks_records[x_field][0],
+    #                     #     #           'y': ks_records[rec.ks_scatter_ungroup_measure_y_id.name]}],
+    #                     #     'data': [{'x':  my_list[0],
+    #                     #               'y': ks_records[rec.ks_scatter_measure_y_id.name]}]
+    #                     #
+    #                     # }
+    #                     # ks_chart_data['datasets'].append(data)
+    #                 if x_field == 'currency_id' or x_field == 'create_uid':
+    #                     ks_chart_data['labels'].append(ks_records[x_field][1]._value)
+    #                     data = {
+    #                         'label': ks_records[x_field][1]._value,
+    #                         'data': [{'x': ks_records[x_field][0],
+    #                                   'y': ks_records[rec.ks_scatter_measure_y_id.name]}]
+    #                     }
+    #                     ks_chart_data['datasets'].append(data)
+    #                     # ks_chart_data['labels'].append(ks_records[x_field][1]._value)
+    #
+    #
+    #                 else:
+    #                     ks_chart_data['labels'].append(my_list[2])
+    #                     data = {
+    #                         'label':my_list[2],
+    #                         # 'label': my_list[1],
+    #                         'data': [{'x':my_list[0],
+    #                                   'y': ks_records[rec.ks_scatter_measure_y_id.name]}]
+    #                     }
+    #                     ks_chart_data['datasets'].append(data)
+    #                 # ks_chart_data['labels'] = list(set(ks_chart_data['labels']))
+    #
+    #             rec.ks_chart_data = json.dumps(ks_chart_data)
+    #         else:
+    #                 rec.ks_chart_data = False
 
     @api.depends('ks_domain', 'ks_dashboard_item_type', 'ks_pagination_limit', 'ks_model_id', 'ks_sort_by_field',
                  'ks_sort_by_order', 'ks_multiplier_active', 'ks_multiplier_lines',
@@ -1953,8 +3042,8 @@ class KsDashboardNinjaItems(models.Model):
 
                 try:
                     ks_list_view_records = self.env[self.ks_model_name]. \
-                        read_group(ks_chart_domain, ks_list_fields, [self.ks_chart_relation_groupby.name],
-                                   orderby=orderby, limit=limit, offset=ksoffset, lazy=False)
+                    read_group(ks_chart_domain, ks_list_fields, [self.ks_chart_relation_groupby.name],
+                               orderby=orderby, limit=limit, offset=ksoffset, lazy=False)
                 except Exception as e:
                     ks_list_view_records = []
                 for res in ks_list_view_records:
@@ -2008,9 +3097,9 @@ class KsDashboardNinjaItems(models.Model):
                         ks_list_view_data['label'].remove(self.ks_list_target_deviation_field.field_description)
                 try:
                     ks_list_view_records = self.env[self.ks_model_name]. \
-                        read_group(ks_chart_domain, ks_list_field + list_target_deviation_field,
-                                   [self.ks_chart_relation_groupby.name + ':' + ks_chart_date_groupby],
-                                   orderby=orderby, limit=limit, offset=ksoffset, lazy=False)
+                    read_group(ks_chart_domain, ks_list_field + list_target_deviation_field,
+                               [self.ks_chart_relation_groupby.name + ':' + ks_chart_date_groupby],
+                               orderby=orderby, limit=limit, offset=ksoffset, lazy=False)
                 except Exception as E:
                     ks_list_view_records = []
                 if all(list_fields in res for res in ks_list_view_records for list_fields in
@@ -2085,8 +3174,8 @@ class KsDashboardNinjaItems(models.Model):
 
                 try:
                     ks_list_view_records = self.env[self.ks_model_name] \
-                        .read_group(ks_chart_domain, ks_list_fields, [self.ks_chart_relation_groupby.name],
-                                    orderby=orderby, limit=limit, offset=ksoffset, lazy=False)
+                    .read_group(ks_chart_domain, ks_list_fields, [self.ks_chart_relation_groupby.name],
+                                orderby=orderby, limit=limit, offset=ksoffset, lazy=False)
                 except Exception as e:
                     ks_list_view_records = []
                 for res in ks_list_view_records:
@@ -2123,10 +3212,10 @@ class KsDashboardNinjaItems(models.Model):
 
                 try:
                     ks_list_view_records = self.env[self.ks_model_name] \
-                        .read_group(ks_chart_domain, ks_list_fields, [self.ks_chart_relation_groupby.name],
-                                    orderby=orderby, limit=limit, offset=ksoffset, lazy=False)
+                    .read_group(ks_chart_domain, ks_list_fields, [self.ks_chart_relation_groupby.name],
+                                orderby=orderby, limit=limit, offset=ksoffset, lazy=False)
                 except Exception as E:
-                    ks_list_view_records = 0
+                    ks_list_view_records = []
                 for res in ks_list_view_records:
                     if all(list_fields in res for list_fields in ks_list_fields):
                         counter = 0
@@ -2151,8 +3240,7 @@ class KsDashboardNinjaItems(models.Model):
                 if label in ks_list_view_data['label']:
                     index = ks_list_view_data['label'].index(label)
                     for i in range(0, len(ks_list_view_data['data_rows'])):
-                        data_values = ks_list_view_data['data_rows'][i]['data'][
-                                          index] * ks_multiplier.ks_multiplier_value
+                        data_values = ks_list_view_data['data_rows'][i]['data'][index] * ks_multiplier.ks_multiplier_value
                         ks_list_view_data['data_rows'][i]['data'][index] = data_values
         return ks_list_view_data
 
@@ -2238,7 +3326,7 @@ class KsDashboardNinjaItems(models.Model):
                     ks_list_labels_dates.append(label)
 
             for label in ks_list_labels_dates:
-                data_rows = {'data': [label], 'ks_column_type': [], 'store': True}
+                data_rows = {'data': [label], 'ks_column_type': [],'store':True}
                 data = ks_list_records.get(label, False)
                 if data:
                     data_rows['data'] = data_rows['data'] + data['measure_field']
@@ -2279,8 +3367,7 @@ class KsDashboardNinjaItems(models.Model):
             for res in ks_list_view_records:
                 if all(list_fields in res for list_fields in ks_list_fields):
                     counter = 0
-                    data_row = {'id': 0, 'data': [], 'domain': json.dumps(res['__domain']), 'ks_column_type': [],
-                                'store': True}
+                    data_row = {'id': 0, 'data': [], 'domain': json.dumps(res['__domain']), 'ks_column_type': [],'store':True}
                     for field_rec in ks_list_fields:
                         data_row['data'].append(res[field_rec])
                     data_row['data'].append(rec.ks_standard_goal_value)
@@ -2410,32 +3497,9 @@ class KsDashboardNinjaItems(models.Model):
                 rec.ks_item_start_date = ks_date_data["selected_start_date"]
                 rec.ks_item_end_date = ks_date_data["selected_end_date"]
 
-    @api.depends('ks_dashboard_item_type', 'ks_record_count','ks_model_id','ks_multiplier','ks_multiplier_active','ks_unit', 'ks_unit_selection', 'ks_currency_id')
-    def ks_get_tile_data(self):
-        for rec in self:
-            rec.ks_tile_data = rec._ksGettileData(domain=[])
-
-    def _ksGettileData(self, domain=[]):
-        rec = self
-        if rec.ks_dashboard_item_type and rec.ks_dashboard_item_type == 'ks_tile' and rec.ks_model_id :
-            ks_tile_data = {'ks_currency': 0, 'ks_field': "", 'ks_selection': ""}
-
-            if rec.ks_unit and rec.ks_unit_selection == 'monetary':
-                ks_tile_data['ks_selection'] += rec.ks_unit_selection
-                ks_tile_data['ks_currency'] += rec.env.user.company_id.currency_id.id
-            elif rec.ks_unit and rec.ks_unit_selection == 'custom':
-                ks_tile_data['ks_selection'] += rec.ks_unit_selection
-                if rec.ks_currency_id:
-                    ks_tile_data['ks_field'] += rec.ks_currency_id.symbol
-
-            return json.dumps(ks_tile_data)
-        else:
-            return False
-
-
     @api.depends('ks_dashboard_item_type', 'ks_goal_enable', 'ks_standard_goal_value', 'ks_record_count',
                  'ks_record_count_2', 'ks_previous_period', 'ks_compare_period', 'ks_year_period',
-                 'ks_compare_period_2', 'ks_year_period_2', 'ks_domain_extension_2','ks_unit','ks_unit_selection','ks_currency_id')
+                 'ks_compare_period_2', 'ks_year_period_2', 'ks_domain_extension_2')
     def ks_get_kpi_data(self):
         for rec in self:
             rec.ks_kpi_data = rec._ksGetKpiData(domain1=[], domain2=[])
@@ -2446,21 +3510,10 @@ class KsDashboardNinjaItems(models.Model):
             ks_kpi_data = []
             ks_record_count = 0.0
             ks_kpi_data_model_1 = {}
-            ks_kpi_data_model_1 = {'ks_currency': 0, 'ks_field': "", 'ks_selection': ""}
             ks_record_count = rec._ksGetRecordCount(domain1)
             ks_kpi_data_model_1['model'] = rec.ks_model_name
             ks_kpi_data_model_1['record_field'] = rec.ks_record_field.field_description
             ks_kpi_data_model_1['record_data'] = ks_record_count
-
-            if rec.ks_unit and rec.ks_unit_selection == 'monetary':
-                ks_kpi_data_model_1['ks_selection'] += rec.ks_unit_selection
-                ks_kpi_data_model_1['ks_currency'] += rec.env.user.company_id.currency_id.id
-            elif rec.ks_unit and rec.ks_unit_selection == 'custom':
-                ks_kpi_data_model_1['ks_selection'] += rec.ks_unit_selection
-                if rec.ks_currency_id:
-                    ks_kpi_data_model_1['ks_field'] += rec.ks_currency_id.symbol
-
-
 
             if rec.ks_goal_enable:
                 ks_kpi_data_model_1['target'] = rec.ks_standard_goal_value
@@ -2520,8 +3573,7 @@ class KsDashboardNinjaItems(models.Model):
             elif rec.ks_record_field:
                 try:
                     data = \
-                        self.env[rec.ks_model_name].read_group(proper_domain, [rec.ks_record_field.name], [],
-                                                               lazy=False)[0]
+                        self.env[rec.ks_model_name].read_group(proper_domain, [rec.ks_record_field.name], [], lazy=False)[0]
                 except Exception as E:
                     data = {}
                 if rec.ks_record_count_type == 'sum':
@@ -2593,6 +3645,7 @@ class KsDashboardNinjaItems(models.Model):
             rec.ks_record_field_2 = False
             rec.ks_domain_2 = False
             rec.ks_date_filter_field_2 = False
+            rec.ks_previous_period = False
             # To show "created on" by default on date filter field on model select.
             if rec.ks_model_id:
                 datetime_field_list = rec.ks_date_filter_field_2.search(
@@ -2702,17 +3755,17 @@ class KsDashboardNinjaItems(models.Model):
                 if selected_start_date and selected_end_date:
                     if rec.ks_compare_period_2:
                         ks_compare_period_2 = abs(rec.ks_compare_period_2)
-                        if ks_compare_period_2 > 100 and rec.ks_date_filter_selection_2.split('_')[1] != 'day':
+                        if ks_compare_period_2 > 100:
                             ks_compare_period_2 = 100
                         if rec.ks_compare_period_2 > 0:
                             selected_end_date = selected_end_date + (
                                     selected_end_date - selected_start_date) * ks_compare_period_2
-                            if rec.ks_date_filter_field_2.ttype == "date" and rec.ks_date_filter_selection_2 == 'l_day':
+                            if rec.ks_date_filter_field.ttype == "date" and rec.ks_date_filter_selection == 'l_day':
                                 selected_end_date = selected_end_date + timedelta(days=ks_compare_period_2)
                         elif rec.ks_compare_period_2 < 0:
                             selected_start_date = selected_start_date - (
                                     selected_end_date - selected_start_date) * ks_compare_period_2
-                            if rec.ks_date_filter_field_2.ttype == "date" and rec.ks_date_filter_selection_2 == 'l_day':
+                            if rec.ks_date_filter_field.ttype == "date" and rec.ks_date_filter_selection == 'l_day':
                                 selected_start_date = selected_end_date - timedelta(days=ks_compare_period_2)
 
                     if rec.ks_year_period_2 and rec.ks_year_period_2 != 0:
@@ -3402,6 +4455,50 @@ class KsDashboardNinjaItems(models.Model):
             except Exception:
                 raise UserError("Invalid Domain")
 
+    # @api.onchange('ks_dashboard_item_type', 'ks_model_id')
+    # def onchange_dashboard_item_type(self):
+    #     if self.ks_dashboard_item_type == 'ks_map_view' and self.ks_model_id:
+    #         models = ['sale.order', 'purchase.order', 'account.move', 'stock.picking', 'crm.lead']
+    #         has_partner = self.ks_model_id.model in models
+    #         if not has_partner:
+    #             raise UserError(_("Selected model is not supported for Map View."))
+
+    @api.depends('ks_dashboard_item_type', 'ks_model_id')
+    def _compute_map_partners(self):
+        for rec in self:
+            rec.ks_partners_map = ""
+            domain = []
+            if rec.ks_dashboard_item_type == 'ks_map_view' and rec.ks_model_name:
+                if rec.ks_domain:
+                    domain = rec._get_domain()
+                records = self.env[rec.ks_model_name].search(domain)
+                if records:
+                    if rec.ks_model_name == 'res.partner':
+                        rec.ks_partners_map = records.ids
+                    else:
+                         if 'partner_id' in records:
+                            partners = records.mapped('partner_id')
+                            rec.ks_partners_map = partners.ids
+                         else:
+                             raise UserError(_("Selected model is not supported for Map View."))
+
+
+    def _get_domain(self):
+        ks_domain = ast.literal_eval(self.ks_domain)
+        domain = []
+        for rec in ks_domain:
+            domain.append(tuple(rec))
+        return domain
+
+    @api.depends('ks_country_id')
+    def _compute_bounds(self):
+        for rec in self:
+            rec.ks_bounds = [[6.554607, 68.1097], [35.674545, 97.395358]]
+            new_bounds = get_country_code(rec.ks_country_code)
+            if new_bounds:
+                new_bounds = new_bounds[1]
+                rec.ks_bounds = [[new_bounds[1], new_bounds[0]], [new_bounds[3], new_bounds[2]]]
+
 
 class KsDashboardItemsGoal(models.Model):
     _name = 'ks_dashboard_ninja.item_goal'
@@ -3411,6 +4508,53 @@ class KsDashboardItemsGoal(models.Model):
     ks_goal_value = fields.Float(string="Value")
 
     ks_dashboard_item = fields.Many2one('ks_dashboard_ninja.item', string="Dashboard Item")
+
+class KsDashboardCsvGroupBy(models.Model):
+    _name = 'ks.dashboard.csv.group.by'
+    _description = 'Dashboard Ninja Group By'
+    _rec_name = 'name'
+
+    ks_dashboard_csv_group_by_id = fields.Many2one('ks_dashboard_ninja.item', string="Dashboard Item")
+    name = fields.Char(string="Name")
+    ttype = fields.Selection([('char', 'char'), ('float', 'float'),
+                              ('integer', 'integer')],
+                             string='Type')
+
+
+class KsDashboardCsvNew(models.Model):
+    _name = 'ks.dashboard.csv.new'
+    _description = 'Dashboard Ninja New'
+    _rec_name = 'name'
+
+    # ks_dashboard_group_by_id = fields.Many2one('ks_dashboard_ninja.item', string="Dashboard Item")
+    name = fields.Char(string="Name")
+    ttype = fields.Selection([('char', 'char'), ('date', 'date'), ('datetime', 'datetime'), ('float', 'float'),
+                              ('integer', 'integer')],
+                             string='Type')
+
+
+class KsDashboardGroupBy(models.Model):
+    _name = 'ks.dashboard.group.by'
+    _description = 'Dashboard Ninja Group By'
+    _rec_name = 'name'
+
+    ks_dashboard_group_by_id = fields.Many2one('ks_dashboard_ninja.item', string="Dashboard Item Id")
+    name = fields.Char(string="Name")
+    ttype = fields.Selection([('char', 'char'), ('date', 'date'), ('datetime', 'datetime'), ('float', 'float'),
+                              ('integer', 'integer')],
+                             string='Type')
+
+
+class KsDashboardNew(models.Model):
+    _name = 'ks.dashboard.new'
+    _description = 'Dashboard Ninja New'
+    _rec_name = 'name'
+
+    # ks_dashboard_group_by_id = fields.Many2one('ks_dashboard_ninja.item', string="Dashboard Item")
+    name = fields.Char(string="Name")
+    ttype = fields.Selection([('char', 'char'), ('date', 'date'), ('datetime', 'datetime'), ('float', 'float'),
+                              ('integer', 'integer')],
+                             string='Type')
 
 
 class KsDashboardItemsActions(models.Model):
@@ -3441,7 +4585,13 @@ class KsDashboardItemsActions(models.Model):
                                       ('ks_pie_chart', 'Pie Chart'),
                                       ('ks_doughnut_chart', 'Doughnut Chart'),
                                       ('ks_polarArea_chart', 'Polar Area Chart'),
-                                      ('ks_list_view', 'List View')],
+                                      ('ks_list_view', 'List View'),
+                                      ('ks_radialBar_chart', 'Radial Bar Chart'),
+                                      ('ks_scatter_chart', 'Scatter Chart'),
+                                      ('ks_radar_view', 'Radar View'),
+                                      ('ks_flower_view', 'Flower View'),
+                                      ('ks_funnel_chart', 'Funnel Chart'),
+                                      ('ks_bullet_chart', 'Bullet Chart')],
                                      string="Item Type")
 
     ks_dashboard_item_id = fields.Many2one('ks_dashboard_ninja.item', string="Dashboard Item")
@@ -3482,7 +4632,6 @@ class KsDashboardItemsActions(models.Model):
         for rec in self:
             if not (rec.ks_item_action_field.ttype == 'datetime' or rec.ks_item_action_field.ttype == 'date'):
                 rec.ks_item_action_date_groupby = False
-
 
 class KsDashboardItemMultiplier(models.Model):
     _name = 'ks_dashboard_item.multiplier'
