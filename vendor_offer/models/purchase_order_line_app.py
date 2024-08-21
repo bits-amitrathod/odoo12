@@ -79,15 +79,12 @@ class VendorOfferProductLineNew(models.Model):
 
         return average_aging
 
-    def get_line_average_retail_last_year(self,values={}):
+    def get_line_average_retail_last_year(self):
 
-        product_sales_count_yrs = values.get('product_sales_count_yrs', self.product_sales_count_yrs)
-        product_sales_amount_yr = values.get('product_sales_amount_yr', self.product_sales_amount_yr)
-
-        qty = product_sales_count_yrs
+        qty = self.product_sales_count_yrs
         price = self.product_unit_price
         if qty != 0 and price != 0:
-            price_per_item = (product_sales_amount_yr / qty)
+            price_per_item = (self.product_sales_amount_yr / qty)
             average_retail_last_year = price_per_item / price
         else:
             average_retail_last_year = 0
@@ -192,13 +189,12 @@ class VendorOfferProductLineNew(models.Model):
         consider_dropping_tier = self.get_consider_dropping_tier(values)
         inv_ratio_90_days = self.get_inv_ratio_90_days(values)
         is_pddo = True if product_sales_count_90 == 0 else False
-        average_retail_last_year = self.get_line_average_retail_last_year()
+
 
         values.update({
             "consider_dropping_tier" : consider_dropping_tier,
             "inv_ratio_90_days" : inv_ratio_90_days,
             "is_pddo": is_pddo,
-            "average_retail_last_year" : average_retail_last_year,
             "product_qty" :  self.product_qty_app_new,
         })
         return values
@@ -346,5 +342,9 @@ class VendorOfferProductLineNew(models.Model):
 
     def set_line_other_values(self):
         values = self.get_total_line_vendor()
+        average_retail_last_year = self.get_line_average_retail_last_year()
+        values.update({
+            "average_retail_last_year": average_retail_last_year
+        })
         self.write(values)
 
