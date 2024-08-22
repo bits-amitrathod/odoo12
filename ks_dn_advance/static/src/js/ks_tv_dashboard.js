@@ -7,19 +7,18 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
     var field_utils = require('web.field_utils');
     var config = require('web.config');
     var KsGlobalFunction = require('ks_dashboard_ninja.KsGlobalFunction');
+    const session = require('web.session');
 
     KsDashboardNinja.include({
 
-         jsLibs: [
-//         '/ks_dashboard_ninja/static/lib/js/jquery.ui.touch-punch.min.js',
+           jsLibs: [
             '/ks_dashboard_ninja/static/lib/js/Chart.bundle.min.js',
             '/ks_dashboard_ninja/static/lib/js/gridstack-h5.js',
-//            '/ks_dashboard_ninja/static/lib/js/gridstack.jQueryUI.min.js',
             '/ks_dashboard_ninja/static/lib/js/chartjs-plugin-datalabels.js',
             '/ks_dashboard_ninja/static/lib/js/pdfmake.min.js',
             '/ks_dashboard_ninja/static/lib/js/vfs_fonts.js',
-            'ks_dn_advance/static/lib/js/print.min.js',
-            'ks_dn_advance/static/lib/js/pdf.min.js',
+            '/ks_dn_advance/static/lib/js/print.min.js',
+            '/ks_dn_advance/static/lib/js/pdf.min.js',
 
         ],
 
@@ -29,34 +28,108 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
             'click .ks_dn_asc': '_ksSortAscOrder',
             'click .ks_dn_desc': '_ksSortDescOrder',
             'click .ks_dashboard_print_pdf' : 'ks_dash_print',
+            'click .ks_dashboard_send_email' : 'ks_send_mail',
 
         }),
+
         ks_dash_print : function(id){
             var self = this;
             var ks_dashboard_name = self.ks_dashboard_data.name
             setTimeout(function () {
 
-            const Ksinput = document.getElementById('ks_dash1');
-            const KsdivHeight = Ksinput.clientHeight
-            const KsdivWidth = Ksinput.clientWidth
-//            const Ksratio = KsdivHeight / KsdivWidth
+
             window.scrollTo(0, 0);
-            html2canvas(document.querySelector("#ks_dash1"),{scale: 2}).then(canvas => {
-            var ks_image_date = canvas.toDataURL("image/jpeg",1)
-            window.jsPDF = window.jspdf.jsPDF("p", "px", "a4")
-            var pdf = window.jsPDF;
+            html2canvas(document.querySelector('.ks_dashboard_item_content'), {useCORS: true, allowTaint: false}).then(function(canvas){
+            window.jsPDF = window.jspdf.jsPDF;
+            var pdf = new jsPDF("p", "mm", "a4");
+            var ks_img = canvas.toDataURL("image/jpeg", 0.90);
+            var ks_props= pdf.getImageProperties(ks_img);
+            var KspageHeight = 300;
             var KspageWidth = pdf.internal.pageSize.getWidth();
-            var KspageHeight = pdf.internal.pageSize.getHeight();
-            var KsimageWidth = canvas.width;
-            var KsimageHeight = canvas.height;
-            KsimageWidth = KsdivWidth;
-            KsimageHeight  = KsdivHeight;
-            var ratio = KsimageWidth/KsimageHeight >= KspageWidth/KspageHeight ? KspageWidth/KsimageWidth : KspageHeight/KsimageHeight;
-            pdf.addImage(ks_image_date, 'JPEG', 0, 0, KsdivWidth * ratio  , KspageHeight);
+            var ksheight = (ks_props.height * KspageWidth) / ks_props.width;
+            var ksheightLeft = ksheight;
+            var position = 0;
+
+            pdf.addImage(ks_img,'JPEG', 0, 0, KspageWidth, ksheight, 'FAST');
+            ksheightLeft -= KspageHeight;
+            while (ksheightLeft >= 0) {
+                position = ksheightLeft - ksheight;
+                pdf.addPage();
+                pdf.addImage(ks_img, 'JPEG', 0, position,  KspageWidth, ksheight, 'FAST');
+                ksheightLeft -= KspageHeight;
+            };
             pdf.save(ks_dashboard_name + '.pdf');
-        });
+        })
         },500);
         },
+
+        ks_send_mail: function(ev) {
+            var self = this;
+            var ks_dashboard_name = self.ks_dashboard_data.name
+            setTimeout(function () {
+            $('.fa-envelope').addClass('d-none')
+            $('.fa-spinner').removeClass('d-none');
+
+
+            window.scrollTo(0, 0);
+            html2canvas(document.querySelector('.ks_dashboard_item_content'), {useCORS: true, allowTaint: false}).then(function(canvas){
+            window.jsPDF = window.jspdf.jsPDF;
+            var pdf = new jsPDF("p", "mm", "a4");
+            var ks_img = canvas.toDataURL("image/jpeg", 0.90);
+            var ks_props= pdf.getImageProperties(ks_img);
+            var KspageHeight = 300;
+            var KspageWidth = pdf.internal.pageSize.getWidth();
+            var ksheight = (ks_props.height * KspageWidth) / ks_props.width;
+            var ksheightLeft = ksheight;
+            var position = 0;
+
+            pdf.addImage(ks_img,'JPEG', 0, 0, KspageWidth, ksheight, 'FAST');
+            ksheightLeft -= KspageHeight;
+            while (ksheightLeft >= 0) {
+                position = ksheightLeft - ksheight;
+                pdf.addPage();
+                pdf.addImage(ks_img, 'JPEG', 0, position,  KspageWidth, ksheight, 'FAST');
+                ksheightLeft -= KspageHeight;
+            };
+//            pdf.save(ks_dashboard_name + '.pdf');
+            const file = pdf.output()
+            const base64String = btoa(file)
+
+//            localStorage.setItem(ks_dashboard_name + '.pdf',file);
+
+            $.when(base64String).then(function(){
+                self._rpc({
+                    model: 'ks_dashboard_ninja.board',
+                    method: 'ks_dashboard_send_mail',
+                    args: [
+                        [parseInt(self.ks_dashboard_id)],base64String
+
+                    ]
+                }).then(function(res){
+                    $('.fa-envelope').removeClass('d-none')
+                    $('.fa-spinner').addClass('d-none');
+                    if (res['ks_is_send']){
+                        var msg = res['ks_massage']
+                            self.call('notification', 'notify', {
+                                message: msg,
+                                type: 'info',
+                                title: "Success"
+                            });
+                    }else{
+                        var msg = res['ks_massage']
+                            self.call('notification', 'notify', {
+                                message: msg,
+                                type: 'info',
+                                title: "Fail"
+                            });
+                    }
+                });
+             })
+        })
+        },500);
+
+        },
+
        _ksRenderNoItemView: function() {
             $('.ks_dashboard_items_list').remove();
             var self = this;
@@ -84,7 +157,7 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
             var context = self.getContext();
             var searchList = []
             var searchField = []
-            var user_id = odoo.session_info.uid;
+            var user_id = session.userContext.uid;
             var context = self.getContext();
             context.user_id = user_id;
             context.offset = offset;
@@ -131,7 +204,7 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
             var item_id = e.currentTarget.dataset.itemId;
             var field = e.currentTarget.dataset.fields;
             var context = self.getContext();
-            var user_id = odoo.session_info.uid;
+            var user_id = session.userContext.uid;
             var context = self.getContext();
             context.user_id = user_id;
             context.offset = offset;
@@ -176,9 +249,8 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                             var date = list_view_data.data_rows[j]["data"][index]
                             if (date){
                              if( list_view_data.fields_type[index] === 'date'){
-                                    list_view_data.data_rows[j]["data"][index] = field_utils.format.date(moment(moment(date).utc(false)._d), {}, {
-                                timezone: false
-                            });}else{
+                                    list_view_data.data_rows[j]["data"][index] = moment(new Date(date)).format(this.date_format) , {}, {timezone: false};
+                             }else{
                                 list_view_data.data_rows[j]["data"][index] = field_utils.format.datetime(moment(moment(date).utc(true)._d), {}, {
                                 timezone: false
                             });
@@ -251,7 +323,18 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
 
                     var item_view = self.renderTvTodoView(items[i], active_section_id,self.grid);
                      this.container_owl.append(item_view);
-                }else {
+                }else if (items[i].ks_dashboard_item_type === 'ks_flower_view'){
+                    self._ksTvflowerchart(items[i],self.$el.find(".grid-stack-item[gs-id=" + items[i].id + "]"));
+                }else if (items[i].ks_dashboard_item_type === 'ks_radialBar_chart'){
+                    self._renderTvradialchart(items[i],self.$el.find(".grid-stack-item[gs-id=" + items[i].id + "]"));
+                }else if (items[i].ks_dashboard_item_type === 'ks_bullet_chart'){
+                    self._renderTvbulletchart(items[i],self.$el.find(".grid-stack-item[gs-id=" + items[i].id + "]"));
+                }else if (items[i].ks_dashboard_item_type === 'ks_funnel_chart'){
+                    self._renderTvfunnelchart(items[i],self.$el.find(".grid-stack-item[gs-id=" + items[i].id + "]"));
+                }else if (items[i].ks_dashboard_item_type === 'ks_map_view'){
+                    self._renderTvmapview(items[i],self.$el.find(".grid-stack-item[gs-id=" + items[i].id + "]"));
+                }
+                else {
                     self._renderTvGraph(items[i], self.grid)
                 }
 
@@ -293,6 +376,29 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
 
         _renderTiles: function(){
             var self = this;
+            if (config.device.isMobile){
+            var count  =  Math.round(this.tiles.length)
+            var $kscontainer = $('<div class="d-flex align-items-center justify-content-center flex-column h-100 ks_tv_item">')
+            for(var i = 1; i<= count; i++){
+                var ks_tiles = this.tiles.splice(0,1);
+                var $container = $('<div class="d-flex align-items-center ks-tv-item">');
+                for (var j = 0; j<ks_tiles.length; j++){
+                    var item_data = ks_tiles[j];
+                        item_data.ks_tv_play = true
+                        var item_view = self._ksRenderDashboardTile(item_data);
+                        self.ksAllowItemClick = false
+
+                    $container.append(item_view);
+                }
+                $kscontainer.append($container)
+                this.container_owl.append($kscontainer)
+                $kscontainer = $('<div class="d-flex align-items-center justify-content-center flex-column h-100 ks_tv_item">');
+//                if (i%2 === 0){
+//                    this.container_owl.append($kscontainer);
+//                    $kscontainer = $('<div class="d-flex align-items-center justify-content-center flex-column h-100 ks_tv_item">');
+//                }
+            }
+            }else{
             var count  =  Math.round(this.tiles.length/2)
             var $kscontainer = $('<div class="d-flex align-items-center justify-content-center flex-column h-100 ks_tv_item">')
             for(var i = 1; i<= count; i++){
@@ -300,8 +406,10 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                 var $container = $('<div class="d-flex align-items-center ks-tv-item">');
                 for (var j = 0; j<ks_tiles.length; j++){
                     var item_data = ks_tiles[j];
+                        item_data.ks_tv_play = true
 
                         var item_view = self._ksRenderDashboardTile(item_data);
+                        self.ksAllowItemClick = false
 
                     $container.append(item_view);
                 }
@@ -314,26 +422,44 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
             if($kscontainer[0].childElementCount){
                 this.container_owl.append($kscontainer);
             }
-
+            }
         },
 
         _renderKPi: function(){
             var self = this;
+            if (config.device.isMobile){
+            var count  =  Math.round(this.kpi.length);
+            for(var i = 1; i<= count; i++){
+                var $kscontainer = $('<div class="d-flex align-items-center justify-content-center h-100 ks_tv_item ks-tv-kpi">');
+                var ks_tiles = this.kpi.splice(0,1)
+                 for (var j = 0; j<ks_tiles.length; j++){
+                    var item_data = ks_tiles[j];
+                    item_data.ks_tv_play = true
+                    var item_view = self.renderKpi(item_data);
+                    self.ksAllowItemClick = false
+                    $kscontainer.append(item_view);
+                }
+                this.container_owl.append($kscontainer);
+            }
+            }else{
             var count  =  Math.round(this.kpi.length/2);
             for(var i = 1; i<= count; i++){
                 var $kscontainer = $('<div class="d-flex align-items-center justify-content-center h-100 ks_tv_item ks-tv-kpi">');
                 var ks_tiles = this.kpi.splice(0,2)
                  for (var j = 0; j<ks_tiles.length; j++){
                     var item_data = ks_tiles[j];
+                    item_data.ks_tv_play = true
+
                     var item_view = self.renderKpi(item_data);
+                    self.ksAllowItemClick = false
                     $kscontainer.append(item_view);
                 }
                 this.container_owl.append($kscontainer);
             }
+            }
         },
 
-        renderKpi: function(item, grid) {
-
+         renderKpi: function(item, grid) {
             if (item.ks_data_calculation_type === 'custom'){
                 return this._super.apply(this,arguments);
             }
@@ -351,8 +477,6 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                     ks_icon_url = false;
                 }
             }
-
-
             var count_1 = kpi_data[0].record_data ? kpi_data[0].record_data:0;
             var count_2 = kpi_data[1] ? kpi_data[1].record_data : undefined;
             var target_1 = kpi_data[0].target;
@@ -465,13 +589,15 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                                 target: 'current',
                             }
                         }
-                        self.do_action(action, {
-                            on_reverse_breadcrumb: self.on_reverse_breadcrumb,
-                        });
+                        if (item_data.ks_is_client_action){
+                            self.__parentedParent.actionService.doAction(action,{})
+                        }else{
+                            self.do_action(action, {
+                                on_reverse_breadcrumb: self.on_reverse_breadcrumb,
+                            });
+                        }
                     }
                 }
-            } else {
-                self.ksAllowItemClick = true;
             }
         },
 
@@ -493,7 +619,7 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
             }
             var item_data = self.ks_dashboard_data.ks_item_data[item_id];
 
-            if (item_data.ks_data_calculation_type === 'custom'){
+            if (item_data && item_data.ks_data_calculation_type === 'custom'){
                 this._super.apply(this,arguments);
             }
         },
@@ -532,6 +658,7 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
         ksStopTvDashboard: function(e){
             $('.owl-carousel').owlCarousel('destroy');
              $('.ks_float_tv').addClass('d-none');
+             this.ksAllowItemClick = true;
 
         },
 
@@ -580,10 +707,95 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                     var item_view = self.renderKpi(item_data);
                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find(".ks_dashboard_item_hover").replaceWith($(item_view).find('.ks_dashboarditem_id'));
                 } else  if (item_data['ks_dashboard_item_type'] == 'ks_to_do'){
+                    var name = item_data.name ?item_data.name : item_data.ks_model_display_name;
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_list_view_heading').prop('title',name)
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_list_view_heading').text(name);
                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_to_do_card_body').empty();
                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_to_do_card_body').append(self.ksRenderToDoDashboardView(item_data)[1]);
+                } else if(item_data['ks_dashboard_item_type'] == 'ks_funnel_chart'){
+
+                    if (item_data['ks_funnel_item_color']){
+                         this._rpc({
+                            model: 'ks_dashboard_ninja.item',
+                            method: 'write',
+                            args: [item_data.id, {
+                                "ks_funnel_item_color": item_data['ks_funnel_item_color']
+                            }],
+                        }).then(function() {
+                            item_data['ks_funnel_item_color'] = item_data['ks_funnel_item_color']
+                        });
+                    }
+
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find(".card-body").remove();
+                    var name = item_data.name ?item_data.name : item_data.ks_model_display_name;
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').prop('title',name)
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').text(name)
+                    self.ksrenderfunnelchart(self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]"),item_data);
+                } else if(item_data['ks_dashboard_item_type'] == 'ks_bullet_chart'){
+
+                    if (item_data['ks_funnel_item_color']){
+                         this._rpc({
+                            model: 'ks_dashboard_ninja.item',
+                            method: 'write',
+                            args: [item_data.id, {
+                                "ks_funnel_item_color": item_data['ks_funnel_item_color']
+                            }],
+                        }).then(function() {
+                            item_data['ks_funnel_item_color'] = item_data['ks_funnel_item_color']
+                        });
+                    }
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find(".card-body").remove();
+                    var name = item_data.name ?item_data.name : item_data.ks_model_display_name;
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').prop('title',name)
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').text(name)
+                    self. ksrenderbulletchart(self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]"),item_data);
+                } else if(item_data['ks_dashboard_item_type'] == 'ks_flower_view'){
+
+                    if (item_data['ks_flower_item_color']){
+                         this._rpc({
+                            model: 'ks_dashboard_ninja.item',
+                            method: 'write',
+                            args: [item_data.id, {
+                                "ks_flower_item_color": item_data['ks_flower_item_color']
+                            }],
+                        }).then(function() {
+                            item_data['ks_flower_item_color'] = item_data['ks_flower_item_color']
+                        });
+                    }
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find(".card-body").remove();
+                    var name = item_data.name ?item_data.name : item_data.ks_model_display_name;
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').prop('title',name)
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').text(name)
+                    self.ksrenderflowerchart(self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]"),item_data);
+                } else if(item_data['ks_dashboard_item_type'] == 'ks_radialBar_chart'){
+
+                    if (item_data['ks_radial_item_color']){
+                         this._rpc({
+                            model: 'ks_dashboard_ninja.item',
+                            method: 'write',
+                            args: [item_data.id, {
+                                "ks_radial_item_color": item_data['ks_radial_item_color']
+                            }],
+                        }).then(function() {
+                            item_data['ks_radial_item_color'] = item_data['ks_radial_item_color']
+                        });
+                    }
+                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find(".card-body").remove();
+                     var name = item_data.name ?item_data.name : item_data.ks_model_display_name;
+                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').prop('title',name)
+                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').text(name)
+                     self.ksrenderradialchart(self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]"),item_data);
+                }else if(item_data['ks_dashboard_item_type'] == 'ks_map_view'){
+                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find(".card-body").remove();
+                     var name = item_data.name ?item_data.name : item_data.ks_model_display_name;
+                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').prop('title',name)
+                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').text(name)
+                     self.ksrendermapview(self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]"),item_data);
                 }else{
                     self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find(".card-body").empty()
+                    var name = item_data.name ?item_data.name : item_data.ks_model_display_name;
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').prop('title',name)
+                    self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]").find('.ks_chart_heading').text(name)
                     self._renderChart(self.$el.find(".grid-stack-item[gs-id=" + item_data.id + "]"), item_data);
                 }
 
@@ -708,13 +920,18 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
 
         _renderListView: function(item, grid){
            var self = this;
+           if (item.ks_info){
+                var ks_description = item.ks_info.split('\n');
+                var ks_description = ks_description.filter(element => element !== '')
+            }else {
+                var ks_description = false;
+            }
             var list_view_data = JSON.parse(item.ks_list_view_data),
                 pager = true,
                 item_id = item.id,
                 data_rows = list_view_data.data_rows,
                 length = data_rows ? data_rows.length : 0,
                 item_title = item.name;
-                ks_info = item.ks_info
             var $ksItemContainer = self.renderListViewData(item)
             var $ks_gridstack_container = $(QWeb.render('ks_gridstack_list_view_container', {
                 ks_chart_title: item_title,
@@ -727,7 +944,8 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                 intial_count: length,
                 ks_pager: pager,
                 calculation_type: item.ks_data_calculation_type,
-                ks_info : ks_info
+                ks_info: ks_description,
+                ks_company:item.ks_company
             })).addClass('ks_dashboarditem_id');
 
 
@@ -759,7 +977,7 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
 
             item.$el = $ks_gridstack_container;
             if (item_id in self.gridstackConfig) {
-                if (config.device && config.device.isMobile){
+                if (config.device.isMobile){
                     grid.addWidget($ks_gridstack_container[0], {x:self.gridstackConfig[item_id].x, y:self.gridstackConfig[item_id].y, w:self.gridstackConfig[item_id].w, h:self.gridstackConfig[item_id].h, autoPosition:true, minW:3, maxW:null, minH:3, maxH:null, id:item_id});
                 }
                 else{
@@ -769,6 +987,911 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                 grid.addWidget($ks_gridstack_container[0], {x:0, y:0, w:5, h:4, autoPosition:true, minW:3, maxW:null, minH:3, maxH:null, id:item_id});
             }
         },
+
+        _renderTvbulletchart: function(item){
+            var self = this;
+            var isDrill = item.isDrill ? item.isDrill : false;
+            this.chart
+            var chart_id = item.id;
+            this.ksColorOptions = ["default","dark","moonrise","material"]
+            var bullet_title = item.name;
+            var container_data = this.ks_bullet_container_option(bullet_title, self.ks_dashboard_data.ks_dashboard_manager, true, self.ks_dashboard_data.ks_dashboard_list, chart_id, item.ks_info, this.ksColorOptions,item.ks_company,item.ks_dashboard_item_type);
+
+            var $ks_gridstack_container = $(QWeb.render('ks_gridstack_tv_container', container_data)).addClass('ks_dashboarditem_id');
+            this.container_owl.append($ks_gridstack_container);
+            self.kstvrenderbulletchart($ks_gridstack_container,item);
+        },
+
+        kstvrenderbulletchart($ks_gridstack_container,item){
+            var self =this;
+            if($ks_gridstack_container.find('.ks_chart_card_body').length){
+                var bulletRender = $ks_gridstack_container.find('.ks_chart_card_body');
+            }else{
+                $($ks_gridstack_container.find('.ks_dashboarditem_chart_container')[0]).append("<div class='card-body ks_chart_card_body'>");
+                var bulletRender = $ks_gridstack_container.find('.ks_chart_card_body');
+            }
+            var isDrill = item.isDrill ? item.isDrill : false;
+            var chart_id = item.id;
+                bullet_title = item.name;
+            var bullet_title = item.name;
+            var bullet_data = JSON.parse(item.ks_chart_data);
+            var ks_labels = bullet_data['labels'];
+            var ks_data = bullet_data.datasets;
+            var data=[];
+            if (ks_data.length && ks_labels.length){
+                for (let i=0 ; i<ks_labels.length ; i++){
+                    let data2={};
+                    for (let j=0 ;j<ks_data.length ; j++){
+                        data2[`value${j+1}`] = ks_data[j].data[i]
+                    }
+                    data2["category"] = ks_labels[i]
+                    data.push(data2)
+                }
+                const root = am5.Root.new(bulletRender[0]);
+                const theme = item.ks_funnel_item_color
+                    switch(theme){
+                    case "default":
+                        root.setThemes([am5themes_Animated.new(root)]);
+                        break;
+                    case "dark":
+                        root.setThemes([am5themes_Dataviz.new(root)]);
+                        break;
+                    case "material":
+                        root.setThemes([am5themes_Material.new(root)]);
+                        break;
+                    case "moonrise":
+                        root.setThemes([am5themes_Moonrise.new(root)]);
+                        break;
+                };
+                var chart = root.container.children.push(am5xy.XYChart.new(root, {
+                    panX: true,
+                    panY: false,
+                    wheelX: "panX",
+                    wheelY: "zoomX",
+                    layout: root.verticalLayout
+                }));
+
+                var xRenderer = am5xy.AxisRendererX.new(root, {
+                minGridDistance: 70
+                });
+
+                var xAxis = chart.xAxes.push(am5xy.CategoryAxis.new(root, {
+                categoryField: "category",
+                renderer: xRenderer,
+                tooltip: am5.Tooltip.new(root, {
+                themeTags: ["axis"],
+                animationDuration: 200
+                })
+                }));
+
+                xRenderer.grid.template.setAll({
+                location: 1
+                })
+
+                xAxis.data.setAll(data);
+
+                var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+                min: 0,
+                renderer: am5xy.AxisRendererY.new(root, {
+                strokeOpacity: 0.1
+                })
+                }));
+
+                for (let k = 0;k<ks_data.length ; k++){
+                    var series = chart.series.push(am5xy.ColumnSeries.new(root, {
+                    name: `${ks_data[k].label}`,
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueYField:`value${k+1}`,
+                    categoryXField: "category",
+                    clustered: false,
+                    tooltip: am5.Tooltip.new(root, {
+                    labelText: `${ks_data[k].label}: {valueY}`
+                    })
+                    }));
+
+                    series.columns.template.setAll({
+                    width: am5.percent(80-(10*k)),
+                    tooltipY: 0,
+                    strokeOpacity: 0
+                    });
+                    series.data.setAll(data);
+                }
+
+                var legend = chart.children.unshift(am5.Legend.new(root, {
+                centerX: am5.p50,
+                x: am5.p50,
+                marginTop: 15,
+                marginBottom: 15
+                }));
+                if(item.ks_hide_legend==true){
+                legend.data.setAll(chart.series.values);
+                }
+
+                if (item.ks_show_data_value == true){
+                    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+                }
+
+
+                chart.appear(1000, 100);
+                series.appear();
+                var $ksChartContainer = $('<canvas id="ks_chart_canvas_id"  data-chart-id='+chart_id+' style="height:400px"/>');
+                $ks_gridstack_container.find('.card-body').append($ksChartContainer);
+            }else{
+                $ks_gridstack_container.find('.card-body').append($("<div class='funnel_text'>").text("No Data Available."))
+            }
+        },
+
+
+        ks_bullet_container_option: function(chart_title, ksIsDashboardManager, ksIsUser, ks_dashboard_list, chart_id, ks_info, ksChartColorOptions, ks_company,ks_dashboard_item_type){
+            var container_data = {
+                ks_chart_title: chart_title,
+                ksIsDashboardManager: ksIsDashboardManager,
+                ksIsUser:ksIsUser,
+                ks_dashboard_list: ks_dashboard_list,
+                chart_id: chart_id,
+                ks_info:ks_info,
+                ksChartColorOptions: ksChartColorOptions,
+                ks_company:ks_company,
+                ks_dashboard_item_type:ks_dashboard_item_type
+            }
+            return container_data;
+        },
+
+        _renderTvfunnelchart: function(item){
+            var self = this;
+            var isDrill = item.isDrill ? item.isDrill : false;
+            this.chart
+            var chart_id = item.id;
+            this.ksColorOptions = ["default","dark","moonrise","material"]
+            var funnel_title = item.name;
+            var container_data = this.ks_funnel_container_option(funnel_title, self.ks_dashboard_data.ks_dashboard_manager, true, self.ks_dashboard_data.ks_dashboard_list, chart_id, item.ks_info, this.ksColorOptions,item.ks_company,item.ks_dashboard_item_type);
+
+            var $ks_gridstack_container = $(QWeb.render('ks_gridstack_tv_container', container_data)).addClass('ks_dashboarditem_id');
+            this.container_owl.append($ks_gridstack_container);
+            self.kstvrenderfunnelchart($ks_gridstack_container,item);
+
+        },
+
+        kstvrenderfunnelchart($ks_gridstack_container,item){
+            var self =this;
+
+            if($ks_gridstack_container.find('.ks_chart_card_body').length){
+                var funnelRender = $ks_gridstack_container.find('.ks_chart_card_body');
+            }else{
+                $($ks_gridstack_container.find('.ks_dashboarditem_chart_container')[0]).append("<div class='card-body ks_chart_card_body'>");
+                var funnelRender = $ks_gridstack_container.find('.ks_chart_card_body');
+            }
+            var isDrill = item.isDrill ? item.isDrill : false;
+            var chart_id = item.id;
+                funnel_title = item.name;
+           var funnel_title = item.name;
+           var funnel_data = JSON.parse(item.ks_chart_data);
+           if (funnel_data['labels'] && funnel_data['datasets']){
+               var ks_labels = funnel_data['labels'];
+               var ks_data = funnel_data.datasets[0].data;
+               const ks_sortobj = Object.fromEntries(
+               ks_labels.map((key, index) => [key, ks_data[index]]),
+               );
+               const keyValueArray = Object.entries(ks_sortobj);
+               keyValueArray.sort((a, b) => b[1] - a[1]);
+
+               var data=[];
+               if (keyValueArray.length){
+                  for (let i=0 ; i<keyValueArray.length ; i++){
+                        data.push({"stage":keyValueArray[i][0],"applicants":keyValueArray[i][1]})
+                  }
+                   const root = am5.Root.new(funnelRender[0]);
+                   const theme = item.ks_funnel_item_color
+                        switch(theme){
+                        case "default":
+                            root.setThemes([am5themes_Animated.new(root)]);
+                            break;
+                        case "dark":
+                            root.setThemes([am5themes_Dataviz.new(root)]);
+                            break;
+                        case "material":
+                            root.setThemes([am5themes_Material.new(root)]);
+                            break;
+                        case "moonrise":
+                            root.setThemes([am5themes_Moonrise.new(root)]);
+                            break;
+                   };
+                   var chart = root.container.children.push(
+                        am5percent.SlicedChart.new(root, {
+                        layout: root.verticalLayout
+                   }));
+                        // Create series
+                   var series = chart.series.push(
+                        am5percent.FunnelSeries.new(root, {
+                        alignLabels: true,
+                        name: "Series",
+                        valueField: "applicants",
+                        categoryField: "stage",
+                        orientation: "vertical",
+                   }));
+                   series.data.setAll(data);
+                   if(item.ks_show_data_value && item.ks_data_label_type=="value"){
+                        series.labels.template.set("text", "{category}: {value}");
+                   }else if(item.ks_show_data_value && item.ks_data_label_type=="percent"){
+                        series.labels.template.set("text", "{category}: {valuePercentTotal.formatNumber('0.00')}%");
+                   }else{
+                        series.ticks.template.set("forceHidden", true);
+                        series.labels.template.set("forceHidden", true);
+                   }
+                    var legend = chart.children.push(am5.Legend.new(root, {
+                        centerX: am5.p50,
+                        x: am5.p50,
+                        marginTop: 15,
+                        marginBottom: 15
+                    }));
+                    if(item.ks_hide_legend==true){
+                        legend.data.setAll(series.dataItems);
+                    }
+                    chart.appear(1000, 100);
+                    var $ksChartContainer = $('<canvas id="ks_chart_canvas_id"  data-chart-id='+chart_id+' style="height:400px"/>');
+                    $ks_gridstack_container.find('.card-body').append($ksChartContainer);
+               }else{
+                    $ks_gridstack_container.find('.card-body').append($("<div class='funnel_text'>").text("No Data Available."))
+               }
+           }else{
+                   $ks_gridstack_container.find('.card-body').append($("<div class='funnel_text'>").text("No Data Available."))
+           }
+
+        },
+
+        ks_funnel_container_option: function(chart_title, ksIsDashboardManager, ksIsUser, ks_dashboard_list, chart_id, ks_info, ksChartColorOptions, ks_company,ks_dashboard_item_type){
+            var container_data = {
+                ks_chart_title: chart_title,
+                ksIsDashboardManager: ksIsDashboardManager,
+                ksIsUser:ksIsUser,
+                ks_dashboard_list: ks_dashboard_list,
+                chart_id: chart_id,
+                ks_info:ks_info,
+                ksChartColorOptions: ksChartColorOptions,
+                ks_company:ks_company,
+                ks_dashboard_item_type:ks_dashboard_item_type
+            }
+            return container_data;
+        },
+
+        _renderTvradialchart: function(item){
+            var self = this;
+            var isDrill = item.isDrill ? item.isDrill : false;
+            this.chart
+            this.ksColorOptions = ["default","dark","moonrise","material"]
+            var chart_id = item.id;
+            var radial_title = item.name;
+            var container_data = self.ks_radial_container_option(radial_title, self.ks_dashboard_data.ks_dashboard_manager, true, self.ks_dashboard_data.ks_dashboard_list, chart_id, item.ks_info, this.ksColorOptions, item.ks_company,item.ks_dashboard_item_type);
+
+            var $ks_gridstack_container = $(QWeb.render('ks_gridstack_tv_container', container_data)).addClass('ks_dashboarditem_id');
+            this.container_owl.append($ks_gridstack_container);
+            self.kstvrenderradialchart($ks_gridstack_container,item);
+        },
+
+        kstvrenderradialchart($ks_gridstack_container,item){
+           var self =this;
+
+           if($ks_gridstack_container.find('.ks_chart_card_body').length){
+                var radialRender = $ks_gridstack_container.find('.ks_chart_card_body');
+           }else{
+                $($ks_gridstack_container.find('.ks_dashboarditem_chart_container')[0]).append("<div class='card-body ks_chart_card_body'>");
+                var radialRender = $ks_gridstack_container.find('.ks_chart_card_body');
+           }
+           var isDrill = item.isDrill ? item.isDrill : false;
+           var chart_id = item.id,
+                radial_title = item.name;
+           var radial_title = item.name;
+           var radial_data = JSON.parse(item.ks_chart_data);
+           var ks_labels = radial_data['labels'];
+           var ks_data=[];
+           let data = [];
+           if (radial_data.datasets){
+               for (let i=0 ; i<radial_data.datasets.length ; i++){
+                    ks_data.push({"ks_data":radial_data.datasets[i].data});
+               }
+           }
+           if (ks_data.length && ks_labels.length){
+              for (let i=0 ; i<radial_data.datasets.length ; i++){
+                  ks_data.push({"ks_data":radial_data.datasets[i].data});
+                  for (let j=0 ; j<ks_labels.length ; j++){
+                      if (data.length != 0){
+                          if (data[j]){
+                              data[j][`value${i+1}`] = ks_data[i].ks_data[j]
+                          }else{
+                              let new_data = {};
+                              new_data['category'] = ks_labels[j];
+                              new_data[`value${i+1}`] = ks_data[i].ks_data[j];
+                              data.push(new_data)
+                          }
+                      }else{
+                          let new_data = {};
+                          new_data['category'] = ks_labels[j];
+                          new_data[`value${i+1}`] = ks_data[i].ks_data[j];
+                          data.push(new_data)
+                      }
+                  }
+              }
+               const root = am5.Root.new(radialRender[0]);
+               const theme = item.ks_radial_item_color
+                    switch(theme){
+                    case "default":
+                        root.setThemes([am5themes_Animated.new(root)]);
+                        break;
+                    case "dark":
+                        root.setThemes([am5themes_Dataviz.new(root)]);
+                        break;
+                    case "material":
+                        root.setThemes([am5themes_Material.new(root)]);
+                        break;
+                    case "moonrise":
+                        root.setThemes([am5themes_Moonrise.new(root)]);
+                        break;
+               };
+               var chart = root.container.children.push(am5radar.RadarChart.new(root, {
+                      panX: false,
+                      panY: false,
+                      wheelX: "panX",
+                      wheelY: "zoomX",
+                      innerRadius: am5.percent(40)
+               }));
+
+                    // Add cursor
+               var cursor = chart.set("cursor", am5radar.RadarCursor.new(root, {
+                    behavior: "zoomX"
+               }));
+
+               cursor.lineY.set("visible", false);
+
+                    // Create axes and their renderers
+               var xRenderer = am5radar.AxisRendererCircular.new(root, {
+                  strokeOpacity: 0.1,
+                  minGridDistance: 50
+               });
+
+               xRenderer.labels.template.setAll({
+                  radius: 10,
+                  maxPosition: 0.98
+               });
+
+               var xAxis = chart.xAxes.push(am5xy.ValueAxis.new(root, {
+                  renderer: xRenderer,
+                  extraMax: 0.1,
+                  tooltip: am5.Tooltip.new(root, {})
+               }));
+
+               var yAxis = chart.yAxes.push(am5xy.CategoryAxis.new(root, {
+                  categoryField: "category",
+                  renderer: am5radar.AxisRendererRadial.new(root, { minGridDistance: 20 })
+               }));
+
+                    // Create series
+               for (var i = 0; i <radial_data.datasets.length; i++) {
+                  var series = chart.series.push(am5radar.RadarColumnSeries.new(root, {
+                    stacked: true,
+                    name: `${radial_data.datasets[i].label}`,
+                    xAxis: xAxis,
+                    yAxis: yAxis,
+                    valueXField: `value${i+1}`,
+                    categoryYField: "category"
+                  }));
+
+                   series.set("stroke",root.interfaceColors.get("background"));
+                   series.columns.template.setAll({
+                     width: am5.p100,
+                     strokeOpacity: 0.1,
+                     tooltipText: "{name}: {valueX}"
+                   });
+
+                   series.data.setAll(data);
+                   series.appear(1000);
+               }
+               var legend = chart.children.push(am5.Legend.new(root, {
+                    centerX: am5.p50,
+                    x: am5.p50,
+                    marginTop: 50,
+                    marginBottom: 50
+               }));
+
+               if(item.ks_hide_legend==true){
+                   legend.data.setAll(chart.series.values);
+               }
+
+               yAxis.data.setAll(data);
+
+                    // Animate chart and series in
+               chart.appear(1000, 100);
+               var $ksChartContainer = $('<canvas id="ks_chart_canvas_id"  data-chart-id='+chart_id+' style="height:400px"/>');
+               $ks_gridstack_container.find('.card-body').append($ksChartContainer);
+           }else{
+            $ks_gridstack_container.find('.card-body').append($("<div class='radial_text'>").text("No Data Available."))
+           }
+        },
+
+        ks_radial_container_option: function(chart_title, ksIsDashboardManager, ksIsUser, ks_dashboard_list, chart_id, ks_info, ksChartColorOptions, ks_company, ks_dashboard_item_type){
+            var container_data = {
+                ks_chart_title: chart_title,
+                ksIsDashboardManager: ksIsDashboardManager,
+                ksIsUser:ksIsUser,
+                ks_dashboard_list: ks_dashboard_list,
+                chart_id: chart_id,
+                ks_info:ks_info,
+                ksChartColorOptions: ksChartColorOptions,
+                ks_company:ks_company,
+                ks_dashboard_item_type:ks_dashboard_item_type,
+            }
+            return container_data;
+        },
+
+        _ksTvflowerchart: function(item){
+            var self = this;
+            var isDrill = item.isDrill ? item.isDrill : false;
+            this.chart
+            this.ksColorOptions = ["default","dark","moonrise","material"]
+            var chart_id = item.id;
+            var flower_title = item.name;
+            var container_data = this.ks_tv_flower_container_option(flower_title, self.ks_dashboard_data.ks_dashboard_manager, true, self.ks_dashboard_data.ks_dashboard_list, chart_id, item.ks_info, this.ksColorOptions, item.ks_company,item.ks_dashboard_item_type);
+
+            var $ks_gridstack_container = $(QWeb.render('ks_gridstack_tv_container', container_data)).addClass('ks_dashboarditem_id');
+            this.container_owl.append($ks_gridstack_container);
+            self.kstvrenderflowerchart($ks_gridstack_container,item);
+
+        },
+        kstvrenderflowerchart($ks_gridstack_container,item){
+            var self = this;
+
+            if($ks_gridstack_container.find('.ks_chart_card_body').length){
+                var flowerRender = $ks_gridstack_container.find('.ks_chart_card_body');
+            }else{
+                $($ks_gridstack_container.find('.ks_dashboarditem_chart_container')[0]).append("<div class='card-body ks_chart_card_body'>");
+                var flowerRender = $ks_gridstack_container.find('.ks_chart_card_body');
+            }
+
+            var flower_data = JSON.parse(item.ks_chart_data);
+            var isDrill = item.isDrill ? item.isDrill : false;
+            var chart_id = item.id,
+                flower_title = item.name;
+            var flower_title = item.name;
+            var ks_labels = flower_data['labels'];
+            var ks_data=[];
+            let data = [];
+            if (flower_data.datasets){
+                for (let i=0 ; i<flower_data.datasets.length ; i++){
+                    ks_data.push({"ks_data":flower_data.datasets[i].data});
+                }
+            }
+            if (ks_data.length && ks_labels.length){
+                for (let i=0 ; i<flower_data.datasets.length ; i++){
+                    ks_data.push({"ks_data":flower_data.datasets[i].data});
+                    for (let j=0 ; j<ks_labels.length ; j++){
+                        if (data.length != 0){
+                            if (data[j]){
+                                data[j][`value${i+1}`] = ks_data[i].ks_data[j]
+                            }else{
+                                let new_data = {};
+                                new_data['category'] = ks_labels[j];
+                                new_data[`value${i+1}`] = ks_data[i].ks_data[j];
+                                data.push(new_data)
+                            }
+                        }else{
+                            let new_data = {};
+                            new_data['category'] = ks_labels[j];
+                            new_data[`value${i+1}`] = ks_data[i].ks_data[j];
+                            data.push(new_data)
+                        }
+                    }
+                }
+                const root = am5.Root.new(flowerRender[0]);
+                const theme = item.ks_flower_item_color
+                    switch(theme){
+                    case "default":
+                        root.setThemes([am5themes_Animated.new(root)]);
+                        break;
+                    case "dark":
+                        root.setThemes([am5themes_Dataviz.new(root)]);
+                        break;
+                    case "material":
+                        root.setThemes([am5themes_Material.new(root)]);
+                        break;
+                    case "moonrise":
+                        root.setThemes([am5themes_Moonrise.new(root)]);
+                        break;
+                };
+                var chart = root.container.children.push(
+                    am5radar.RadarChart.new(root, {
+                      wheelY: "zoomX",
+                      wheelX: "panX",
+                      panX: false,
+                      panY: false,
+                      })
+                );
+
+                 // Add cursor
+                var cursor = chart.set("cursor", am5radar.RadarCursor.new(root, {
+                  behavior: "zoomX"
+                }));
+
+                cursor.lineY.set("visible", false);
+
+                 // Create axes and their renderers
+                var xRenderer = am5radar.AxisRendererCircular.new(root, {
+                  cellStartLocation: 0.2,
+                  cellEndLocation: 0.8
+                });
+
+                xRenderer.labels.template.setAll({
+                  radius: 10
+                });
+
+                var xAxis = chart.xAxes.push(
+                  am5xy.CategoryAxis.new(root, {
+                    maxDeviation: 0,
+                    categoryField: "category",
+                    renderer: xRenderer,
+                    tooltip: am5.Tooltip.new(root, {})
+                  })
+                );
+
+                xAxis.data.setAll(data);
+
+                var yAxis = chart.yAxes.push(
+                  am5xy.ValueAxis.new(root, {
+                    renderer: am5radar.AxisRendererRadial.new(root, {})
+                  })
+                );
+                 // Create series
+                for (var i = 0; i <flower_data.datasets.length ; i++) {
+                  var series = chart.series.push(
+                    am5radar.RadarColumnSeries.new(root, {
+                      name: `${flower_data.datasets[i].label}`,
+                      xAxis: xAxis,
+                      yAxis: yAxis,
+                      valueYField: `value${i+1}`,
+                      categoryXField: "category"
+                    })
+                  );
+
+                  series.columns.template.setAll({
+                    tooltipText: "{name}: {valueY}",
+                    width: am5.percent(100)
+                  });
+
+                  series.data.setAll(data);
+
+                  series.appear(1000);
+                }
+                var legend = chart.children.push(am5.Legend.new(root, {
+                    centerX: am5.p50,
+                    x: am5.p50,
+                    marginTop: 50,
+                    marginBottom: 50
+                }));
+
+                if(item.ks_hide_legend==true){
+                    legend.data.setAll(chart.series.values);
+                }
+                chart.appear(1000, 100);
+                var $ksChartContainer = $('<canvas id="ks_chart_canvas_id"  data-chart-id='+chart_id+' style="height:400px"/>');
+                $ks_gridstack_container.find('.card-body').append($ksChartContainer);
+            }else{
+                $ks_gridstack_container.find('.card-body').append($("<div class='flower_text'>").text("No Data Available."))
+            }
+        },
+
+        ks_tv_flower_container_option: function(chart_title, ksIsDashboardManager, ksIsUser, ks_dashboard_list, chart_id, ks_info, ksChartColorOptions, ks_company,ks_dashboard_item_type){
+            var container_data = {
+                ks_chart_title: chart_title,
+                ksIsDashboardManager: ksIsDashboardManager,
+                ksIsUser:ksIsUser,
+                ks_dashboard_list: ks_dashboard_list,
+                chart_id: chart_id,
+                ks_info:ks_info,
+                ksChartColorOptions: ksChartColorOptions,
+                ks_company:ks_company,
+                ks_dashboard_item_type:ks_dashboard_item_type
+            }
+            return container_data;
+        },
+
+        _renderTvmapview: function(item){
+            var self = this;
+            var isDrill = item.isDrill ? item.isDrill : false;
+            this.chart
+            var map_id = item.id;
+            var map_title = item.name;
+            var container_data = this.ks_tv_map_container_option(map_title, self.ks_dashboard_data.ks_dashboard_manager, true, self.ks_dashboard_data.ks_dashboard_list, map_id, item.ks_info, item.ks_company,item.ks_dashboard_item_type);
+
+            var $ks_gridstack_container = $(QWeb.render('ks_gridstack_tv_container', container_data)).addClass('ks_dashboarditem_id');
+            this.container_owl.append($ks_gridstack_container);
+            self.kstvrendermapview($ks_gridstack_container,item);
+
+        },
+
+        async kstvrendermapview($ks_gridstack_container,item){
+            var self = this;
+
+            if($ks_gridstack_container.find('.ks_chart_card_body').length){
+                var mapRender = $ks_gridstack_container.find('.ks_chart_card_body');
+            }else{
+                $($ks_gridstack_container.find('.ks_dashboarditem_chart_container')[0]).append("<div class='card-body ks_chart_card_body'>");
+                var mapRender = $ks_gridstack_container.find('.ks_chart_card_body');
+            }
+
+            var map_data = JSON.parse(item.ks_chart_data);
+            var isDrill = item.isDrill ? item.isDrill : false;
+            var map_id = item.id,
+                map_title = item.name;
+            var map_title = item.name;
+            var ks_data=[];
+            let data = [];
+            let domain = [];
+            let label_data = [];
+            let partner_domain = [];
+            if (map_data.groupByIds){
+                domain = [['id', 'in', map_data.groupByIds]]
+                const fields = ["partner_latitude", "partner_longitude", "name"];
+                await this._rpc({
+                    model: 'res.partner',
+                    method: 'search_read',
+                    args: [domain, fields],
+                }).then( (records) => {
+                    partners = records;
+                });
+            }
+            if ( item.ks_partners_map ) {
+                partner_domain = [['id', 'in', JSON.parse(item.ks_partners_map)]]
+            }
+            var partners_query = [];
+            const fields = ["partner_latitude", "partner_longitude", "name"];
+            await this._rpc({
+                model: 'res.partner',
+                method: 'search_read',
+                args: [partner_domain, fields],
+            }).then( (records) => {
+                partners_query = records;
+            });
+            var ks_labels = map_data['labels'];
+            if (map_data.datasets.length){
+                var ks_data = map_data.datasets[0].data;
+            }
+            if (item.ks_data_calculation_type === 'query'){
+                for (let i=0 ; i<ks_labels.length ; i++){
+                    data.push({"title":ks_labels[i], "latitude":partners_query[i].partner_latitude, "longitude": partners_query[i].partner_longitude});
+                }
+            }
+            if (ks_data.length && ks_labels.length){
+                if (item.ks_data_calculation_type !== 'query'){
+                    for (let i=0 ; i<ks_labels.length ; i++){
+                        if (ks_labels[i] !== false){
+                            if (ks_labels[i].includes(',')){
+                                ks_labels[i] = ks_labels[i].split(', ')[1]
+                            }
+                            label_data.push({'title': ks_labels[i], 'value':ks_data[i]})
+                        }
+                    }
+                    for (let i=0 ; i<label_data.length ; i++){
+                        for (let j=0 ; j<partners.length ; j++){
+                            if (label_data[i].title == partners[j].name){
+                                partners[j].name = partners[j].name + ';' + label_data[i].value
+                            }
+                        }
+                    }
+                    for (let i=0 ; i<partners.length ; i++){
+                        data.push({"title":partners[i].name, "latitude":partners[i].partner_latitude, "longitude": partners[i].partner_longitude});
+                    }
+                }
+                const root = am5.Root.new(mapRender[0]);
+                root.setThemes([am5themes_Animated.new(root)]);
+
+                // Create the map chart
+                var chart = root.container.children.push(
+                  am5map.MapChart.new(root, {
+                    panX: "translateX",
+                    panY: "translateY",
+                    projection: am5map.geoMercator()
+                  })
+                );
+
+                var cont = chart.children.push(
+                  am5.Container.new(root, {
+                    layout: root.horizontalLayout,
+                    x: 20,
+                    y: 40
+                  })
+                );
+
+                // Add labels and controls
+                cont.children.push(
+                  am5.Label.new(root, {
+                    centerY: am5.p50,
+                    text: "Map"
+                  })
+                );
+
+                var switchButton = cont.children.push(
+                  am5.Button.new(root, {
+                    themeTags: ["switch"],
+                    centerY: am5.p50,
+                    icon: am5.Circle.new(root, {
+                      themeTags: ["icon"]
+                    })
+                  })
+                );
+
+                switchButton.on("active", function() {
+                  if (!switchButton.get("active")) {
+                    chart.set("projection", am5map.geoMercator());
+                    chart.set("panY", "translateY");
+                    chart.set("rotationY", 0);
+                    backgroundSeries.mapPolygons.template.set("fillOpacity", 0);
+                  } else {
+                    chart.set("projection", am5map.geoOrthographic());
+                    chart.set("panY", "rotateY");
+
+                    backgroundSeries.mapPolygons.template.set("fillOpacity", 0.1);
+                  }
+                });
+
+                cont.children.push(
+                  am5.Label.new(root, {
+                    centerY: am5.p50,
+                    text: "Globe"
+                  })
+                );
+
+                // Create series for background fill
+                var backgroundSeries = chart.series.push(am5map.MapPolygonSeries.new(root, {}));
+                backgroundSeries.mapPolygons.template.setAll({
+                  fill: root.interfaceColors.get("alternativeBackground"),
+                  fillOpacity: 0,
+                  strokeOpacity: 0
+                });
+
+                    // Add background polygon
+                backgroundSeries.data.push({
+                  geometry: am5map.getGeoRectangle(90, 180, -90, -180)
+                });
+
+                // Create main polygon series for countries
+                var polygonSeries = chart.series.push(
+                  am5map.MapPolygonSeries.new(root, {
+                    geoJSON: am5geodata_worldLow,
+                    exclude: ["AQ"]
+                  })
+                );
+                polygonSeries.mapPolygons.template.setAll({
+                  tooltipText: "{name}",
+                  toggleKey: "active",
+                  interactive: true
+                });
+
+                polygonSeries.mapPolygons.template.states.create("hover", {
+                  fill: root.interfaceColors.get("primaryButtonHover")
+                });
+
+                polygonSeries.mapPolygons.template.states.create("active", {
+                  fill: root.interfaceColors.get("primaryButtonHover")
+                });
+
+                var previousPolygon;
+
+                polygonSeries.mapPolygons.template.on("active", function (active, target) {
+                  if (previousPolygon && previousPolygon != target) {
+                    previousPolygon.set("active", false);
+                  }
+                  if (target.get("active")) {
+                    polygonSeries.zoomToDataItem(target.dataItem );
+                  }
+                  else {
+                    chart.goHome();
+                  }
+                  previousPolygon = target;
+                });
+
+                // Create line series for trajectory lines
+                var lineSeries = chart.series.push(am5map.MapLineSeries.new(root, {}));
+                lineSeries.mapLines.template.setAll({
+                  stroke: root.interfaceColors.get("alternativeBackground"),
+                  strokeOpacity: 0.3
+                });
+
+                // Create point series for markers
+                var pointSeries = chart.series.push(am5map.MapPointSeries.new(root, {}));
+                var colorset = am5.ColorSet.new(root, {});
+                const self = root;
+
+
+                pointSeries.bullets.push(function() {
+                  var container = am5.Container.new(self, {
+                    tooltipText: "{title}",
+                    cursorOverStyle: "pointer"
+                  });
+
+                  var circle = container.children.push(
+                    am5.Circle.new(self, {
+                      radius: 4,
+                      tooltipY: 0,
+                      fill: colorset.next(),
+                      strokeOpacity: 0
+                    })
+                  );
+
+
+                  var circle2 = container.children.push(
+                    am5.Circle.new(self, {
+                      radius: 4,
+                      tooltipY: 0,
+                      fill: colorset.next(),
+                      strokeOpacity: 0,
+                      tooltipText: "{title}"
+                    })
+                  );
+
+                  circle.animate({
+                    key: "scale",
+                    from: 1,
+                    to: 5,
+                    duration: 600,
+                    easing: am5.ease.out(am5.ease.cubic),
+                    loops: Infinity
+                  });
+
+                  circle.animate({
+                    key: "opacity",
+                    from: 1,
+                    to: 0.1,
+                    duration: 600,
+                    easing: am5.ease.out(am5.ease.cubic),
+                    loops: Infinity
+                  });
+
+                  return am5.Bullet.new(self, {
+                    sprite: container
+                  });
+                });
+
+                for (var i = 0; i < data.length; i++) {
+                  var final_data = data[i];
+                  addCity(final_data.longitude, final_data.latitude, final_data.title);
+                }
+                function addCity(longitude, latitude, title) {
+                  pointSeries.data.push({
+                    geometry: { type: "Point", coordinates: [longitude, latitude] },
+                    title: title,
+                  });
+                }
+
+                // Add zoom control
+                chart.set("zoomControl", am5map.ZoomControl.new(root, {}));
+
+                // Set clicking on "water" to zoom out
+                chart.chartContainer.get("background").events.on("click", function () {
+                  chart.goHome();
+                })
+
+                // Make stuff animate on load
+                chart.appear(1000, 100);
+                var $ksChartContainer = $('<canvas id="ks_chart_canvas_id"  data-chart-id='+map_id+' style="height:400px"/>');
+                $ks_gridstack_container.find('.card-body').append($ksChartContainer);
+            }else{
+                $ks_gridstack_container.find('.card-body').append($("<div class='map_text'>").text("No Data Available."))
+            }
+        },
+
+        ks_tv_map_container_option: function(map_title, ksIsDashboardManager, ksIsUser, ks_dashboard_list, map_id, ks_info, ks_company,ks_dashboard_item_type){
+            var container_data = {
+                ks_chart_title: map_title,
+                ksIsDashboardManager: ksIsDashboardManager,
+                ksIsUser:ksIsUser,
+                ks_dashboard_list: ks_dashboard_list,
+                map_id: map_id,
+                ks_info:ks_info,
+                ks_company:ks_company,
+                ks_dashboard_item_type:ks_dashboard_item_type
+            }
+            return container_data;
+        },
+
 
         _renderTvGraph: function(item){
             var self = this;
@@ -784,10 +1907,17 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                 case "polarArea":
                     var chart_family = "circle";
                     break;
+                case "radar":
+                    var chart_family = "circle";
+                    break;
                 case "bar":
                 case "horizontalBar":
                 case "line":
                 case "area":
+                    var chart_family = "square"
+                    break;
+                 case "scatter":
+
                     var chart_family = "square"
                     break;
                 default:
@@ -805,6 +1935,8 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                 chart_family: chart_family,
                 chart_type: chart_type,
                 ksChartColorOptions: this.ksChartColorOptions,
+                ks_info: item.ks_info,
+                ks_company:item.ks_company
             })).addClass('ks_dashboarditem_id');
             this.container_owl.append($ks_gridstack_container);
             self._rendertvChart($ks_gridstack_container, item);
@@ -864,10 +1996,16 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
                 case "polarArea":
                     var chart_family = "circle";
                     break;
+                case "radar":
+                    var chart_family = "circle";
+                    break;
                 case "bar":
                 case "horizontalBar":
                 case "line":
                 case "area":
+                    var chart_family = "square"
+                    break;
+                case "scatter":
                     var chart_family = "square"
                     break;
                 default:
@@ -938,6 +2076,13 @@ odoo.define('ks_dn_advance.ks_tv_dashboard', function(require){
             var chart_plugin = [];
             if (item.ks_show_data_value) {
                 chart_plugin.push(ChartDataLabels);
+            }
+            if (item.ks_dashboard_item_type =="ks_scatter_chart"){
+            var scatter_data = []
+            for (let i = 0 ; i<chart_data['labels'].length ; i++){
+                scatter_data.push({"label":chart_data['labels'][i],"data":[{'x':chart_data['labels'][i],'y':chart_data.datasets[0].data[i]}]})
+            }
+            Object.assign(chart_data.datasets,scatter_data)
             }
             var ksMyChart = new Chart($ksChartContainer[0].getContext('2d'), {
                 type: chart_type === "area" ? "line" : chart_type,

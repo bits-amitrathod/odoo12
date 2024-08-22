@@ -22,6 +22,9 @@ class TrendingReportListPopUp(models.TransientModel):
     start_date = fields.Date('Start Date', help="Choose a date to get the Discount Summary at that  Start date", default=fields.date.today())
     end_date = fields.Date('End Date', help="Choose a date to get the Discount Summary at that  End date", default=fields.date.today())
 
+    def _valid_field_parameter(self, field, name):
+        return name == '_defaluts' or super()._valid_field_parameter(field, name)
+
     def open_table(self):
         #print(self.env.ref('inventory__allocation_so.view_inv_all_so_tree').id)
         tree_view_id = self.env.ref('inventory_allocation_so.view_inv_all_so_tree').id

@@ -1,29 +1,29 @@
-odoo.define('ks_dashboard_ninja_list_tv.ks_dashboard_graph_preview', function (require) {
-    "use strict";
+/** @odoo-module */
+
+import { patch } from "@web/core/utils/patch";
+import {KsGraphPreview} from '@ks_dashboard_ninja/js/ks_dashboard_ninja_graph_preview';
 
 
-    var KsGraphPreview = require('ks_dashboard_ninja_list.ks_dashboard_graph_preview');
+//    var KsGraphPreview = require('ks_dashboard_ninja_list.ks_dashboard_graph_preview');
+patch(KsGraphPreview.prototype,"ks_dn_advance", {
 
-    KsGraphPreview.KsGraphPreview.include({
-
-        _render: function(){
-            this.$el.empty();
-            if (this.recordData.ks_dashboard_item_type !== 'ks_tile' && this.recordData.ks_dashboard_item_type !== 'ks_kpi' && this.recordData.ks_dashboard_item_type !== 'ks_list_view') {
-                if(this.recordData.ks_data_calculation_type !== "query"){
-                    this._super.apply(this, arguments);
+        _Ks_render(){
+        $(this.input.el.parentElement).find('div').remove()
+        $(this.input.el.parentElement).find('input').addClass('d-none')
+        var rec = this.props.record.data;
+            if (rec.ks_dashboard_item_type !== 'ks_tile' && rec.ks_dashboard_item_type !== 'ks_kpi' && rec.ks_dashboard_item_type !== 'ks_list_view') {
+                if(rec.ks_data_calculation_type !== "query"){
+                    this._super(...arguments);
                 }
-                else if(this.recordData.ks_data_calculation_type === "query" && this.recordData.ks_query_result) {
-                    if(this.recordData.ks_xlabels && this.recordData.ks_ylabels){
+                else if(rec.ks_data_calculation_type === "query" && rec.ks_query_result) {
+                    if(rec.ks_xlabels && rec.ks_ylabels){
                             this._getChartData();
                     } else {
-                        this.$el.append($('<div>').text("Please choose the X-labels and Y-labels"));
+                        $(this.input.el.parentElement).append($('<div>').text("Please choose the X-labels and Y-labels"));
                     }
                 } else {
-                    this.$el.append($('<div>').text("Please run the appropriate Query"));
+                    $(this.input.el.parentElement).append($('<div>').text("Please run the appropriate Query"));
                 }
             }
         },
     });
-
-    return KsGraphPreview;
-});
