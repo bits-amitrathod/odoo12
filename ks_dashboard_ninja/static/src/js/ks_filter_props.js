@@ -24,7 +24,8 @@ return KsFilterProps.include({
         'change .ks_operator_option_selector': 'ksOnCustomFilterOperatorSelect',
     }),
 
-    init: function(){
+    init: function(state){
+
         this._super.apply(this, arguments);
         this.ksCustomFilterData = {
             OPERATORS : FIELD_OPERATORS,
@@ -145,8 +146,8 @@ return KsFilterProps.include({
         }
 
         domain_data['domain'] = self._ksMakeDomainFromDomainIndex(domain_data.ks_domain_index_data);
-
         _(domain_data['item_ids']).each((x)=>{self.ksFetchUpdateItem(x)});
+        self.state['domain_data']=self.ks_dashboard_data.ks_dashboard_domain_data;
     },
 
     _ksUpdateRemoveDomainIndexData: function(action, categ, params){
@@ -185,6 +186,7 @@ return KsFilterProps.include({
 
         domain_data['domain'] = self._ksMakeDomainFromDomainIndex(domain_data.ks_domain_index_data);
         _(domain_data['item_ids']).each((x)=>{self.ksFetchUpdateItem(x)});
+        self.state['domain_data']=self.ks_dashboard_data.ks_dashboard_domain_data;
     },
 
     _ksMakeDomainFromDomainIndex: function(ks_domain_index_data){
@@ -227,7 +229,9 @@ return KsFilterProps.include({
     ks_fetch_items_data: function(){
         var self = this;
         return this._super.apply(this, arguments).then(function(){
-            if (self.ks_dashboard_data.ks_dashboard_domain_data) self.ks_init_domain_data_index();
+            if(self.state['domain_data'] == undefined){
+                if (self.ks_dashboard_data.ks_dashboard_domain_data) self.ks_init_domain_data_index();
+            }
         });
     },
 
@@ -249,6 +253,7 @@ return KsFilterProps.include({
         _(temp_data).values().forEach((x)=>{
             self.ks_dashboard_data.ks_dashboard_domain_data[x.model].ks_domain_index_data.push(x);
         })
+        self.state['domain_data']=self.ks_dashboard_data.ks_dashboard_domain_data;
     },
 
     // Custom Filter Events and Functions -------------------------------------------------------------------
@@ -486,6 +491,7 @@ return KsFilterProps.include({
 
             domain_data['domain'] = self._ksMakeDomainFromDomainIndex(domain_data.ks_domain_index_data);
             _(domain_data['item_ids']).each((x)=>{self.ksFetchUpdateItem(x)});
+            self.state['domain_data']=self.ks_dashboard_data.ks_dashboard_domain_data;
         })
     },
 
@@ -525,9 +531,9 @@ return KsFilterProps.include({
 
             domain_data['domain'] = self._ksMakeDomainFromDomainIndex(domain_data.ks_domain_index_data);
             _(domain_data['item_ids']).each((x)=>{self.ksFetchUpdateItem(x)});
+            self.state['domain_data']=self.ks_dashboard_data.ks_dashboard_domain_data;
         }
     },
-
 })
 
 });

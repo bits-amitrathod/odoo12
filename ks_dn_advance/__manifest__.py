@@ -2,18 +2,16 @@
 {
 	'name': 'Dashboard Ninja Advance',
 
-
     'summary': """
         Dashboard Ninja Advance for Odoo allows you to showcase your complex data in 
         form of interactive and engaging charts or list views. Manage the complicated data of 
         your business and get a detailed insight into your sale. Dashboard Ninja Advance,
         Dashboard Ninja, Modern Odoo Dashboards, Powerful Dashboard, Beautiful Dashboard, 
-        Modern Dashboard, Chart Dashboard, Graph Dashboard, Pie Chart Dashboard, Ninja Dashboard.
+        Modern Dashboard, Chart Dashboard, Graph Dashboard, Pie Chart Dashboard, Ninja Dashboard.                    
     """,
 
-
-	'description': """
-Best Odoo Dashboard Apps
+    'description': """
+        Best Odoo Dashboard Apps
         Slider Dashboard Apps
         Odoo Query Dashboard Apps
         Display Dashboard Apps
@@ -86,7 +84,8 @@ Best Odoo Dashboard Apps
         Odoo Dashboard v14.0
         New Odoo Dashboard Apps
         Dashboard Ninja Advance
-""",
+
+    """,
 
 	'author': 'Ksolves India Ltd.',
 
@@ -94,46 +93,27 @@ Best Odoo Dashboard Apps
 
 	'currency': 'EUR',
 
-	'price': '149',
+	'price': '104.3',
 
 	'website': 'https://store.ksolves.com/',
 
 	'maintainer': 'Ksolves India Ltd.',
 
-	'live_test_url': 'https://dashboardninja16.kappso.in/web/demo_login',
+	'live_test_url': 'https://dn15demo.kappso.com/web/demo_login',
 
-	'category': 'Services',
+	'category': 'Tools',
 
-	'version': '16.0.2.2.0',
+	'version': '14.0.1.4.1',
 
 	'support': 'sales@ksolves.com',
 
-	'images': ['static/description/banner.gif'],
+	'images': ['static/description/DN and DNA Banner.gif'],
 
-	'depends': ['ks_dashboard_ninja','mail'],
+	'depends': ['ks_dashboard_ninja'],
 
-	'external_dependencies': {'python': ['mysql-connector']},
+	# 'data': ['views/ks_dashboard_tv_assets.xml', 'views/ks_dashboard_ninja_item_view_inherit.xml', 'views/ks_dashboard_form_view_inherit.xml'],
 
-	'data': ['security/ir.model.access.csv',
-		'views/ks_dashboard_ninja_item_view_inherit.xml',
-			 'views/ks_dashboard_form_view_inherit.xml',
-			 'views/ks_mail_template.xml'],
-
-	'assets': {'web.assets_backend': ['ks_dn_advance/static/src/css/ks_tv_dashboard.css',
-									  'ks_dn_advance/static/lib/css/owl.carousel.min.css',
-									  'ks_dn_advance/static/src/js/ks_dn_kpi_preview.js',
-									  'ks_dn_advance/static/src/js/ks_labels.js',
-									  'ks_dn_advance/static/src/js/ks_ylabels.js',
-									  'ks_dn_advance/static/src/js/ks_dashboard_ninja_tv_graph_preview.js',
-									  'ks_dn_advance/static/src/js/ks_dashboard_ninja_tv_list_preview.js',
-									  'ks_dn_advance/static/src/js/ks_tv_dashboard.js',
-									  'ks_dn_advance/static/lib/js/owl.carousel.min.js',
-									  'ks_dn_advance/static/lib/js/print.min.js',
-									  'ks_dn_advance/static/lib/js/pdf.min.js',
-									  'ks_dn_advance/static/src/xml/**/*'],
-			   'web.assets_frontend': ['ks_dn_advance/static/src/css/ks_tv_dashboard.css',
-									   'ks_dn_advance/static/src/js/ks_website_dashboard.js'],
-			   'web.assets_qweb': ['ks_dn_advance/static/src/xml/**/*']},
+	'qweb': ['static/src/xml/ks_dashboard_tv_ninja.xml', 'static/src/xml/ks_query_templates.xml', 'static/src/xml/ks_dna_to_template.xml'],
 
 	'uninstall_hook': 'ks_dna_uninstall_hook',
 }

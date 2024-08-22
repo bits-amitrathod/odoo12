@@ -32,6 +32,9 @@ class sale_order(models.Model):
     #         else:
     #             obj.allow_pay_gen_payment_link = True
 
+    def _valid_field_parameter(self, field, name):
+        return name == 'track_sequence' or super()._valid_field_parameter(field, name)
+
     @api.model
     def _get_default_team(self):
         return self.env['crm.team']._get_default_team_id()

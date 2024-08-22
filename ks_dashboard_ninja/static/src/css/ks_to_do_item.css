@@ -61,14 +61,14 @@
     pointer-events: none;
 }
 
-.ks_custom_check.form-check .form-check-label span {
+.form-check .form-check-label span {
     display: block;
     position: absolute;
     left: -1px;
     top: -1px;
     transition-duration: .2s;
 }
-.ks_custom_check.form-check .form-check-sign {
+.form-check .form-check-sign {
     vertical-align: middle;
     position: relative;
     top: -2px;

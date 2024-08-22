@@ -8,14 +8,13 @@
     position: relative;
     display: flex;
     align-items: center;
-    margin-right:14px;
 }
 .ks_date_apply_clear_print,.ks_dashboard_top_menu{
     display: flex;
     align-items: center;
     justify-content: flex-end;
     flex-wrap: wrap;
-    margin-right:1px;
+    margin-top: -6px;
 }
 i.ks-options-plus {
     color: white;
@@ -67,6 +66,10 @@ i.ks-options-plus {
     text-align: start;
 }
 
+.ks_dashboard_header{
+    height: 55px;
+}
+
 .ks-dashboard-date-labels{
     font-weight: bold;
     margin-top: inherit;
@@ -81,4 +84,8 @@ i.ks-options-plus {
 
 .ks_event_offer_list:focus {
     box-shadow: none;
+}
+
+ul#ks_date_selector_container {
+    transform: translate3d(0px, 31px, 0px) !important;
 }

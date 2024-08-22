@@ -16,7 +16,7 @@
 
     # always loaded
     'data': [
-        # 'security/ir.model.access.csv',
+        'security/ir.model.access.csv',
         'views/scrap_scheduler_views.xml',
         'views/production_lot.xml',
         'views/stock_move_line_extension.xml',
