@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="action_report_inventory_pricing_rule" model="ir.actions.report">
+            <record id="action_report_inventory_pricing_rule" model="ir.actions.report">
             <field name="name">Pricing Rule</field>
             <field name="model">res.pricing_rule</field>
             <field name="report_type">qweb-html</field>
-            <field name="report_name">pricing_rule.inv_pricing_rule_template</field>
             <field name="report_file">pricing_rule.inv_pricing_rule_template</field>
+            <field name="report_name">pricing_rule.inv_pricing_rule_template</field>
         </record>
     </data>
 </odoo>
