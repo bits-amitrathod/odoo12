@@ -98,9 +98,9 @@ class KsDashboardNinjaBoard(models.Model):
     ks_dashboard_custom_filters_ids = fields.One2many('ks_dashboard_ninja.board_custom_filters',
                                                       'ks_dashboard_board_id',
                                                       string='Dashboard Custom Filters')
-
     multi_layouts = fields.Boolean(string='Enable Multi-Dashboard Layouts',
                                    help='Allow user to have multiple layouts of the same Dashboard')
+
 
     @api.constrains('ks_dashboard_start_date', 'ks_dashboard_end_date')
     def ks_date_validation(self):
@@ -108,40 +108,41 @@ class KsDashboardNinjaBoard(models.Model):
             if rec.ks_dashboard_start_date > rec.ks_dashboard_end_date:
                 raise ValidationError(_('Start date must be less than end date'))
 
-    @api.model
+    @api.model_create_multi
     def create(self, vals):
-        record = super(KsDashboardNinjaBoard, self).create(vals)
-        if 'ks_dashboard_top_menu_id' in vals and 'ks_dashboard_menu_name' in vals:
-            action_id = {
-                'name': vals['ks_dashboard_menu_name'] + " Action",
-                'res_model': 'ks_dashboard_ninja.board',
-                'tag': 'ks_dashboard_ninja',
-                'params': {'ks_dashboard_id': record.id},
-            }
-            record.ks_dashboard_client_action_id = self.env['ir.actions.client'].sudo().create(action_id)
+        records = super(KsDashboardNinjaBoard, self).create(vals)
+        for record in records:
+            if record.ks_dashboard_top_menu_id and record.ks_dashboard_menu_name:
+                action_id = {
+                    'name': record.ks_dashboard_menu_name + " Action",
+                    'res_model': 'ks_dashboard_ninja.board',
+                    'tag': 'ks_dashboard_ninja',
+                    'params': {'ks_dashboard_id': record.id},
+                }
+                record.ks_dashboard_client_action_id = self.env['ir.actions.client'].sudo().create(action_id)
 
-            record.ks_dashboard_menu_id = self.env['ir.ui.menu'].sudo().create({
-                'name': vals['ks_dashboard_menu_name'],
-                'active': vals.get('ks_dashboard_active', True),
-                'parent_id': vals['ks_dashboard_top_menu_id'],
-                'action': "ir.actions.client," + str(record.ks_dashboard_client_action_id.id),
-                'groups_id': vals.get('ks_dashboard_group_access', False),
-                'sequence': vals.get('ks_dashboard_menu_sequence', 10)
-            })
+                record.ks_dashboard_menu_id = self.env['ir.ui.menu'].sudo().create({
+                    'name': record.ks_dashboard_menu_name,
+                    'active': record.ks_dashboard_active,
+                    'parent_id': record.ks_dashboard_top_menu_id.id,
+                    'action': "ir.actions.client," + str(record.ks_dashboard_client_action_id.id),
+                    'groups_id': record.ks_dashboard_group_access.ids if record.ks_dashboard_group_access else False,
+                    'sequence': record.ks_dashboard_menu_sequence if record.ks_dashboard_menu_sequence else 10
+                })
 
-        if record.ks_dashboard_default_template and record.ks_dashboard_default_template.ks_item_count:
-            ks_gridstack_config = {}
-            template_data = json.loads(record.ks_dashboard_default_template.ks_gridstack_config)
-            for item_data in template_data:
-                if record.ks_dashboard_default_template.ks_template_type == 'ks_custom':
-                    dashboard_item = self.env['ks_dashboard_ninja.item'].browse(int(item_data)).copy(
-                        {'ks_dashboard_ninja_board_id': record.id})
-                    ks_gridstack_config[dashboard_item.id] = template_data[item_data]
-                else:
-                    dashboard_item = self.env.ref(item_data['item_id']).copy({'ks_dashboard_ninja_board_id': record.id})
-                    ks_gridstack_config[dashboard_item.id] = item_data['data']
-            record.ks_gridstack_config = json.dumps(ks_gridstack_config)
-        return record
+            if record.ks_dashboard_default_template and record.ks_dashboard_default_template.ks_item_count:
+                ks_gridstack_config = {}
+                template_data = json.loads(record.ks_dashboard_default_template.ks_gridstack_config)
+                for item_data in template_data:
+                    if record.ks_dashboard_default_template.ks_template_type == 'ks_custom':
+                        dashboard_item = self.env['ks_dashboard_ninja.item'].browse(int(item_data)).copy(
+                            {'ks_dashboard_ninja_board_id': record.id})
+                        ks_gridstack_config[dashboard_item.id] = template_data[item_data]
+                    else:
+                        dashboard_item = self.env.ref(item_data['item_id']).copy({'ks_dashboard_ninja_board_id': record.id})
+                        ks_gridstack_config[dashboard_item.id] = item_data['data']
+                record.ks_gridstack_config = json.dumps(ks_gridstack_config)
+        return records
 
     @api.onchange('ks_date_filter_selection')
     def ks_date_filter_selection_onchange(self):
@@ -182,6 +183,8 @@ class KsDashboardNinjaBoard(models.Model):
 
             if 'ks_dashboard_menu_sequence' in vals:
                 rec.ks_dashboard_menu_id.sudo().sequence = vals['ks_dashboard_menu_sequence']
+            if 'name' in vals:
+                rec.ks_dashboard_client_action_id.sudo().name = vals['name']
 
         return record
 
@@ -331,7 +334,7 @@ class KsDashboardNinjaBoard(models.Model):
         if rec.ks_actions:
             context = {}
             try:
-                context = eval(rec.ks_actions.context)
+                context = safe_eval(rec.ks_actions.context)
             except Exception:
                 context = {}
 
@@ -347,6 +350,10 @@ class KsDashboardNinjaBoard(models.Model):
             action['target'] = 'current'
         elif rec.ks_is_client_action and rec.ks_client_action:
             clint_action = {}
+            try:
+                context = safe_eval(rec.ks_client_action.context)
+            except Exception:
+                context = {}
             ks_client_action = rec.ks_client_action.sudo()
             clint_action['name'] = ks_client_action.name
             clint_action['type'] = ks_client_action.type
@@ -356,6 +363,18 @@ class KsDashboardNinjaBoard(models.Model):
             clint_action['binding_type'] = ks_client_action.binding_type
             clint_action['params'] = ks_client_action.params
             clint_action['target'] = 'current'
+            clint_action['context'] = context,
+            clint_action['report_id'] = context.get('report_id', False)
+            clint_action['resId'] = ks_client_action.id
+            context.update({
+                'resId': ks_client_action.id
+            })
+
+            clint_action['params'] = {
+                'options': context,
+                'props': {'resId': ks_client_action.id}
+            }
+
 
             action = clint_action,
         else:
@@ -394,11 +413,15 @@ class KsDashboardNinjaBoard(models.Model):
             'ks_dashboard_item_type': rec.ks_dashboard_item_type,
             'ks_chart_item_color': rec.ks_chart_item_color,
             'ks_chart_groupby_type': rec.ks_chart_groupby_type,
+            'ks_chart_measure_field': rec.ks_chart_measure_field.ids,
+            'ks_chart_measure_field_2': rec.ks_chart_measure_field_2.ids,
             'ks_chart_relation_groupby': rec.ks_chart_relation_groupby.id,
             'ks_chart_relation_groupby_name': rec.ks_chart_relation_groupby.name,
+            'ks_chart_date_groupby': rec.ks_chart_date_groupby,
+            'ks_chart_sub_groupby_type': rec.ks_chart_sub_groupby_type,
             'ks_chart_relation_sub_groupby': rec.ks_chart_relation_sub_groupby.id,
             'ks_chart_relation_sub_groupby_name': rec.ks_chart_relation_sub_groupby.name,
-            'ks_chart_date_groupby': rec.ks_chart_date_groupby,
+            'ks_chart_date_sub_groupby': rec.ks_chart_date_sub_groupby,
             'ks_record_field': rec.ks_record_field.id if rec.ks_record_field else False,
             'ks_chart_data': rec._ks_get_chart_data(item_domain1),
             'ks_list_view_data': rec._ksGetListViewData(item_domain1),
@@ -417,16 +440,18 @@ class KsDashboardNinjaBoard(models.Model):
             'ks_date_filter_selection': rec.ks_date_filter_selection,
             'ks_show_data_value': rec.ks_show_data_value,
             'ks_show_records': rec.ks_show_records,
-            'ks_tile_data':rec._ksGettileData(item_domain1),
+            'ks_unit': rec.ks_unit,
+            'ks_unit_selection': rec.ks_unit_selection,
+            'ks_chart_unit': rec.ks_chart_unit,
             # 'action_id': rec.ks_actions.id if rec.ks_actions else False,
             'sequence': 0,
             'max_sequnce': len(rec.ks_action_lines) if rec.ks_action_lines else False,
             'action': action,
             'ks_hide_legend': rec.ks_hide_legend,
+            'ks_radial_legend': rec.ks_radial_legend,
             'ks_data_calculation_type': rec.ks_data_calculation_type,
             'ks_export_all_records': rec.ks_export_all_records,
             'ks_data_formatting': rec.ks_data_format,
-
             'ks_is_client_action': rec.ks_is_client_action,
             'ks_pagination_limit': rec.ks_pagination_limit,
             'ks_record_data_limit': rec.ks_record_data_limit,
@@ -437,17 +462,26 @@ class KsDashboardNinjaBoard(models.Model):
             'ks_to_do_data': rec._ksGetToDOData(),
             'ks_multiplier_active': rec.ks_multiplier_active,
             'ks_multiplier': rec.ks_multiplier,
-            'ks_unit': rec.ks_unit,
-            'ks_unit_selection':rec.ks_unit_selection,
-            'ks_chart_unit':rec.ks_chart_unit,
-            'ks_currency_id':rec.ks_currency_id,
             'ks_goal_liness': True if rec.ks_goal_lines else False,
             'ks_currency_symbol': ks_currency_symbol,
+            'ks_currency_id':self.env.user.company_id.currency_id.id,
             'ks_currency_position': ks_currency_position,
             'ks_precision_digits': ks_precision_digits if ks_precision_digits else 2,
             'ks_data_label_type': rec.ks_data_label_type,
             'ks_as_of_now': rec.ks_as_of_now,
-            'ks_info':rec.ks_info,
+            'ks_info': rec.ks_info,
+            'ks_company': rec.ks_company_id.name if rec.ks_company_id else False,
+            'ks_scatter_measure_x_id': rec.ks_scatter_measure_x_id,
+            'ks_scatter_measure_y_id': rec.ks_scatter_measure_y_id,
+            'ks_is_scatter_group': rec.ks_is_scatter_group,
+            'ks_radial_item_color': rec.ks_radial_item_color,
+            'ks_flower_item_color': rec.ks_flower_item_color,
+            'ks_bounds': rec.ks_bounds,
+            'ks_partners_map': rec.ks_partners_map,
+            'ks_funnel_record_field':rec.ks_funnel_record_field,
+            'ks_map_record_field':rec.ks_map_record_field,
+            'ks_funnel_item_color':rec.ks_funnel_item_color,
+            'ks_country_id':rec.ks_country_id.id
         }
         return item
 
@@ -520,11 +554,33 @@ class KsDashboardNinjaBoard(models.Model):
         ks_timezone = self._context.get('tz') or self.env.user.tz
         ks_chart_measure_field = []
         ks_chart_measure_field_2 = []
-        for res in rec.ks_chart_measure_field:
-            ks_chart_measure_field.append(res.name)
-        for res in rec.ks_chart_measure_field_2:
-            ks_chart_measure_field_2.append(res.name)
+        if rec.ks_many2many_field_ordering:
+            ks_many2many_field_ordering = json.loads(rec.ks_many2many_field_ordering)
+        else:
+            ks_many2many_field_ordering =  {}
+        if ks_many2many_field_ordering.get('ks_list_view_fields', False):
+            ks_list_view_fields_list = self.env['ir.model.fields'].search([('id', 'in',
+                                                    ks_many2many_field_ordering.get('ks_list_view_fields', False))])
+        if ks_many2many_field_ordering.get('ks_list_view_group_fields', False):
+            ks_list_view_group_fields_list = self.env['ir.model.fields'].search([('id', 'in',
+                                           ks_many2many_field_ordering.get('ks_list_view_group_fields', False))])
+        if ks_many2many_field_ordering.get('ks_chart_measure_field', False):
+            ks_chart_measure_field_list = self.env['ir.model.fields'].search([('id', 'in',
+                                   ks_many2many_field_ordering.get('ks_chart_measure_field', False))])
+        if ks_many2many_field_ordering.get('ks_chart_measure_field_2', False):
+            ks_chart_measure_field_2_list = self.env['ir.model.fields'].search([('id', 'in',
+                               ks_many2many_field_ordering.get('ks_chart_measure_field_2', False))])
 
+        try:
+            for res in ks_chart_measure_field_list:
+                ks_chart_measure_field.append(res.name)
+        except Exception as E:
+            ks_chart_measure_field = []
+        try:
+            for res in ks_chart_measure_field_2_list:
+                ks_chart_measure_field_2.append(res.name)
+        except Exception as E:
+            ks_chart_measure_field_2 = []
         ks_multiplier_fields = []
         ks_multiplier_value = []
         if rec.ks_multiplier_lines:
@@ -534,9 +590,11 @@ class KsDashboardNinjaBoard(models.Model):
                 ks_multiplier_value.append(ks_val.ks_multiplier_value)
 
         ks_list_view_group_fields = []
-        for res in rec.ks_list_view_group_fields:
-            ks_list_view_group_fields.append(res.name)
-
+        try:
+            for res in ks_list_view_group_fields_list:
+                ks_list_view_group_fields.append(res.name)
+        except Exception as e:
+            ks_list_view_group_fields = []
         ks_goal_lines = []
         for res in rec.ks_goal_lines:
             goal_line = {
@@ -584,34 +642,27 @@ class KsDashboardNinjaBoard(models.Model):
             ks_multiplier_lines.append(ks_multiplier_line)
 
         ks_list_view_field = []
-        for res in rec.ks_list_view_fields:
-            ks_list_view_field.append(res.name)
-
-        # val = str(rec.id)
-        # grid_corners = {}
-        # if len(rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids) > 1:
-        #     for db in rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids:
-        #         keys_data = json.loads(db.ks_gridstack_config)
-        #         keys_list = keys_data.keys()
-        # else:
-        #     keys_data = json.loads(rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids.ks_gridstack_config)
-        #     keys_list = keys_data.keys()
-        # if val in keys_list:
-        #     grid_corners = keys_data.get(str(val))
-
+        try:
+            for res in ks_list_view_fields_list:
+                ks_list_view_field.append(res.name)
+        except Exception as e:
+            ks_list_view_field = []
         val = str(rec.id)
+        keys_data = {}
         selecred_rec = self.env['ks_dashboard_ninja.child_board'].search(
             [['id', 'in', rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids.ids], ['ks_active', '=', True],
              ['company_id', '=', self.env.company.id]], limit=1)
-        default_grid_id = rec.ks_dashboard_ninja_board_id.ks_get_grid_config()
         if rec.ks_dashboard_ninja_board_id.ks_gridstack_config:
             keys_data = json.loads(rec.ks_dashboard_ninja_board_id.ks_gridstack_config)
         elif selecred_rec:
             keys_data = json.loads(selecred_rec.ks_gridstack_config)
         elif rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids[0].ks_gridstack_config:
             keys_data = json.loads(rec.ks_dashboard_ninja_board_id.ks_child_dashboard_ids[0].ks_gridstack_config)
+        elif self._context.get('gridstack_config', False):
+            keys_data = self._context.get('gridstack_config', False)
         else:
-            keys_data = {rec.id: json.loads(rec.grid_corners.replace("\'", "\""))}
+            if rec.grid_corners:
+                keys_data = {rec.id: json.loads(rec.grid_corners.replace("\'", "\""))}
         keys_list = keys_data.keys()
         grid_corners = {}
         if val in keys_list:
@@ -683,11 +734,11 @@ class KsDashboardNinjaBoard(models.Model):
             'ks_unit': rec.ks_unit,
             'ks_show_records': rec.ks_show_records,
             'ks_hide_legend': rec.ks_hide_legend,
+            'ks_radial_legend': rec.ks_radial_legend,
             'ks_fill_temporal': rec.ks_fill_temporal,
             'ks_domain_extension': rec.ks_domain_extension,
             'ks_unit_selection': rec.ks_unit_selection,
             'ks_chart_unit': rec.ks_chart_unit,
-            'ks_currency_id':rec.ks_currency_id.id,
             'ks_bar_chart_stacked': rec.ks_bar_chart_stacked,
             'ks_goal_bar_line': rec.ks_goal_bar_line,
             'ks_actions': rec.ks_actions.xml_id if rec.ks_actions else False,
@@ -705,9 +756,17 @@ class KsDashboardNinjaBoard(models.Model):
             'ks_multiplier_active': rec.ks_multiplier_active,
             'ks_multiplier': rec.ks_multiplier,
             'ks_multiplier_lines': ks_multiplier_lines if ks_multiplier_lines else False,
+            'ks_many2many_field_ordering': rec.ks_many2many_field_ordering,
             'ks_data_label_type': rec.ks_data_label_type,
             'ks_as_of_now': rec.ks_as_of_now,
-            'ks_info':rec.ks_info,
+            'ks_scatter_measure_x_id': rec.ks_chart_relation_groupby.name,
+            'ks_scatter_measure_y_id': ks_chart_measure_field,
+            'ks_is_scatter_group': rec.ks_is_scatter_group,
+            'ks_country_id': rec.ks_country_id.id,
+            'ks_bounds': rec.ks_bounds,
+            'ks_partners_map': rec.ks_partners_map,
+            'ks_funnel_item_color':rec.ks_funnel_item_color,
+
         }
         if grid_corners:
             item.update({
@@ -721,9 +780,10 @@ class KsDashboardNinjaBoard(models.Model):
 
     def ks_open_setting(self, **kwargs):
         action = self.env['ir.actions.act_window']._for_xml_id('ks_dashboard_ninja.board_form_tree_action_window')
-        action['res_id'] = self.id
-        action['target'] = 'new'
-        action['context'] = {'create': False}
+        # action['res_id'] = self.id
+        # action['target'] = 'new'
+        # action['context'] = {'form_view_ref':'ks_dashboard_ninja.board_form'}
+        # action['view_mode']='form'
         return action
 
     def ks_delete_dashboard(self):
@@ -734,7 +794,7 @@ class KsDashboardNinjaBoard(models.Model):
             return {
                 'type': 'ir.actions.client',
                 'name': "Dashboard Ninja",
-                'res_model': 'ks_deshboard_ninja.board',
+                'res_model': 'ks_dashboard_ninja.board',
                 'params': {'ks_dashboard_id': 1},
                 'tag': 'ks_dashboard_ninja',
             }
@@ -790,14 +850,9 @@ class KsDashboardNinjaBoard(models.Model):
             if selecred_rec:
                 dashboard_data['name'] = selecred_rec.name
                 dashboard_data['ks_gridstack_config'] = selecred_rec.ks_gridstack_config
-            elif len(ks_dashboard_rec.ks_child_dashboard_ids) == 1:
-                dashboard_data['name'] = ks_dashboard_rec.ks_child_dashboard_ids.name
-                dashboard_data['ks_gridstack_config'] = ks_dashboard_rec.ks_child_dashboard_ids.ks_gridstack_config
             elif len(ks_dashboard_rec.ks_child_dashboard_ids) > 1:
                 dashboard_data['name'] = ks_dashboard_rec.ks_child_dashboard_ids[0].name
                 dashboard_data['ks_gridstack_config'] = ks_dashboard_rec.ks_child_dashboard_ids[0].ks_gridstack_config
-            if dashboard_data['name'] != 'Default Board Layout':
-                dashboard_data['ks_dashboard_menu_name'] = selecred_rec.name
             if dashboard_data['name'] == 'Default Board Layout':
                 dashboard_data['name'] = ks_dashboard_rec.ks_dashboard_menu_name
             if len(ks_dashboard_rec.ks_dashboard_items_ids) < 1:
@@ -842,6 +897,16 @@ class KsDashboardNinjaBoard(models.Model):
         if 'ks_file_format' in ks_dashboard_file_read and ks_dashboard_file_read[
             'ks_file_format'] == 'ks_dashboard_ninja_export_file':
             ks_dashboard_data = ks_dashboard_file_read['ks_dashboard_data']
+            for i in range(len(ks_dashboard_data)):
+                if 'ks_set_interval' in ks_dashboard_data[i].keys() and ks_dashboard_data[i].get('ks_item_data', False):
+                    # del ks_dashboard_data[i]['ks_set_interval']
+                    for j in range(len(ks_dashboard_data[i].get('ks_item_data', False))):
+                        if 'ks_update_items_data' in ks_dashboard_data[i].get('ks_item_data', False)[j].keys():
+                            del ks_dashboard_data[i].get('ks_item_data', False)[j]['ks_update_items_data']
+                        if 'ks_auto_update_type' in ks_dashboard_data[i].get('ks_item_data', False)[j].keys():
+                            del ks_dashboard_data[i].get('ks_item_data', False)[j]['ks_auto_update_type']
+                        if 'ks_show_live_pop_up' in ks_dashboard_data[i].get('ks_item_data', False)[j].keys():
+                            del ks_dashboard_data[i].get('ks_item_data', False)[j]['ks_show_live_pop_up']
         else:
             raise ValidationError(_("Current Json File is not properly formatted according to Dashboard Ninja Model."))
 
@@ -866,7 +931,7 @@ class KsDashboardNinjaBoard(models.Model):
             dashboard_id = self.create(vals)
 
             if data['ks_gridstack_config']:
-                ks_gridstack_config = eval(data['ks_gridstack_config'])
+                ks_gridstack_config = safe_eval(data['ks_gridstack_config'])
             ks_grid_stack_config = {}
 
             item_ids = []
@@ -1022,32 +1087,54 @@ class KsDashboardNinjaBoard(models.Model):
         try:
             ks_measure_field_ids = []
             ks_measure_field_2_ids = []
-
-            for ks_measure in item['ks_chart_measure_field']:
+            ks_many2many_field_ordering = item['ks_many2many_field_ordering'] if item.get('ks_many2many_field_ordering', False) else False
+            ks_list_view_group_fields_name = False
+            ks_list_view_fields_name = False
+            ks_chart_measure_field_name = False
+            ks_chart_measure_field_2_name = False
+            if ks_many2many_field_ordering:
+                ks_many2many_field_ordering = json.loads(ks_many2many_field_ordering)
+                ks_list_view_group_fields_name = ks_many2many_field_ordering.get('ks_list_view_group_fields_name', False)
+                ks_list_view_fields_name = ks_many2many_field_ordering.get('ks_list_view_fields_name', False)
+                ks_chart_measure_field_name = ks_many2many_field_ordering.get('ks_chart_measure_field_name', False)
+                ks_chart_measure_field_2_name = ks_many2many_field_ordering.get('ks_chart_measure_field_2_name', False)
+            ks_chart_measure_field = item['ks_chart_measure_field']
+            if ks_chart_measure_field_name and len(ks_chart_measure_field_name)>0:
+                ks_chart_measure_field = ks_chart_measure_field_name
+            for ks_measure in ks_chart_measure_field:
                 ks_measure_id = self.env['ir.model.fields'].search(
                     [('name', '=', ks_measure), ('model', '=', item['ks_model_id'])])
                 if ks_measure_id:
                     ks_measure_field_ids.append(ks_measure_id.id)
             item['ks_chart_measure_field'] = [(6, 0, ks_measure_field_ids)]
-
-            for ks_measure in item['ks_chart_measure_field_2']:
+            ks_chart_measure_field_2 = item['ks_chart_measure_field_2']
+            if ks_chart_measure_field_name and len(ks_chart_measure_field_name) > 0:
+                ks_chart_measure_field_2 = ks_chart_measure_field_2_name
+            for ks_measure in ks_chart_measure_field_2:
                 ks_measure_id = self.env['ir.model.fields'].search(
                     [('name', '=', ks_measure), ('model', '=', item['ks_model_id'])])
                 if ks_measure_id:
                     ks_measure_field_2_ids.append(ks_measure_id.id)
             item['ks_chart_measure_field_2'] = [(6, 0, ks_measure_field_2_ids)]
 
-            ks_list_view_group_fields = []
-            for ks_measure in item['ks_list_view_group_fields']:
+            ks_list_view_group_fields_ids = []
+            ks_list_view_group_fields = item['ks_list_view_group_fields']
+            if ks_list_view_group_fields_name and len(ks_list_view_group_fields_name) > 0:
+                ks_list_view_group_fields = ks_list_view_group_fields_name
+            for ks_measure in ks_list_view_group_fields:
                 ks_measure_id = self.env['ir.model.fields'].search(
                     [('name', '=', ks_measure), ('model', '=', item['ks_model_id'])])
 
                 if ks_measure_id:
-                    ks_list_view_group_fields.append(ks_measure_id.id)
-            item['ks_list_view_group_fields'] = [(6, 0, ks_list_view_group_fields)]
+                    ks_list_view_group_fields_ids.append(ks_measure_id.id)
+            item['ks_list_view_group_fields'] = [(6, 0, ks_list_view_group_fields_ids)]
 
             ks_list_view_field_ids = []
-            for ks_list_field in item['ks_list_view_fields']:
+
+            ks_list_view_fields = item['ks_list_view_fields']
+            if ks_list_view_fields_name and len(ks_list_view_fields_name) > 0:
+                ks_list_view_fields = ks_list_view_group_fields_name
+            for ks_list_field in ks_list_view_fields:
                 ks_list_field_id = self.env['ir.model.fields'].search(
                     [('name', '=', ks_list_field), ('model', '=', item['ks_model_id'])])
                 if ks_list_field_id:
@@ -1090,7 +1177,24 @@ class KsDashboardNinjaBoard(models.Model):
                 else:
                     item['ks_chart_relation_sub_groupby'] = False
 
-        # Sort by field : Many2one Entery
+            if item['ks_dashboard_item_type'] == "ks_scatter_chart" and item['ks_scatter_measure_y_id'] and item[
+                'ks_scatter_measure_x_id']:
+                ks_scatter_id = self.env['ir.model.fields'].search(
+                    [('name', '=', item['ks_scatter_measure_y_id'][0]), ('model', '=', item['ks_model_id'])])
+                if ks_scatter_id:
+                    item['ks_scatter_measure_y_id'] = ks_scatter_id.id
+                ks_scatter_group_by = item['ks_scatter_measure_x_id']
+                ks_record_id = self.env['ir.model.fields'].search(
+                    [('name', '=', ks_scatter_group_by), ('model', '=', item['ks_model_id'])])
+                if ks_record_id:
+                    item['ks_scatter_measure_x_id'] = ks_record_id.id
+                else:
+                    item['ks_scatter_measure_x_id'] = False
+            if item["ks_dashboard_item_type"] != "ks_scatter_chart":
+                item['ks_scatter_measure_x_id'] = False
+                item['ks_scatter_measure_y_id'] = False
+
+            # Sort by field : Many2one Entery
             if item['ks_sort_by_field']:
                 ks_group_by = item['ks_sort_by_field']
                 ks_sort_by_field = self.env['ir.model.fields'].search(
@@ -1151,9 +1255,6 @@ class KsDashboardNinjaBoard(models.Model):
                 item['ks_record_field_2'] = False
 
             item['ks_model_id'] = ks_model_id
-            # if item['ks_currency_id']:
-            #     ks_currency = self.env['res.currency'].browse(item['ks_currency_id']).name
-            #     item['ks_currency_id'] = self.env['res.currency'].search([('name','=',ks_currency)])
 
             item['ks_goal_liness'] = False
             item['ks_item_start_date'] = item['ks_item_start_date'] if \
@@ -1168,7 +1269,6 @@ class KsDashboardNinjaBoard(models.Model):
             return item
         except Exception as e:
             raise ValidationError('JSON file not supported.')
-
     @api.model
     def update_child_board(self, action, dashboard_id, data):
         dashboard_id = self.browse(dashboard_id)
@@ -1278,5 +1378,3 @@ class KsDashboardNinjaBoard(models.Model):
                             rec.ks_domain_field_id.name]['selection']
                 }
         return data
-
-

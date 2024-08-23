@@ -19,6 +19,9 @@ class SalesQuotationExport(models.Model):
                                          compute='_compare_data_exp',
                                          readonly=True, store=False)
 
+    def _valid_field_parameter(self, field, name):
+        return name == 'currency_field' or super()._valid_field_parameter(field, name)
+
     #@api.multi
     def _compare_data_exp(self):
         for sale_order_line in self:
