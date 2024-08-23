@@ -160,6 +160,7 @@
                 <xpath expr="//field[@name='user_id']" position="after">
                     <field name="account_manager"/>
                     <field name="national_account"/>
+                    <field name="customer_success"/>
                 </xpath>
             </field>
         </record>
@@ -313,7 +314,7 @@
                     <field name="national_account_rep"/>
                     <field name="customer_success"
                            domain="['|',['comment','=','Internal'],'&amp;',['active','=',True],['share','=',False]]"
-                           can_create="true" can_write="true" modifiers="{}" id="customer_success"/>
+                           can_create="true" can_write="true" modifiers="{}" id="customer_success" readonly="False"/>
                     <field name="message_bounce"/>
                 </xpath>
                 <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='misc']/field[@name='ref']"
@@ -330,6 +331,18 @@
                 </xpath>
                 <xpath expr="//field[@name='is_broker']" position="after">
                     <field name="charity"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_partner_tree_inherit" model="ir.ui.view">
+            <field name="name">res.partner.tree_ex</field>
+            <field name="model">res.partner</field>
+            <field name="priority">100</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="customer_success"/>
                 </xpath>
             </field>
         </record>
