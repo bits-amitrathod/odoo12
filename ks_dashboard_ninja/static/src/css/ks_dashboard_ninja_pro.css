@@ -53,7 +53,7 @@
     overflow-y : visible !important;
 }
 
-.ks_dashboard_kpi{
+.ks_previous_period .ks_dashboard_kpi{
     overflow-y : auto !important;
 }
 
@@ -71,6 +71,14 @@
     padding-right: 10px !important;
 }
 
+
+.ks_chart_card_body{
+    position: absolute;
+    top: 53px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+}
 
 .ks_chart_card_body{
     position: absolute;
@@ -103,20 +111,24 @@ table#ksListViewTable {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: black;
 }
 
 .ks_dashboard_item_drill_up {
     min-width:110px;
+    margin-left:50px
 }
 
 .ks_list_view_heading{
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    color: black;
 }
 
 .ks_pager {
     min-width:98px;
+    color:black;
 }
 
 .ks_dashboard_item_hover:hover .ks_dashboard_item_header_hover > .ks_chart_inner_buttons{
@@ -154,6 +166,7 @@ table#ksListViewTable {
 
 .ksMaxTableContent{
     max-height: 300px;
+    overflow:overlay;
 }
 
 

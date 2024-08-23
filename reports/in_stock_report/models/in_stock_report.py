@@ -83,7 +83,7 @@ class ReportInStockReport(models.Model):
         help='Select a Manufacture for this product'
     )
     product_id = fields.Many2one('product.product', string='Product', )
-    product_tmpl_id = fields.Many2one('product.template', 'Product Template')
+    product_tmpl_id = fields.Many2one('product.template', 'Product Template', required=True, ondelete='cascade')
 
     min_expiration_date = fields.Date("Min Expiration Date", compute='_calculate_max_min_lot_expiration')
     max_expiration_date = fields.Date("Max Expiration Date", store=False)
