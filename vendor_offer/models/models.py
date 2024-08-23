@@ -342,8 +342,6 @@ class VendorOffer(models.Model):
     def _amount_all(self):
         for order in self:
             if order.env.context.get('vendor_offer_data') or order.state == 'ven_draft' or order.state == 'ven_sent':
-                # if order.state == 'draft':
-                #     order.state = 'ven_draft'
 
                 amount_untaxed = amount_tax = price_total = 0.0
                 rt_price_tax = 0.0
@@ -373,16 +371,12 @@ class VendorOffer(models.Model):
 
                     line.for_print_product_offer_price = str(line.product_offer_price)
                     line.for_print_price_subtotal = str(line.price_subtotal)
-                    if ((line.expiration_date_str is False) or (line.expiration_date_str == '')) and line.expiration_date :
+                    if ((line.expiration_date_str is False) or (
+                            line.expiration_date_str == '')) and line.expiration_date:
                         line.expiration_date_str = line.expiration_date
-                        line.update({ 'expiration_date_str': line.expiration_date_str })
+                        line.update({'expiration_date_str': line.expiration_date_str})
 
-                if order.accelerator:
-                    # amount_untaxed = product_retail * 0.50
-                    max = rt_price_total * 0.65
-                    # price_total = amount_untaxed + amount_tax
-                else:
-                    max = 0
+                max = rt_price_total * 0.65 if order.accelerator else 0
 
                 if not rt_price_total == 0:
                     potential_profit_margin = (price_total / rt_price_total * 100) - 100
@@ -391,7 +385,6 @@ class VendorOffer(models.Model):
                 credit_amount_total = 0
                 flag = any(e in ['Ovation Elevate', 'Alliant Purchasing', 'SurgeryPartners'] for e in
                            list(map(lambda x: x.name, order.partner_id.category_id)))
-
                 if product_retail > 0:
                     per_val = round((amount_untaxed / product_retail) * 100, 2)
                     per_val = per_val + 10
@@ -411,9 +404,7 @@ class VendorOffer(models.Model):
                     order.update({
                         'max': round(max, 2),
                         'potential_profit_margin': abs(round(potential_profit_margin, 2)),
-
                         'amount_tax': amount_tax,
-
                         'rt_price_subtotal_amt': product_retail,
                         'rt_price_tax_amt': rt_price_tax,
                         'rt_price_total_amt': rt_price_total,
@@ -424,7 +415,7 @@ class VendorOffer(models.Model):
                         'billed_retail_untaxed': billed_retail_untaxed,
                         'billed_offer_untaxed': billed_offer_untaxed,
                         'billed_retail_total': billed_retail_untaxed + amount_tax,
-                        'billed_offer_total': billed_offer_untaxed + amount_tax ,
+                        'billed_offer_total': billed_offer_untaxed + amount_tax,
                         'credit_amount_qpq': round(credit_amount_qpq, 2),
                         'credit_amount_untaxed_before_qpa': round(credit_amount_untaxed_before_qpa, 2),
                         'credit_amount_untaxed_after_qpa': round(credit_amount_untaxed_after_qpa, 2),
@@ -442,14 +433,11 @@ class VendorOffer(models.Model):
                             'amount_untaxed': amount_untaxed,
                             'amount_total': price_total
                         })
-
                 else:
                     order.update({
                         'max': round(max, 2),
                         'potential_profit_margin': abs(round(potential_profit_margin, 2)),
-
                         'amount_tax': amount_tax,
-
                         'rt_price_subtotal_amt': product_retail,
                         'rt_price_tax_amt': rt_price_tax,
                         'rt_price_total_amt': rt_price_total,
@@ -489,6 +477,7 @@ class VendorOffer(models.Model):
                 rt_price_tax = 0.0
                 product_retail = 0.0
                 rt_price_total = 0.0
+                potential_profit_margin = 0.0
                 billed_retail_untaxed = billed_offer_untaxed = 0.0
                 cash_amount_untaxed = 0.0
                 credit_amount_untaxed_before_qpa = 0.0
@@ -517,6 +506,10 @@ class VendorOffer(models.Model):
 
                 credit_amount_untaxed = 0
                 credit_amount_total = 0
+                max = rt_price_total * 0.65 if order.accelerator else 0
+
+                if not rt_price_total == 0:
+                    potential_profit_margin = (price_total / rt_price_total * 100) - 100
 
                 flag = any(e in ['Ovation Elevate', 'Alliant Purchasing', 'SurgeryPartners'] for e in
                            list(map(lambda x: x.name, order.partner_id.category_id)))
@@ -557,9 +550,11 @@ class VendorOffer(models.Model):
 
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
-                order.update({
-                    'amount_tax': amount_tax,
 
+                order.update({
+                    'max': round(max, 2),
+                    'amount_tax': amount_tax,
+                    'potential_profit_margin': abs(round(potential_profit_margin, 2)),
                     'rt_price_subtotal_amt': product_retail,
                     'rt_price_tax_amt': rt_price_tax,
                     'rt_price_total_amt': rt_price_total,
