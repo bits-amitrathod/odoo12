@@ -57,7 +57,7 @@ class VendorOfferProduct(models.Model):
                                                     compute="_calculat_bill_price")
     billed_product_retail_price = fields.Monetary("Total Billed Qty Retail Price", store=False,
                                                      compute="_calculat_bill_price")
-    
+
     dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate', store=True)
     do_not_change_retail = fields.Boolean(string="Do Not Change retail", default=False)
     do_not_change_offer = fields.Boolean(string="Do Not Change offer", default=False)
@@ -87,24 +87,14 @@ class VendorOfferProduct(models.Model):
         pass
 
     def calculate_order_line_product_values(self):
-        obj = self.order_id
-        for obj_line in self:
-            # if obj_line.import_type_ven_line != 'new_appraisal':
-            obj_line.set_values()
-            obj_line.compute_new_fields_vendor_line()
-            obj_line.set_default_multiplier()
-            if obj.is_change_tier1_to_premium:
-                obj_line.upgrade_multiplier_tier1_to_premium()
-            if obj_line.dont_recalculate_offer_price is not True:
-                obj_line.multiplier_adjustment_criteria() if obj.is_dynamic_tier_adjustment else obj_line.no_tier_multiplier_adjustment_criteria()
-                obj_line.overstock_threshold()
-            obj_line.copy_product_qty_column()
-            obj_line._cal_offer_price()
-            obj_line._set_offer_price()
-            obj_line._cal_margin()
-            obj_line.compute_total_line_vendor()
-            obj_line.compute_average_retail()
-        obj.summary_calculate()
+        obj_line = self
+        obj_line.set_line_initial_values()
+        if obj_line.dont_recalculate_offer_price is not True:
+            obj_line.set_multiplier_as_per_rule_and_data()
+        obj_line._cal_offer_price()
+        obj_line._set_offer_price()
+        obj_line._cal_margin()
+        obj_line.set_line_other_values()# obj.summary_calculate()
 
     @api.onchange('multiplier')
     def onchange_order_line_multiplier(self):
@@ -129,29 +119,26 @@ class VendorOfferProduct(models.Model):
             line.sku_code = line.product_id.product_tmpl_id.sku_code
             line.product_brand_id = line.product_id.product_tmpl_id.product_brand_id
             if line.env.context.get('vendor_offer_data') or line.state == 'ven_draft' or line.state == 'ven_sent':
-                result1 = {}
                 if not line.product_id:
-                    return result1
+                    return {}
                 if line.product_qty_app_new is False or line.product_qty_app_new == 0.0:
                     line.product_qty_app_new = 1
                 ''' sale count will show only done qty '''
                 line.qty_in_stock = line.product_id.actual_quantity
                 if (line.product_qty == False):
                     line.product_qty = '1'
-                self.expired_inventory_cal(line)
+                line.expired_inventory = line.get_expired_inventory_cal()
 
-    def expired_inventory_cal(self, line):
+    def get_expired_inventory_cal(self):
         expired_lot_count = 0
-        test_id_list = self.env['stock.lot'].search([('product_id', '=', line.product_id.id)])
+        test_id_list = self.env['stock.lot'].search([('product_id', '=', self.product_id.id)])
         for prod_lot in test_id_list:
             if prod_lot.use_date:
                 if fields.Datetime.from_string(prod_lot.use_date).date() < fields.date.today():
                     expired_lot_count = expired_lot_count + 1
+        return expired_lot_count
 
-        line.expired_inventory = expired_lot_count
 
-    # @api.onchange('multiplier', 'order_id.possible_competition')
-    # @api.depends('multiplier', 'order_id.possible_competition')
     def _cal_offer_price(self):
         for line in self:
             multiplier_list = line.multiplier
@@ -169,8 +156,6 @@ class VendorOfferProduct(models.Model):
 
     product_unit_price = fields.Monetary(string="Retail Price", default=_cal_offer_price, store=True)
 
-    # @api.onchange('multiplier', 'order_id.possible_competition')
-    # @api.depends('multiplier', 'order_id.possible_competition')
     def _cal_margin(self):
         for line in self:
             margin = 0
@@ -184,8 +169,6 @@ class VendorOfferProduct(models.Model):
                 'margin': margin
             })
 
-    # @api.onchange('multiplier', 'order_id.possible_competition')
-    # @api.depends('multiplier', 'order_id.possible_competition')
     def _set_offer_price(self):
         for line in self:
             multiplier_list = line.multiplier
@@ -246,18 +229,6 @@ class VendorOfferProduct(models.Model):
                         'rt_price_total': taxes1['total_included'],
                     })
 
-                # else:
-                #     line.update({
-                #         'price_tax': line.price_tax,
-                #         'price_subtotal': line.price_subtotal,
-                #         'price_total': line.price_total,
-                #         'price_unit': line.price_unit,
-                #
-                #         'rt_price_tax': line.rt_price_tax,
-                #         'product_retail': line.product_retail,
-                #         'rt_price_total': line.rt_price_total,
-                #     })
-
             else:
                 taxes1 = line.taxes_id.compute_all(float(line.product_unit_price), line.order_id.currency_id,
                                                    line.product_qty, product=line.product_id,
@@ -268,4 +239,4 @@ class VendorOfferProduct(models.Model):
                     'rt_price_total': taxes1['total_included'],
                 })
 
-                # super(VendorOfferProduct, self)._compute_amount()
+
