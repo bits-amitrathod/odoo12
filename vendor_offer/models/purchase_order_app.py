@@ -34,6 +34,28 @@ class VendorOfferNewAppraisal(models.Model):
     premium_retail_amt = fields.Monetary(string='Premium Total Retail Amount', readonly=True)
     premium_offer_amt = fields.Monetary(string='Premium Total Offer Amount', readonly=True)
 
+    is_offers_calculated = fields.Boolean(String='is offer calculated', default=True, store=True)
+
+
+    def _amount_all(self):
+        """
+            This method is called everytime a purchase order is open in form for list view for calculations of total prices.
+            So we are using this method for our custom calculation as well like of Multipiers and Offer prices at the time
+            of import.
+            whenever user import the order lines form "New Appraisal" Import button then that import set the Boolean Flag
+            to "False" So when  import completed then PO will open in form and then this method will trigger automatically
+            and then we do our calculation one time and set the Boolean flag to True so that it will not calculate again
+            and again.
+
+            this will resolve our requirement for the calculations at the time of import
+        :return:
+        """
+        if  len(self) == 1 and not self.is_offers_calculated:
+            self.action_recalculate_vendor_offer()
+            self.is_offers_calculated = True
+
+        res = super(VendorOfferNewAppraisal, self)._amount_all()
+        return res
 
     # Convert canceled PO to Vendor Offer Action
     def button_vendor_offer(self):
@@ -46,52 +68,37 @@ class VendorOfferNewAppraisal(models.Model):
 
     # Vendor Offer Calculate button Action
     # Calculate Values And Assign
-    # @profile
     def action_recalculate_vendor_offer(self):
         for objList in self:
             for obj in objList:
                 for obj_line in obj.order_line:
-                    obj_line.set_values()
-                    obj_line.compute_new_fields_vendor_line()
-                    obj_line.set_default_multiplier()
+                    obj_line.set_line_initial_values()
                     if obj_line.dont_recalculate_offer_price is not True:
-                        obj_line.multiplier_adjustment_criteria() if obj.is_dynamic_tier_adjustment else obj_line.no_tier_multiplier_adjustment_criteria()
-                        obj_line.overstock_threshold()
-                        if obj.is_change_tier1_to_premium:
-                            obj_line.upgrade_multiplier_tier1_to_premium()
-                    obj_line.copy_product_qty_column()
+                        obj_line.set_multiplier_as_per_rule_and_data()
                     obj_line._cal_offer_price()
                     obj_line._set_offer_price()
                     obj_line._cal_margin()
-                    obj_line.compute_total_line_vendor()
-                    obj_line.compute_average_retail()
+                    obj_line.set_line_other_values()
                 obj.summary_calculate()
 
     def action_manual_recalculate_vendor_offer(self):
         for objList in self:
             for obj in objList:
                 for obj_line in obj.order_line:
-                    obj_line.set_values()
-                    obj_line.compute_new_fields_vendor_line()
+                    obj_line.set_line_initial_values()
 
     # This Method used On button_vendor_offer ( PO Convert in to VO )
     def action_po_to_vo_recalculate_vendor_offer(self):
         for objList in self:
             for obj in objList:
                 for obj_line in obj.order_line:
-                    obj_line.set_values()
-                    obj_line.compute_new_fields_vendor_line()
-                    obj_line.set_default_multiplier()
-                    if obj.is_change_tier1_to_premium:
-                        obj_line.upgrade_multiplier_tier1_to_premium()
+                    obj_line.set_line_initial_values()
                     if obj_line.is_recalculate_multiplier():
-                        obj_line.multiplier_adjustment_criteria() if obj.is_dynamic_tier_adjustment else obj_line.no_tier_multiplier_adjustment_criteria()
-                    obj_line.copy_product_qty_column()
+                        obj_line.set_multiplier_as_per_rule_and_data()
                     obj_line._cal_offer_price()
                     obj_line._set_offer_price()
                     obj_line._cal_margin()
-                    obj_line.compute_total_line_vendor()
-                    obj_line.compute_average_retail()
+                    obj_line.set_line_other_values()
                 obj.summary_calculate()
 
     # @profile
