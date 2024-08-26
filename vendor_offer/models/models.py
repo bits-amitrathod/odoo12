@@ -312,39 +312,6 @@ class VendorOffer(models.Model):
                     raise ValidationError(_('Appraisal No# Already Exist'))
 
 
-    # @api.onchange('possible_competition')
-    # @api.depends('possible_competition')
-    # def _set_offer_price_temp(self):
-    #     for order in self:
-    #         for line in order.order_line:
-    #             multiplier_list = line.multiplier
-    #             val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
-    #             if (float(val_t) % 1) >= 0.5:
-    #                 product_unit_price = math.ceil(
-    #                     float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
-    #
-    #             else:
-    #                 product_unit_price = math.floor(
-    #                     float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
-    #
-    #             val_off = float(product_unit_price) * (float(
-    #                 multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
-    #             if (float(val_off) % 1) >= 0.5:
-    #                 product_offer_price = math.ceil(
-    #                     float(product_unit_price) * (
-    #                             float(multiplier_list.margin) / 100 + float(
-    #                         line.possible_competition.margin) / 100))
-    #
-    #             else:
-    #                 product_offer_price = math.floor(float(product_unit_price) * (
-    #                         float(multiplier_list.margin) / 100 + float(
-    #                     line.possible_competition.margin) / 100))
-    #
-    #             line.update({
-    #                 'product_offer_price': product_offer_price,
-    #                 'product_unit_price': product_unit_price
-    #             })
-
     @api.onchange('order_line.taxes_id')
     @api.depends('order_line.price_total', 'order_line.price_total', 'order_line.taxes_id',
                  'order_line.rt_price_tax', 'order_line.product_retail', 'order_line.rt_price_total')
