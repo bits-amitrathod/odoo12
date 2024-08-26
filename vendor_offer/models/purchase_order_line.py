@@ -57,6 +57,8 @@ class VendorOfferProduct(models.Model):
                                                     compute="_calculat_bill_price")
     billed_product_retail_price = fields.Monetary("Total Billed Qty Retail Price", store=False,
                                                      compute="_calculat_bill_price")
+    
+    dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate', store=True)
     do_not_change_retail = fields.Boolean(string="Do Not Change retail", default=False)
     do_not_change_offer = fields.Boolean(string="Do Not Change offer", default=False)
 
