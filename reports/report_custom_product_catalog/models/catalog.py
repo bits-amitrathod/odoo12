@@ -100,6 +100,9 @@ class ProductCatalogReport(models.Model):
     #@api.multi
     def _compare_qty(self):
         for product in self:
+            # Initialize product_qty with a default value of 0.0
+            product.product_qty = 0.0
+
             product.env.cr.execute(
                 "SELECT sum(quantity) as qut FROM public.stock_quant where company_id != 0.0 and  product_id = " + str(
                     product.id))

@@ -18,7 +18,7 @@ class PickTicketReport(models.Model):
     partner_id = fields.Many2one('res.partner', string="Partner Id")
     carrier_id = fields.Many2one('delivery.carrier', string="Carrier Id")
     product_id = fields.Many2one('product.product', string="Carrier Id")
-    picking_id = fields.Many2one('stock.picking', string='Pick Number')
+    picking_id = fields.Many2one('stock.picking', string='Pick Number', required=True, ondelete='cascade')
     product_uom_id = fields.Many2one('uom.uom', 'UOM ')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     scheduled_date = fields.Datetime(string='Scheduled Date')
