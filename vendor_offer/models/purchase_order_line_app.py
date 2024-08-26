@@ -1,4 +1,3 @@
-from numpy.lib.function_base import quantile
 from odoo import models, fields, api, _
 import datetime
 # from odoo.tools.profiler import Profiler
