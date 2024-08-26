@@ -9,6 +9,8 @@ import logging
 import base64
 import math
 from odoo.http import request
+from odoo.tools.profiler import Profiler
+
 
 try:
     import xlrd
@@ -746,7 +748,8 @@ class vendor_offer_automation(models.Model):
                 self.map_customer_sku_with_catelog_number_all_column(vals)
             elif str_val == 'new_appraisal':
                 self.unlink_lines()
-                self.map_customer_sku_with_catelog_number_app_new(vals)
+                with Profiler():
+                    self.map_customer_sku_with_catelog_number_app_new(vals)
             else:
                 self.unlink_lines()
                 self.map_customer_sku_with_catelog_number(vals)
