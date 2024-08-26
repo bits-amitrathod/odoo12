@@ -69,3 +69,19 @@ class MailComposer(models.TransientModel):
         values = self._convert_to_write(values)
 
         return {'value': values}
+
+# Bellow code is copied form odoo 14 because odoo 16 has removed that code
+#  and fields are using in custom views
+class MailThreadInherit(models.AbstractModel):
+    _inherit = 'mail.thread'
+
+    message_unread = fields.Boolean(string='Unread Messages', compute='_get_message_unread', help="If checked, new messages require your attention.")
+
+
+    def _get_message_unread(self):
+        for record in self:
+            record.message_unread = record.has_message
+
+
+
+
