@@ -24,7 +24,7 @@ class VendorOffer(models.Model):
     carrier_info = fields.Char("Carrier Info", related='partner_id.carrier_info', readonly=True)
     carrier_acc_no = fields.Char("Carrier Account No", related='partner_id.carrier_acc_no', readonly=True)
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
-    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no", readonly=False, store=True, compute_sudo=True)
+    appraisal_no = fields.Char(string='Appraisal No#', compute="_default_appraisal_no", readonly=False, store=True)
     acq_user_id = fields.Many2one('res.users', string='Acq  Manager ')
     date_offered = fields.Datetime(string='Date Offered', default=fields.Datetime.now)
     revision = fields.Char(string='Revision ')
@@ -33,11 +33,11 @@ class VendorOffer(models.Model):
     declined_date = fields.Datetime(string="Declined Date")
 
     possible_competition = fields.Many2one('competition.competition', string="Possible Competition")
-    max = fields.Char(string='Max', compute='_amount_all', default=0, readonly=True, compute_sudo=True)
-    potential_profit_margin = fields.Char(string='Potential Profit Margin', compute='_amount_all', default=0, compute_sudo=True)
-    rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_all', readonly=True,compute_sudo=True)
-    rt_price_total_amt = fields.Monetary(string='Total', compute='_amount_all', readonly=True,compute_sudo=True)
-    rt_price_tax_amt = fields.Monetary(string='Tax', compute='_amount_all', readonly=True,compute_sudo=True)
+    max = fields.Char(string='Max', compute='_amount_all', default=0, readonly=True)
+    potential_profit_margin = fields.Char(string='Potential Profit Margin', compute='_amount_all', default=0)
+    rt_price_subtotal_amt = fields.Monetary(string='Subtotal', compute='_amount_all', readonly=True)
+    rt_price_total_amt = fields.Monetary(string='Total', compute='_amount_all', readonly=True)
+    rt_price_tax_amt = fields.Monetary(string='Tax', compute='_amount_all', readonly=True)
     # val_temp = fields.Char(string='Temp', default=0)
     temp_payment_term = fields.Char(string='Temp')
     offer_type_pdf_text = fields.Char(string='offer type Temp')
@@ -46,21 +46,21 @@ class VendorOffer(models.Model):
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', copy=False)
     shipping_number = fields.Text(string='Tracking Reference', copy=False)
 
-    credit_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True,compute_sudo=True)
-    credit_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True,compute_sudo=True)
-    cash_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True,compute_sudo=True)
-    cash_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True,compute_sudo=True)
+    credit_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True)
+    credit_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True)
+    cash_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True)
+    cash_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True)
 
-    credit_amount_untaxed_before_qpa = fields.Monetary(string='Credit Offer Price', compute='_amount_all', readonly=True,compute_sudo=True)
-    credit_amount_qpq = fields.Monetary(string='Additional 3 %', compute='_amount_all', readonly=True,compute_sudo=True)
-    credit_amount_untaxed_after_qpa = fields.Monetary(string='After QPA', compute='_amount_all', readonly=True,compute_sudo=True)
-    credit_amount_qpq_flag = fields.Boolean(compute='_amount_all', readonly=True,compute_sudo=True)
+    credit_amount_untaxed_before_qpa = fields.Monetary(string='Credit Offer Price', compute='_amount_all', readonly=True)
+    credit_amount_qpq = fields.Monetary(string='Additional 3 %', compute='_amount_all', readonly=True)
+    credit_amount_untaxed_after_qpa = fields.Monetary(string='After QPA', compute='_amount_all', readonly=True)
+    credit_amount_qpq_flag = fields.Boolean(compute='_amount_all', readonly=True)
 
-    billed_retail_untaxed = fields.Monetary(string='Billed Untaxed Retail', compute='_amount_all', readonly=True,compute_sudo=True)
-    billed_retail_total = fields.Monetary(string='Billed Retail Total', compute='_amount_all', readonly=True,compute_sudo=True)
+    billed_retail_untaxed = fields.Monetary(string='Billed Untaxed Retail', compute='_amount_all', readonly=True)
+    billed_retail_total = fields.Monetary(string='Billed Retail Total', compute='_amount_all', readonly=True)
     final_billed_retail_total = fields.Monetary(string='Final Billed Retail Total', default=0, tracking=True)
-    billed_offer_untaxed = fields.Monetary(string='Billed Untaxed Offer', compute='_amount_all', readonly=True,compute_sudo=True)
-    billed_offer_total = fields.Monetary(string='Billed Offer Total', compute='_amount_all', readonly=True,compute_sudo=True)
+    billed_offer_untaxed = fields.Monetary(string='Billed Untaxed Offer', compute='_amount_all', readonly=True)
+    billed_offer_total = fields.Monetary(string='Billed Offer Total', compute='_amount_all', readonly=True)
     final_billed_offer_total = fields.Monetary(string='Final Billed Offer Total', default=0, tracking=True)
 
 
@@ -110,14 +110,23 @@ class VendorOffer(models.Model):
     ], string='Offer Type', readonly=True, index=True, copy=False, default='ven_draft', tracking=True,
         store=True)
 
-    state = fields.Selection(string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
+    state = fields.Selection([
+        ('ven_draft', 'Vendor Offer'),
+        ('ven_sent', 'Vendor Offer Sent'),
+        ('draft', 'RFQ'),
+        ('sent', 'RFQ Sent'),
+        ('to approve', 'To Approve'),
+        ('purchase', 'Purchase Order'),
+        ('done', 'Locked'),
+        ('cancel', 'Cancelled')
+    ], string='Status', readonly=True, index=True, copy=False, default='draft', tracking=True)
 
     import_type_ven = fields.Char(string='Import Type')
     arrival_date_grp = fields.Datetime(string="Arrival Date")
 
-    super_user_email = fields.Char(compute='_email_info_user',compute_sudo=True)
+    super_user_email = fields.Char(compute='_email_info_user')
     vendor_cust_id = fields.Char(string="Customer ID",store=True,readonly=False)
-    cash_text_pdf = fields.Char(string="",compute='_cash_text_pdf_fun',compute_sudo=True)
+    cash_text_pdf = fields.Char(string="",compute='_cash_text_pdf_fun')
 
     @api.onchange('cash_text_pdf')
     @api.depends('cash_text_pdf')
@@ -147,8 +156,8 @@ class VendorOffer(models.Model):
                 order.cash_text_pdf = None
 
 
-    acq_manager_email = fields.Char(readonly=False, compute='acq_manager_detail',compute_sudo=True)
-    acq_manager_phone = fields.Char( readonly=False,compute='acq_manager_detail', compute_sudo=True)
+    acq_manager_email = fields.Char(readonly=False, compute='acq_manager_detail')
+    acq_manager_phone = fields.Char( readonly=False,compute='acq_manager_detail')
 
     @api.onchange('partner_id')
     @api.depends('partner_id')
@@ -371,8 +380,7 @@ class VendorOffer(models.Model):
 
                     line.for_print_product_offer_price = str(line.product_offer_price)
                     line.for_print_price_subtotal = str(line.price_subtotal)
-                    if ((line.expiration_date_str is False) or (
-                            line.expiration_date_str == '')) and line.expiration_date:
+                    if ((line.expiration_date_str is False) or (line.expiration_date_str == '')) and line.expiration_date :
                         line.expiration_date_str = line.expiration_date
                         line.update({'expiration_date_str': line.expiration_date_str})
 
