@@ -21,7 +21,7 @@ class CrmLeadLost(models.TransientModel):
     def action_lost_reason_apply(self):
         leads = self.env['crm.lead'].browse(self.env.context.get('active_ids'))
         if self.lost_reason_id:
-            return leads.action_set_lost(lost_reason=self.lost_reason_id.id)
+            return leads.action_set_lost(lost_reason_id=self.lost_reason_id.id)
         else:
             return leads.action_set_lost(purchase_lost_reason=self.purchase_lost_reason_id.id)
 
@@ -29,6 +29,7 @@ class Lead(models.Model):
     _inherit = 'crm.lead'
 
     type = fields.Selection(
+        [('lead', 'Lead'), ('opportunity', 'Opportunity'), ('purchase_opportunity', 'Purchase Opportunity')],
         index=True, required=True,
         default=lambda self: 'lead' if self.env['res.users'].has_group('crm.group_use_lead') else 'opportunity')
 
