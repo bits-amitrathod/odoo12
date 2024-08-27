@@ -44,6 +44,9 @@
                                placeholder="Add an internal note that will be printed on the Stock Operations sheet"/>
                     </page>
                 </xpath>
+                <xpath expr="//field[@name='order_line']" position="attributes">
+                    <attribute name="widget" />
+                </xpath>
             </field>
         </record>
 
