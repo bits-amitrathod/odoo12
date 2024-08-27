@@ -95,3 +95,10 @@ td{
 .o_ChatterTopbar_actions .btn-link:hover{
     color: #C4262E !important;
 }
+
+
+//override the tab css to remove horizontal scroll
+.o_notebook .nav {
+    display: flex;
+    flex-wrap: wrap !important;
+}

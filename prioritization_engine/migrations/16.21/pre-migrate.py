@@ -50,6 +50,9 @@ def migrate(cr, version):
     cr.execute("""DELETE FROM ir_ui_view WHERE name ilike 'product.product.form_monitor_ex';""")
     cr.execute("""DELETE FROM ir_ui_menu WHERE name->>'en_US' ilike 'My Vendor Offers';""")
     cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'purchase_order_form_inherit_3');""")
+    cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'purchase_order_tree_inherit');""")
+    cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'purchase_order_tree_sort_force');""")
+    cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'view_picking_form_inherit_website_sale_stock_custom');""")
 
     # active the inactive views
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'vendor.offer.purchase.order.form.main';""")
