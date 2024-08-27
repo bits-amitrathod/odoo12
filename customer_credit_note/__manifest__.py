@@ -13,7 +13,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account','prioritization_engine'],
+    'depends': ['base','account','prioritization_engine', 'account'],
 
     # always loaded
     'data': [
