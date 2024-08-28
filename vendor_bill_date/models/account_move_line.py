@@ -2,7 +2,8 @@ from odoo import api, fields, models, _
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
-
+    price_reduce = fields.Float(string='Final Price', digits='Product Price',
+                                readonly=True)
     def _get_price_total_and_subtotal_model(self, price_unit, quantity, discount, currency, product, partner, taxes,
                                             move_type):
         ''' This method is used to compute 'price_total' & 'price_subtotal'.
