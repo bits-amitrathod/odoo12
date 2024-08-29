@@ -238,5 +238,36 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="view_account_payment_search_inherit" model="ir.ui.view">
+            <field name="name">account.payment.search.inherit</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_search"/>
+            <field name="arch" type="xml">
+                <filter name="unmatched" position="after">
+                    <filter string="Bank Matched" name="matched" domain="[('is_matched', '=', True)]"/>
+                </filter>
+            </field>
+        </record>
+
+        <record id="view_account_supplier_payment_tree" model="ir.ui.view">
+            <field name="name">account.supplier.payment.tree</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_tree"/>
+            <field name="mode">extension</field>
+            <field name="arch" type="xml">
+
+                <!-- Rename "Vendor" column to "Customer" -->
+                <xpath expr="//field[@name='partner_id']" position="attributes">
+                    <attribute name="string">Customer</attribute>
+                </xpath>
+
+                <!-- Add the "Company" column -->
+                <xpath expr="//field[@name='partner_id']" position="after">
+                    <field name="company_id"/>
+                </xpath>
+
+            </field>
+        </record>
     </data>
 </odoo>
