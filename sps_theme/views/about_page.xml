@@ -18,7 +18,7 @@
                                                     <iframe width="100%" height="315" src="https://www.youtube.com/embed/P10W72mLfGM?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                                                 </div>
                                             </div>
-                                            <h2 class="sub-title">We Provide High-Quality, Cost-Saving Surgical Solutions.</h2>
+                                            <h2 class="section-title ml0">We Provide High-Quality, Cost-Saving Surgical Solutions.</h2>
                                             <p>
                                                SPS is a leader in providing cost-saving solutions for healthcare facilities across the United States who choose to save money without sacrificing quality of care.
                                                     We accomplish this by <span> presenting hospitals and surgery centers with two ways to save </span> on their high-volume surgical disposables.
@@ -59,7 +59,7 @@
                             <div class="banner-wrapper">
                                 <img src="/sps_theme/static/src/images/help.jpg" class="img-fluid"/>
                             </div>
-                            <h3 class="section-title">HOW WE HELP</h3>
+                            <h3 class="section-title text-center">HOW WE HELP</h3>
                             <div class="row">
                                 <div class="col-md-8 text-left m-auto">
                                     <p>We have successfully eliminated hundreds of thousands of dollars from our customer’s costs by buying and selling the surgical surplus they would have otherwise thrown away.</p>

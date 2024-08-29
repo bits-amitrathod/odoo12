@@ -5,6 +5,7 @@
             <t name="Home" priority="29" t-name="website.homepage">
                 <t t-set="pageName" t-value="'homepage'"/>
                 <div id="wrap"  class="oe_structure oe_empty">
+                    <img src="/web/image/1004913-88e5321c/1.png" width="100%" style="display: block; margin-left: auto; margin-right: auto; cursor: pointer;" onclick="location.href='https://shopsps.odoo.com/document/download/14/95b9fdfb-1955-4b8d-9b06-71b5e59be90c/5027'" loading="lazy"/>
                     <section class="video-section padding-80-y" >
                         <div class="container">
                             <div class="row">
@@ -16,7 +17,7 @@
                                     </div>
                                     <div class="text-left btn-wrapper">
                                         <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2" >Shop Products</a>
-                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
+<!--                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -147,7 +148,7 @@
 									</div>
                                     <div class="col-12 text-center btn-wrapper mt-5">
                                         <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2">Shop Products</a>
-                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
+<!--                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>-->
                                     </div>
 								</div>
 
@@ -301,7 +302,7 @@
                                </div>
                                  <div class=" col-12 text-center btn-wrapper mt-5 pt-5">
                                      <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2">Shop Products</a>
-                                     <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
+<!--                                     <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>-->
                                 </div>
                             </div>
                         </div>

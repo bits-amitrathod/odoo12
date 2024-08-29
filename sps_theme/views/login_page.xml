@@ -33,7 +33,7 @@
                                   onsubmit="this.action = this.action + location.hash" style="margin-top: 45px;">
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
-                                <div class="form-group field-db" t-if="databases and len(databases) &gt; 1">
+                                <div class="input-group field-db" t-if="databases and len(databases) &gt; 1">
                                     <label for="db" class="control-label">Database</label>
                                     <div class="input-group">
                                         <input type="text" name="db" t-att-value="request.db" id="db" class="form-control"
@@ -52,7 +52,7 @@
                                 <p class="alert alert-success" t-if="message">
                                     <t t-esc="message"/>
                                 </p>
-                                <div class="form-group has-float-label field-login">
+                                <div class="input-group has-float-label field-login">
 
                                     <input type="text" name="login" t-att-value="login" placeholder="E-mail" id="login" class="form-control"
                                            required="required" autofocus="autofocus" autocapitalize="off"/>
@@ -62,7 +62,7 @@
                                    class="btn btn-link forgotPassword">Forgot your password?
                                 </a>
 
-                                <div class="form-group has-float-label field-password">
+                                <div class="input-group has-float-label field-password">
 
                                     <input type="password" placeholder="Password" name="password" id="password" class="form-control"
                                            required="required"
@@ -134,24 +134,24 @@
 
     <template id="auth_signup.fields" name="Auth Signup/ResetPassword form fields">
 
-        <div class="form-group has-float-label field-name">
+        <div class="input-group has-float-label field-name">
             <input type="text" name="name" t-att-value="name" id="name" class="form-control"
                    required="required" t-att-readonly="'readonly' if only_passwords else None"
                    t-att-autofocus="'autofocus' if login and not only_passwords else None" placeholder="Full Name"/>
         </div>
 
-        <div class="form-group has-float-label field-login">
+        <div class="input-group has-float-label field-login">
             <input type="text" name="login" t-att-value="login" id="login" class="form-control" autofocus="autofocus"
                    autocapitalize="off" required="required" t-att-readonly="'readonly' if only_passwords else None" placeholder="Email"/>
         </div>
 
 
-        <div class="form-group has-float-label field-password">
+        <div class="input-group has-float-label field-password">
             <input type="password" name="password" id="password" class="form-control"
                    required="required" t-att-autofocus="'autofocus' if only_passwords else None" placeholder="Password"/>
         </div>
 
-        <div class="form-group has-float-label field-confirm_password">
+        <div class="input-group has-float-label field-confirm_password">
             <input type="password" name="confirm_password" id="confirm_password" class="form-control"
                    required="required" placeholder="Confirm Password"/>
         </div>
@@ -186,7 +186,7 @@
                             </t>
 
                             <t t-if="not token">
-                                <div class="form-group has-float-label field-login">
+                                <div class="input-group has-float-label field-login">
                                     <input type="text" name="login" t-att-value="login" id="login" class="form-control"
                                            autofocus="autofocus" required="required" autocapitalize="off" placeholder="Email"/>
                                 </div>

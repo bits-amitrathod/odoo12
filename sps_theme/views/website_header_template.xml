@@ -13,6 +13,7 @@
                     <t t-set="_submit_classes" t-valuef="btn btn-{{navClass}}"/>
                     <t t-set="_input_classes" t-valuef="border-0 text-bg-{{navClass}}"/>
                     <t t-set="search_type" t-valuef="products"/>
+                    <t t-set="placeholder" t-valuef="SEARCH..."/>
                    <t t-if="keep">
                         <t t-set="action" t-value="keep('/shop'+ ('/category/'+slug(category)) if category else None, search=0) or '/shop'"/>
                    </t>
@@ -32,11 +33,4 @@
             </div>
         </xpath>
     </template>
-
-<!--    <template id="template_header_default_oe_structure_header_default_1" inherit_id="website.template_header_default_oe_structure_header_default_1" name="Template Header Default (oe_structure_header_default_1)">-->
-<!--        <xpath expr="//*[hasclass('oe_structure')][@id='oe_structure_header_default_1']" position="replace">-->
-<!--        </xpath>-->
-<!--    </template>-->
-
-
 </odoo>

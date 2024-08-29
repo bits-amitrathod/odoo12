@@ -164,5 +164,63 @@
                 </xpath>
             </field>
         </record>
+
+        <record id="view_account_invoice_filter_inherit" model="ir.ui.view">
+            <field name="name">account.move.filter.not_paid.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//filter[@name='open']" position="after">
+                    <filter string="Not Paid"
+                            name="not_paid"
+                            domain="[('state', '=', 'posted'), ('payment_state', 'in', ('not_paid', 'partial'))]"
+                    />
+
+                    <filter string="Reversed"
+                            name="reversed"
+                            domain="[('payment_state', '=', 'reversed'), ('state', '=', 'posted')]"
+                    />
+
+                    <filter string="In Payment"
+                            name="in_payment"
+                            domain="[('state', '=', 'posted'), ('payment_state', '=', 'in_payment')]"
+                    />
+
+                    <filter string="Partially Paid"
+                            name="partially_paid"
+                            domain="[('state', '=', 'posted'), ('payment_state', '=', 'partial')]"
+                    />
+                </xpath>
+            </field>
+         </record>
+
+        <record id="view_account_payment_search_custom" model="ir.ui.view">
+            <field name="name">account.payment.search.custom</field>
+            <field name="model">account.payment</field>
+            <field name="inherit_id" ref="account.view_account_payment_search"/>
+            <field name="arch" type="xml">
+                <filter name="transfers_filter" position="attributes">
+                    <attribute name="string">Transfers</attribute>
+                </filter>
+            </field>
+        </record>
+
+        <record id="account.action_move_out_invoice_type" model="ir.actions.act_window">
+            <field name="context">{"default_move_type": "out_invoice", "search_default_not_paid": 1}</field>
+        </record>
+
+
+         <record id="view_move_form_inherit" model="ir.ui.view">
+            <field name="name">account.move.form.inherit</field>
+            <field name="model">account.move</field>
+            <field name="inherit_id" ref="account.view_move_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//label[@for='ref']" position="before">
+                    <field name="partner_shipping_id"
+                           string="Delivery Address"
+                           attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund'))],'readonly': [('state', 'not in', ('draft'))]}"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
