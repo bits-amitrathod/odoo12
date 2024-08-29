@@ -91,6 +91,36 @@
                     </t>
                 </div>
          </xpath>
+        <!-- Adding Subtotal and Total Section -->
+        <xpath expr="//div[@class='clearfix mb-4']" position="after">
+            <!-- Add this block for subtotals and totals -->
+            <div class="row">
+                <div class="col-6 offset-6">
+                    <table class="table table-sm o_invoice_report_totals">
+                        <tbody>
+                            <tr class="border-black" t-if="o.amount_untaxed">
+                                <td><strong>Subtotal</strong></td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_untaxed" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr t-if="o.amount_tax">
+                                <td><strong>Taxes</strong></td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                            <tr class="border-black">
+                                <td><strong>Total</strong></td>
+                                <td class="text-right">
+                                    <span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </xpath>
         </template>
 
     </data>

@@ -340,8 +340,8 @@
             </field>
         </record>
 
-        <menuitem id="menu_procurement_management_supplier_offer_app" name="Vendor Offers New"
-                  parent="purchase.menu_procurement_management" action="vendor_offer.action_window_app" sequence="15"/>
+        <menuitem id="menu_procurement_management_supplier_offer_app" name="Vendor Offers"
+                  parent="purchase.menu_procurement_management" action="vendor_offer.action_window_app" sequence="1"/>
 
     </data>
 </odoo>

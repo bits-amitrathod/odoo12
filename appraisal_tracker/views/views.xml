@@ -203,14 +203,10 @@
 
                                 </field>
                                 <group>
-                                       <field name="vendor_offer_data" invisible="1"/>
+                                   <field name="vendor_offer_data" invisible="1"/>
                                     <group class="oe_subtotal_footer oe_right">
-
                                         <field name="amount_untaxed" widget="monetary" string="Untaxed Offer Price"/>
                                         <field name="amount_tax" string="Taxes"/>
-                                         <div class="oe_subtotal_footer_separator oe_inline">
-                                            <!--<label for="amount_total"/>-->
-                                        </div>
                                         <field name="amount_total" widget="monetary" string="Total Offer Price" class="oe_subtotal_footer_separator"/>
 
                                     </group>
@@ -218,38 +214,22 @@
                                         <field name="rt_price_subtotal_amt" widget="monetary"
                                                string="Untaxed Retail Price"/>
                                         <field name="rt_price_tax_amt" string="Taxes"/>
-                                         <div class="oe_subtotal_footer_separator oe_inline">
-                                            <!--<label for="rt_price_total_amt"/>-->
-                                        </div>
                                         <field name="rt_price_total_amt"  widget="monetary" string="Total Retail Price" class="oe_subtotal_footer_separator"/>
                                     </group>
 
-                            <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
                                         <field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>
                                         <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="billed_offer_total"/>
-                                        </div>
-                                        <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="final_billed_offer_total"/>
-                                        </div>
-                                        <field name="final_billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                                        <field name="billed_offer_total"  class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                                        <field name="final_billed_offer_total"  class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                                    </group>
 
-                            </group>
-
-                            <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
                                         <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
                                         <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="billed_retail_total"/>
-                                        </div>
-                                        <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="final_billed_retail_total"/>
-                                        </div>
-                                        <field name="final_billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
-                            </group>
+                                        <field name="billed_retail_total"  class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                                        <field name="final_billed_retail_total"  class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                                    </group>
                                 </group>
                                 <field name="notes" class="oe_inline"
                                        placeholder="Define your terms and conditions ..."/>
