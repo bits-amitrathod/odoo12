@@ -65,6 +65,7 @@ def migrate(cr, version):
 
     # This View DeActivates Because of the Adjustment report throw errors (Studio View Deactivated)
     cr.execute("""update ir_ui_view set active = false where id in (5067)""")
+    cr.execute("""UPDATE website_menu SET url = '/documents/pdf_content/4889' WHERE  name->>'en_US' ilike 'Surgical Equipment'""")
 
     ks_dashboard_ninja_queries(cr)
 

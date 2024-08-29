@@ -53,7 +53,7 @@
 													</span>
 													<span class="post-meta text-muted text-center regular-font" t-if="len(blog_post.tag_ids)">
                                                         in
-														<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
+														<i class="fa fa-tags ml2" role="img" aria-label="Tags" title="Tags"/>
 														<t t-foreach="blog_post.tag_ids" t-as="one_tag">
 															<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
 														</t>
@@ -107,7 +107,7 @@
 								</span>
 								<span class="post-meta text-muted text-center regular-font" t-if="len(post.tag_ids)">
                                     in
-									<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
+									<i class="fa fa-tags ml2" role="img" aria-label="Tags" title="Tags"/>
 									<t t-foreach="post.tag_ids" t-as="one_tag">
 										<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
 									</t>
