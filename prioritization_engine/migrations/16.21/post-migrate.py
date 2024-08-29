@@ -11,7 +11,7 @@ def migrate(cr, version):
         """)
 
     cr.execute("""update ir_ui_view set active = true where id in (4942,3239,2558);""")
-    cr.execute("""update ir_ui_view set active = true where id in (4938,4936,4937);""")
+    cr.execute("""update ir_ui_view set active = true where id in (4938,4936,4937,5734);""")
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'sps_crm%' and name != 'mail.activity.view.form.popup.duplicate';""")
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'vendor_offer%' and name ='stock.picking.form.inherit.show.offer.price';""")
     cr.execute("""update ir_ui_view set active = true where arch_fs ilike 'prioritization_engine%' and id != 1930;""")

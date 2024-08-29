@@ -9,6 +9,7 @@
                 <h2 t-esc="sub_title" />
             </div>
        </xpath>
+
         <t t-call="website_sale.search" position="after">
             <div class="products_pager d-flex justify-content-center pt-3 pb-3">
                 <t t-call="website.pager"/>

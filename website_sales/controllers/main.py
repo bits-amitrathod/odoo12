@@ -7,7 +7,6 @@ from odoo import fields, http, SUPERUSER_ID, tools, _
 # from odoo.fields import Command
 from odoo.http import request
 from odoo.addons.website_sale.controllers.main import WebsiteSale
-from odoo.addons.website.controllers.main import QueryURL
 
 _logger = logging.getLogger(__name__)
 
@@ -35,6 +34,19 @@ class WebsiteSales(WebsiteSale):
             (product_id,))
         return request.env.cr.dictfetchone()
 
+    @http.route(['/shop/capital-equipment','/shop/featured'], type='http', auth="public", website=True, sitemap=WebsiteSale.sitemap_shop)
+    def shop_capital_equipment(self,**post):
+        result = request.env['product.public.category']
+        if request.httprequest.path == "/shop/capital-equipment":
+            result = request.env['product.public.category'].search([('name', 'ilike', 'surgical equipment')], limit=1)
+        if "featured" in request.httprequest.path:
+            result = request.env['product.public.category'].search([('name', 'ilike', 'Featured Products')], limit=1)
+        category =  result and result.id
+        if category:
+            return request.redirect(f'/shop/category/{category}')
+        else:
+            return request.redirect(f'/shop')
+
 
     @http.route([
         '/shop',
@@ -45,7 +57,8 @@ class WebsiteSales(WebsiteSale):
         '/shop/brand/<model("product.brand"):brand>/page/<int:page>'
         ], type='http', auth="public", website=True, sitemap=WebsiteSale.sitemap_shop)
     def shop(self, page=0, category=None, search='', min_price=0.0, max_price=0.0, ppg=False, brand=None, **post):
-
+        title = "Shop Surgical Surplus"
+        sub_title = "Browse Discount Surgical Surplus in our Online Store"
         if not 'order' in post:
             post.update({'order': 'actual_quantity desc'})
 
@@ -56,8 +69,6 @@ class WebsiteSales(WebsiteSale):
         response = super(WebsiteSales,self).shop(page=page, category=category, search=search, min_price=min_price, max_price=max_price, ppg=ppg, **post)
 
         payload = response.qcontext
-        title = "Shop Surgical Surplus"
-        sub_title = "Browse Discount Surgical Surplus in our Online Store"
         c_all_id = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
         product_brands = request.env['product.brand']
 
@@ -116,10 +127,14 @@ class WebsiteSales(WebsiteSale):
         payload['porductRows'] = porductRows
         # payload['brands'] = product_brands
         # payload['brand_id'] = int(brand) if brand else 0
-        payload['title'] = title
-        payload['sub_title'] = sub_title
         # payload['keep'] = keep
 
+        if category and category.name == "surgical equipment":
+            title = "Surplus Surgical Equipment"
+            sub_title = "Shop Surplus Surgical Equipment"
+
+        payload['title'] = title
+        payload['sub_title'] = sub_title
         return request.render("website_sale.products", payload)
 
 

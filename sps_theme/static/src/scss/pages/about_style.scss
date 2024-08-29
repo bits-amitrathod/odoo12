@@ -57,11 +57,10 @@
         line-height: 38px;
         color: $text-color;
         margin: 50px 10px 10px;
-        text-align: center;
     }
 .section-description{
     .sub-title{
-        text-align: center;
+//         text-align: center;
         font-size:32px;
         font-family: $regular-font !important;
         color: $text-color;
@@ -311,13 +310,13 @@
     background-repeat: no-repeat;
     background-size: cover;
     &:before{
-//      background-color: rgba(#232e3f, 0.97);
-      content: '';
-      display: block;
-      height: 100%;
-      position: absolute;
-      width: 100%;
-      top:0
+        background-color: rgba(35, 46, 63, 0.97);
+        content: '';
+        display: block;
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        top:0
     }
   .overlay{
 //     background-color: rgba($text-color, 0.97);
@@ -349,13 +348,13 @@
     background-repeat: no-repeat;
     background-size: cover;
     &:before{
-//      background-color: rgba(#232e3f, 0.97);
-      content: '';
-      display: block;
-      height: 100%;
-      position: absolute;
-      width: 100%;
-      top:0
+        background-color: rgba(35, 46, 63, 0.97);
+        content: '';
+        display: block;
+        height: 100%;
+        position: absolute;
+        width: 100%;
+        top:0
     }
   .overlay{
 //     background-color: rgba($text-color, 0.97);
@@ -507,7 +506,6 @@
             color: $text-color;
             line-height: 28px;
             font-family: $bold-font;
-            padding-left: 20px;
             margin-bottom:0;
         }
         .address{
@@ -515,7 +513,6 @@
             color: $text-color;
             line-height: 28px;
             font-family: $regular-font;
-            padding-left: 20px;
             letter-spacing: 1px;
         }
     }
@@ -617,7 +614,7 @@ background: #fafafa;
     background-repeat: no-repeat;
     background-size: cover;
     &:before{
-//      background-color: rgba(#232e3f, 0.97);
+        background-color: rgba(35, 46, 63, 0.97);
       content: '';
       display: block;
       height: 100%;
@@ -1196,14 +1193,16 @@ background: #fafafa;
                                 &.input-group{
                                     .js_add_cart_json{
                                         color: #3d9cca;
-                                    }
-                                    .input-group-prepend{
-
+                                        border-color: transparent;
+                                         &:focus{
+                                            box-shadow:none;
+                                        }
                                     }
                                      input.js_quantity{
                                         min-width: 40px;
                                         height: 36px;
                                         flex: 0;
+                                        padding:0;
                                         &:focus{
                                             outline: none;
                                             box-shadow:none;
@@ -1330,6 +1329,8 @@ background: #fafafa;
         .oe_search_box {
             border-radius: 15px 0 0;
             border-right: 0;
+            border: 1px solid #CED4DA !important;
+            background-color: #FFFFFF !important;
             font-family: $regular-font;
             font-size:16px;
 
@@ -1691,7 +1692,6 @@ background: #fafafa;
         }
     }
     .brand-code{
-        margin-bottom: 0;
         .linkCstm{
             color: $red;
             font-size:17px;
@@ -2278,7 +2278,7 @@ background-color: #ffffff;
 
 .oe_cart{
 	#o_payment_add_token_acq_4{
-		.form-group{
+		.input-group{
 			.form-control:placeholder-shown:not(:focus) + *{
 			    top: 16px;
 				right: 20px;
@@ -2289,10 +2289,18 @@ background-color: #ffffff;
 			}
 		}
 	}
+    .all_shipping{
+        .btn-block{
+            display:block;
+        }
+    }
 }
 
+
+
+
 .o_portal_details{
-    .form-group{
+    .input-group{
         .form-control{
             height: 50px;
             padding-top: 5px;
@@ -2381,7 +2389,7 @@ background-color:$white !important;
 	}
 	form{
 		text-align:center;
-		.form-group{
+		.input-group{
 			text-align: left;
 		}
 		.form-control{
