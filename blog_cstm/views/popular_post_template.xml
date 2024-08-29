@@ -40,7 +40,7 @@
 										<h1 class="about-header ft-32" t-field="blog_post.name" id="blog_post_name" t-att-data-blog-id="blog_post.id" placeholder="Blog Post Title"/>
 									</div>
 									<div class="blog-detail">
-										<div class="">
+										<div class="d-flex">
 											<div class="profile-img-wrapper align-self-center">
 												<div class="profile-img d-flex justify-content-center">
 													<img t-attf-src="/web/image/res.partner/#{author_info.id}/image" class="img-fluid"/>
