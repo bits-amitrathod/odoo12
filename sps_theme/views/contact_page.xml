@@ -6,9 +6,7 @@
 				<section class="contact-us-section  mb0">
 					<div class="container">
 						<div class="text-center pt32 pb32">
-							<h1  class="about-header"> Contact
-								<span class="black-font">Us</span>
-							</h1>
+							<h1  class="about-header"> Contact Us </h1>
 						</div>
 						<div class="row">
 							<div class="col-xl-5 col-md-6 col-sm-6 mb48 mt8">
@@ -95,18 +93,18 @@
 									<form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
 										<div class="col-md-8">
 
-											<div class="form-group has-float-label form-field o_website_form_required_custom">
+											<div class="input-group has-float-label form-field o_website_form_required_custom">
 												<input type="text" class="form-control o_website_form_input" placeholder="Name *" id="contact_name" name="contact_name" t-att-value="request.params.get('contact_name', '')" required=""/>
 											</div>
 										</div>
 										<div class="col-md-8">
-											<div class="form-group has-float-label form-field o_website_form_required_custom">
+											<div class="input-group has-float-label form-field o_website_form_required_custom">
 												<input placeholder="Email *"  type="text" id="email_form" class="form-control o_website_form_input" name="email_from" required="" t-att-value="request.params.get('email_from', '')"/>
 												<input type="hidden" class="form-control o_website_form_input" name="name" required="True" value="Website Contact Us" />
 											</div>
 										</div>
 										<div class="col-12">
-											<div class="form-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
+											<div class="input-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
                                                 <textarea id="description" placeholder="Message *" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
                                           </div>
 										</div>
@@ -132,16 +130,19 @@
 							<div class="col-md-4 align-self-center">
 								<div class="address-section">
 									<img src="/sps_theme/static/src/images/logo.png" class="img-fluid"/>
-									<p class="company-name">SURGICAL PRODUCT SOLUTIONS</p>
-									<p class="address">
-										901 Pennsylvania Ave
-										<br/>
-										Pittsburgh, PA 15233
-									</p>
-									<p class="address">412.564.1280</p>
-									<div class="text-left btn-wrapper pl-3">
-										<a class="btn btn-info btn-sm" target ="_blank" href="https://goo.gl/maps/rtYhefCyENQCCYv7A">Get Directions</a>
+									<div class="p-3 pt0">
+										<p class="company-name">SURGICAL PRODUCT SOLUTIONS</p>
+										<p class="address">
+											901 Pennsylvania Ave
+											<br/>
+											Pittsburgh, PA 15233
+										</p>
+										<p class="address">412.564.1280</p>
+										<div class="text-left btn-wrapper pl-3">
+											<a class="btn btn-info btn-sm" target ="_blank" href="https://goo.gl/maps/rtYhefCyENQCCYv7A">Get Directions</a>
+										</div>
 									</div>
+
 								</div>
 							</div>
 						</div>

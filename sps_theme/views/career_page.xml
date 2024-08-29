@@ -12,7 +12,7 @@
 							 <div class="section-description contact-us-section">
                                     <div class="row">
                                         <div class="col-md-6">
-											<h3 class="section-title mt-2 text-left ml-0">Current Opportunities</h3>
+											<h3 class="section-title mt-2 text-left ml0">Current Opportunities</h3>
 											 <p> <span> Click the links below  </span>to view our latest job listings on LinkedIn.</p>
 											<div class="story-list link">
                                                 <div class="bulleted-list">
@@ -59,7 +59,7 @@
 					 <div class="seprator"><div class="red"></div><div class="black"></div></div>
 					<section class="padding-60-y">
 						<div class="container">
-							 <h3 class="section-title">Employee Benefits</h3>
+							 <h3 class="section-title text-center">Employee Benefits</h3>
 							<div class="section-description">
 								<p class="f20 text-center">We offer the following comprehensive benefits package to our employees. </p>
 							</div>
@@ -158,7 +158,7 @@
 							 <div class="banner-wrapper">
 								<img src="/sps_theme/static/src/images/culture.jpg" class="img-fluid"/>
 							</div>
-							 <h3 class="section-title">Our Culture</h3>
+							 <h3 class="section-title text-center">Our Culture</h3>
 							<div class="section-description">
 								<p class="f20 text-center">A description of culture and what to expect if you get a job with SPS. </p>
 

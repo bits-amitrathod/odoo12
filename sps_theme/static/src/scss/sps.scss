@@ -6,7 +6,7 @@
         linear-gradient(to right bottom, #394a58, #d6e9f8) !important;
         /*linear-gradient(to right bottom, #77717e, #c9a8a9);*/
     background-size: cover;
- .o_caption {
+    .o_caption {
         color: #fff !important;
         text-shadow: none !important;
     }
@@ -18,12 +18,12 @@
     }
     .o_menu_systray{
         li{
-        .badge{
-        background-color: #C4262E !important;
-        border-color: #C4262E !important}
-        i{
-        color: #fff !important;
-        }
+            .badge{
+                background-color: #C4262E !important;
+                border-color: #C4262E !important}
+            i{
+                color: #fff !important;
+            }
         }
     }
 }
@@ -44,38 +44,39 @@
 }
 
 .o_main_navbar{
-border-bottom: 1px solid #394158;
-background-color: #394a58;
- ul > {
-     li > {
-
-       a{
-        &:hover{
-            background-color: #C4262E !important;
-        }
-       }
+    border-bottom: 1px solid #394158;
+    background-color: #394a58;
+     ul > {
+         li > {
+           a{
+            &:hover{
+                background-color: #C4262E !important;
+            }
+           }
+         }
      }
- }
 }
 .o_searchview .o_searchview_facet .o_searchview_facet_label{
     background-color: #C4262E !important;
     border-color: #C4262E !important;
 }
-.btn{
-    &.btn-primary{
-        background: #c4262e;
-        border-color: #c4262e;
-        &:focus{
-            outline:none;
-            box-shadow:none;
-        }
-        &:not(:disabled):not(.disabled):active{
+#wrapwrap{
+     .btn{
+        &.btn-primary{
             background: #c4262e;
             border-color: #c4262e;
+            &:focus{
+                outline:none;
+                box-shadow:none;
+            }
+            &:not(:disabled):not(.disabled):active{
+                background: #c4262e;
+                border-color: #c4262e;
+            }
         }
-    }
-    &.btn-secondary{
-        color: #c4262e;
+        &.btn-secondary{
+            color: #c4262e;
+        }
     }
 }
 

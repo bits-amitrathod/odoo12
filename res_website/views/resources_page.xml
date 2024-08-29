@@ -31,7 +31,7 @@
                                         <div class="resource-box h-100">
                                             <div class="video-section-wrapper m-0 border-0">
                                                 <div class="video-wrapper">
-                                                    <a href="javascript:void(0)"  data-toggle="modal" t-att-data-target="'#a'+ str(v.id)"><span class="sr-only">play</span></a>
+                                                    <a href="javascript:void(0)"  data-bs-toggle="modal" t-att-data-bs-target="'#a'+ str(v.id)"><span class="sr-only">play</span></a>
                                                     <iframe width="100%" height="200" t-att-src="v.url" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                                                 </div>
                                             </div>
@@ -41,7 +41,7 @@
                                                     <p class="mb-0"><t t-esc="v.description"/></p>
                                                 </div>
                                                  <div class="link-wrapper mb-3 mt-2">
-                                                   <a t-att-href="v.url"  class="link-btn" data-toggle="modal" t-att-data-target="'#a'+ str(v.id)">WATCH VIDEO ></a>
+                                                   <a t-att-href="v.url"  class="link-btn" data-bs-toggle="modal" t-att-data-bs-target="'#a'+ str(v.id)">WATCH VIDEO ></a>
                                                  </div>
                                             </div>
                                         </div>
@@ -52,7 +52,7 @@
                                             <div class="modal-content">
                                               <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel"><t t-esc="v.title"/></h5>
-                                                <button type="button" class="close" data-dismiss="modal" id="close" aria-label="Close">
+                                                <button type="button" class="close" data-bs-dismiss="modal" id="close" aria-label="Close">
                                                     <i class="icon-x"></i>
                                                 </button>
                                               </div>
@@ -90,7 +90,7 @@
 
                                                         </div>
                                                         <div class="btn-wrapper text-center mb-3">
-                                                            <a t-attf-href="/web/content/slide.slide/#{e.id}/datas?download=true" class="btn btn-info btn-sm">Download</a>
+                                                            <a t-attf-href="/web/content/slide.slide/#{e.id}/binary_content?download=true" class="btn btn-info btn-sm">Download</a>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -41,23 +41,23 @@
                             <div class="container pb-5">
                                 <div class="row no-gutters">
                                     <div class="col-md" style="">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group has-float-label form-field o_website_form_required_custom">
                                              <input type="text" class="form-control o_website_form_input" name="title" placeholder="Title *" id="title" required=""/>
                                         </div>
                                     </div>
 
                                     <div class="col-md px-0 px-md-2" style="">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="First Name *" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
                                         </div>
                                     </div>
                                     <div class="col-md px-0 px-md-2">
-                                         <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                         <div class="input-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Last Name *" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
                                         </div>
                                     </div>
                                     <div class="col-md-1">
-                                        <div class="form-group has-float-label form-field">
+                                        <div class="input-group has-float-label form-field">
                                             <input type="text" placeholder="Suffix " id="Suffix" class="form-control o_website_form_input" name="Suffix" />
                                         </div>
                                     </div>
@@ -65,58 +65,58 @@
                                 </div>
                                 <div class="row">
                                      <div class="col-md-6">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Phone *" id="Phone" class="form-control o_website_form_input" name="Phone" required=""/>
                                         </div>
                                     </div>
                                      <div class="col-md-6">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Email *" id="Email" class="form-control o_website_form_input" name="Email" required=""/>
                                         </div>
                                     </div>
                                      <div class="col-md-12">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Facility *" id="Facility" class="form-control o_website_form_input" name="Facility" required=""/>
                                         </div>
                                     </div>
                                     <div class="col-md-12">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="What services would you like a free quote for? *" id="services" class="form-control o_website_form_input" name="services" required=""/>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="Address *" id="Address" class="form-control o_website_form_input" name="Address" required=""/>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <div class="form-group has-float-label">
+                                        <div class="input-group has-float-label">
                                             <input type="text" placeholder="Apt, suite, etc." id="suite" class="form-control o_website_form_input" name="suite"/>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
-                                        <div class="form-group has-float-label">
+                                        <div class="input-group has-float-label">
                                             <input type="text" placeholder="Country" id="Country" class="form-control o_website_form_input" name="Country"/>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group has-float-label form-field o_website_form_required_custom">
                                             <input type="text" placeholder="City *" id="City" class="form-control o_website_form_input" name="City" required=""/>
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
-                                        <div class="form-group has-float-label">
+                                        <div class="input-group has-float-label">
                                             <input type="text" placeholder="State" id="State" class="form-control o_website_form_input" name="State" />
                                         </div>
                                     </div>
                                      <div class="col-md-3">
-                                        <div class="form-group has-float-label">
+                                        <div class="input-group has-float-label">
                                             <input type="text" placeholder="Zip Code" id="Zip_Code" class="form-control o_website_form_input" name="Zip_Code" />
                                         </div>
                                     </div>
                                      <div class="col-12">
-                                          <div class="form-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
+                                          <div class="input-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
                                                 <textarea id="description" placeholder="Message *" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
                                           </div>
                                      </div>

@@ -712,7 +712,7 @@ class Partner(models.Model):
             'view_mode': 'tree,form',
             'domain': [('id', 'in', act_list.ids), ('active', 'in', [True, False])],
             'res_model': 'mail.activity',
-            'target': 'new',
+            'target': 'current',
             'views': [(view_id, 'tree'), (form_view_id, 'form')]
         }
 
