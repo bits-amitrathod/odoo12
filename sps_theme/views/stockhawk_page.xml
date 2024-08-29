@@ -111,7 +111,7 @@
 					</section>
 					<section class="work-section bg-white">
 						<div class="container pb-5 pt-5 ">
-							<h3 class="section-title mt-0 pt-5 pb-5">HOW STOCKHAWK WORKS</h3>
+							<h3 class="section-title  text-center mt-0 pt-5 pb-5">HOW STOCKHAWK WORKS</h3>
 							<div class="row">
 								<div class="col-lg-3 col-md-6">
 									<div class="work-box p-0">
@@ -204,32 +204,32 @@
 							</div>
 							<div class="row mt-5" >
 								<div class="col-md-6" id="requestform2">
-									<div class="form-group has-float-label form-field o_website_form_required_custom">
+									<div class="input-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="First Name *" id="first_name" class="form-control o_website_form_input" name="first_name" required=""/>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label form-field o_website_form_required_custom">
+									<div class="input-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="Last Name *" id="last_name" class="form-control o_website_form_input" name="last_name" required=""/>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label form-field o_website_form_required_custom">
+									<div class="input-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="Phone *" id="phone" class="form-control o_website_form_input" name="phone" required=""/>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label form-field o_website_form_required_custom">
+									<div class="input-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="Email *" id="email" class="form-control o_website_form_input" name="email" required=""/>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label form-field o_website_form_required_custom">
+									<div class="input-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="Company Name *" id="Company" class="form-control o_website_form_input" name="Company" required=""/>
 									</div>
 								</div>
 								<div class="col-md-6">
-									<div class="form-group has-float-label form-field o_website_form_required_custom">
+									<div class="input-group has-float-label form-field o_website_form_required_custom">
 										<input type="text" placeholder="# of Reps *" id="Reps" class="form-control o_website_form_input" name="Reps" required=""/>
 									</div>
 								</div>
@@ -244,7 +244,7 @@
 					</section>
 					<section class="padding-100-y contact-us-section">
                             <div class="container">
-								<h3 class="section-title mt-0 mb-5">Do you have questions about Stockhawk? </h3>
+								<h3 class="section-title  text-center mt-0 mb-5">Do you have questions about Stockhawk? </h3>
                                 <div class="row">
                                     <div class="col-xl-5 col-md-6 col-sm-6 mb48 mt8">
                                        <div class="contact-info">
@@ -272,18 +272,18 @@
 											<form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
 												<div class="col-md-8">
 
-													<div class="form-group has-float-label form-field o_website_form_required_custom">
+													<div class="input-group has-float-label form-field o_website_form_required_custom">
 														<input type="text" class="form-control o_website_form_input" placeholder="Name *" id="contact_name" name="contact_name" t-att-value="request.params.get('contact_name', '')" required=""/>
 													</div>
 												</div>
 												<div class="col-md-8">
-													<div class="form-group has-float-label form-field o_website_form_required_custom">
+													<div class="input-group has-float-label form-field o_website_form_required_custom">
 														<input placeholder="Email *"  type="text" id="email_form" class="form-control o_website_form_input" name="email_from" required="" t-att-value="request.params.get('email_from', '')"/>
 														<input type="hidden" class="form-control o_website_form_input" name="name" required="True" value="Website Contact Us" />
 													</div>
 												</div>
 												<div class="col-12">
-													<div class="form-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
+													<div class="input-group has-float-label form-field o_website_form_required_custom o_website_form_required_custom">
 														<textarea id="description" placeholder="Message *" class="form-control o_website_form_input" name="description"  required="" rows="5"><t t-esc="request.params.get('description', '')" /></textarea>
 												  </div>
 												</div>
