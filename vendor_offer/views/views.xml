@@ -92,7 +92,7 @@
             ]"/>
         </record>
 
-        <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action"
+        <menuitem action="purchase.purchase_form_action" id="purchase.menu_purchase_form_action"
                   parent="purchase.menu_procurement_management" sequence="5"/>
 
 
