@@ -53,11 +53,12 @@ def migrate(cr, version):
     cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'purchase_order_tree_inherit');""")
     cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'purchase_order_tree_sort_force');""")
     cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'view_picking_form_inherit_website_sale_stock_custom');""")
+    cr.execute("""DELETE FROM ir_ui_menu  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'purchase_order_menu');""")
 
     # active the inactive views
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'vendor.offer.purchase.order.form.main';""")
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'purchase.order.form.vendor.offer.inherit_3';""")
-    cr.execute("""UPDATE ir_ui_menu SET sequence = 97 WHERE name->>'en_US' ilike 'Reporting' and parent_id in (SELECT id FROM ir_ui_menu WHERE name->>'en_US' ilike 'Purchase' and parent_id is null);""")
+    # cr.execute("""UPDATE ir_ui_menu SET sequence = 97 WHERE name->>'en_US' ilike 'Reporting' and parent_id in (SELECT id FROM ir_ui_menu WHERE name->>'en_US' ilike 'Purchase' and parent_id is null);""")
 
 
     # client wants to remove this stage ref shared DOC
