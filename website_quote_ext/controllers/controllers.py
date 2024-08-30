@@ -447,10 +447,10 @@ class CustomerPortal(CustomerPortal):
 
         values = self._invoice_get_page_view_values(invoice_sudo, access_token, **kw)
         pay_ids = []
-        for item in values['providers']:
+        for item in values.get('providers',[]):
             if item.display_name != 'Purchase Order':
                 pay_ids.append(item.id)
-        providers = request.env['payment.provider'].search([('id', 'in', pay_ids)])
+        providers = pay_ids and request.env['payment.provider'].sudo().search([('id', 'in', pay_ids)])
         values['providers'] = providers
 
         pay_link = request.env['sale.pay.link.cust'].search([('invoice_id', '=', invoice_id)])
