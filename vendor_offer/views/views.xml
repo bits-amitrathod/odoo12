@@ -632,5 +632,10 @@
                   parent="purchase.menu_procurement_management" action="vendor_offer.action_vendor_pricing"
                   sequence="15"/>
 
+
+        <record id="purchase.purchase_report_main" model="ir.ui.menu">
+            <field name="sequence">97</field>
+        </record>
+
     </data>
 </odoo>
