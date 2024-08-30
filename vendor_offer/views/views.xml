@@ -82,6 +82,11 @@
      <!-- This domain filter added for purchase tree view which is remove from odoo12 base view  -->
          <record id="purchase.purchase_rfq" model="ir.actions.act_window">
                <field name="domain">[('state','in',('draft','sent','cancel', 'confirmed'))]</field>
+               <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('purchase.purchase_order_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('purchase.purchase_order_form')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('purchase.purchase_order_view_kanban_without_dashboard')}),
+            ]"/>
         </record>
 
         <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action"
