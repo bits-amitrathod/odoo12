@@ -133,9 +133,13 @@
                 <xpath expr="/search/field[@name='name']" position="replace">
                    <field name="name_search_cust" string="Name"/>
                </xpath>
-                <!--<xpath expr="/search/field[@name='phone']" position="replace">
-                    <field name="phone_search" string="Phone"/>
-                </xpath>-->
+
+                <!-- added search on direct line field -->
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="domain">['|', '|', ('phone', 'ilike', self), ('mobile', 'ilike', self),
+                        ('direct_line', 'ilike', self)]
+                    </attribute>
+                </xpath>
             </field>
        </record>
 
