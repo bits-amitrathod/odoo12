@@ -16,7 +16,13 @@
             <field name="lead_properties" position="attributes">
                 <attribute name="invisible">1</attribute>
             </field>
+            <!-- client want to Hide -->
+            <button name="action_schedule_meeting" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </button>
 
+            <xpath expr="//form[1]/header[1]/button[@name='iap_enrich'][2]" position="replace"/>
+            <xpath expr="//form[1]/header[1]/button[@name='iap_enrich'][1]" position="replace"/>
             <!--  rearrangement Of Fields              -->
             <xpath expr="//form[1]/sheet[1]/group[1]/group[@name='opportunity_partner']/div[2]" position="after">
                 <xpath expr="//form[1]/sheet[1]/group[1]/group[not(@name)][1]/field[@name='user_id']" position="move"/>
