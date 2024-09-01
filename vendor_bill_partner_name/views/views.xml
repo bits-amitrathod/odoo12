@@ -184,6 +184,14 @@
             </xpath>
         </template>
 
+        <template id="report_invoice_document_inherited_for_credit_note" inherit_id="account.report_invoice_document" priority="20">
+          <div id="informations" position="before">
+            <span t-if="o.move_type == 'out_refund'">
+              <font style="color: rgb(255, 0, 0);font-size: 24px;">*This is a Credit Note no payment required*</font>
+            </span>
+          </div>
+        </template>
+
         <record id="account_followup.action_view_list_customer_statements" model="ir.actions.act_window">
             <field name="context">{'search_default_filter_in_need_of_action': 1, 'search_default_customer': 1, 'res_partner_search_mode': 'customer'}</field>
         </record>
