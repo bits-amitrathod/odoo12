@@ -57,6 +57,7 @@
             <field name="name">purchase.order.appraisal.tracker.form.view</field>
             <field name="model">purchase.order</field>
             <!--<field name="context">[status: 'purchase']</field>-->
+            <field name="priority" eval="20"/>
             <field name="arch" type="xml">
 
 
