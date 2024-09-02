@@ -50,7 +50,10 @@
                         <field name="vendor_offer_data" invisible="1"/>
                         <button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"
                                 attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
+
+                         <!--  Added context to set selected carrier value as a default carrier value for pop up -->
                         <button string="Shipping Label"
+                                context="{'default_carrier_id': carrier_id}"
                                 type="action" class="btn-primary"
                                 name="%(action_view_tracking_text)d"
                                 attrs="{'invisible': [('status', 'not in', ('ven_draft','ven_sent'))]}"
@@ -110,6 +113,8 @@
                             <group>
                                 <field name="date_offered" string="Offer Date"/>
                                 <field name="appraisal_no"/>
+
+                            <!--    Make the accepted date and declined date read only  -->
                                 <field name="accepted_date" readonly="true"/>
                                 <field name="declined_date" readonly="true"/>
                                 <field name="max"/>
