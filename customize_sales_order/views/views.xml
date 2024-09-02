@@ -262,7 +262,7 @@
 
         <!-- Res partner Views -->
         <record id="view_res_partner_filter_inherit" model="ir.ui.view">
-            <field name="name">res.partner.select</field>
+            <field name="name">res.partner.select.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
@@ -285,10 +285,6 @@
 
                 <!-- added search on direct line field and remove rquired property of Phone number field-->
                 <xpath expr="//field[@name='phone']" position="attributes">
-                    <attribute name="domain">['|', '|', ('phone', 'ilike', self), ('mobile', 'ilike', self),
-                        ('direct_line', 'ilike', self)]
-                    </attribute>
-
                     <attribute name="attrs">{'required': False}</attribute>
 
                 </xpath>
