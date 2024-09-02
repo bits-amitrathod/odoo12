@@ -60,28 +60,32 @@
     background-color: #C4262E !important;
     border-color: #C4262E !important;
 }
-#wrapwrap{
-     .btn{
-        &.btn-primary{
+.btn{
+    &.btn-primary{
+        color: white;
+        background: #c4262e;
+        border-color: #c4262e;
+        &:focus{
+            outline:none;
+            box-shadow:none;
+        }
+        &:not(:disabled):not(.disabled):active{
             background: #c4262e;
             border-color: #c4262e;
-            &:focus{
-                outline:none;
-                box-shadow:none;
-            }
-            &:not(:disabled):not(.disabled):active{
-                background: #c4262e;
-                border-color: #c4262e;
-            }
         }
-        &.btn-secondary{
-            color: #c4262e;
-        }
+    }
+    &.btn-secondary{
+        color: #c4262e;
+    }
+    &.btn-light{
+        border-color: #f6f7fa;
+        color: #212529;
+        background: #FFF !important;
     }
 }
 
 .o_control_panel .breadcrumb > li a{
-color: #C4262E !important;
+    color: #C4262E !important;
 }
 
 td{
@@ -102,4 +106,9 @@ td{
 .o_notebook .nav {
     display: flex;
     flex-wrap: wrap !important;
+}
+
+//override css to remove vertical scroll
+.o_notebook .o_notebook_headers{
+    overflow-x: visible !important;
 }
