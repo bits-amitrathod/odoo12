@@ -90,7 +90,7 @@
                                  <field name="acq_manager_phone" invisible="1" />
                                 <field name="vendor_cust_id"/>
 <!--                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />-->
-                                <field name="company_id" options="{'no_create': True}"/>
+                                <field name="company_id" options="{'no_create': True}" attrs="{'invisible': True}"/>
                                 <field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}" string="Facility Name" placeholder="Name, TIN, Email, or Reference"  />
                                 <field name="acq_user_id"/>
                                 <field name="possible_competition"
@@ -258,9 +258,8 @@
                                         <field name="date_planned" string="Scheduled Date" readonly="1"/>
                                         <field name="shipping_label_issued"/>
                                         <field name="invoice_status"/>
-
-<!--                                        <field name="payment_term_id" options="{'no_open': True, 'no_create': True}"-->
-<!--                                               attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>-->
+                                        <field name="payment_term_id" options="{'no_open': True, 'no_create': True}"
+                                               attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
                                     </group>
                                     <group>
                                         <field name="shipping_date"/>
