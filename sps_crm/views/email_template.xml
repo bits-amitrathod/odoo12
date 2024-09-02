@@ -4,74 +4,63 @@
             <field name="name">email CRM Template</field>
             <field name="model_id" ref="base.model_res_users"/>
 <!--            <field name="email_from">info@surgicalproductsolutions.com</field>-->
-           <field name="email_from">${ctx['email_from']}</field>
-            <field name="email_to">${ctx['email'] | safe}</field>
-            <field name="email_cc">${ctx['sales_person']}</field>
+           <field name="email_from">{{ctx['email_from']}}</field>
+            <field name="email_to">{{ctx['email']}}</field>
+            <field name="email_cc">{{ctx['sales_person']}}</field>
             <field name="subject">CRM Acquisitions Product List received </field>
-            <field name="body_html"><![CDATA[
-
-            <p>
-                    Dear Team,<br/>
-                    Please see the attachment for the product list you received for the new opportunity. <br/>
-            </p>
-                %if ctx.get('rep') :
-                <p> Rep:${ctx['rep']} <br/> </p>
-                %endif
-
-                %if ctx.get('unq_ac') :
-                <p> Unique Account #: ${ctx['unq_ac']} <br/> </p>
-                %endif
-
-                %if ctx.get('facility_type') :
-                <p> Facility Type:  ${ctx['facility_type']} <br/> </p>
-                %endif
-
-                %if ctx.get('contracts') :
-                    <p> Contracts/Affiliation:
-                    % for con in ctx.get('contracts'):
-                          ${con.name},
-                    %endfor
-                    </br> </p>
-                %endif
-
-                %if ctx.get('history') :
-                <p> History:${ctx['history']} <br/> </p>
-                %endif
-
-                %if ctx.get('acq_priority') :
-                <p> Priority: ${ctx['acq_priority']} <br/> </p>
-                %endif
-
-                %if ctx.get('competitors') :
-                    <p> Competitors:
-                    % for com in ctx.get('competitors'):
-                          ${com.name},
-                    %endfor
-                    </br> </p>
-                %endif
-
-                %if ctx.get('payment_type') :
-                <p> Payment Type:   ${ctx['payment_type']} <br/> </p>
-                %endif
-
-                %if ctx.get('payment_terms') :
-                <p> Payment Terms : ${ctx['payment_terms']} <br/> </p>
-                %endif
-
-                %if ctx.get('additional_notes') :
-                <p> Additional Notes old: ${ctx['additional_notes']} <br/> </p>
-                %endif
-
-                %if ctx.get('internal_notes_description') :
-                <p> Additional Notes: ${ctx['internal_notes_description'] | safe} <br/> </p>
-                %endif
-
+            <field name="body_html" type="html">
+                <p>
+                        Dear Team,<br/>
+                        Please see the attachment for the product list you received for the new opportunity. <br/>
+                </p>
+                <t t-if="ctx.get('rep')!= False">
+                    <p> Rep: <t t-esc="ctx['rep']"/><br/></p>
+                </t>
+                <t t-if="ctx.get('unq_ac')">
+                    <p> Unique Account #: <t t-esc="ctx['unq_ac']"/><br/></p>
+                </t>
+                <t t-if="ctx.get('facility_type')">
+                    <p> Facility Type: <t t-esc="ctx['facility_type']"/><br/></p>
+                </t>
+                <t t-if="ctx.get('contracts')">
+                   <p>Contracts/Affiliation:
+                       <t t-foreach="ctx['contracts']" t-as="con">
+                           <t t-esc="con.name"/>,
+                       </t>
+                       <br/>
+                   </p>
+               </t>
+                <t t-if="ctx.get('history')">
+                    <p>History: <t t-esc="ctx['history']"/><br/></p>
+                </t>
+                <t t-if="ctx.get('acq_priority')">
+                    <p>Priority: <t t-esc="ctx['acq_priority']"/><br/></p>
+                </t>
+                <t t-if="ctx.get('competitors')">
+                   <p>Competitors:
+                       <t t-foreach="ctx['competitors']" t-as="com">
+                           <t t-esc="com.name"/>,
+                       </t>
+                       <br/>
+                   </p>
+               </t>
+                <t t-if="ctx.get('payment_type')">
+                    <p>Payment Type: <t t-esc="ctx['payment_type']"/><br/></p>
+                </t>
+                <t t-if="ctx.get('payment_terms')">
+                    <p>Payment Terms: <t t-esc="ctx['payment_terms']"/><br/></p>
+                </t>
+                <t t-if="ctx.get('additional_notes')">
+                    <p>Additional Notes old: <t t-esc="ctx['additional_notes']"/><br/></p>
+                </t>
+                <t t-if="ctx.get('internal_notes_description')">
+                    <p>Additional Notes: <t t-raw="ctx['internal_notes_description']"/><br/></p>
+                </t>
                 <p>
                     You can reply to this email if you have any questions.<br/>
                     Thank you <br/>
                 </p>
-
-            ]]></field>
+            </field>
         </record>
  </data>
 </odoo>
