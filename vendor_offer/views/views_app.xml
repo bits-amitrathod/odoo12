@@ -110,8 +110,8 @@
                             <group>
                                 <field name="date_offered" string="Offer Date"/>
                                 <field name="appraisal_no"/>
-                                <field name="accepted_date"/>
-                                <field name="declined_date"/>
+                                <field name="accepted_date" readonly="true"/>
+                                <field name="declined_date" readonly="true"/>
                                 <field name="max"/>
                                 <field name="new_customer"/>
                                 <field name="carrier_id"/>
