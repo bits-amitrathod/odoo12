@@ -127,7 +127,7 @@ class VendorOffer(models.Model):
     super_user_email = fields.Char(compute='_email_info_user')
     vendor_cust_id = fields.Char(string="Customer ID",store=True,readonly=False)
     cash_text_pdf = fields.Char(string="",compute='_cash_text_pdf_fun')
-
+    offer_expired = fields.Boolean(string='Offer Expired ?')
     @api.onchange('cash_text_pdf')
     @api.depends('cash_text_pdf')
     def _cash_text_pdf_fun(self):

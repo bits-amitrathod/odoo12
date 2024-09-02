@@ -101,6 +101,7 @@
 
                                 <field name="offer_type" />
                                 <field name="potential_profit_margin"/>
+                                <field name="offer_expired" readonly="1"/>
                                 <field name="is_change_tier1_to_premium"/>
                                 <field name="is_dynamic_tier_adjustment"/>
 
