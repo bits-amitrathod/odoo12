@@ -194,6 +194,9 @@ class ReportInStockReport(models.Model):
         self.init_table()
 
 
+    def action_download_file(self):
+        pass
+
 class ReportPrintInStockReport(models.AbstractModel):
     _name = 'report.in_stock_report.in_stock_report_print'
     _description = "Report Print InStock Report"

@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>   
 <odoo>       
       <data>
-              <record id="in_stock_report.assets_backend" model="ir.asset">
-                  <field name="name">in_stock_report.assets_backend.inherit</field>
-                  <field name="bundle">web.assets_backend</field>
-                  <field name="directive">append</field>
-                  <field name="path">/in_stock_report/static/src/js/tree_view_button.js</field>
-                  <field name="sequence" eval="16"/>
-              </record>
+<!--              <record id="in_stock_report.assets_backend" model="ir.asset">-->
+<!--                  <field name="name">in_stock_report.assets_backend.inherit</field>-->
+<!--                  <field name="bundle">web.assets_backend</field>-->
+<!--                  <field name="directive">append</field>-->
+<!--                  <field name="path">/in_stock_report/static/src/js/tree_view_button.js</field>-->
+<!--                  <field name="sequence" eval="16"/>-->
+<!--              </record>-->
 
-            <record id="in_stock_report.assets_backend_2" model="ir.asset">
-                  <field name="name">in_stock_report.assets_backend.inherit2</field>
-                  <field name="bundle">web.assets_backend</field>
-                  <field name="directive">append</field>
-                  <field name="path">/in_stock_report/static/src/xml/tree_view_button.xml</field>
-                  <field name="sequence" eval="16"/>
-              </record>
+<!--            <record id="in_stock_report.assets_backend_2" model="ir.asset">-->
+<!--                  <field name="name">in_stock_report.assets_backend.inherit2</field>-->
+<!--                  <field name="bundle">web.assets_backend</field>-->
+<!--                  <field name="directive">append</field>-->
+<!--                  <field name="path">/in_stock_report/static/src/xml/tree_view_button.xml</field>-->
+<!--                  <field name="sequence" eval="16"/>-->
+<!--              </record>-->
       </data>
 </odoo>
