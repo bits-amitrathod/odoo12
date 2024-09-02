@@ -254,7 +254,15 @@
                 <field name="request_partner_id" position="after">
                     <field name="time_zone"/>
                 </field>
-
+                <!-- Client want to Hide this Fields -->
+                <xpath expr="//form[1]/sheet[1]/group[1]/field[@name='reference']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='request_partner_id']" position="attributes">
+                    <attribute name="attrs">{}</attribute>
+                    <attribute name="invisible">1</attribute>
+                </xpath>
             </field>
         </record>
 

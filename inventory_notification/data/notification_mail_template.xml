@@ -3,7 +3,7 @@
     <record id="inventory_packing_list_notification" model="mail.template">
         <field name="name">Inventory Notification: Packing List Email</field>
         <field name="model_id" ref="base.model_res_users"/>
-        <field name="email_from">{{ ctx['email_from']} }}</field>
+        <field name="email_from">{{ ctx['email_from'] }}</field>
         <field name="email_to">{{ ctx['email_to'] }}</field>
         <field name="subject">{{ ctx['subject'] }}</field>
         <field name="body_html" type="html">

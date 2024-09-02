@@ -21,7 +21,7 @@ class CrmLeadLost(models.TransientModel):
     def action_lost_reason_apply(self):
         leads = self.env['crm.lead'].browse(self.env.context.get('active_ids'))
         if self.lost_reason_id:
-            return leads.action_set_lost(lost_reason=self.lost_reason_id.id)
+            return leads.action_set_lost(lost_reason_id=self.lost_reason_id.id)
         else:
             return leads.action_set_lost(purchase_lost_reason=self.purchase_lost_reason_id.id)
 

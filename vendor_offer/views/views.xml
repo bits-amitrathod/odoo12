@@ -55,16 +55,21 @@
             </field>
         </record>
 
-        <record id="purchase_form_action_vendor" model="ir.actions.act_window">
+        <record id="purchase.purchase_form_action" model="ir.actions.act_window">
             <field name="name">Purchase Orders</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
-            <!--<field name="inherit_id" ref="purchase.purchase_form_action"></field>-->
+<!--            <field name="inherit_id" ref="purchase.purchase_form_action"></field>-->
             <field name="view_mode">tree,kanban,form,pivot,graph,calendar</field>
             <field name="context">{'search_default_todo':1, 'show_purchase': True}</field>
             <field name="domain">[('state','not in',('draft','sent','bid', 'confirmed','ven_draft','ven_sent'))]</field>
             <field name="search_view_id" ref="purchase.view_purchase_order_filter"/>
             <field name="view_id" ref="purchase.purchase_order_view_tree"/>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('purchase.purchase_order_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('purchase.purchase_order_form')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('purchase.purchase_order_view_kanban_without_dashboard')}),
+            ]"/>
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Click to create a quotation that will be converted into a purchase order.
@@ -78,13 +83,16 @@
             </field>
         </record>
 
-     <!-- This domain filter added for purchase tree view which is remove from odoo12 base view  -->
-     <!-- This domain filter added for purchase tree view which is remove from odoo12 base view  -->
          <record id="purchase.purchase_rfq" model="ir.actions.act_window">
                <field name="domain">[('state','in',('draft','sent','cancel', 'confirmed'))]</field>
+               <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('purchase.purchase_order_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('purchase.purchase_order_form')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('purchase.purchase_order_view_kanban_without_dashboard')}),
+            ]"/>
         </record>
 
-        <menuitem action="purchase_form_action_vendor" id="purchase.menu_purchase_form_action"
+        <menuitem action="purchase.purchase_form_action" id="purchase.menu_purchase_form_action"
                   parent="purchase.menu_procurement_management" sequence="5"/>
 
 
@@ -623,6 +631,11 @@
         <menuitem id="menu_procurement_management_supplier_offer_vendor_pricing" name="Vendor Pricing"
                   parent="purchase.menu_procurement_management" action="vendor_offer.action_vendor_pricing"
                   sequence="15"/>
+
+
+        <record id="purchase.purchase_report_main" model="ir.ui.menu">
+            <field name="sequence">97</field>
+        </record>
 
     </data>
 </odoo>
