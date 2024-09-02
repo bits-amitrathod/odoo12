@@ -71,7 +71,7 @@ class ReportInStockReport(models.Model):
 
     _auto = False
 
-    _inherits = {'product.template': 'product_tmpl_id'}
+    # _inherits = {'product.template': 'product_tmpl_id'}
 
 
     partner_id = fields.Many2one('res.partner', string='Customer', )
@@ -82,19 +82,21 @@ class ReportInStockReport(models.Model):
         string='Manufacture',
         help='Select a Manufacture for this product'
     )
+
     product_id = fields.Many2one('product.product', string='Product', )
-    product_tmpl_id = fields.Many2one('product.template', 'Product Template', required=True, ondelete='cascade')
+    product_tmpl_id = fields.Many2one('product.template', 'Product Template', required=True)
+    sku_code = fields.Char(related="product_tmpl_id.sku_code")
+    uom_id = fields.Many2one(related="product_tmpl_id.uom_id")
+    currency_id = fields.Many2one(related="product_tmpl_id.currency_id")
 
     min_expiration_date = fields.Date("Min Expiration Date", compute='_calculate_max_min_lot_expiration')
     max_expiration_date = fields.Date("Max Expiration Date", store=False)
     price_list=fields.Float("Sales Price",  compute='_calculate_max_min_lot_expiration')
-    # actual_quantity = fields.Float(string='Qty Available For Sale', compute='_calculate_max_min_lot_expiration', digits=dp.get_precision('Product Unit of Measure'))
+    actual_quantity = fields.Float(related="product_tmpl_id.actual_quantity")
     partn_name=fields.Char()
 
-    #@api.multi
     def _calculate_max_min_lot_expiration(self):
         for record in self:
-            record.actual_quantity = record.product_tmpl_id.actual_quantity
             if record.partner_id.property_product_pricelist.id:
                 a = record.partner_id.property_product_pricelist._get_product_price(record.product_id, record.actual_quantity)
                 if a:
@@ -191,6 +193,9 @@ class ReportInStockReport(models.Model):
     def delete_and_create(self):
         self.init_table()
 
+
+    def action_download_file(self):
+        pass
 
 class ReportPrintInStockReport(models.AbstractModel):
     _name = 'report.in_stock_report.in_stock_report_print'

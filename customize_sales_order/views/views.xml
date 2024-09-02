@@ -73,9 +73,9 @@
                            options="{&quot;always_reload&quot;: True}"/>
                 </field>
                 <!--  Rename tags field as CS Status-->
-                    <xpath expr="//page[@name='other_information']//field[@name='tag_ids']" position="attributes">
-                        <attribute name="string">CS Status</attribute>
-                    </xpath>
+                <xpath expr="//page[@name='other_information']//field[@name='tag_ids']" position="attributes">
+                    <attribute name="string">CS Status</attribute>
+                </xpath>
             </field>
         </record>
 
@@ -262,7 +262,7 @@
 
         <!-- Res partner Views -->
         <record id="view_res_partner_filter_inherit" model="ir.ui.view">
-            <field name="name">res.partner.select</field>
+            <field name="name">res.partner.select.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
@@ -282,6 +282,14 @@
                 <field name="lang" position="after">
                     <field name="facility_tpcd" attrs="{'required': [('is_company', '=', True)]}"/>
                 </field>
+
+                <!-- added search on direct line field and remove rquired property of Phone number field-->
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="attrs">{'required': False}</attribute>
+
+                </xpath>
+
+
             </field>
         </record>
 
@@ -334,6 +342,55 @@
                 <xpath expr="//field[@name='is_broker']" position="after">
                     <field name="charity"/>
                 </xpath>
+
+                <!-- Remove placeholder from the 'website' field -->
+                <xpath expr="//field[@name='website']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+
+                <!-- Remove placeholder from street field -->
+                <xpath expr="//field[@name='street']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+
+                <!-- Remove placeholder from street2 field -->
+                <xpath expr="//field[@name='street2']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+                <!-- Remove placeholder from city field -->
+                <xpath expr="//field[@name='city']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+
+                <!-- Remove placeholder from state field -->
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+
+                <!-- Remove placeholder from state field -->
+                <xpath expr="//field[@name='zip']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+                <!-- Remove placeholder from state field -->
+                <xpath expr="//field[@name='vat']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+
+                <!-- Remove placeholder from state field -->
+                <xpath expr="//field[@name='category_id']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+                <!-- Remove placeholder from state field -->
+                <xpath expr="//field[@name='contract']" position="attributes">
+                    <attribute name="placeholder"></attribute>
+                </xpath>
+
+                <!--                &lt;!&ndash; Set phone field as not required and remove conditional requirement &ndash;&gt;-->
+                <!--                <xpath expr="//field[@name='phone']" position="replace">-->
+                <!--                  <field name="phone"></field>-->
+                <!--        </xpath>-->
+
+
             </field>
         </record>
 

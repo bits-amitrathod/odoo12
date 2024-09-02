@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<template id="template" xml:space="preserve">
-
-          <t t-extend="ListView.buttons">
-            <t t-jquery="div.o_list_buttons" t-operation="append">
-                    <button t-if="widget and widget.modelName == 'report.in.stock.report' "
-                            class="btn btn-primary btn-sm o_list_export_button" type="button">Export</button>
-            </t>
-          </t>
-
-</template>
+<templates>
+    <t t-name="in_stock_report.buttons" t-inherit="web.ListView.Buttons" t-inherit-mode="primary" owl="1">
+        <xpath expr="//div[hasclass('o_list_buttons')]" position="inside">
+           <button  type="button" class="btn btn-primary btn-sm o_list_export_button" >
+                Export
+            </button>
+        </xpath>
+    </t>
+</templates>

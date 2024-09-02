@@ -85,6 +85,11 @@
 
          <record id="purchase.purchase_rfq" model="ir.actions.act_window">
                <field name="domain">[('state','in',('draft','sent','cancel', 'confirmed'))]</field>
+               <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'tree', 'view_id': ref('purchase.purchase_order_view_tree')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('purchase.purchase_order_form')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('purchase.purchase_order_view_kanban_without_dashboard')}),
+            ]"/>
         </record>
 
         <menuitem action="purchase.purchase_form_action" id="purchase.menu_purchase_form_action"
@@ -626,6 +631,11 @@
         <menuitem id="menu_procurement_management_supplier_offer_vendor_pricing" name="Vendor Pricing"
                   parent="purchase.menu_procurement_management" action="vendor_offer.action_vendor_pricing"
                   sequence="15"/>
+
+
+        <record id="purchase.purchase_report_main" model="ir.ui.menu">
+            <field name="sequence">97</field>
+        </record>
 
     </data>
 </odoo>

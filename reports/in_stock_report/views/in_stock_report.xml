@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- This Filter remove because its not working -->
-
-    <!--<record id="view_stock_inventory_valuation_summary" model="ir.ui.view">-->
-        <!--<field name="name">report.in.stock.report.default</field>-->
-        <!--<field name="model">report.in.stock.report</field>-->
-        <!--<field name="arch" type="xml">-->
-            <!--<search string="Product">-->
-                <!--<filter string="Valuation Summary" name="valuation_summary" domain="[]"-->
-                        <!--context="{'group_by' : ['warehouse', 'location', 'type']}"/>-->
-                <!--<separator/>-->
-            <!--</search>-->
-        <!--</field>-->
-    <!--</record>-->
-
     <record id="view_in_stock_report_line_tree" model="ir.ui.view">
         <field name="name">report.in.stock.report.tree</field>
         <field name="model">report.in.stock.report</field>
         <field name="arch" type="xml">
+            <control>
+                <button name="action_download_file" class="btn-link" type="object" string="Export"/>
+            </control>
             <tree create="false" edit="false" delete="false" string="In Stock Report">
                 <field name="partner_id" optional="show"/>
                 <field name="product_brand_id" optional="show"/>

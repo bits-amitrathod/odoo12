@@ -123,26 +123,31 @@
 						<div class="row contact-form">
 							<div class="col-md-8 px-3 px-md-5">
 								<div class="mb-3">
+<!--									<iframe-->
+<!--											src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3035.9331302686537!2d-80.02092578460294!3d40.454616979360786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8834f4053f778837%3A0xf5005e45eef562b9!2s901%20Pennsylvania%20Ave%2C%20Pittsburgh%2C%20PA%2015233%2C%20USA!5e0!3m2!1sen!2sin!4v1609316300071!5m2!1sen!2sin"-->
+<!--											width="100%" height="500" frameborder="0" allowfullscreen=""></iframe>-->
 									<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3035.9331302686537!2d-80.02092578460294!3d40.454616979360786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c2590524e7e737%3A0xab9f89e140e7d682!2sSurgical%20Product%20Solutions!5e0!3m2!1sen!2sin!4v1609330738913!5m2!1sen!2sin"
 											width="100%" height="500" frameborder="0" allowfullscreen=""></iframe>
+<!--									<iframe width="100%" height="500" frameborder="0" scrolling="no" marginheight="0"-->
+<!--                                                marginwidth="0"-->
+<!--                                                src="https://maps.google.com/maps?f=q&amp;source=embed&amp;hl=en&amp;geocode=&amp;q=643+First+Avenue+Pittsburgh,+PA+15219&amp;z=12&amp;output=embed"/>-->
 								</div>
 							</div>
 							<div class="col-md-4 align-self-center">
 								<div class="address-section">
 									<img src="/sps_theme/static/src/images/logo.png" class="img-fluid"/>
-									<div class="p-3 pt0">
-										<p class="company-name">SURGICAL PRODUCT SOLUTIONS</p>
-										<p class="address">
-											901 Pennsylvania Ave
-											<br/>
-											Pittsburgh, PA 15233
-										</p>
-										<p class="address">412.564.1280</p>
-										<div class="text-left btn-wrapper pl-3">
-											<a class="btn btn-info btn-sm" target ="_blank" href="https://goo.gl/maps/rtYhefCyENQCCYv7A">Get Directions</a>
-										</div>
-									</div>
+									<p class="company-name">SURGICAL PRODUCT SOLUTIONS</p>
+									<p class="address">
+                                                901 Pennsylvania Ave
+										<br/>
+                                                Pittsburgh, PA 15233
 
+									</p>
+									<p class="address">412.564.1280</p>
+									<div class="text-left btn-wrapper pl-3">
+										<!--<button class="btn btn-info btn-sm">Get Directions</button>-->
+										<a class="btn btn-info btn-sm" target ="_blank" href="https://goo.gl/maps/rtYhefCyENQCCYv7A">Get Directions</a>
+									</div>
 								</div>
 							</div>
 						</div>
