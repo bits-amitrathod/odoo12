@@ -112,7 +112,7 @@
                         <footer>
                             <button name="action_tracking" string="Generate Shipping Label" type="object"
                                     class="btn-primary"/>
-                            <button string="_Cancel" class="btn-default" special="cancel"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
                         </footer>
                     </sheet>
                 </form>

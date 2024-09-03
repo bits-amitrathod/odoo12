@@ -22,10 +22,9 @@
     }
 }
 
-
 .report_financial_table td{
     white-space: normal !important;
-    max-width:180px;
+    max-width:180px fit-content;
     width:180px;
 }
 .o_form_view.o_sale_order.vendor_offer_class{
