@@ -5,10 +5,7 @@
         <field name="name">report.in.stock.report.tree</field>
         <field name="model">report.in.stock.report</field>
         <field name="arch" type="xml">
-            <control>
-                <button name="action_download_file" class="btn-link" type="object" string="Export"/>
-            </control>
-            <tree create="false" edit="false" delete="false" string="In Stock Report">
+            <tree create="false" edit="false" delete="false" string="In Stock Report" js_class="in_stock_list">
                 <field name="partner_id" optional="show"/>
                 <field name="product_brand_id" optional="show"/>
                 <field name="sku_code" string="Product SKU" optional="show"/>
