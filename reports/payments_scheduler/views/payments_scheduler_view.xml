@@ -45,6 +45,7 @@
         <record id="payment_scheduled_report_form_view" model="ir.ui.view">
             <field name="name">Payments Scheduled Report  Form View</field>
             <field name="model">account.move</field>
+            <field name="priority">20</field>
             <field name="arch" type="xml">
                 <form create="false" edit="false" delete="false">
                     <sheet>
