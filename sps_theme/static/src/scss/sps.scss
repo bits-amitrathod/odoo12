@@ -107,3 +107,8 @@ td{
     display: flex;
     flex-wrap: wrap !important;
 }
+
+//override css to remove vertical scroll
+.o_notebook .o_notebook_headers{
+    overflow-x: visible !important;
+}
