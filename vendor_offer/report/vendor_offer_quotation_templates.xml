@@ -33,7 +33,7 @@
                       <strong>SELLER NAME / ADDRESS:</strong>
                     <div t-field="o.partner_id" style="font-size:13px!important;"
                         t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
-                        <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>
+<!--                        <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>-->
                 </div>
             </div>
             <h2 style="color:red;font-size:13px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
@@ -339,7 +339,7 @@
                       <strong>SELLER NAME / ADDRESS:</strong>
                     <div t-field="o.partner_id" style="font-size:14px!important;"
                         t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
-                        <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>
+<!--                        <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>-->
                 </div>
             </div>
             <h2 style="color:red;font-size:14px;" align="center" ><strong>***CONFIDENTIAL***</strong></h2><hr></hr>
