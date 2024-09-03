@@ -50,7 +50,10 @@
                         <field name="vendor_offer_data" invisible="1"/>
                         <button name="action_duplicate_vendor_offer" type="object" string="Duplicate Offer"
                                 attrs="{'invisible':[('vendor_offer_data', '=',  False)]}"/>
+
+                         <!--  Added context to set selected carrier value as a default carrier value for pop up -->
                         <button string="Shipping Label"
+                                context="{'default_carrier_id': carrier_id}"
                                 type="action" class="btn-primary"
                                 name="%(action_view_tracking_text)d"
                                 attrs="{'invisible': [('status', 'not in', ('ven_draft','ven_sent'))]}"
@@ -90,7 +93,7 @@
                                  <field name="acq_manager_phone" invisible="1" />
                                 <field name="vendor_cust_id"/>
 <!--                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />-->
-                                <field name="company_id" options="{'no_create': True}"/>
+                                <field name="company_id" options="{'no_create': True}" attrs="{'invisible': True}"/>
                                 <field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}" string="Facility Name" placeholder="Name, TIN, Email, or Reference"  />
                                 <field name="acq_user_id"/>
                                 <field name="possible_competition"
@@ -101,6 +104,7 @@
 
                                 <field name="offer_type" />
                                 <field name="potential_profit_margin"/>
+                                <field name="offer_expired" readonly="1"/>
                                 <field name="is_change_tier1_to_premium"/>
                                 <field name="is_dynamic_tier_adjustment"/>
 
@@ -110,8 +114,10 @@
                             <group>
                                 <field name="date_offered" string="Offer Date"/>
                                 <field name="appraisal_no"/>
-                                <field name="accepted_date"/>
-                                <field name="declined_date"/>
+
+                            <!--    Make the accepted date and declined date read only  -->
+                                <field name="accepted_date" readonly="true"/>
+                                <field name="declined_date" readonly="true"/>
                                 <field name="max"/>
                                 <field name="new_customer"/>
                                 <field name="carrier_id"/>
@@ -258,9 +264,8 @@
                                         <field name="date_planned" string="Scheduled Date" readonly="1"/>
                                         <field name="shipping_label_issued"/>
                                         <field name="invoice_status"/>
-
-<!--                                        <field name="payment_term_id" options="{'no_open': True, 'no_create': True}"-->
-<!--                                               attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>-->
+                                        <field name="payment_term_id" options="{'no_open': True, 'no_create': True}"
+                                               attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
                                     </group>
                                     <group>
                                         <field name="shipping_date"/>

@@ -112,7 +112,7 @@
                         <footer>
                             <button name="action_tracking" string="Generate Shipping Label" type="object"
                                     class="btn-primary"/>
-                            <button string="_Cancel" class="btn-default" special="cancel"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
                         </footer>
                     </sheet>
                 </form>
@@ -637,5 +637,21 @@
             <field name="sequence">97</field>
         </record>
 
+        <record id="view_purchase_order_tree_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.tree.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                   <field name="date_planned"/>
+                </xpath>
+                <xpath expr="//field[@name='date_planned']" position="replace">
+                    <field name="date_planned" string="Receipt Date"/>
+                </xpath>
+                <xpath expr="//tree" position="attributes">
+                    <attribute name="default_order">date_planned desc</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
