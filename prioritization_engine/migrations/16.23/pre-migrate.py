@@ -21,9 +21,9 @@ def migrate(cr, version):
         and name = 'report_invoice_document_extended' limit 1)
     """)
     cr.execute("""update ir_ui_view set active = true where name = 'purchase.order.form' and id = 1953""")
-    # cr.execute("""update ir_ui_view set active = false where inherit_id in (6176,1953,4216,7559);""")
-    # cr.execute("""update ir_ui_view set active = false where id in (5742,4216,4901);""")
-    # cr.execute("""DELETE FROM ir_cron where ir_actions_server_id in (2064, 1902);""")
+    cr.execute("""DELETE FROM ir_ui_view where inherit_id in (6176,1953,4216,7559);""")
+    cr.execute("""DELETE FROM ir_ui_view where id in (5742,4216,4901);""")
+    cr.execute("""DELETE FROM ir_cron where ir_actions_server_id in (2064, 1902);""")
     cr.execute("""ALTER TABLE payment_transaction DROP CONSTRAINT IF EXISTS payment_transaction_acquirer_id_fkey;""")
 
 
