@@ -88,7 +88,7 @@ class MailActivityNotesCustom(models.Model):
         #                                              ('name', 'not like', 'sps'), ('name', 'not like', 'prioritization'),
         #                                              ('name', 'not like', 'Tests')])
 
-        model_list = ['Contact', 'Sales Order', 'Vendor Offer Automation', 'Lead/Opportunity']
+        model_list = ['Contact', 'Sales Order', 'Vendor Offer Automation Template', 'Lead/Opportunity']
         models = self.env['ir.model'].sudo().search([('state', '!=', 'manual'), ('name', 'in', model_list)])
         res = [(model.model, model.name)
                for model in models
