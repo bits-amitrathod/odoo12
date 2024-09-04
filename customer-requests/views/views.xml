@@ -226,10 +226,10 @@
         <record id="new_email_in_inbox" model="mail.template">
             <field name="name">New Email In Inbox</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">{{object.company_id.name}} <{{(object.company_id.email or user.email)}}></field>
+            <field name="email_from">{{object.company_id.name}},{{(object.company_id.email or user.email)}} </field>
             <field name="email_to">{{object.email}}</field>
             <field name="email_cc">{{ctx.get('salesperson')}}, {{ctx.get('key_account')}}</field>
-            <field name="subject">Email response <{{(object.company_id.email or user.email)}}></field>
+            <field name="subject">Email response {{(object.company_id.email or user.email)}}</field>
             <field name="body_html" type="html">
                 <p>
                     Hi Administrator,
@@ -264,7 +264,7 @@
                     </tr>
                 </table>
                 <p>
-                    Thanks & Regards,<br/>
+                    Thanks &amp; Regards,<br/>
                     ODOO <br/>
                     <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
                 </p>
@@ -276,9 +276,9 @@
         <record id="set_log_email" model="mail.template">
             <field name="name">Logs For File Upload</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">{{object.company_id.name}} <{{(object.company_id.email or user.email)}}></field>
+            <field name="email_from">{{object.company_id.name}} &lt;{{(object.company_id.email or user.email)}} &gt;</field>
             <field name="email_to">{{object.email}}</field>
-            <field name="subject">API response <{{(object.company_id.email or user.email)}}></field>
+            <field name="subject">API response {{(object.company_id.email or user.email)}}</field>
             <field name="body_html" type="html">
                 <p>
                     Hi Administrator,
@@ -313,7 +313,7 @@
                     </tr>
                 </table>
                 <p>
-                    Thanks & Regards,<br/>
+                    Thanks &amp; Regards,<br/>
                     ODOO
                 </p>
             </field>
@@ -323,9 +323,9 @@
         <record id="set_log_email_response" model="mail.template">
             <field name="name">Logs For File Upload</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">{{object.company_id.name} <{{(object.company_id.email or user.email)}}></field>
+            <field name="email_from">{{object.company_id.name} &lt;{{(object.company_id.email or user.email)}}&gt;</field>
             <field name="email_to">{{object.email}}</field>
-            <field name="subject">Email response <{{(object.company_id.email or user.email)}}></field>
+            <field name="subject">Email response {{(object.company_id.email or user.email)}}</field>
             <field name="body_html">{{ctx.get('body')}}</field>
             <field name="body_html" type="html">
                 <p>
@@ -369,7 +369,7 @@
                     </tr>
                 </table>
                 <p>
-                    Thanks & Regards,<br/>
+                    Thanks &amp; Regards,<br/>
                     Odoo
                 </p>
             </field>
@@ -379,10 +379,10 @@
         <record id="email_response_on_uploaded_document" model="mail.template">
             <field name="name">email response on uploaded documents</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">{{object.company_id.name}} <{{(object.company_id.email or user.email)}}></field>
+            <field name="email_from">{{object.company_id.name}} &lt;{{(object.company_id.email or user.email)}}&gt;</field>
             <field name="email_to">{{ctx.get('customerEmail')}}</field>
             <field name="email_cc">{{ctx.get{'salespersonEmail')}}, {{ctx.get('keyAccountEmail')}}</field>
-            <field name="subject">Email response <{{(object.company_id.email or user.email)}}></field>
+            <field name="subject">Email response {{(object.company_id.email or user.email)}}</field>
             <field name="body_html">{{ctx.get('body')}}</field>
             <field name="body_html" type="html">
                 <p>
@@ -411,10 +411,10 @@
         <record id="final_email_response_on_uploaded_document" model="mail.template">
             <field name="name">final email response on uploaded documents</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from">{{object.company_id.name}} <{{(object.company_id.email or user.email)}}></field>
+            <field name="email_from">{{object.company_id.name}} &lt;{{(object.company_id.email or user.email)}}&gt;</field>
             <field name="email_to">{{ctx.get('customerEmail')}}</field>
             <field name="email_cc">{{ctx.get('salespersonEmail')}}, {{ctx.get('keyAccountEmail')}}</field>
-            <field name="subject">Email response <{{(object.company_id.email or user.email)}}></field>
+            <field name="subject">Email response {{(object.company_id.email or user.email)}}</field>
             <field name="body_html">{{ctx.get('body')}}</field>
             <field name="body_html" type="html">
                 <p>
