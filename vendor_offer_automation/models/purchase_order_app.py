@@ -467,7 +467,6 @@ class VendorOfferNewAppraisalImport(models.Model):
                             line_obj = self._cr.fetchone()
                             purchase_order_line = self.env['purchase.order.line'].search([('id', 'in', line_obj)])
                             # purchase_order_line.price_subtotal = float(order_line_object['offer_price_total'])
-                            # purchase_order_line.calculate_order_line_product_values()
 
             except UnicodeDecodeError as ue:
                 _logger.info(ue)
