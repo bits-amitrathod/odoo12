@@ -348,29 +348,6 @@
                     <attribute name="placeholder"></attribute>
                 </xpath>
 
-                <!-- Remove placeholder from street field -->
-                <xpath expr="//field[@name='street']" position="attributes">
-                    <attribute name="placeholder"></attribute>
-                </xpath>
-
-                <!-- Remove placeholder from street2 field -->
-                <xpath expr="//field[@name='street2']" position="attributes">
-                    <attribute name="placeholder"></attribute>
-                </xpath>
-                <!-- Remove placeholder from city field -->
-                <xpath expr="//field[@name='city']" position="attributes">
-                    <attribute name="placeholder"></attribute>
-                </xpath>
-
-                <!-- Remove placeholder from state field -->
-                <xpath expr="//field[@name='state_id']" position="attributes">
-                    <attribute name="placeholder"></attribute>
-                </xpath>
-
-                <!-- Remove placeholder from state field -->
-                <xpath expr="//field[@name='zip']" position="attributes">
-                    <attribute name="placeholder"></attribute>
-                </xpath>
                 <!-- Remove placeholder from state field -->
                 <xpath expr="//field[@name='vat']" position="attributes">
                     <attribute name="placeholder"></attribute>
@@ -385,10 +362,7 @@
                     <attribute name="placeholder"></attribute>
                 </xpath>
 
-                <!--                &lt;!&ndash; Set phone field as not required and remove conditional requirement &ndash;&gt;-->
-                <!--                <xpath expr="//field[@name='phone']" position="replace">-->
-                <!--                  <field name="phone"></field>-->
-                <!--        </xpath>-->
+
 
 
             </field>
