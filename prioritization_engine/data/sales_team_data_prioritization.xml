@@ -40,7 +40,7 @@
         <!--Email template -->
         <record id="email_template_sale_custom" model="mail.template">
             <field name="name">Sales Order - Send by Email</field>
-            <field name="email_from">{{(object.order_processor.email and '&quot;%s&quot; &lt;%s&gt;' % (object.order_processor.name, object.order_processor.email) or '')}}</field>
+            <field name="email_from">{{(object.order_processor.email}}</field>
             <field name="subject">{{object.company_id.name}} {{object.state in ('draft', 'sent') and 'Quotation' or 'Order'}} (Ref {{object.name or 'n/a' }})</field>
             <field name="partner_to">{{object.partner_id.id}}</field>
             <field name="email_cc">{{ctx.get('email_from')}}</field>
@@ -49,8 +49,8 @@
             <field name="report_template" ref="sale.action_report_saleorder"/>
             <field name="report_name">{{(object.name or '').replace('/','_')}}{{object.state == 'draft' and '_draft' or ''}}</field>
             <field name="lang">{{object.partner_id.lang}}</field>
-            <field name="body_html">
-                <t t-set="access_action" t-value="object.with_context({'force_website': True}).get_access_action()"/>
+            <field name="body_html" type="html">
+                <t t-set="access_action" t-value="object.with_context({'force_website':True}).get_access_action()"/> <!-- with_context(force_website=True)-->
                 <t t-set="is_online" t-value="access_action and access_action['type'] == 'ir.actions.act_url'"/>
                 <t t-set="doc_name" t-value="'quotation' if object.state in ('draft', 'sent') else 'order confirmation'"/>
                 <!--<t t-set="pay_sign_name" t-value="object.get_portal_confirmation_action()"/>-->
