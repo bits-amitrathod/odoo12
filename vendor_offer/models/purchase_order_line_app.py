@@ -171,8 +171,7 @@ class VendorOfferProductLineNew(models.Model):
             "product_tier" : product_tier,
             "sku_code" : sku_code,
             "product_brand_id" : product_brand_id,
-            "product_qty_app_new" : 1,
-            "product_qty" : 1,
+            # "product_qty" : self.product_qty_app_new or 1,
             "product_sales_count_month" : product_sales_count_month,
             "product_sales_count_90" : product_sales_count_90,
             "product_sales_count_yrs" : product_sales_count_yrs,
@@ -194,7 +193,6 @@ class VendorOfferProductLineNew(models.Model):
             "consider_dropping_tier" : consider_dropping_tier,
             "inv_ratio_90_days" : inv_ratio_90_days,
             "is_pddo": is_pddo,
-            "product_qty" :  self.product_qty_app_new,
         })
         return values
 
