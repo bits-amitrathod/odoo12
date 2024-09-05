@@ -40,92 +40,100 @@
         <!--Email template -->
         <record id="email_template_sale_custom" model="mail.template">
             <field name="name">Sales Order - Send by Email</field>
-            <field name="email_from">{{(object.order_processor.email and '&quot;%s&quot; &lt;%s&gt;' % (object.order_processor.name, object.order_processor.email) or '')|safe}}</field>
+            <field name="email_from">{{(object.order_processor.email}}</field>
             <field name="subject">{{object.company_id.name}} {{object.state in ('draft', 'sent') and 'Quotation' or 'Order'}} (Ref {{object.name or 'n/a' }})</field>
-            <field name="partner_to">${object.partner_id.id}</field>
-            <field name="email_cc"><![CDATA[${ctx['email_from']}]]></field>
+            <field name="partner_to">{{object.partner_id.id}}</field>
+            <field name="email_cc">{{ctx.get('email_from')}}</field>
             <field name="model_id" ref="sale.model_sale_order"/>
             <field name="auto_delete" eval="True"/>
             <field name="report_template" ref="sale.action_report_saleorder"/>
-            <field name="report_name">${(object.name or '').replace('/','_')}${object.state == 'draft' and '_draft' or ''}</field>
-            <field name="lang">${object.partner_id.lang}</field>
-            <field name="body_html"><![CDATA[
-<p>Dear ${object.partner_id.name}
-% set access_action = object.with_context(force_website=True).get_access_action()
-% set is_online = access_action and access_action['type'] == 'ir.actions.act_url'
-% set doc_name = 'quotation' if object.state in ('draft', 'sent') else 'order confirmation'
-<!--% set pay_sign_name =  object.get_portal_confirmation_action()-->
-% set access_name = is_online and object.state in ('draft', 'sent') and pay_sign_name in ('pay', 'sign') and 'Accept and %s online' % pay_sign_name or 'View %s' % doc_name
-% set access_url = is_online and object.get_share_url() or ''
+            <field name="report_name">{{(object.name or '').replace('/','_')}}{{object.state == 'draft' and '_draft' or ''}}</field>
+            <field name="lang">{{object.partner_id.lang}}</field>
+            <field name="body_html" type="html">
+                <t t-set="access_action" t-value="object.with_context({'force_website':True}).get_access_action()"/> <!-- with_context(force_website=True)-->
+                <t t-set="is_online" t-value="access_action and access_action['type'] == 'ir.actions.act_url'"/>
+                <t t-set="doc_name" t-value="'quotation' if object.state in ('draft', 'sent') else 'order confirmation'"/>
+                <!--<t t-set="pay_sign_name" t-value="object.get_portal_confirmation_action()"/>-->
+                <t t-set="access_name" t-value="is_online and object.state in ('draft', 'sent') and pay_sign_name in ('pay', 'sign') and 'Accept and %s online' % pay_sign_name or 'View %s' % doc_name"/>
+                <t t-set="access_url" t-value="is_online and object.get_share_url() or ''"/>
 
-% if object.partner_id.parent_id:
-    (<i>${object.partner_id.parent_id.name}</i>)
-% endif
-,</p>
+                <p>
+                    Dear <t t-esc="object.partner_id.name"/>
+                    <t t-if="object.partner_id.parent_id">
+                        (<i><t t-esc="object.partner_id.parent_id.name"/></i>)
+                    </t>
+                    ,
+                </p>
 
-% if object.team_id.team_type in ('engine', 'rapid_quote'):
-<p>
-A Quotation has been created
-% if ctx.get('proforma')
-in attachment, your pro-forma invoice
-% else
-<strong>${object.name}</strong>
-% endif
-% if object.origin:
-(with reference: ${object.origin} )
-% endif
-in the amount of <strong>${format_amount(object.amount_total, object.currency_id)}</strong>
-from Surgical Product Solutions. Please click below to review, edit, and confirm your order.
-</p>
-% else
-<p>
-Here is
-% if ctx.get('proforma')
-in attachment, your pro-forma invoice
-% else
-the ${doc_name} <strong>${object.name}</strong>
-% endif
-% if object.origin:
-(with reference: ${object.origin} )
-% endif
-amounting in <strong>${format_amount(object.amount_total, object.currency_id)}</strong>
-from ${object.company_id.name}.
-</p>
-% endif
+                <t t-if="object.team_id.team_type in ('engine', 'rapid_quote')">
+                    <p>
+                        A Quotation has been created
+                        <t t-if="ctx.get('proforma')">
+                            in attachment, your pro-forma invoice
+                        </t>
+                        <t t-else="">
+                            <strong><t t-esc="object.name"/></strong>
+                        </t>
+                        <t t-if="object.origin">
+                            (with reference: <t t-esc="object.origin"/> )
+                        </t>
+                        in the amount of <strong><t t-esc="format_amount(object.amount_total, object.currency_id)"/></strong>
+                        from Surgical Product Solutions. Please click below to review, edit, and confirm your order.
+                    </p>
+                </t>
+                <t t-else="">
+                    <p>
+                        Here is
+                        <t t-if="ctx.get('proforma')">
+                            in attachment, your pro-forma invoice
+                        </t>
+                        <t t-else="">
+                            the <t t-esc="doc_name"/> <strong><t t-esc="object.name"/></strong>
+                        </t>
+                        <t t-if="object.origin">
+                            (with reference: <t t-esc="object.origin"/> )
+                        </t>
+                        amounting to <strong><t t-esc="format_amount(object.amount_total, object.currency_id)"/></strong>
+                        from <t t-esc="object.company_id.name"/>.
+                    </p>
+                </t>
 
-% if is_online and not ctx.get('proforma'):
-    <br/><br/>
-    <center>
-        <a href="${access_url}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">${access_name}</a>
-        <br/><br/><br/>
-        <span style="color:#888888">(or view attached PDF)</span>
-    </center>
-    <br/>
-% endif
+                <t t-if="is_online and not ctx.get('proforma')">
+                    <br/><br/>
+                    <center>
+                        <a t-attf-href="{{access_url}}" style="background-color: #1abc9c; padding: 20px; text-decoration: none; color: #fff; border-radius: 5px; font-size: 16px;" class="o_default_snippet_text">
+                            <t t-esc="access_name"/>
+                        </a>
+                        <br/><br/><br/>
+                        <span style="color:#888888">(or view attached PDF)</span>
+                    </center>
+                    <br/>
+                </t>
 
-<p>You can reply to this email if you have any questions.</p>
-<p>Thank you,<br/>
-   % if object.team_id.team_type in ('engine', 'rapid_quote'):
-        <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
-    % endif
-</p>
+                <p>You can reply to this email if you have any questions.</p>
+                <p>
+                    Thank you,<br/>
+                    <t t-if="object.team_id.team_type in ('engine', 'rapid_quote')">
+                        <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
+                    </t>
+                </p>
 
-<p style="color:#888888;">
-<br></br>
-% if object.is_signature:
-    ${object.order_processor.signature | safe}
-% else:
-    % if object.order_processor and object.order_processor.name:
-        ${object.order_processor.name | safe}
-    % endif
-    % if object.order_processor and object.order_processor.phone:
-        <br></br>
-        ${object.order_processor.phone | safe}
-    % endif
-% endif
-
-</p>
-]]></field>
+                <p style="color:#888888;">
+                    <br></br>
+                    <t t-if="object.is_signature">
+                        <t t-raw="object.order_processor.signature"/>
+                    </t>
+                    <t t-else="">
+                        <t t-if="object.order_processor and object.order_processor.name">
+                            <t t-raw="object.order_processor.name"/>
+                        </t>
+                        <t t-if="object.order_processor and object.order_processor.phone">
+                            <br></br>
+                            <t t-raw="object.order_processor.phone"/>
+                        </t>
+                    </t>
+                </p>
+            </field>
         </record>
 
 
