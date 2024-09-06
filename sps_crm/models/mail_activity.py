@@ -79,6 +79,19 @@ class MailActivityNotesCustom(models.Model):
     #     res = super().write(vals)
     #     return res
 
+    # While creating activity for particular user it should show that user selected automatically in account field.
+    # Set default customer for who we are creating activity
+    # set default value if no customer is selected
+    @api.model
+    def default_get(self, fields_list):
+        res = super(MailActivityNotesCustom, self).default_get(fields_list)
+        if 'res_id' in res and res.get('res_model') == 'res.partner':
+            res['reference'] = 'res.partner,%s' % res['res_id']
+        else:
+            res['reference'] = 'res.partner,1'
+
+        return res
+
     @api.model
     def _reference_models(self):
 
@@ -88,7 +101,7 @@ class MailActivityNotesCustom(models.Model):
         #                                              ('name', 'not like', 'sps'), ('name', 'not like', 'prioritization'),
         #                                              ('name', 'not like', 'Tests')])
 
-        model_list = ['Contact', 'Sales Order', 'Vendor Offer Automation', 'Lead/Opportunity']
+        model_list = ['Contact', 'Sales Order', 'Vendor Offer Automation Template', 'Lead/Opportunity']
         models = self.env['ir.model'].sudo().search([('state', '!=', 'manual'), ('name', 'in', model_list)])
         res = [(model.model, model.name)
                for model in models

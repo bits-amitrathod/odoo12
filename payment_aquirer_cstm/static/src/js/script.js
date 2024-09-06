@@ -9,13 +9,13 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
     var $carrierBadge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .o_wsale_delivery_badge_price');
     //var $compute_badge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .o_delivery_compute');
     var salesTeamMessage = $('textarea[name="sales_team_message"]');
-    var $payButton = $('#o_payment_submit_button');
+    var $payButton = $('button[name="o_payment_submit_button"]');
     var concurrency = require('web.concurrency');
     var dp = new concurrency.DropPrevious();
 
     var _handleCarrierUpdateResults = function(result) {
 //        _handleCarrierUpdateResultBadge(result);
-        var $payButton = $('#o_payment_submit_button');
+        var $payButton = $('button[name="o_payment_submit_button"]');
         var $amountDelivery = $('#order_delivery .monetary_field');
         var $amountUntaxed = $('#order_total_untaxed .monetary_field');
         var $amountTax = $('#order_total_taxes .monetary_field');
@@ -139,10 +139,16 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 ajax.jsonRpc("/shop/get_carrier", 'call', {
                     'delivery_carrier_code': 'fedex_ground'
                 }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
+                    if (data == undefined){
+                        alert("Not any Carrier found with code 'fedex_ground'")
+                    }
+                    else{
+                        var carrier_id = parseInt(data['carrier_id'])
+                        var values = {'carrier_id': carrier_id};
+                        dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                        .then(_handleCarrierUpdateResults);
+                    }
+
 
                });
            }

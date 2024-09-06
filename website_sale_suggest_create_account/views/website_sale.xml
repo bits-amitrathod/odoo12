@@ -17,7 +17,7 @@
                     <span class="fa fa-sign-in"/>
                 </t>
                 <t t-else="">
-                    <span>Process Checkout</span>
+                    <span>Sign Up and Checkout</span>
                     <span class="fa fa-chevron-right"/>
                 </t>
             </a>

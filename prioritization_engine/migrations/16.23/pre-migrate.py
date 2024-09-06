@@ -54,6 +54,10 @@ def migrate(cr, version):
     cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'purchase_order_tree_sort_force');""")
     cr.execute("""DELETE FROM ir_ui_view  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'view_picking_form_inherit_website_sale_stock_custom');""")
     cr.execute("""DELETE FROM ir_ui_menu  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'purchase_order_menu');""")
+    cr.execute("""DELETE FROM ir_ui_menu  WHERE id in (SELECT res_id FROM ir_model_data WHERE name = 'cart' and module='website_sale_require_login');""")
+    cr.execute("""DELETE  FROM  ir_ui_view  WHERE name  ilike  'Odoo Studio: report_invoice_document customization'""")
+    cr.execute("""DELETE  FROM  ir_ui_view  WHERE name  ilike  'Odoo Studio: purchase.order.view.tree customization'""")
+
 
     # active the inactive views
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'vendor.offer.purchase.order.form.main';""")
