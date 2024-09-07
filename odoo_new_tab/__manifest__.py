@@ -24,7 +24,7 @@
   "website"              :  "https://store.webkul.com/Odoo-View-Records-In-New-Tab.html",
   "description"          :  """View Records In New Tab""",
   "live_test_url"        :  "http://odoodemo.webkul.com/?module=odoo_new_tab",
-  "depends"              :  ['web'],
+  "depends"              :  ['web', 'account'],
   "images"               :  ['static/description/Banner.gif'],
   "application"          :  True,
   "installable"          :  True,

@@ -26,4 +26,13 @@
             </td>
         </xpath>
     </t>
+
+    <t t-name='odoo_new_tab.ListRenderer2' t-inherit='account.sectionAndNoteListRenderer' t-inherit-mode="extension" owl="1">
+        <xpath expr='//div/table/thead/tr/th[1]' position="before">
+                <th class='new_tab_column'>
+                    <span>#</span>
+                </th>
+        </xpath>
+    </t>
+
 </templates>
