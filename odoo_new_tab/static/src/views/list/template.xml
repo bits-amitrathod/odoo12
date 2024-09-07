@@ -35,4 +35,10 @@
         </xpath>
     </t>
 
+    <t t-name='odoo_new_tab.ListRenderer2' t-inherit='web.ListRenderer.GroupRow' t-inherit-mode="extension" owl="1">
+        <xpath expr='//tr/th[1]' position="before">
+                <th></th>
+        </xpath>
+    </t>
+
 </templates>
