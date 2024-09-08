@@ -48,7 +48,6 @@
                         <field name="partner_id" widget="res_partner_many2one"
                             string='Organization / Vendor'
                             context="{
-                                'res_partner_search_mode': type == 'purchase_opportunity' and 'customer' or False,
                                 'default_name': contact_name or partner_name,
                                 'default_is_company': type == 'purchase_opportunity' and contact_name == False,
                                 'default_company_name': type == 'purchase_opportunity' and partner_name,
@@ -359,7 +358,7 @@
                                 <field name="partner_id"
                                     widget="res_partner_many2one"
                                     string="Customer"
-                                    context="{'res_partner_search_mode': type == 'purchase_opportunity' and 'customer' or False,
+                                    context="{
                                         'default_name': contact_name or partner_name,
                                         'default_street': street,
                                         'default_is_company': type == 'purchase_opportunity' and contact_name == False,

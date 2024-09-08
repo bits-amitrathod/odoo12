@@ -33,7 +33,57 @@
                 <field name="create_date"/>
             </xpath>
 
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="replace">
+                <field name="partner_id"
+                       widget="res_partner_many2one"
+                       string="Customer"
+                       context="{
+                                        'default_name': contact_name or partner_name,
+                                        'default_street': street,
+                                        'default_is_company': type == 'opportunity' and contact_name == False,
+                                        'default_company_name': type == 'opportunity' and partner_name,
+                                        'default_street2': street2,
+                                        'default_city': city,
+                                        'default_title': title,
+                                        'default_state_id': state_id,
+                                        'default_zip': zip,
+                                        'default_country_id': country_id,
+                                        'default_function': function,
+                                        'default_phone': phone,
+                                        'default_mobile': mobile,
+                                        'default_email': email_from,
+                                        'default_user_id': user_id,
+                                        'default_team_id': team_id,
+                                        'default_website': website,
+                                        'default_lang': lang_code,
+                                        'show_vat': True,
+                                    }"
+                />
+            </xpath>
+
         </field>
+    </record>
+
+    <record id="quick_create_opportunity_form" model="ir.ui.view">
+        <field name="name">crm.lead.form.quick_create</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="replace">
+                <field name="partner_id" widget="res_partner_many2one"
+                       string='Organization / Contact'
+                       context="{
+                            'default_name': contact_name or partner_name,
+                            'default_is_company': type == 'opportunity' and contact_name == False,
+                            'default_company_name': type == 'opportunity' and partner_name,
+                            'default_phone': phone,
+                            'default_email': email_from,
+                            'default_user_id': user_id,
+                            'default_team_id': team_id,
+                            'show_vat': True}"/>
+            </xpath>
+        </field>
+
     </record>
 
     <!-- this view used for only filed name change purpose   -->
