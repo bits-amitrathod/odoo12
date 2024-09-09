@@ -12,7 +12,7 @@
     'category': 'e-commerce',
     'version': '0.1',
 
-    'depends': ['base','payment','website_sale','website_sale_delivery'],
+    'depends': ['payment','website_sale_delivery'],
 
     # always loaded
     'data': [
@@ -24,5 +24,7 @@
 
     'installable': True,
     # 'application': True,
+    'post_init_hook': 'post_init_hook',
+    'uninstall_hook': 'uninstall_hook',
     "license" : "LGPL-3",
 }
