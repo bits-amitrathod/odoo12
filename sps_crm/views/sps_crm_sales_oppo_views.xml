@@ -5,11 +5,25 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
+
+            <xpath expr="//page[@name='lead']//group//field[@name='partner_name']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//page[@name='lead']//group[@name='Misc']//field[@name='day_open']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='lead']//group[@name='Misc']//field[@name='day_close']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+
             <xpath expr="//field[@name='tag_ids']" position="before">
                 <field name="opportunity_type_sales"/>
             </xpath>
-             <xpath expr="//field[@name='tag_ids']" position="replace">
-                <field name="oppr_category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+            <xpath expr="//field[@name='tag_ids']" position="replace">
+                <field name="oppr_category_id" widget="many2many_tags"
+                       options="{'color_field': 'color', 'no_create_edit': True}"/>
             </xpath>
 
             <!-- client want to Hide -->
@@ -26,14 +40,66 @@
             <!--  rearrangement Of Fields              -->
             <xpath expr="//form[1]/sheet[1]/group[1]/group[@name='opportunity_partner']/div[2]" position="after">
                 <xpath expr="//form[1]/sheet[1]/group[1]/group[not(@name)][1]/field[@name='user_id']" position="move"/>
-                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[@name='Misc']/field[@name='team_id']" position="move"/>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[@name='Misc']/field[@name='team_id']"
+                       position="move"/>
             </xpath>
             <xpath expr="//field[@name='oppr_category_id']" position="after">
-                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[@name='Misc']/field[@name='company_id']" position="move"/>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[@name='Misc']/field[@name='company_id']"
+                       position="move"/>
                 <field name="create_date"/>
             </xpath>
 
+            <xpath expr="//group[@name='opportunity_partner']/field[@name='partner_id']" position="replace">
+                <field name="partner_id"
+                       widget="res_partner_many2one"
+                       string="Customer"
+                       context="{
+                                        'default_name': contact_name or partner_name,
+                                        'default_street': street,
+                                        'default_is_company': type == 'opportunity' and contact_name == False,
+                                        'default_company_name': type == 'opportunity' and partner_name,
+                                        'default_street2': street2,
+                                        'default_city': city,
+                                        'default_title': title,
+                                        'default_state_id': state_id,
+                                        'default_zip': zip,
+                                        'default_country_id': country_id,
+                                        'default_function': function,
+                                        'default_phone': phone,
+                                        'default_mobile': mobile,
+                                        'default_email': email_from,
+                                        'default_user_id': user_id,
+                                        'default_team_id': team_id,
+                                        'default_website': website,
+                                        'default_lang': lang_code,
+                                        'show_vat': True,
+                                    }"
+                />
+            </xpath>
+
         </field>
+    </record>
+
+    <record id="quick_create_opportunity_form" model="ir.ui.view">
+        <field name="name">crm.lead.form.quick_create</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id']" position="replace">
+                <field name="partner_id" widget="res_partner_many2one"
+                       string='Organization / Contact'
+                       context="{
+                            'default_name': contact_name or partner_name,
+                            'default_is_company': type == 'opportunity' and contact_name == False,
+                            'default_company_name': type == 'opportunity' and partner_name,
+                            'default_phone': phone,
+                            'default_email': email_from,
+                            'default_user_id': user_id,
+                            'default_team_id': team_id,
+                            'show_vat': True}"/>
+            </xpath>
+        </field>
+
     </record>
 
     <!-- this view used for only filed name change purpose   -->
@@ -49,8 +115,9 @@
                 <attribute name="invisible">1</attribute>
             </field>
 
-            <xpath expr="//field[@name='tag_ids']" position="replace" >
-                <field name="oppr_category_id"  string="Tags" widget="many2many_tags" options="{'color_field': 'color'}" />
+            <xpath expr="//field[@name='tag_ids']" position="replace">
+                <field name="oppr_category_id" string="Tags" widget="many2many_tags"
+                       options="{'color_field': 'color'}"/>
             </xpath>
         </field>
     </record>
