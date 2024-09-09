@@ -5,11 +5,18 @@
         <field name="model">crm.lead</field>
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
+
+            <!--Replace lang id field removed unwanted attributes -->
+            <xpath expr="//page[@name='lead']//field[@name='lang_id']" position="replace">
+                <field name="lang_id" options="{'no_create': True}"/>
+            </xpath>
+
             <xpath expr="//field[@name='tag_ids']" position="before">
                 <field name="opportunity_type_sales"/>
             </xpath>
-             <xpath expr="//field[@name='tag_ids']" position="replace">
-                <field name="oppr_category_id" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+            <xpath expr="//field[@name='tag_ids']" position="replace">
+                <field name="oppr_category_id" widget="many2many_tags"
+                       options="{'color_field': 'color', 'no_create_edit': True}"/>
             </xpath>
 
             <!-- client want to Hide -->
@@ -26,10 +33,12 @@
             <!--  rearrangement Of Fields              -->
             <xpath expr="//form[1]/sheet[1]/group[1]/group[@name='opportunity_partner']/div[2]" position="after">
                 <xpath expr="//form[1]/sheet[1]/group[1]/group[not(@name)][1]/field[@name='user_id']" position="move"/>
-                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[@name='Misc']/field[@name='team_id']" position="move"/>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[@name='Misc']/field[@name='team_id']"
+                       position="move"/>
             </xpath>
             <xpath expr="//field[@name='oppr_category_id']" position="after">
-                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[@name='Misc']/field[@name='company_id']" position="move"/>
+                <xpath expr="//form[1]/sheet[1]/notebook[1]/page[@name='lead']/group[1]/group[@name='Misc']/field[@name='company_id']"
+                       position="move"/>
                 <field name="create_date"/>
             </xpath>
 
@@ -49,8 +58,9 @@
                 <attribute name="invisible">1</attribute>
             </field>
 
-            <xpath expr="//field[@name='tag_ids']" position="replace" >
-                <field name="oppr_category_id"  string="Tags" widget="many2many_tags" options="{'color_field': 'color'}" />
+            <xpath expr="//field[@name='tag_ids']" position="replace">
+                <field name="oppr_category_id" string="Tags" widget="many2many_tags"
+                       options="{'color_field': 'color'}"/>
             </xpath>
         </field>
     </record>
