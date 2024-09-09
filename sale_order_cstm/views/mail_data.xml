@@ -54,7 +54,7 @@
                             <t t-foreach="object.order_line" t-as="line">
                                 <t t-if="not line.is_delivery and line.display_type in ['line_section', 'line_note']">
                                     <table width="100%" style="color: #454748; font-size: 12px; border-collapse: collapse;">
-                                        <tr style="${loop.cycle('background-color: #f2f2f2', 'background-color: #ffffff')}">
+                                        <tr style="{{loop.cycle('background-color: #f2f2f2', 'background-color: #ffffff')}}">
                                             <td colspan="4">
                                                 <t t-if="line.display_type == 'line_section'">
                                                     <strong><t t-out="line.name"/></strong>
@@ -68,9 +68,9 @@
                                 </t>
                                 <t t-elif="not line.is_delivery">
                                     <table width="100%" style="color: #454748; font-size: 12px; border-collapse: collapse;">
-                                        <tr style="${loop.cycle('background-color: #f2f2f2', 'background-color: #ffffff')}">
+                                        <tr style="{{loop.cycle('background-color: #f2f2f2', 'background-color: #ffffff')}}">
                                             <td style="width: 150px;">
-                                                <img src="/web/image/product.product/${line.product_id.id}/image_128"
+                                                <img src="/web/image/product.product/{{line.product_id.id}}/image_128"
                                                      style="width: 64px; height: 64px; object-fit: contain;"
                                                      alt="Product image"></img>
                                             </td>
@@ -159,11 +159,12 @@
                                     <tr>
                                         <td>
                                             <strong>Payment Method:</strong>
-                                            % if transaction.payment_token_id:
-                                                ${transaction.payment_token_id.name}
-                                            % else:
-                                                ${transaction.acquirer_id.name}
-                                            % endif
+                                            <t t-if="transaction.payment_token_id">
+                                                <t t-out="transaction.payment_token_id.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-out="transaction.acquirer_id.name"/>
+                                            </t>
                                             (<t t-out="format_amount(object.amount_total, object.currency_id)"/>)
 
                                         </td>

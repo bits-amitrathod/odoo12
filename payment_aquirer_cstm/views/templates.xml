@@ -99,17 +99,21 @@
                 </div>
             </div>
         </xpath>
-<!--        <xpath expr="//div[@id='delivery_carrier']" position="replace">-->
 
-<!--            <div t-if="delivery_nb == 1" id="delivery_carrier" class="mt4">-->
-<!--                <h3 id="choose_a_delivery_method_label" t-if="delivery_nb &gt; 1" class="mb24" style="font-size: 20px;">Choose a delivery method</h3>-->
-<!--                <t t-foreach="deliveries" t-as="delivery">-->
-<!--                    <div class="o_delivery_carrier_select d-inline">-->
-<!--                        <t t-call="website_sale_delivery.payment_delivery_methods"/>-->
-<!--                    </div>-->
-<!--                </t>-->
-<!--            </div>-->
-<!--        </xpath>-->
+         <xpath expr="//div[@id='delivery_carrier']/h3" position="replace">
+            <h3 id="choose_a_delivery_method_label" t-if="delivery_nb &gt; 1" class="mb24" style="font-size: 20px;">Choose a delivery method</h3>
+        </xpath>
+        <xpath expr="//div[@id='delivery_carrier']/div[@id='delivery_method']" position="replace">
+            <div id="delivery_method_custom" t-if="delivery_nb &gt; 1" class="card border-0">
+                <ul class="list-group">
+                    <t t-foreach="deliveries" t-as="delivery">
+                        <li class="list-group-item">
+                            <t t-call="website_sale_delivery.payment_delivery_methods"/>
+                        </li>
+                    </t>
+                </ul>
+            </div>
+        </xpath>
     </template>
 
     <template id="payment_cstm" inherit_id="website_sale.payment">

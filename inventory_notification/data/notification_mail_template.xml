@@ -19,30 +19,30 @@
                 <t t-foreach="picking_list" t-as="packing">
                     <div>
                         <div style="margin-left:10px;">
-                            <p><span style="font-weight: bold;">Order Number: </span><span><t t-out="packing.sale_id.name"/></span></p>
+                            <p><span style="font-weight: bold;">Order Number: </span><span><t t-esc="packing.sale_id.name"/></span></p>
                             <t t-set="date_on" t-value="datetime.strptime(packing.sale_id.write_date, '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y')"/>
-                             <p><span style="font-weight: bold;">Dated On: </span><t t-out="date_on"/></p>
-                            <p><span style="font-weight: bold;">Customer Name: </span><t t-out="packing.sale_id.partner_id.display_name"/></p>
+                             <p><span style="font-weight: bold;">Dated On: </span><t t-esc="date_on"/></p>
+                            <p><span style="font-weight: bold;">Customer Name: </span><t t-esc="packing.sale_id.partner_id.display_name"/></p>
                             <p>
                                 <span style="font-weight: bold;">Shipping Address: </span>
-                                <span><t t-out="{{ packing.sale_id.partner_shipping_id.street or ''}}"/></span>
-                                <span><t t-out="{{ packing.sale_id.partner_shipping_id.street2 or ''}}"/></span>
-                                <span><t t-out="{{ packing.sale_id.partner_shipping_id.city or ''}}"/></span>
-                                <span><t t-out="{{ packing.sale_id.partner_shipping_id.state_id.name or ''}}"/></span>
-                                <span><t t-out="{{ packing.sale_id.partner_shipping_id.zip or ''}}"/></span>
-                                <span><t t-out="{{ packing.sale_id.partner_shipping_id.country_id.name or ''}}"/></span>
+                                <span><t t-esc="{{ packing.sale_id.partner_shipping_id.street or ''}}"/></span>
+                                <span><t t-esc="{{ packing.sale_id.partner_shipping_id.street2 or ''}}"/></span>
+                                <span><t t-esc="{{ packing.sale_id.partner_shipping_id.city or ''}}"/></span>
+                                <span><t t-esc="{{ packing.sale_id.partner_shipping_id.state_id.name or ''}}"/></span>
+                                <span><t t-esc="{{ packing.sale_id.partner_shipping_id.zip or ''}}"/></span>
+                                <span><t t-esc="{{ packing.sale_id.partner_shipping_id.country_id.name or ''}}"/></span>
                             </p>
                             <t t-if="packing.sale_id.client_order_ref != False">
-                                <p><span style="font-weight: bold;">Customer PO Number: </span> <t t-out="packing.sale_id.client_order_ref"/> </p>
+                                <p><span style="font-weight: bold;">Customer PO Number: </span> <t t-esc="packing.sale_id.client_order_ref"/> </p>
                             </t>
                             <t t-if="packing.sale_id.carrier_info != False">
-                                <p><span style="font-weight: bold;">Carrier Name: </span><t t-out="packing.sale_id.carrier_info"/> </p>
+                                <p><span style="font-weight: bold;">Carrier Name: </span><t t-esc="packing.sale_id.carrier_info"/> </p>
                             </t>
                             <t t-if="packing.sale_id.carrier_acc_no != False">
-                                <p><span style="font-weight: bold;">Carrier Account #: </span> <t t-out="packing.sale_id.carrier_acc_no "/> </p>
+                                <p><span style="font-weight: bold;">Carrier Account #: </span> <t t-esc="packing.sale_id.carrier_acc_no "/> </p>
                             </t>
                             <t t-if="packing.sale_id.carrier_id and packing.sale_id.carrier_id.name !=False">
-                                <p><span style="font-weight: bold;">Delivery Method #:  </span><t t-out="packing.sale_id.carrier_id.name "/></p>
+                                <p><span style="font-weight: bold;">Delivery Method #:  </span><t t-esc="packing.sale_id.carrier_id.name "/></p>
                             </t>
                         </div>
                         <br/>
@@ -65,23 +65,23 @@
                                         <t t-set="row_color" t-value="#f0f8ff"/>
                                     </t>
                                     <tr t-attf-style='border: 1px solid black;line-height:25px;background-color:{{ row_color }}'>
-                                        <td><t t-out="{{move_line.product_tmpl_id.sku_code}}"/></td>
-                                        <td><t t-out="{{move_line.product_tmpl_id.name}}"/></td>
-                                        <td><t t-out="{{ move_line.product_uom.name }}"/></td>
+                                        <td><t t-esc="{{move_line.product_tmpl_id.sku_code}}"/></td>
+                                        <td><t t-esc="{{move_line.product_tmpl_id.name}}"/></td>
+                                        <td><t t-esc="{{ move_line.product_uom.name }}"/></td>
                                         <td>
                                             <div style="margin-top:10px">
                                                 <t t-foreach="move_line.move_line_ids" t-as="move_line_id">
                                                     <p style="font-weight: lighter">
-                                                        <span><t t-out="move_line_id.qty_done or 0"/></span>
-                                                        <span> <t t-out="move_line_id.product_uom.name"/></span>-
-                                                        Lot#:<span><t t-out="move_line_id.lot_id.name"/></span>
+                                                        <span><t t-esc="move_line_id.qty_done or 0"/></span>
+                                                        <span> <t t-esc="move_line_id.product_uom.name"/></span>-
+                                                        Lot#:<span><t t-esc="move_line_id.lot_id.name"/></span>
                                                         <t t-if="move_line_id.lot_id.use_date">
                                                              <t t-set="use_date" t-value="datetime.strptime(move_line_id.lot_id.use_date, '%Y-%m-%d %H:%M:%S').strftime('%m/%d/%Y')"/>
                                                         </t>
                                                         <t t-else="">
                                                              <t t-set="use_date" t-value="NA"/>
                                                         </t>
-                                                        Exp Date:<span> <t t-out="{{ use_date }}"/></span>
+                                                        Exp Date:<span> <t t-esc="{{ use_date }}"/></span>
                                                     </p>
                                                 </t>
                                             </div>
@@ -89,8 +89,8 @@
                                         <td>
                                             <div style="margin-top:10px">
                                                 <p style="font-weight: lighter">
-                                                    <span> <t t-out="{{ move_line.ordered_qty or 0 }}"/></span>
-                                                    <span> <t t-out="{{ move_line.product_uom.name }}"/></span>
+                                                    <span> <t t-esc="{{ move_line.ordered_qty or 0 }}"/></span>
+                                                    <span> <t t-esc="{{ move_line.product_uom.name }}"/></span>
                                                 </p>
                                             </div>
                                         </td>
@@ -121,7 +121,7 @@
             <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
                 <div>
                     <div>
-                        <p> <t t-out="ctx['description']" /> </p>
+                        <p> <t t-esc="ctx['description']" /> </p>
                     </div>
                     <center>
                     </center>
@@ -132,7 +132,7 @@
                         <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
                             <tr style="border: 1px solid black;">
                              <t t-foreach="headers" t-as="header">
-                                 <th style="text-align: center;"><t t-out="header"/></th>
+                                 <th style="text-align: center;"><t t-esc="header"/></th>
                              </t>
                             </tr>
                         </thead>
@@ -142,7 +142,7 @@
                                     <t t-foreach="columnProps" t-as="column">
                                          <td style="text-align: center;">
                                             <span t-if="product[column] != 'False'">
-                                                <t t-out="product[column]"/>
+                                                <t t-esc="product[column]"/>
                                              </span>
                                         </td>
                                     </t>
@@ -153,7 +153,7 @@
                 </div>
                 <div  style="margin-top:20px">
                     <p>Thanks &amp; Regards,</p>
-                    <p><t t-out="ctx['closing_content']"/></p>
+                    <p><t t-esc="ctx['closing_content']"/></p>
                 </div>
              </div>
         </field>
@@ -175,7 +175,7 @@
                 <div>
                     <div>
                         <p>Hi Team,</p>
-                        <p> <t t-out="ctx['descrption']"/> </p>
+                        <p> <t t-esc="ctx['descrption']"/> </p>
                     </div>
                     <center>
                     </center>
@@ -186,7 +186,7 @@
                         <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
                             <tr style="border: 1px solid black;">
                                  <t t-foreach="headers" t-as="header">
-                                     <th style="text-align: center;"><t t-out="header"/></th>
+                                     <th style="text-align: center;"><t t-esc="header"/></th>
                                  </t>
                             </tr>
                         </thead>
@@ -196,7 +196,7 @@
                                     <t t-foreach="columnProps" t-as="column">
                                          <td style="text-align: center;">
                                             <span t-if="product[column] != 'False'">
-                                                <t t-out="product[column]"/>
+                                                <t t-esc="product[column]"/>
                                              </span>
                                         </td>
                                     </t>
@@ -207,7 +207,7 @@
                 </div>
                 <div  style="margin-top:20px">
                     <p>Thanks &amp; Regards,</p>
-                    <p><t t-out="ctx['closing_content']"/></p>
+                    <p><t t-esc="ctx['closing_content']"/></p>
                 </div>
             </div>
         </field>
@@ -226,7 +226,7 @@
             <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
                 <div>
                    <div>
-                        <p> <t t-out="ctx['descrption']"/> </p>
+                        <p> <t t-esc="ctx['descrption']"/> </p>
                     </div>
                     <center>
                     </center>
@@ -238,7 +238,7 @@
                         <thead style='border: 1px solid black;background-color:#D6DBDF;line-height: 30px'>
                             <tr style="border: 1px solid black;">
                                  <t t-foreach="headers" t-as="header">
-                                     <th style="text-align: center;"><t t-out="header"/></th>
+                                     <th style="text-align: center;"><t t-esc="header"/></th>
                                  </t>
                             </tr>
                         </thead>
@@ -248,7 +248,7 @@
                                     <t t-foreach="columnProps" t-as="column">
                                          <td style="text-align: center;">
                                             <span t-if="product[column] != 'False'">
-                                                <t t-out="product[column]"/>
+                                                <t t-esc="product[column]"/>
                                              </span>
                                         </td>
                                     </t>
@@ -259,7 +259,7 @@
                 </div>
                 <div  style="margin-top:20px">
                     <p>Thanks &amp; Regards,</p>
-                    <p><t t-out="ctx['closing_content']"/></p>
+                    <p><t t-esc="ctx['closing_content']"/></p>
                 </div>
             </div>
         </field>
@@ -275,14 +275,14 @@
             <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
                 <div>
                     <div>
-                        <p><t t-out="ctx['descrption']"/></p>
+                        <p><t t-esc="ctx['descrption']"/></p>
                     </div>
                     <center>  </center>
                 </div>
                 <br/>
                 <div  style="margin-top:20px">
                     <p>Thanks &amp; Regards,</p>
-                    <p><t t-out="ctx['closing_content']"/></p>
+                    <p><t t-esc="ctx['closing_content']"/></p>
                 </div>
             </div>
         </field>

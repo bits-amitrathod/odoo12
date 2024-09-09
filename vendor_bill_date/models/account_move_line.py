@@ -3,6 +3,8 @@ from odoo import api, fields, models, _
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"
 
+    price_reduce = fields.Float(string='Final Price', digits='Product Price',
+                                readonly=True)
     def _get_price_total_and_subtotal_model(self, price_unit, quantity, discount, currency, product, partner, taxes,
                                             move_type):
         ''' This method is used to compute 'price_total' & 'price_subtotal'.
@@ -26,7 +28,7 @@ class AccountMoveLine(models.Model):
 
         # Compute 'price_subtotal'.
         line_discount_price_unit = price_unit * (1 - (discount / 100.0))
-        if move_type == 'out_invoice':  # this is customized for SO
+        if move_type == 'out_invoice' or move_type == 'out_refund':  # this is customized for SO # this is customized for SO
             if self.sale_line_ids:
                 so_price_unit = self.sale_line_ids[0].price_reduce
                 difference = line_discount_price_unit - so_price_unit
@@ -41,6 +43,7 @@ class AccountMoveLine(models.Model):
                 line_discount_price_unit = round(price_unit * (1 - (discount / 100.0)), 2)
         subtotal = quantity * line_discount_price_unit
 
+        res['price_reduce'] = line_discount_price_unit
         # Compute 'price_total'.
         if taxes:
             taxes_res = taxes._origin.with_context(force_sign=1).compute_all(line_discount_price_unit,
@@ -56,11 +59,14 @@ class AccountMoveLine(models.Model):
         if currency:
             res = {k: currency.round(v) for k, v in res.items()}
         return res
+
+
     def create(self, vals_list):
         # OVERRIDE
         lines = super(AccountMoveLine, self).create(vals_list)
         for line in lines:
             if line.sale_line_ids:
                 line.price_unit = line.sale_line_ids[0].price_unit
+                line.price_reduce = line.sale_line_ids[0].price_reduce
 
         return lines

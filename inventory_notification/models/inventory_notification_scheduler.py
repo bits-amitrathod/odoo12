@@ -85,11 +85,11 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Picking Done For Sale Order # " + picking.sale_id.name,
-            'description': "Hi " + picking.sale_id.partner_id.display_name + ",<br/> <br/>Please find detail Of Sale Order: "
-                           + picking.sale_id.name,
+            'description': Markup("Hi " + picking.sale_id.partner_id.display_name +
+                                  ",<br/> <br/>Please find detail Of Sale Order: "+ picking.sale_id.name),
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
-            'closing_content': "Warehouse Team	"
+            'closing_content': "Warehouse Team"
         }
         self.process_common_email_notification_template(super_user, users, vals['subject'],
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
@@ -119,7 +119,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Warehouse Team',
             'description': Markup("Hi " + final_user.display_name +
-                           ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name + "br/><br/>" +
+                           ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name + "<br/><br/>" +
                            "<strong> Notes :  </strong>" + (picking.note or "N/A") + "",)
         }
         self.process_common_email_notification_template(super_user, final_user, vals['subject'], vals['description'],
@@ -346,10 +346,11 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
-            'description': "Hi " + (
-                        picking.sale_id.user_id.display_name or "Salesperson") + ",<br><br> Please find detail Of Sale Order: "
-                           + picking.sale_id.name + " and their tracking is " + tracking +
-                           "<br><br> <strong> Notes : </strong>" + str(picking.note or "N/A") + "",
+            'description': Markup("Hi " + (
+                        picking.sale_id.user_id.display_name or "Salesperson")
+                                  + ",<br><br> Please find detail Of Sale Order: "
+                                  + picking.sale_id.name + " and their tracking is " + tracking
+                                  + "<br><br> <strong> Notes : </strong>" + str(picking.note or "N/A") + ""),
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
             'closing_content': 'Warehouse Team'
