@@ -3,6 +3,8 @@
 from odoo.http import request
 from odoo import api, fields, models, tools, SUPERUSER_ID, _
 
+from odoo.addons.payment import setup_provider
+
 
 class payment_provider_cstm(models.Model):
     _inherit = 'payment.provider'
@@ -27,6 +29,15 @@ class payment_provider_cstm(models.Model):
             return "/shop/payment/purchaseorderform"
         else:  # 'test'
             return "/shop/payment/purchaseorderform"
+
+    @api.model
+    def run_during_upgrade(self):
+        # this function is written to register the payment provider in the odoo environment as per new
+        # odoo 16 standard to use payment provider in odoo system
+        # without this you can not do any DB operation on this payment
+        registry = self.env.registry
+        cr  = self.env.cr
+        setup_provider(cr, registry, 'purchaseorder')
 
 
 class SalesOrder(models.Model):
