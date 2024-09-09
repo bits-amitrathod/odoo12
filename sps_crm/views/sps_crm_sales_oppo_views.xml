@@ -6,10 +6,17 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
 
-            <!--Replace lang id field removed unwanted attributes -->
-            <xpath expr="//page[@name='lead']//field[@name='lang_id']" position="replace">
-                <field name="lang_id" options="{'no_create': True}"/>
+            <xpath expr="//page[@name='lead']//group//field[@name='partner_name']" position="attributes">
+                <attribute name="invisible">1</attribute>
             </xpath>
+            <xpath expr="//page[@name='lead']//group[@name='Misc']//field[@name='day_open']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='lead']//group[@name='Misc']//field[@name='day_close']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
 
             <xpath expr="//field[@name='tag_ids']" position="before">
                 <field name="opportunity_type_sales"/>
