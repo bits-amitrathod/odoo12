@@ -20,7 +20,7 @@ class sale_order(models.Model):
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
-    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", tracking=True)
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", tracking=True,  domain="['&',['active','=',True],['share','=',False]]")
     #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
 
     # @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
