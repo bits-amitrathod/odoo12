@@ -16,9 +16,9 @@
             <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form_main"/>
             <field name="arch" type="xml">
                 <xpath expr="/form/header/button[@name='action_send_offer_email']" position="after">
-                    <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary"  />
+                    <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary" attrs="{'invisible': [('state', 'not in', ('done', 'cancel'))]}" />
                     <button name="action_import_order_lines_all_column" string="Manual Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
-                    <button name="action_import_order_lines_app_new" string="Appraisal Import New" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
+                    <button name="action_import_order_lines_app_new" string="Appraisal Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
                 </xpath>
             </field>
         </record>
