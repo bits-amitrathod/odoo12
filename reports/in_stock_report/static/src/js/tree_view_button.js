@@ -14,28 +14,32 @@ export class InStockReportListController extends ListController {
 //        this.archiveEmployee = useArchiveEmployee();
     }
     onClickExport() {
-        this.filter_button()
+        var url = '/web/export/in_stock_report'
+        this.actionService.doAction({
+            type: "ir.actions.act_url",
+            url: url,
+        });
     }
-    onError(error){
-        console.log("------------aa-----------",error)
-        var message = error.messages
-        throw new Error(message);
-    }
-    filter_button() {
-        console.log("------------343aa-----------")
-        var self = this;
-        blockUI();
-        ajax.get_file({
-            url: '/web/export/in_stock_report',
-            complete: unblockUI,
-            error: self.onError,
-            success: function(){
-                console.log("------------aa-----------")
-                unblockUI()
-            }
-        })
-
-    }
+//    onError(error){
+//        console.log("------------aa-----------",error)
+//        var message = error.messages
+//        throw new Error(message);
+//    }
+//    filter_button() {
+//        console.log("------------343aa-----------")
+//        var self = this;
+//        blockUI();
+//        ajax.get_file({
+//            url: '/web/export/in_stock_report',
+//            complete: unblockUI,
+//            error: self.onError,
+//            success: function(){
+//                console.log("------------aa-----------")
+//                unblockUI()
+//            }
+//        })
+//
+//    }
 }
 
 registry.category('views').add('in_stock_list', {
