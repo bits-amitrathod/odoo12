@@ -173,6 +173,9 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_quotation_tree"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='tag_ids']" position="attributes">
+                    <attribute name="string">CS Status</attribute>
+                </xpath>
                 <xpath expr="//field[@name='name']" position="replace">
                     <field name="name" string="Quotation Number" readonly="1" decoration-bf="1"/>
                 </xpath>
