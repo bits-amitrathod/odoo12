@@ -6,22 +6,29 @@ import { ListController } from '@web/views/list/list_controller';
 //import { session } from "@web/session";
 import { blockUI, unblockUI } from "web.framework";
 var session = require('web.session');
+var ajax = require('web.ajax');
 
 export class InStockReportListController extends ListController {
     setup() {
         super.setup();
 //        this.archiveEmployee = useArchiveEmployee();
     }
-    async onClickExport() {
+    onClickExport() {
         this.filter_button()
+    }
+    onError(error){
+        console.log("------------aa-----------",error)
+        var message = error.messages
+        throw new Error(message);
     }
     filter_button() {
         console.log("------------343aa-----------")
+        var self = this;
         blockUI();
-        this.getSession().get_file({
+        ajax.get_file({
             url: '/web/export/in_stock_report',
             complete: unblockUI,
-            error: (error) => this.call('crash_manager', 'rpc_error', error),
+            error: self.onError,
             success: function(){
                 console.log("------------aa-----------")
                 unblockUI()
