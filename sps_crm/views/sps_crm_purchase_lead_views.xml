@@ -480,9 +480,9 @@
                             </group>
 
                             <group name="opportunity_info" attrs="{'invisible': [('type', '=', 'lead')]}">
-<!--                                <field name="lost_reason" attrs="{'invisible': [('active', '=', True)]}"/>-->
+                                <field name="lost_reason_id" attrs="{'invisible': [('active', '=', True)]}"/>
                                 <field name="date_conversion" invisible="1"/>
-                                <field name="company_id" />
+                                <!--<field name="company_id" />-->
                             </group>
                         </group>
 
