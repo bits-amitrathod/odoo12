@@ -261,7 +261,8 @@ class VendorPricingExport(models.TransientModel):
                                          'PREMIUM', 'EXP INVENTORY', 'SALES COUNT 90', 'Quantity on Order',
                                          'Average Aging', 'Inventory Scrapped', 'Open Quotations Per Code']))
         cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
-        company = self.env['res.company'].search([], limit=1, order="id desc")
+        # company = self.env['res.company'].search([], limit=1, order="id desc")
+        company = self.env.company
         str_query = """
                         SELECT pt.sku_code, 
                            pt.name, 
