@@ -112,3 +112,8 @@ td{
 .o_notebook .o_notebook_headers{
     overflow-x: visible !important;
 }
+
+//override css of sales order line table
+.o_section_and_note_list_view{
+    table-layout:auto !important;
+    }
