@@ -51,6 +51,8 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     $("#choose_a_delivery_method_label").parent().hide();
                     $("#delivery_method_custom").parent().hide();
                     $payButton.prop('disabled', false);
+                    $payButton.data('disabled_reasons', false);
+
                 } else {
                     console.log('In else ***');
                     $("#shipping_options").children().hide();
@@ -68,22 +70,23 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                         $carrierBadge.html(data['new_amount_delivery']);
                         $carrierBadge.removeClass('o_wsale_delivery_carrier_error');
                         $payButton.prop('disabled', false);
+                        $payButton.data('disabled_reasons', false);
                     }else{
                         console.log('in else blog');
                         $carrierBadge.addClass('o_wsale_delivery_carrier_error');
                         $carrierBadge.text(data['error_message']);
                         console.log(data['gen_pay_link']);
                         if (data['gen_pay_link'] == true) {
-                        console.log('in gen pay true');
-                        $payButton.prop('disabled', false);
-                        setTimeout(function(){
-                        $payButton.prop('disabled', false);
-                        console.log("delay done")
-                        },5000);
+                            console.log('in gen pay true');
+                            $payButton.prop('disabled', false);
+                            setTimeout(function(){
+                                $payButton.prop('disabled', false);
+                                $payButton.data('disabled_reasons', false);
+                            },5000);
                         }
                         else{
-                        console.log('in gen pay false');
-                        $payButton.prop('disabled', true);
+                            console.log('in gen pay false');
+                            $payButton.prop('disabled', true);
                         }
 
                         var disabledReasons = $payButton.data('disabled_reasons') || {};
@@ -106,6 +109,7 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                });
 
                $payButton.prop('disabled', false);
+               $payButton.data('disabled_reasons', false);
 
                ajax.jsonRpc("/shop/get_carrier", 'call', {
                     'delivery_carrier_code': 'my_shipper_account'

@@ -80,7 +80,7 @@ class ReportPrintInStockExport(http.Controller):
         return data
 
     @http.route('/web/export/in_stock_report', type='http', auth="public")
-    def download_document_xl(self, token, **kwargs):
+    def download_document_xl(self, token=1, **kwargs):
 
         """
           DROP VIEW DATA;
@@ -386,8 +386,8 @@ class ReportPrintInStockExport(http.Controller):
             data2 
             ON ( data.product_id = data2.product_id )
         """
-
-        request.env.cr.execute(str_functions + str_query0 + str_query2 + str_query4)
+        final_query = (str_functions + str_query0 + str_query2 + str_query4)
+        request.env.cr.execute(final_query)
         order_lines = request.env.cr.dictfetchall()
         request.env.cr.execute(str_query1 + str_query3 + str_query4 + "where formula = 1")
         order_lines_formula = request.env.cr.dictfetchall()

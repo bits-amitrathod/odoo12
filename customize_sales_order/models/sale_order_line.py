@@ -122,7 +122,7 @@ class SaleOrderLineInherit(models.Model):
                 field_name = 'standard_price'
                 product_currency = product.cost_currency_id
             elif pricelist_item.base == 'pricelist' and pricelist_item.base_pricelist_id:
-                field_name = 'price'
+                field_name = 'lst_price'
                 product = product.with_context(pricelist=pricelist_item.base_pricelist_id.id)
                 product_currency = pricelist_item.base_pricelist_id.currency_id
             else:

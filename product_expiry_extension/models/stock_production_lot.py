@@ -30,7 +30,7 @@ class ProductionLot(models.Model):
         for lot in self:
             pick_id = self.env.context.get('active_picking_id')
             stock_move = self.env['stock.move'].search([('picking_id', '=', pick_id)], limit=1)
-            aval_qty = self.env['stock.quant']._get_available_quantity(self.product_id, stock_move.location_id,
+            aval_qty = self.env['stock.quant']._get_available_quantity(lot.product_id, stock_move.location_id,
                                                                        lot_id=lot, package_id=None,
                                                                        owner_id=None, strict=False,
                                                                        allow_negative=False)
