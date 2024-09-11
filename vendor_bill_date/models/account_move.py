@@ -35,7 +35,7 @@ class VendorBillDate(models.Model):
 
                 # Only synchronize one2many in onchange.
                 if invoice != invoice._origin:
-                    invoice.invoice_line_ids = invoice.line_ids.filtered(lambda line: not line.exclude_from_invoice_tab)
+                    invoice.invoice_line_ids = invoice.line_ids.filtered(lambda line: line.display_type in ('product', 'line_section', 'line_note'))
 
                 if not invoice.invoice_date:
                     today = fields.Date.context_today(self)

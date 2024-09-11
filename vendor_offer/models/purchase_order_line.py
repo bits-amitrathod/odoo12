@@ -144,10 +144,12 @@ class VendorOfferProduct(models.Model):
             multiplier_list = line.multiplier
 
             val_t = float(line.product_id.list_price) * (float(multiplier_list.retail) / 100)
-            if (float(val_t) % 1) >= 0.5:
-                product_unit_price = math.ceil(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+            val_t = round(val_t,2)
+            decimal_point_value = (val_t * 100) % 100
+            if decimal_point_value >= 50.0:
+                product_unit_price = math.ceil(val_t)
             else:
-                product_unit_price = math.floor(float(line.product_id.list_price) * (float(multiplier_list.retail) / 100))
+                product_unit_price = math.floor(val_t)
             line._cal_margin()
             if line.do_not_change_retail == False:
                 line.update({
@@ -173,17 +175,13 @@ class VendorOfferProduct(models.Model):
         for line in self:
             multiplier_list = line.multiplier
             product_unit_price = line.product_unit_price
-            val_off = float(product_unit_price) * (float(
-                multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
-            if (float(val_off) % 1) >= 0.5:
-                product_offer_price = math.ceil(
-                    float(product_unit_price) * (
-                            float(multiplier_list.margin) / 100 + float(
-                        line.possible_competition.margin) / 100))
+            val_off = float(product_unit_price) * (float(multiplier_list.margin) / 100 + float(line.possible_competition.margin) / 100)
+            val_off = round(val_off,2)
+            decimal_point_value = (val_off*100)%100
+            if decimal_point_value >= 50.0:
+                product_offer_price = math.ceil(val_off)
             else:
-                product_offer_price = math.floor(float(product_unit_price) * (
-                        float(multiplier_list.margin) / 100 + float(
-                    line.possible_competition.margin) / 100))
+                product_offer_price = math.floor(val_off)
 
             if line.do_not_change_offer == False:
                 line.update({
