@@ -1,6 +1,21 @@
 <?xml version="1.0"?>
 <odoo>
     <data>
+        <!-- Created new view to rearrange sequence of order line in sales like odoo 14 -->
+        <record id="sales_order_line_sequence_view" model="ir.ui.view">
+            <field name="name">Sales Order Line Sequence View</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="priority" eval="1000"/>
+            <field name="arch" type="xml">
+
+                <xpath expr="//field[@name='default_code']" position="after">
+                    <xpath expr="//field[@name='product_template_id']" position="move"/>
+                </xpath>
+
+            </field>
+        </record>
+
 
         <!-- sale order Views -->
         <record id="view_form_import_template_stockhawk" model="ir.ui.view">
@@ -173,6 +188,9 @@
             <field name="model">sale.order</field>
             <field name="inherit_id" ref="sale.view_quotation_tree"/>
             <field name="arch" type="xml">
+                <xpath expr="//field[@name='tag_ids']" position="attributes">
+                    <attribute name="string">CS Status</attribute>
+                </xpath>
                 <xpath expr="//field[@name='name']" position="replace">
                     <field name="name" string="Quotation Number" readonly="1" decoration-bf="1"/>
                 </xpath>
@@ -361,8 +379,6 @@
                 <xpath expr="//field[@name='contract']" position="attributes">
                     <attribute name="placeholder"></attribute>
                 </xpath>
-
-
 
 
             </field>

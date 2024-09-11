@@ -187,9 +187,9 @@ class VendorOfferNewAppraisalImport(models.Model):
                             (SELECT pp.id as product_id,pt.id as id,pt.list_price as 
                             list_price,pt.uom_id as uom_id, pt.name as name, pt.premium as
                             premium, pt.tier as tier, 
-                            UPPER(regexp_replace(manufacturer_pref , '[^A-Za-z0-9.]', '','g')) 
+                            UPPER(regexp_replace(manufacturer_pref , '[^A-Za-z0-9.-]', '','g')) 
                             as manufacturer_pref, 
-                            UPPER(regexp_replace(sku_code , '[^A-Za-z0-9.]', '','g'))
+                            UPPER(regexp_replace(sku_code , '[^A-Za-z0-9.-]', '','g'))
                             as sku_code_cleaned 
                             FROM product_template as pt join product_product as pp on 
                             pt.id=pp.product_tmpl_id where pt.active=true) 
@@ -199,16 +199,16 @@ class VendorOfferNewAppraisalImport(models.Model):
                         """
 
         sql_query = query_string % (
-        ','.join(["'" + re.sub(r'[^A-Za-z0-9.]', '', code) + "'" for code in prod_sku_set_with_config]),
-        ','.join(["'" + re.sub(r'[^A-Za-z0-9.]', '', code) + "'" for code in prod_sku_set_upper]))
+        ','.join(["'" + re.sub(r'[^A-Za-z0-9.-]', '', code) + "'" for code in prod_sku_set_with_config]),
+        ','.join(["'" + re.sub(r'[^A-Za-z0-9.-]', '', code) + "'" for code in prod_sku_set_upper]))
 
         self.env.cr.execute(sql_query)
         products_query_result = self.env.cr.dictfetchall() or [{}]
 
         prod_sku_set_upper_M00 = set([code[4:-1] for code in prod_sku_list_upper if code.startswith("M00")])
         if prod_sku_set_upper_M00:
-            sql_query = query_string % (','.join(["'" + re.sub(r'[^A-Za-z0-9.]', '', code) + "'" for code in prod_sku_set_upper_M00]),
-                                        ','.join(["'" + re.sub(r'[^A-Za-z0-9.]', '', code) + "'" for code in prod_sku_set_upper]))
+            sql_query = query_string % (','.join(["'" + re.sub(r'[^A-Za-z0-9.-]', '', code) + "'" for code in prod_sku_set_upper_M00]),
+                                        ','.join(["'" + re.sub(r'[^A-Za-z0-9.-]', '', code) + "'" for code in prod_sku_set_upper]))
             self.env.cr.execute(sql_query)
             products_query_result.extend(self.env.cr.dictfetchall() or [{}])
 
@@ -247,7 +247,7 @@ class VendorOfferNewAppraisalImport(models.Model):
                         excel_data_rows = VendorOfferNewAppraisalImport._read_xls_book(book, pricing_index, 1, read_data=True, expiration_date_index=expiration_date_index)
                         for excel_data_row in excel_data_rows:
                             original_sku = excel_data_row[sku_index]
-                            original_sku_cleaned = re.sub(r'[^A-Za-z0-9.]', '', original_sku)
+                            original_sku_cleaned = re.sub(r'[^A-Za-z0-9.-]', '', original_sku)
                             product_sku = original_sku
                             sku_code_clean_upper =  original_sku_cleaned.upper()
                             quantity = 1
