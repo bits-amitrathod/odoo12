@@ -654,48 +654,50 @@
             </field>
         </record>
 
-      <record id="view_vendor_offer_form_inherited" model="ir.ui.view">
-            <field name="name">purchase.order.form.inherited</field>
-            <field name="model">purchase.order</field>
-            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form_main"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='notes_activity']" position="replace">
-                    <field name="notes_activity">
-                       <tree editable="bottom">
-                            <field name="note"/>
-                            <field name="note_date"/>
-                        </tree>
-                    </field>
-                </xpath>
-            </field>
-      </record>
-     <record id="view_purchase_order_filter_inherit" model="ir.ui.view">
-            <field name="name">purchase.order.search.inherit</field>
-            <field name="model">purchase.order</field>
-            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>
-            <field name="arch" type="xml">
-                 <xpath expr="//filter[@name='starred']" position="after">
-                     <separator/>
-                    <filter name="unconfirmed" string="Not Acknowledged" domain="[('mail_reception_confirmed', '=', False), ('state', '=', 'purchase')]"/>
-                    <filter name="not_invoiced" string="Waiting Bills" domain="[('invoice_status', '=', 'to invoice')]" help="Purchase orders that include lines not invoiced."/>
-                    <filter name="invoiced" string="Bills Received" domain="[('invoice_status', '=', 'invoiced')]" help="Purchase orders that have been invoiced."/>
-                     <separator/>
-                </xpath>
-                <xpath expr="//filter[@name='my_purchases']" position="replace">
-                    <filter name="my_Orders" string="My Orders" domain="[('user_id', '=', uid)]"/>
-                </xpath>
-                <xpath expr="//filter[@name='draft']" position="replace"/>
-                <xpath expr="//filter[@name='approved']" position="replace"/>
-                <xpath expr="//filter[@name='to_approve']" position="replace"/>
-                <xpath expr="//filter[@name='draft_rfqs']" position="replace"/>
-                <xpath expr="//filter[@name='waiting_rfqs']" position="replace"/>
-                <xpath expr="//filter[@name='late_rfqs']" position="replace"/>
-                <xpath expr="//filter[@name='activities_overdue']" position="replace"/>
-                <xpath expr="//filter[@name='activities_today']" position="replace"/>
-                <xpath expr="//filter[@name='activities_upcoming_all']" position="replace"/>
-                <xpath expr="//filter[@name='requisition']" position="replace"/>
-            </field>
-     </record>
+
+
+<!--      <record id="view_vendor_offer_form_inherited" model="ir.ui.view">-->
+<!--            <field name="name">purchase.order.form.inherited</field>-->
+<!--            <field name="model">purchase.order</field>-->
+<!--            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form_main"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='notes_activity']" position="replace">-->
+<!--                    <field name="notes_activity">-->
+<!--                       <tree editable="bottom">-->
+<!--                            <field name="note"/>-->
+<!--                            <field name="note_date"/>-->
+<!--                        </tree>-->
+<!--                    </field>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--      </record>-->
+<!--     <record id="view_purchase_order_filter_inherit" model="ir.ui.view">-->
+<!--            <field name="name">purchase.order.search.inherit</field>-->
+<!--            <field name="model">purchase.order</field>-->
+<!--            <field name="inherit_id" ref="purchase.view_purchase_order_filter"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                 <xpath expr="//filter[@name='starred']" position="after">-->
+<!--                     <separator/>-->
+<!--                    <filter name="unconfirmed" string="Not Acknowledged" domain="[('mail_reception_confirmed', '=', False), ('state', '=', 'purchase')]"/>-->
+<!--                    <filter name="not_invoiced" string="Waiting Bills" domain="[('invoice_status', '=', 'to invoice')]" help="Purchase orders that include lines not invoiced."/>-->
+<!--                    <filter name="invoiced" string="Bills Received" domain="[('invoice_status', '=', 'invoiced')]" help="Purchase orders that have been invoiced."/>-->
+<!--                     <separator/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//filter[@name='my_purchases']" position="replace">-->
+<!--                    <filter name="my_Orders" string="My Orders" domain="[('user_id', '=', uid)]"/>-->
+<!--                </xpath>-->
+<!--                <xpath expr="//filter[@name='draft']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='approved']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='to_approve']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='draft_rfqs']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='waiting_rfqs']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='late_rfqs']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='activities_overdue']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='activities_today']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='activities_upcoming_all']" position="replace"/>-->
+<!--                <xpath expr="//filter[@name='requisition']" position="replace"/>-->
+<!--            </field>-->
+<!--     </record>-->
 
     </data>
 </odoo>
