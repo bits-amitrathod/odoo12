@@ -8,9 +8,9 @@
             <field name="priority">4</field>
             <field name="inherit_id" ref="sale.sale_order_view_search_inherit_quotation"/>
             <field name="arch" type="xml">
-                <xpath expr="/search/group/filter[@name='salesperson']" position="replace">
-		            <filter string="Business Development" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>
-		        </xpath>
+<!--                <xpath expr="/search/group/filter[@name='salesperson']" position="replace">-->
+<!--		            <filter string="Business Development" name="user_id" domain="[]" context="{'group_by':'user_id'}"/>-->
+<!--		        </xpath>-->
                 <xpath expr="/search/group/filter[@name='order_month']" position="after">
                     <filter name="account_manager" string="Key Account" domain="[]" context="{'group_by':'account_manager'}"/>
                     <filter name="national_account" string="National Account" domain="[]" context="{'group_by':'national_account'}"/>
