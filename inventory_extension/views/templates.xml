@@ -14,37 +14,50 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <data>
+                    <!--Rename the set quantity button as Mark all done -->
+                    <xpath expr="//button[@name='action_set_quantities_to_reservation']" position="attributes">
+                        <attribute name="string">
+                            Mark all Done
+                        </attribute>
+                    </xpath>
 
-                    <xpath expr="/form/header/button[last()]" position="after">
+
+                    <!-- As per client requirement client want to remove MARK ALL DONE button and Renamed SET QUANTITY button as Mark all button -->
+
+                    <!--  <xpath expr="/form/header/button[last()]" position="after">
                         <field name="is_mark_all_button_visible" invisible="1"/>
                         <button name="action_button_mark_all_done"
                                 attrs="{'invisible': [('is_mark_all_button_visible', '=', False)]}"
                                 type="object"
                                 string="Mark All Done" id="warn_btn"/>
-                    </xpath>
-
-                    <!-- Remove the original 'Validate' button -->
-                    <xpath expr="//header/button[@name='button_validate']" position="replace"/>
-
-                    <!-- changed position of Validate button after Mark all done button in PICK-->
-                    <xpath expr="//header/button[@name='action_button_mark_all_done']" position="after">
-                        <button name="button_validate"
-                                attrs="{'invisible': ['|', ('state', 'in', ('waiting','confirmed')), ('show_validate', '=', False)]}"
-                                string="Validate" type="object" class="oe_highlight" groups="stock.group_stock_user"
-                                data-hotkey="v"/>
-                    </xpath>
+                    </xpath>-->
 
 
-                    <!-- Remove the original 'Validate' button -->
-                    <xpath expr="//header/button[@name='button_validate']" position="replace"/>
+                    <!-- Rearrange Validate button at first and revert back changes -->
+                    <!--
+                                        &lt;!&ndash; Remove the original 'Validate' button &ndash;&gt;
+                                        <xpath expr="//header/button[@name='button_validate']" position="replace"/>
 
-                    <!-- changed position of Validate button after Mark all done button in PULL and OUT-->
-                    <xpath expr="//header/button[@name='action_button_mark_all_done']" position="after">
-                        <button name="button_validate"
-                                attrs="{'invisible': ['|', ('state', 'not in', ('waiting', 'confirmed')), ('show_validate', '=', False)]}"
-                                string="Validate" type="object" groups="stock.group_stock_user"
-                                class="o_btn_validate" data-hotkey="v"/>
-                    </xpath>
+                                        &lt;!&ndash; changed position of Validate button after Mark all done button in PICK&ndash;&gt;
+                                        <xpath expr="//header/button[@name='action_button_mark_all_done']" position="after">
+                                            <button name="button_validate"
+                                                    attrs="{'invisible': ['|', ('state', 'in', ('waiting','confirmed')), ('show_validate', '=', False)]}"
+                                                    string="Validate" type="object" class="oe_highlight" groups="stock.group_stock_user"
+                                                    data-hotkey="v"/>
+                                        </xpath>
+
+
+                                        &lt;!&ndash; Remove the original 'Validate' button &ndash;&gt;
+                                        <xpath expr="//header/button[@name='button_validate']" position="replace"/>
+
+                                        &lt;!&ndash; changed position of Validate button after Mark all done button in PULL and OUT&ndash;&gt;
+                                        <xpath expr="//header/button[@name='action_button_mark_all_done']" position="after">
+                                            <button name="button_validate"
+                                                    attrs="{'invisible': ['|', ('state', 'not in', ('waiting', 'confirmed')), ('show_validate', '=', False)]}"
+                                                    string="Validate" type="object" groups="stock.group_stock_user"
+                                                    class="o_btn_validate" data-hotkey="v"/>
+                                        </xpath>
+                    -->
 
 
                     <xpath expr="/form/sheet/group/group/field[@name='partner_id']" position="after">
