@@ -319,7 +319,7 @@
         </record>
 
         <record id="vendor_offer.action_window_app" model="ir.actions.act_window">
-            <field name="name">Requests for Vendor Offer New</field>
+            <field name="name">Requests for Vendor Offer</field>
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
             <field name="domain">[('state','in',('ven_draft','ven_sent'))]</field>
