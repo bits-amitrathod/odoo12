@@ -6,7 +6,7 @@
             <field name="name">Email Notification: Product Purchase Details</field>
             <field name="model_id" ref="website_sale.model_sale_order"/>
             <field name="email_to">{{object.user_id.login}</field>
-            <field name="email_cc">{{('info@surgicalproductsolutions.com' | safe)}}</field>
+            <field name="email_cc">{{'info@surgicalproductsolutions.com'}}</field>
             <field name="subject">Please find the sales order that was placed online at shopsps.com from {{object.partner_id.name}}.</field>
             <field name="body_html" type="html">
                 <link href="css/bootstrap.min.css" rel="stylesheet"/>
@@ -33,8 +33,8 @@
                             </tr>
                         </thead>
                         <tbody>
-                             <t t-foreach="object.order_line" t-as=" product">
-                                 <tr style='border: 1px solid black;background-color: ${product.background_color};line-height:25px'>
+                             <t t-foreach="object.order_line" t-as="product">
+                                 <tr style='border: 1px solid black;background-color: {{product.background_color}};line-height:25px'>
                                          <!--<td align="center">${product.order_id.name}</td>-->
                                          <t t-if="product.product_id.product_tmpl_id.default_code == False">
                                               <td><span></span></td>
@@ -102,7 +102,7 @@
                                     <strong>Bill to:</strong>
                                     <t t-out="object.partner_invoice_id.street or ''"/>
                                     <t t-out="object.partner_invoice_id.city or ''"/>
-                                    <t t-out="partner_invoice_id.state_id.name or ''"/>
+                                    <t t-out="object.partner_invoice_id.state_id.name or ''"/>
                                     <t t-out="object.partner_invoice_id.zip or ''"/>
                                     <t t-out="object.partner_invoice_id.country_id.name or ''"/>
                                 </td>
@@ -110,13 +110,13 @@
                             <tr>
                                 <td>
                                     <strong>Payment Method:</strong>
-                                    <t t-if="transaction.payment_token_id">
-                                         <t t-out="transaction.payment_token_id.name"/>
+                                    <t t-if="transaction.token_id">
+                                        <t t-out="transaction.token_id.display_name or ''"></t>
                                     </t>
                                     <t t-else="">
-                                        <t t-out="transaction.acquirer_id.name"/>
+                                        <t t-out="transaction.provider_id.sudo().name or ''"></t>
                                     </t>
-                                    (<t t-out="format_amount(transaction.amount, object.currency_id)"/>)
+                                    (<t t-out="format_amount(transaction.amount, object.currency_id) or ''"/>)
                                 </td>
                             </tr>
                         </table>
