@@ -6,7 +6,10 @@
             <field name="model">on_hand_by_expiry</field>
             <field name="report_type">qweb-html</field>
             <field name="report_name">on_hand_by_expiry.templ</field>
+            <field name="binding_model_id" ref="model_on_hand_by_expiry"/>
+            <field name="binding_type">report</field>
             <field name="report_file">on_hand_by_expiry.templ</field>
         </record>
+
     </data>
 </odoo>
