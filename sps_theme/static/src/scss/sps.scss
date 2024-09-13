@@ -112,3 +112,19 @@ td{
 .o_notebook .o_notebook_headers{
     overflow-x: visible !important;
 }
+
+//override css of sales order line table
+.o_section_and_note_list_view{
+    table-layout:auto !important;
+    }
+
+
+// written this class to add custom css for product column in order line and invoices
+.custom-column-width span {
+    display:inline-flex !important;
+    min-width:170px !important;
+    white-space:normal !important;
+    }
+
+
+
