@@ -654,21 +654,23 @@
             </field>
         </record>
 
-      <record id="view_vendor_offer_form_inherited" model="ir.ui.view">
-            <field name="name">purchase.order.form.inherited</field>
-            <field name="model">purchase.order</field>
-            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form_main"/>
-            <field name="arch" type="xml">
-                <xpath expr="//field[@name='notes_activity']" position="replace">
-                    <field name="notes_activity">
-                       <tree editable="bottom">
-                            <field name="note"/>
-                            <field name="note_date"/>
-                        </tree>
-                    </field>
-                </xpath>
-            </field>
-      </record>
+
+
+<!--      <record id="view_vendor_offer_form_inherited" model="ir.ui.view">-->
+<!--            <field name="name">purchase.order.form.inherited</field>-->
+<!--            <field name="model">purchase.order</field>-->
+<!--            <field name="inherit_id" ref="vendor_offer.view_vendor_offer_form_main"/>-->
+<!--            <field name="arch" type="xml">-->
+<!--                <xpath expr="//field[@name='notes_activity']" position="replace">-->
+<!--                    <field name="notes_activity">-->
+<!--                       <tree editable="bottom">-->
+<!--                            <field name="note"/>-->
+<!--                            <field name="note_date"/>-->
+<!--                        </tree>-->
+<!--                    </field>-->
+<!--                </xpath>-->
+<!--            </field>-->
+<!--      </record>-->
      <record id="view_purchase_order_filter_inherit" model="ir.ui.view">
             <field name="name">purchase.order.search.inherit</field>
             <field name="model">purchase.order</field>

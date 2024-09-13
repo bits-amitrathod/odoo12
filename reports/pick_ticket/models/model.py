@@ -4,7 +4,7 @@ import odoo.addons.decimal_precision as dp
 class PickTicketReport(models.Model):
     _name = "report.pick.ticket"
     _description = "PickTicketReport"
-    _auto = False
+    # _auto = False
 
     _inherits = {'stock.picking': 'picking_id'}
 
