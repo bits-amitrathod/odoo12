@@ -13,6 +13,11 @@
                     <xpath expr="//field[@name='product_template_id']" position="move"/>
                 </xpath>
 
+                <!-- Added custom class custom-column-width to adjust content in product name td -->
+                <xpath expr="//field[@name='product_template_id']" position="attributes">
+                        <attribute name="class">custom-column-width</attribute>
+                </xpath>
+
             </field>
         </record>
 
