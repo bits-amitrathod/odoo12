@@ -18,6 +18,11 @@
                         <attribute name="class">custom-column-width</attribute>
                 </xpath>
 
+              <!-- Added custom class custom-column-width to adjust content in product variant td -->
+                <xpath expr="//tree/field[@name='product_id']" position="attributes">
+                        <attribute name="class">custom-column-width</attribute>
+                </xpath>
+
             </field>
         </record>
 
