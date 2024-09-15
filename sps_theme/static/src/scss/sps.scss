@@ -117,3 +117,14 @@ td{
 .o_section_and_note_list_view{
     table-layout:auto !important;
     }
+
+
+// written this class to add custom css for product column in order line and invoices
+.custom-column-width span {
+    display:inline-flex !important;
+    min-width:170px !important;
+    white-space:normal !important;
+    }
+
+
+
