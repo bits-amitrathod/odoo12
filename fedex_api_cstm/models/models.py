@@ -207,10 +207,6 @@ class FedexDelivery(models.Model):
             superself = self.sudo()
             srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
             srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
-
-            # srm.web_authentication_detail('hFceAv3XJUumwZaS', 'jQDWagVknWD3OZIe3jn9vdtab')
-            # srm.client_detail(339923531, 114470940)
-
             srm.set_version('trck', 16, 0, 0)
             srm.set_tracking_umber(tracking_number)
             logmessage = srm.process_track_request()
