@@ -39,7 +39,6 @@ class MailActivityNotesCustom(models.Model):
 
     reference = fields.Reference(string='Related Document',
                                  selection='_reference_models',
-                                 default='res.partner,1',  # Correct format with model and ID
                                   )
 
     email = fields.Char(related="related_partner_activity.email", readonly=True, store=False)
@@ -82,14 +81,18 @@ class MailActivityNotesCustom(models.Model):
     # While creating activity for particular user it should show that user selected automatically in account field.
     # Set default customer for who we are creating activity
     # set default value if no customer is selected
+
     @api.model
     def default_get(self, fields_list):
         res = super(MailActivityNotesCustom, self).default_get(fields_list)
         if 'res_id' in res and res.get('res_model') == 'res.partner':
             res['reference'] = 'res.partner,%s' % res['res_id']
         else:
-            res['reference'] = 'res.partner,1'
-
+            default_partner = self.env['res.partner'].search([], limit=1)
+            if default_partner:
+                res['reference'] = 'res.partner,%s' % default_partner.id
+            else:
+                res['reference'] = False
         return res
 
     @api.model
