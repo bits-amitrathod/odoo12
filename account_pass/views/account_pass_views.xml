@@ -49,7 +49,7 @@
 							<field name="saleforce_ac" readonly="1"/>
 							<field name="sales_rep" required="1"/>
 							<field name="reinstated_or_new" readonly="False" required="1"/>
-							<field name="customer_status" required="1"/>
+							<field name="customer_status" readonly="1"/>
 
 						</group>
                         <group>
@@ -80,14 +80,14 @@
 								<field name="is_vendors_purchased"/>
 								<field name="vendors_purchased_note" attrs="{'invisible': [('is_vendors_purchased', '=', False)]}"/>
 <!--								<field name="is_unique_codes" class="label_underline"/>-->
-								<label for="is_unique_codes"  style="border-bottom: 1px solid;"/>
+								<label for="is_unique_codes"  string="5 Unique Codes" class="label_underline"/>
 								  <div class="o_row">
 										<field name="is_unique_codes"  />
 									<label for="is_unique_codes" string=" "/>
 								  </div>
-								<field name="unique_codes_note" attrs="{'invisible': [('is_unique_codes', '=', False)]}"/>
+								<field name="unique_codes_note" string="5 Unique Codes" attrs="{'invisible': [('is_unique_codes', '=', False)]}"/>
 								<field name="is_purchase_history"/>
-								<field name="purchase_history_note"  attrs="{'invisible': [('is_purchase_history', '=', False)]}"/>
+								<field name="purchase_history_note"  attrs="{'invisible':    [('is_purchase_history', '=', False)]}"/>
 							</group>
 							<group>
 								<field name="is_integration"/>
@@ -99,14 +99,14 @@
 								<field name="is_code_in_top_20"/>
 								<field name="code_in_top_20_note"  attrs="{'invisible': [('is_code_in_top_20', '=', False)]}" />
 <!--								<field name="is_average_month" class="label_underline"/>-->
-								<label for="is_average_month"  style="border-bottom: 1px solid;"/>
+								<label for="is_average_month"  string="Ordered 4 Times" class="label_underline"/>
 								  <div class="o_row">
 										<field name="is_average_month"  />
 									<label for="is_average_month" string=" "/>
 								  </div>
-								<field name="average_month_note" attrs="{'invisible': [('is_average_month', '=', False)]}" />
+								<field name="average_month_note" string="Ordered 4 Times" attrs="{'invisible': [('is_average_month', '=', False)]}" />
 <!--								<field name="is_purchased" class="label_underline"/>-->
-								<label for="is_purchased"  style="border-bottom: 1px solid;"/>
+								<label for="is_purchased"  class="label_underline"/>
 								  <div class="o_row">
 										<field name="is_purchased"  />
 									<label for="is_purchased" string=" "/>
