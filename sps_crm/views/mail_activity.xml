@@ -34,7 +34,7 @@
                             </group>
                             <group name="parent_group">
                                 <group name="group_left">
-                                    <field name="activity_type_id" options="{'no_create': True}"/>
+                                    <field name="activity_type_id" required="1" options="{'no_create': True}"/>
                                     <field name="summary" string="Subject"/>
                                     <field name="activity_priority"/>
                                     <field name="email" widget="email"/>
@@ -169,7 +169,7 @@
                             </group>
                             <group name="parent_group">
                                 <group name="group_left">
-                                    <field name="activity_type_id" options="{'no_create': True}"/>
+                                    <field name="activity_type_id" required="1" options="{'no_create': True}"/>
                                     <field name="summary" string="Subject"/>
                                     <field name="activity_priority"/>
                                     <field name="email" widget="email"/>
@@ -207,7 +207,9 @@
                         </page>
 
                         <page name="dup_poc" string="Dup POC">
-                            <group> <field name="dup_poc_note"/></group>
+                            <group>
+                                <field name="dup_poc_note"/>
+                            </group>
                         </page>
 
                     </notebook>
@@ -224,7 +226,7 @@
                       default_order="date_deadline" create="false">
                     <field name="res_name"/>
                     <field name="related_partner_activity" string="Contact"></field>
-                    <field name="activity_type_id"/>
+                    <field name="activity_type_id" required="1"/>
                     <field name="user_id"/>
                     <field name="summary" string="Subject"/>
                     <field name="date_deadline"/>
@@ -254,6 +256,7 @@
                 <field name="request_partner_id" position="after">
                     <field name="time_zone"/>
                 </field>
+
                 <!-- Client want to Hide this Fields -->
                 <xpath expr="//form[1]/sheet[1]/group[1]/field[@name='reference']" position="attributes">
                     <attribute name="attrs">{}</attribute>
@@ -263,36 +266,38 @@
                     <attribute name="attrs">{}</attribute>
                     <attribute name="invisible">1</attribute>
                 </xpath>
+
             </field>
         </record>
 
- <record id="mail_activity_view_form_popup_duplicate" model="ir.ui.view">
-    <field name="name">mail.activity.view.form.popup.duplicate</field>
-    <field name="model">mail.activity</field>
-    <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
-    <field name="arch" type="xml">
-        <xpath expr="/form/sheet/footer" position="replace">
-            <footer>
-                <field name="id" invisible="1"/>
-                <button string="Schedule" name="action_close_dialog" type="object" class="btn-primary"
-                        attrs="{'invisible': [('id', '!=', False)]}"/>
-                <button string="Save" name="action_close_dialog" type="object" class="btn-primary"
-                        attrs="{'invisible': [('id', '=', False)]}"/>
-                <button string="Mark as Done" name="action_done"
-                        type="object" class="btn-secondary"
-                        context="{'mail_activity_quick_update': True}"/>
-                <button string="Done &amp; Duplicate" name="action_done_duplicate_act_popup" type="object"
-                        class="btn-secondary"/>
-                 <!-- Removed Done & Schedule Next button -->
-                <button string="Discard" class="btn-secondary" special="cancel"/>
-            </footer>
-        </xpath>
-            <!--  Correct placement of the new button in the header -->
-            <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="replace">
-                <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Duplicate" name="action_done_duplicate_act" type="object" class="btn-secondary"/>
-            </xpath>
-    </field>
-</record>
+        <record id="mail_activity_view_form_popup_duplicate" model="ir.ui.view">
+            <field name="name">mail.activity.view.form.popup.duplicate</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="mail.mail_activity_view_form_popup"/>
+            <field name="arch" type="xml">
+                <xpath expr="/form/sheet/footer" position="replace">
+                    <footer>
+                        <field name="id" invisible="1"/>
+                        <button string="Schedule" name="action_close_dialog" type="object" class="btn-primary"
+                                attrs="{'invisible': [('id', '!=', False)]}"/>
+                        <button string="Save" name="action_close_dialog" type="object" class="btn-primary"
+                                attrs="{'invisible': [('id', '=', False)]}"/>
+                        <button string="Mark as Done" name="action_done"
+                                type="object" class="btn-secondary"
+                                context="{'mail_activity_quick_update': True}"/>
+                        <button string="Done &amp; Duplicate" name="action_done_duplicate_act_popup" type="object"
+                                class="btn-secondary"/>
+                        <!-- Removed Done & Schedule Next button -->
+                        <button string="Discard" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </xpath>
+                <!--  Correct placement of the new button in the header -->
+                <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="replace">
+                    <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Duplicate"
+                            name="action_done_duplicate_act" type="object" class="btn-secondary"/>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
 
