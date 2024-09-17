@@ -88,3 +88,17 @@ class CustomerContract(models.Model):
             self.property_payment_term_id = account_payment_term.id
             self.property_supplier_payment_term_id = account_payment_term.id
         return super(CustomerContract, self).onchange_parent_id()
+
+    def action_view_partner_invoices(self):
+        """Override the method to filter invoices and apply 'Open' as the default filter"""
+        action = super(CustomerContract, self).action_view_partner_invoices()
+        all_child = self.with_context(active_test=False).search([('id', 'child_of', self.ids)])
+        action['domain'] = [
+            ('move_type', 'in', ('out_invoice', 'out_refund')),
+            ('partner_id', 'in', all_child.ids)
+        ]
+        action['context'].update({
+            'search_default_open': 1
+        })
+
+        return action
