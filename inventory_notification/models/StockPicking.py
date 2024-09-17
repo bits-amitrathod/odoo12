@@ -1,5 +1,6 @@
 from odoo import models, api,_
 import logging
+SUPERUSER_ID_INFO = 2
 
 _logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class StockPicking(models.Model):
                     if self.picking_type_id.name == 'Pick' and self.state == 'done':
                         # inv_notification.pick_notification_for_customer(self)
                         inv_notification.pick_notification_for_user(self)
+                        self.email_after_pick_validate()
                     elif self.picking_type_id.name == 'Pack' or self.picking_type_id.name == 'Pull' and self.state == 'done':
                         inv_notification.pull_notification_for_user(self)
                     elif self.picking_type_id.name == 'Delivery Orders' and self.state == 'done':
@@ -75,5 +77,6 @@ class StockPicking(models.Model):
                                'subject': 'Pick Done Internal',
                                'facility_name': self.sale_id.partner_id.display_name,
                                'so_name': self.sale_id.name,
-                               'access_url': base_url}
+                               'access_url': base_url
+                               }
                     template.with_context(context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)

@@ -19,6 +19,7 @@
          'security/ir.model.access.csv',
          'views/inventory_notification_cron.xml',
          'views/inventory_notification_print_report.xml',
+         'views/inventory_packing_list_notification.xml',
          'data/notification_mail_template.xml',
          'views/templates.xml',
     ],
