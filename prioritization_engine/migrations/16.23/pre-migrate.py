@@ -63,7 +63,7 @@ def migrate(cr, version):
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'vendor.offer.purchase.order.form.main';""")
     cr.execute("""UPDATE ir_ui_view SET active=true where name ilike 'purchase.order.form.vendor.offer.inherit_3';""")
     # cr.execute("""UPDATE ir_ui_menu SET sequence = 97 WHERE name->>'en_US' ilike 'Reporting' and parent_id in (SELECT id FROM ir_ui_menu WHERE name->>'en_US' ilike 'Purchase' and parent_id is null);""")
-
+    cr.execute("""UPDATE purchase_requisition_type set active=true WHERE name ->> 'en_US' ilike 'Purchase Tender'""")
 
     # client wants to remove this stage ref shared DOC
     cr.execute("""DELETE FROM crm_stage WHERE name->>'en_US' IN ('Qualified', 'Proposition', 'Won');""")

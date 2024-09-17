@@ -36,7 +36,7 @@ class PaymentTransaction(models.Model):
             'command': 'PURCHASE',
             'amount': str(converted_amount),
             'currency': self.currency_id.name,
-            'language': self.partner_lang[:2],
+            'language': self.partner_lang[:2] if self.partner_lang else 'en_US',
             'customer_email': self.partner_id.email_normalized,
             'return_url': urls.url_join(base_url, '/shop'),
             'api_url': self.provider_id._purchaseorder_get_api_url(),
