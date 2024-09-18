@@ -80,71 +80,71 @@ class ReceivingListPoReport(models.Model):
         #     [('id', '=', 7499)])
         # _logger.info("id :%r", purchase)
         select_query = """
-                SELECT
-                    ROW_NUMBER () OVER (ORDER BY stock_move_line.id) as id, 
-                    purchase_order_line.order_id,
-                    purchase_order.partner_id,
-                    stock_warehouse.id as warehouse_id,
-                    stock_picking.state,
-                    stock_picking.picking_type_id,
-                    stock_picking.date_done,
-                    stock_picking.name as picking_name,
-                    product_product.product_tmpl_id,
-                    stock_picking.location_dest_id,
-                    stock_move_line.reserved_qty,
-                    stock_move_line.qty_done,
-                    stock_move_line.product_uom_id
-                FROM
-                    purchase_order_line
-                INNER JOIN
-                    purchase_order
-                ON
-                    (
-                        purchase_order_line.order_id = purchase_order.id)
-                INNER JOIN
-                    product_product
-                ON
-                    (
-                        purchase_order_line.product_id = product_product.id)
-                INNER JOIN
-                    stock_move
-                ON
-                    (
-                        purchase_order_line.id = stock_move.purchase_line_id)
-                INNER JOIN
-                    stock_move_line
-                ON
-                    (
-                        stock_move.id = stock_move_line.move_id)
-                INNER JOIN
-                    stock_picking
-                ON
-                    (
-                        stock_move_line.picking_id = stock_picking.id)
-                INNER JOIN
-                    stock_picking_type
-                ON
-                    (
-                        stock_picking.picking_type_id = stock_picking_type.id)
-                INNER JOIN
-                    stock_location
-                ON
-                    (
-                        stock_picking.location_dest_id = stock_location.id)
-                INNER JOIN
-                    stock_warehouse
-                ON
-                    (
-                        stock_location.id = stock_warehouse.lot_stock_id)
-                INNER JOIN
-                    product_template
-                ON
-                    (
-                        product_product.product_tmpl_id = product_template.id)
-                WHERE
-                    stock_picking_type.code = 'incoming'
-                AND stock_picking.state in ('assigned','done')
-        """
+                 SELECT
+                     ROW_NUMBER () OVER (ORDER BY stock_move_line.id) as id, 
+                     purchase_order_line.order_id,
+                     purchase_order.partner_id,
+                     stock_warehouse.id as warehouse_id,
+                     stock_picking.state,
+                     stock_picking.picking_type_id,
+                     stock_picking.date_done,
+                     stock_picking.name as picking_name,
+                     product_product.product_tmpl_id,
+                     stock_picking.location_dest_id,
+                     stock_move_line.reserved_uom_qty AS product_uom_qty,
+                     stock_move_line.qty_done,
+                     stock_move_line.product_uom_id
+                 FROM
+                     purchase_order_line
+                 INNER JOIN
+                     purchase_order
+                 ON
+                     (
+                         purchase_order_line.order_id = purchase_order.id)
+                 INNER JOIN
+                     product_product
+                 ON
+                     (
+                         purchase_order_line.product_id = product_product.id)
+                 INNER JOIN
+                     stock_move
+                 ON
+                     (
+                         purchase_order_line.id = stock_move.purchase_line_id)
+                 INNER JOIN
+                     stock_move_line
+                 ON
+                     (
+                         stock_move.id = stock_move_line.move_id)
+                 INNER JOIN
+                     stock_picking
+                 ON
+                     (
+                         stock_move_line.picking_id = stock_picking.id)
+                 INNER JOIN
+                     stock_picking_type
+                 ON
+                     (
+                         stock_picking.picking_type_id = stock_picking_type.id)
+                 INNER JOIN
+                     stock_location
+                 ON
+                     (
+                         stock_picking.location_dest_id = stock_location.id)
+                 INNER JOIN
+                     stock_warehouse
+                 ON
+                     (
+                         stock_location.id = stock_warehouse.lot_stock_id)
+                 INNER JOIN
+                     product_template
+                 ON
+                     (
+                         product_product.product_tmpl_id = product_template.id)
+                 WHERE
+                     stock_picking_type.code = 'incoming'
+                 AND stock_picking.state in ('assigned','done')
+         """
 
         sql_query = "CREATE VIEW " + self._name.replace(".", "_") + " AS ( " + select_query + " )"
         self._cr.execute(sql_query)
@@ -196,7 +196,7 @@ class ReceivingListReport(models.Model):
                     stock_picking.date_done,
                     product_product.product_tmpl_id,
                     stock_picking.location_dest_id,
-                    stock_move_line.reserved_qty,
+                    stock_move_line.reserved_uom_qty AS product_uom_qty,
                     stock_move_line.qty_done,
                     stock_move_line.product_uom_id
                 FROM
