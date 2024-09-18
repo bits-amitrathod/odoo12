@@ -149,7 +149,10 @@ class sale_order(models.Model):
                     stock_picking.write({'carrier_id': self.carrier_id.id})
 
         # if 'sale_note' in val or self.sale_note:
-        if self.sale_note and self.team_id.team_type != 'engine':
+        # if self.sale_note and self.team_id.team_type != 'engine':
+
+        # sale Note notification would be add in to Pick,Pull,Out
+        if self.sale_note and 'sale_note' in val and self.team_id.team_type != 'engine':
             body = self.sale_note
             for stk_picking in self.picking_ids:
                 stock_picking_val = {
