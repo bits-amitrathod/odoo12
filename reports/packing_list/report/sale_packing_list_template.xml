@@ -96,9 +96,9 @@
                                                     <th>
                                                         Package Count
                                                     </th>
-                                                    <th>
+                                                   <!-- <th>
                                                         Req. Ship Date
-                                                    </th>
+                                                    </th>-->
                                                     <th>
                                                         Date Shipped
                                                     </th>
@@ -121,11 +121,11 @@
                                                         </p>
                                                     </td>
 
-                                                    <td>
+                                                    <!--<td>
                                                         <p style="font-weight: 400">
                                                             <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
                                                         </p>
-                                                    </td>
+                                                    </td>-->
                                                     <td>
                                                         <p style="font-weight: 400">
                                                             <span t-esc="packing_list.shipping_terms"></span>
