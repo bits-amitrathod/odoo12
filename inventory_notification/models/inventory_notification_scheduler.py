@@ -274,15 +274,11 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Shipment Done For Purchase Order # " + picking.purchase_id.name,
-            # 'description': "Hi acquisitions Team, <br/><br/> ",
-            # 'description': "Hi Acquisitions Team, <br/><br/> " +
-            #                "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" + table_data,
             'description': Markup("Hi Acquisitions Team, <br/><br/> " +
                            "<div style='text-align: center;width: 100%;'><strong>The Shipment has been completed!</strong></div><br/>" +
                            "<strong> Please proceed  Purchase Order : </strong>" + sale_order_ref.name + "<br/>" +
                            "<strong> Date : </strong>" + (str(datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
-                           "<br/><strong> Vendor Name :  </strong>" + (
-                                       sale_order_ref.partner_id.name or "") + "<br/>" + table_data),
+                           "<br/><strong> Vendor Name :  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" + table_data),
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Qty Put In Lot',
                        'Quantity Done', 'Status'],
@@ -1124,10 +1120,9 @@ class InventoryNotificationScheduler(models.TransientModel):
 
                     docids = self.env['sale.packing_list_popup'].get_packing_report(picking.sale_id)
                     data = None
-                    pdf = self.env.ref('packing_list.action_report_inventory_packing_list_pdf').sudo()._render_qweb_pdf(
-                        docids,
-                        data=data)[
-                        0]
+                    report_ref = 'packing_list.action_report_inventory_packing_list_pdf'
+                    pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(
+                        report_ref, res_ids=docids, data=data)[0]
                     values1 = {}
                     values1['attachment_ids'] = [(0, 0, {'name': 'Packing_List_' + (picking.origin) + '.pdf',
                                                          'type': 'binary',
@@ -1482,10 +1477,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'email_to': email, 'subject': vals['subject'],
                          'descrption': vals['description'], 'closing_content': vals['closing_content']}
 
-        # UPG_ODOO16_NOTE below commented code is not in use ...................
-        # html_file = self.env['inventory.notification.html'].search([])
-        # finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'], vals['headers'], vals['coln_name'])
-
         try:
             if email:
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
@@ -1498,11 +1489,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 if not picking is None:
                     docids = self.env['stock.move.line'].search([('picking_id', '=', picking.id), ]).ids
                     data = None
-                    pdf = \
-                        self.env.ref('sps_receiving_list_report.action_sps_receiving_list_report')._render_qweb_pdf(
-                            docids,
-                            data=data)[
-                            0]
+                    report_ref = 'sps_receiving_list_report.action_sps_receiving_list_report'
+                    pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(report_ref, res_ids=docids, data=data)[0]
                     values1 = {}
                     values1['attachment_ids'] = [(0, 0, {'name': 'Receiving_List_' + (picking.origin) + '.pdf',
                                                          'type': 'binary',
@@ -1527,8 +1515,8 @@ class InventoryNotificationScheduler(models.TransientModel):
         local_context = {'email_from': super_user_email,
                          'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.appraisal_email,
                          'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name,
-                         'descrption': Markup('Hi Team, <br/><br/> Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' +
-                                              (' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else ".")),
+                         'descrption': 'Hi Team, <br/><br/> Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' +
+                                              (' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "."),
                          'closing_content': "Admin Team"}
         try:
             ship_label = None;
@@ -1539,7 +1527,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                      ('name', 'like', '%FedEx_Label%')], order="id desc")[0]
 
             data = None
-            pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted')._render_qweb_pdf(purchase_order_id, data=data)[0]
+            report_ref =  'vendor_offer.action_report_vendor_offer_accepted'
+            pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(report_ref, res_ids=purchase_order_id,data=data)[0]
             values1 = {}
             values1['attachment_ids'] = [(0, 0, {'name': 'Vendor_Offer_' + (purchase_order.name) + '.pdf',
                                                  'type': 'binary',
@@ -1548,8 +1537,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                  'datas': base64.b64encode(pdf)})
                                          ]
 
-            local_context['descrption'] = local_context[
-                                              'descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>'
+            local_context['descrption'] = Markup(local_context['descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>')
+
             if ship_label is not None:
                 values1['attachment_ids'].append(
                     (0, 0, {'name': ship_label.name,
@@ -1565,9 +1554,9 @@ class InventoryNotificationScheduler(models.TransientModel):
             template_id = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
             self.env['mail.mail'].sudo().browse(template_id).write(values1)
 
-        except:
+        except Exception as error:
             error_msg = "mail sending fail for email id: %r" + super_user_email + " sending error report to admin"
-            _logger.info(error_msg)
+            _logger.info(error_msg + str(error))
 
     @staticmethod
     def string_to_date(date_string):
