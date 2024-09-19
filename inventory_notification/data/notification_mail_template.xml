@@ -272,7 +272,7 @@
         <field name="email_to">{{ ctx['email_to'] }}</field>
         <field name="subject">{{ ctx['subject'] }}</field>
         <field name="body_html" type="html">
-            <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
+            <div style="margin:auto;width:100%;background-color:  #ffffff;">
                 <div>
                     <div>
                         <p><t t-esc="ctx['descrption']"/></p>
