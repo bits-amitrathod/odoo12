@@ -120,12 +120,11 @@
                                                             <span t-esc="len(packing_list.package_ids)"></span>
                                                         </p>
                                                     </td>
-
-                                                    <!--<td>
+                                                    <td>
                                                         <p style="font-weight: 400">
                                                             <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
                                                         </p>
-                                                    </td>-->
+                                                    </td>
                                                     <td>
                                                         <p style="font-weight: 400">
                                                             <span t-esc="packing_list.shipping_terms"></span>

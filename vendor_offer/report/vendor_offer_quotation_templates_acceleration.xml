@@ -258,7 +258,7 @@
 
 <template id="vendor_offer.report_vendoroffernotitemized_document">
 
-    <t t-call="web.external_layout">
+   <t t-call="web.external_layout">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
          <h2 style="font-size:18px;" align="center"><strong>PURCHASE OFFER</strong></h2>
         <div class="page" style="margin-top:8px">
@@ -279,6 +279,8 @@
                          <span t-field="o.acq_manager_email" style="font-size:13px!important;"/>
                          <br/>
                          <span t-field="o.acq_manager_phone" style="font-size:13px!important;"/>
+                        <!--<div t-field="o.acq_manager_phone"  style="font-size:13px!important;"-->
+                            <!--t-options='{"widget": "contact", "fields": ["acq_manager_phone"], "no_marker": True, "phone_icons": True}'/>-->
                     </div>
                 </div>
                 <div class="col-6 col-lg-6 col-xs-6 col-xs-offset-1">
@@ -288,6 +290,7 @@
                 </div>
             </div>
             <h2 style="color:red;font-size:13px;" align="center"><strong>***CONFIDENTIAL***</strong></h2><hr/>
+            <!--<div style="display:flex">-->
                 <p style="margin: 3px 0; display:flex">
 
                <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
@@ -308,8 +311,14 @@
                      <span style="font-weight:600;font-size:13px !important;" t-field="o.cash_amount_total"/>
                      <span style="font-weight:600;font-size:13px!important;">Cash Back</span>
                </div>
+<!--                  <div t-if="not o.offer_type or  o.offer_type=='False'" >-->
+<!--                      <span style="font-weight:600;font-size:14px !important;">OFFER PRICE  : </span>-->
+<!--                     <span style="font-weight:600;font-size:14px !important;" t-field="o.cash_amount_total"/>-->
+<!--                     <span  style="font-weight:600;font-size:14px!important;">Cash Back</span>-->
+<!--               </div>-->
             </p>
 
+            <!--</div>-->
            <div><p style="margin: 3px 0;"><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>
             <div t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit' or not o.offer_type) and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>
             <div><p style="margin: 3px 0;font-size:13px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
@@ -317,6 +326,16 @@
               <div><p style="margin: 3px 0;font-size:13px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
               <div><p style="margin: 3px 0;font-size:13px;">Speedy Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div>
               <div><p style="margin: 3px 0;font-size:13px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div>
+
+            <!--<div><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
+                <!--<span t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit')"> <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</span>-->
+                <!--<span> Cash </span>-->
+                 <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
+                 <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
+                 <!--<span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>-->
+                <!--after completion of SPS quality control inspection</p></div>-->
+
+
 
               <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
                     <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
@@ -328,6 +347,8 @@
 
             <div t-if="o.offer_type =='cash'">
                  <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
+                 <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
+                 <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
                    <strong>Cash issued </strong><span t-field="o.cash_text_pdf"/>
                  <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:13px !important;">0 Days</span>
                  from completion of SPS Quality Control inspection.</p>
@@ -337,6 +358,29 @@
                   <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
                   <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</p>
               </div>
+
+                <!--<div t-if="o.offer_type =='cashcredit' or not o.offer_type"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
+                    <!--<strong>Credit issued immediately </strong> following completion of SPS Quality Control inspection. <strong>Cash issued</strong>-->
+                 <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
+                 <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
+                 <!--<span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>-->
+                    <!--from completion of SPS Quality Control inspection.</p></div>-->
+
+              <!--<div t-if="o.offer_type =='cash'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
+                    <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
+                 <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
+                 <!--<span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days</span>-->
+                   <!--from completion of SPS Quality Control inspection.</p></div>-->
+
+              <!--<div t-if="o.offer_type =='credit'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
+                  <!--<strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</p></div>-->
+
+<!--              <div t-if="not o.offer_type or  o.offer_type=='False'"><p style="margin: 5px 0;font-size:14px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>-->
+<!--                    <span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
+<!--                 <span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
+<!--                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" >0 Days </span>-->
+<!--                 after completion of SPS quality control inspection</p></div>-->
+
 
               <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL DISPOSABLES:</u> ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</strong></p></div>
               <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL EQUIPMENT:</u> OFFER IS BASED UPON SELLER’S LISTED CONDITION OF EQUIPMENT. </strong></p></div>
@@ -384,6 +428,8 @@
                         <th class="text-right"><strong>Qty</strong></th>
                         <th class="text-center"><strong>UOM</strong></th>
                         <th class="text-right"><strong>Offer</strong></th>
+                      <!--    <th class="text-right"><strong>Untaxed Offer</strong></th>
+                         <th class="text-right"><strong>Taxes</strong></th>-->
                          <th class="text-right"><strong>Total Offer</strong></th>
 
                     </tr>
@@ -399,9 +445,11 @@
                         </td>
                           <td class="text-center">
                             <span t-field="order_line.expiration_date_str"/>
+                              <!--<span t-field="order_line.expiration_date" t-options='{"widget": "date"}'/>-->
                         </td>
                         <td class="text-right">
                             <span t-field="order_line.product_qty"/>
+                          <!--  <span t-field="order_line.product_uom" groups="product.group_uom"/>-->
                         </td>
                         <td class="text-center">
                             <span t-field="order_line.uom_str"/>
@@ -409,84 +457,57 @@
                         <td class="text-right">
                             <span t-field="order_line.product_offer_price" widget="monetary"/>
                         </td>
-
+                    <!--    <td class="text-right">
+                            <span t-field="order_line.price_subtotal" />
+                        </td>
+                           <td class="text-right">
+                            <span t-field="order_line.price_tax" />
+                        </td>-->
                            <td class="text-right">
                             <span t-field="order_line.price_subtotal" widget="monetary"/>
                         </td>
                     </tr>
+<!--                      <tr t-if="not o.offer_type or  o.offer_type=='False'" >-->
+<!--                        <td></td> <td></td> <td></td> <td></td>-->
+<!--                        <td>Cash Amount Total</td> &lt;!&ndash;<td></td>    <td></td>&ndash;&gt;-->
+<!--                         <td class="text-right">-->
+<!--                              <span t-field="o.cash_amount_total" />-->
 
-                     <tr t-if="o.offer_type=='cash'" >
-                        <td></td> <td></td> <td></td> <td></td>
+<!--                         </td>-->
+<!--                    </tr>-->
+                     <tr t-if="o.offer_type=='cash'">
+                        <td/> <td/> <td/> <td/>
                         <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.cash_amount_total" />
+                              <span t-field="o.cash_amount_total"/>
 
                          </td>
                     </tr>
-                    <tr  t-if="o.offer_type=='credit' and o.credit_amount_qpq_flag == True " >
-                        <td></td> <td></td> <td></td> <td></td>
-                        <td>
-                            Credit Amount
-                        </td> <!--<td></td>    <td></td>-->
-                         <td class="text-right">
-                              <span t-field="o.credit_amount_untaxed_before_qpa" />
-
-                         </td>
-                    </tr>
-                    <tr  t-if="o.offer_type=='credit' and o.credit_amount_qpq_flag == True " >
-                        <td></td> <td></td> <td></td> <td></td>
-                        <td>
-                            Additional 3 %
-                        </td> <!--<td></td>    <td></td>-->
-                         <td class="text-right">
-                              <span t-field="o.credit_amount_qpq" />
-
-                         </td>
-                    </tr>
-                     <tr  t-if="o.offer_type=='credit'">
-                        <td></td> <td></td> <td></td> <td></td>
+                     <tr t-if="o.offer_type=='credit'">
+                        <td/> <td/> <td/> <td/>
                         <td>
                             Credit Amount Total
                         </td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.credit_amount_total" />
+                              <span t-field="o.credit_amount_total"/>
 
                          </td>
                     </tr>
-                    <tr  t-if="o.offer_type=='cashcredit' or not o.offer_type">
-                        <td></td> <td></td> <td></td> <td></td>
+                    <tr t-if="o.offer_type=='cashcredit' or not o.offer_type">
+                        <td/> <td/> <td/> <td/>
                         <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.cash_amount_total" />
+                              <span t-field="o.cash_amount_total"/>
 
                          </td>
                     </tr>
-                    <tr  t-if="(o.offer_type=='cashcredit' or not o.offer_type ) and o.credit_amount_qpq_flag == True">
-                        <td></td> <td></td> <td></td> <td></td>
-                        <td >
-                            Credit Amount
-                        </td> <!--<td></td>    <td></td>-->
-                         <td class="text-right" >
-                              <span t-field="o.credit_amount_untaxed_before_qpa" />
-                         </td>
-                    </tr>
-                    <tr  t-if="(o.offer_type=='cashcredit' or not o.offer_type) and o.credit_amount_qpq_flag == True">
-                        <td></td> <td></td> <td></td> <td></td>
-                        <td>
-                            Additional 3 %
-                        </td> <!--<td></td>    <td></td>-->
-                         <td class="text-right">
-                              <span t-field="o.credit_amount_qpq" />
-
-                         </td>
-                    </tr>
-                    <tr  t-if="o.offer_type=='cashcredit' or not o.offer_type">
-                        <td></td> <td></td> <td></td> <td></td>
+                    <tr t-if="o.offer_type=='cashcredit' or not o.offer_type">
+                        <td/> <td/> <td/> <td/>
                         <td>
                             Credit Amount Total
                         </td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.credit_amount_total" />
+                              <span t-field="o.credit_amount_total"/>
 
                          </td>
                     </tr>

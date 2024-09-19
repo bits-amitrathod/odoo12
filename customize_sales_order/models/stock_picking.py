@@ -25,7 +25,7 @@ class StockPicking(models.Model):
             }
             if self.state == "done":
                 self.note_readonly_flag = 1
-                self.add_note_in_log_section()
+                # self.add_note_in_log_section()
                 if self.picking_type_id.name == "Pick" or self.picking_type_id.name == "Pull":
                     for picking_id in self.sale_id.picking_ids:
                         if picking_id.state != 'cancel' and picking_id.state == 'assigned' and \
