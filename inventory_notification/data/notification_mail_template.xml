@@ -174,7 +174,6 @@
              <div style="margin:auto;width:100%;background-color:  #ffffff;  padding-left: 60px;">
                 <div>
                     <div>
-                        <p>Hi Team,</p>
                         <p> <t t-esc="ctx['descrption']"/> </p>
                     </div>
                     <center>
@@ -206,7 +205,6 @@
                     </table>
                 </div>
                 <div  style="margin-top:20px">
-                    <p>Thanks &amp; Regards,</p>
                     <p><t t-esc="ctx['closing_content']"/></p>
                 </div>
             </div>
