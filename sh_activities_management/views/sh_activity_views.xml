@@ -73,7 +73,7 @@
                 <header>
                     <button attrs="{'invisible': [('state', '=', 'done')]}" string="Mark as Done" name="action_done" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
                     <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Schedule Next" name="action_done_schedule_next" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
-                    <button string="Done &amp; Launch Next" name="action_done_schedule_next" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />
+<!--                    <button string="Done &amp; Launch Next" name="action_done_schedule_next" type="object" class="btn-secondary" context="{'mail_activity_quick_update': True}" />-->
                     <button name="action_cancel" string="Cancel" type="object" class="oe_highlight" attrs="{'invisible':['|',('state', '=', 'done'),('state', '=', 'cancel')]}"/>
                     <field name="state" widget="statusbar" />
                 </header>
@@ -146,7 +146,7 @@
                 <field name="active" invisible="1"/>
                 <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                 <group>
-                    <field name="reference"/>
+                    <field name="reference" invisible="1"/>
                 </group>
             </xpath>
             <xpath expr="//form//sheet" position="before">
@@ -309,13 +309,14 @@
         </field>
     </record>
 
+<!-- changed view id here to sh_activities_management.sh_mail_activity_view_form_n as odoo 14-->
     <record model="ir.actions.act_window" id="sh_all_activity_action">
         <field name="name">All Activities</field>
         <field name="res_model">mail.activity</field>
         <field name="view_mode">tree,kanban,form,pivot,calendar,graph</field>
         <field name="view_ids" eval="[(5, 0, 0),
             	(0, 0, {'view_mode': 'tree', 'view_id': ref('sh_mail_activity_view_tree')}),
-                (0,0,{'view_mode':'form','view_id':ref('mail.mail_activity_view_form')}),
+                (0,0,{'view_mode':'form','view_id':ref('sh_activities_management.sh_mail_activity_view_form_n')}),
             	(0, 0, {'view_mode': 'kanban', 'view_id': ref('sh_mail_schedule_activity_view_kanban')}),
                 (0, 0, {'view_mode': 'pivot', 'view_id': ref('sh_mail_schedule_activity_view_pivot')}),
                 (0, 0, {'view_mode': 'calendar', 'view_id': ref('sh_mail_schedule_activity_view_calendar')}),
@@ -334,9 +335,8 @@
         <field name="view_mode">tree,kanban,form,pivot,calendar,graph</field>
         <field name="view_ids" eval="[(5, 0, 0),
             	(0, 0, {'view_mode': 'tree', 'view_id': ref('sh_mail_activity_view_tree')}),
-                (0,0,{'view_mode':'form','view_id':ref('mail.mail_activity_view_form')}),
+                (0,0,{'view_mode':'form','view_id':ref('sh_mail_activity_view_form_n')}),
             	(0, 0, {'view_mode': 'kanban', 'view_id': ref('sh_mail_schedule_activity_view_kanban')}),
-
                 (0, 0, {'view_mode': 'pivot', 'view_id': ref('sh_mail_schedule_activity_view_pivot')}),
                 (0, 0, {'view_mode': 'calendar', 'view_id': ref('sh_mail_schedule_activity_view_calendar')}),
                 (0, 0, {'view_mode': 'graph', 'view_id': ref('sh_mail_schedule_activity_view_graph')})]" />
@@ -349,7 +349,7 @@
         <field name="view_mode">tree,kanban,form,pivot,calendar,graph</field>
         <field name="view_ids" eval="[(5, 0, 0),
             	(0, 0, {'view_mode': 'tree', 'view_id': ref('sh_mail_activity_view_tree')}),
-                (0,0,{'view_mode':'form','view_id':ref('mail.mail_activity_view_form')}),
+                (0,0,{'view_mode':'form','view_id':ref('sh_mail_activity_view_form_n')}),
             	(0, 0, {'view_mode': 'kanban', 'view_id': ref('sh_mail_schedule_activity_view_kanban')}),
                 (0, 0, {'view_mode': 'pivot', 'view_id': ref('sh_mail_schedule_activity_view_pivot')}),
                 (0, 0, {'view_mode': 'calendar', 'view_id': ref('sh_mail_schedule_activity_view_calendar')}),

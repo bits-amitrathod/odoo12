@@ -203,6 +203,10 @@ class AccountHierarchyReport(models.TransientModel):
                 self.recursive_hir(prt, list_all, level, final_data, final_data_name)
 
 
+
+
+
+#
 class SalePaymentLink(models.TransientModel):
     _inherit = "payment.link.wizard"
     _description = "Generate Sales Payment Link"

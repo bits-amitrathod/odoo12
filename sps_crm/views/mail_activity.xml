@@ -250,25 +250,14 @@
             <field name="name">Done &amp; Duplicate</field>
             <field name="model">mail.activity</field>
             <field eval="40" name="priority"/>
-            <field name="inherit_id" ref="mail.mail_activity_view_form"/>
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n"/>
             <field name="arch" type="xml">
-
-                <field name="request_partner_id" position="after">
-                    <field name="time_zone"/>
-                </field>
-
-                <!-- Client want to Hide this Fields -->
-                <xpath expr="//form[1]/sheet[1]/group[1]/field[@name='reference']" position="attributes">
-                    <attribute name="attrs">{}</attribute>
-                    <attribute name="invisible">1</attribute>
+                    <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="replace">
+                    <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Duplicate" name="action_done_duplicate_act" type="object" class="btn-secondary"/>
                 </xpath>
-                <xpath expr="//field[@name='request_partner_id']" position="attributes">
-                    <attribute name="attrs">{}</attribute>
-                    <attribute name="invisible">1</attribute>
-                </xpath>
-
             </field>
         </record>
+
 
         <record id="mail_activity_view_form_popup_duplicate" model="ir.ui.view">
             <field name="name">mail.activity.view.form.popup.duplicate</field>
@@ -291,11 +280,47 @@
                         <button string="Discard" class="btn-secondary" special="cancel"/>
                     </footer>
                 </xpath>
-                <!--  Correct placement of the new button in the header -->
-                <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="replace">
-                    <button attrs="{'invisible': [('state', '=', 'done')]}" string="Done &amp; Duplicate"
-                            name="action_done_duplicate_act" type="object" class="btn-secondary"/>
+
+                <!-- Invisible header button as per client requirement-->
+                <xpath expr="/form/header/button[@name='action_done_schedule_next']" position="attributes">
+                    <attribute name="invisible">1</attribute>
                 </xpath>
+                <xpath expr="/form/header/button[@name='action_done']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="/form/header/button[@name='action_cancel']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+            </field>
+        </record>
+
+        <!-- Studio changes-->
+        <record id="sh_mail_activity_view_form_n" model="ir.ui.view">
+            <field name="name">sh.mail.activity.view.form.add.priority</field>
+            <field name="model">mail.activity</field>
+            <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
+            <field name="priority">100</field>
+            <field name="active">False</field>
+            <field name="arch" type="xml">
+                <xpath expr="/form[1]/sheet[1]/group[3]" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+
+                 <xpath expr="//page[@name='actnotes']" position="replace">
+                        <!-- Removed note tab form crm view  -->
+                  </xpath>
+
+                <xpath expr="//page[@name='comment_tab']" position="after">
+                     <page name="dup_poc" string="Dup POC">
+                      <group> <field name="dup_poc_note"/></group>
+                   </page>
+                </xpath>
+
+                <xpath expr="//field[@name='request_partner_id']" position="replace">
+                      <!-- Removed request partner field form crm view  -->
+                </xpath>
+
             </field>
         </record>
     </data>

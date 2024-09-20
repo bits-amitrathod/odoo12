@@ -608,7 +608,6 @@ class VendorOffer(models.Model):
         template = self.env.ref('vendor_offer.email_template_edi_vendor_offer_done', False)
         compose_form = self.env.ref('mail.email_compose_message_wizard_form', False)
 
-
         ctx = dict(self.env.context or {})
 
         ctx.update({
@@ -624,7 +623,6 @@ class VendorOffer(models.Model):
             'vendor_email': (self.partner_id.vendor_email or self.partner_id.email) if self.partner_id else False,
             'email_cc': self.acq_user_id.partner_id.email or ''
         })
-
 
         if self.acq_user_id and self.acq_user_id.partner_id and self.acq_user_id.partner_id.email:
             ctx['acq_mgr'] = self.acq_user_id.partner_id.email
@@ -643,6 +641,17 @@ class VendorOffer(models.Model):
                 'status': 'ven_sent',
                 'state': 'ven_sent'}
             )
+
+        # Attaching the shipping label to email template
+        if self.shipping_number:
+            ship_label = self.env['ir.attachment'].search(
+                [('res_model', '=', 'purchase.order'),
+                 ('mimetype', '=', 'application/pdf'), ('name', 'ilike', '%' + self.name + '%'),
+                 ('name', 'like', '%FedEx_Label%')], order="id desc")[0]
+
+            if ship_label:
+                template.sudo().write({'attachment_ids': [ship_label.id]})
+
         return {
             'name': _('Compose Email'),
             'type': 'ir.actions.act_window',
