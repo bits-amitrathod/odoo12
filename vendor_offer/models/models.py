@@ -650,14 +650,7 @@ class VendorOffer(models.Model):
                  ('name', 'like', '%FedEx_Label%')], order="id desc")[0]
 
             if ship_label:
-                values = {'attachment_ids': []}
-                values['attachment_ids'].append((0, 0, {'name': ship_label.name,
-                            'type': 'binary',
-                            'mimetype': 'application/pdf',
-                            'store_fname': ship_label.name,
-                            'datas': ship_label.datas}))
-
-                template.sudo().write(values)
+                template.sudo().write({'attachment_ids': [ship_label.id]})
 
         return {
             'name': _('Compose Email'),
