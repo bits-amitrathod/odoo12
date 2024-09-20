@@ -207,10 +207,10 @@ class AccountHierarchyReport(models.TransientModel):
 
 
 #
-# class SalePaymentLink(models.TransientModel):
-#     _inherit = "payment.link.wizard"
-#     _description = "Generate Sales Payment Link"
-
+class SalePaymentLink(models.TransientModel):
+    _inherit = "payment.link.wizard"
+    _description = "Generate Sales Payment Link"
+    pass
     # def get_base_url_custom(self):
     #     """
     #     Returns Custom URL as per client requirement

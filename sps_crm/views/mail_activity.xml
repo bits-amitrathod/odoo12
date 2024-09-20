@@ -300,7 +300,8 @@
             <field name="name">sh.mail.activity.view.form.add.priority</field>
             <field name="model">mail.activity</field>
             <field name="inherit_id" ref="sh_activities_management.sh_mail_activity_view_form_n" />
-<!--            <field name="priority"></field>-->
+            <field name="priority">100</field>
+            <field name="active">False</field>
             <field name="arch" type="xml">
                 <xpath expr="/form[1]/sheet[1]/group[3]" position="attributes">
                     <attribute name="invisible">1</attribute>
