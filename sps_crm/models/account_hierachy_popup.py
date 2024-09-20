@@ -203,64 +203,68 @@ class AccountHierarchyReport(models.TransientModel):
                 self.recursive_hir(prt, list_all, level, final_data, final_data_name)
 
 
-class SalePaymentLink(models.TransientModel):
-    _inherit = "payment.link.wizard"
-    _description = "Generate Sales Payment Link"
 
-    def get_base_url_custom(self):
-        """
-        Returns Custom URL as per client requirement
-        Ticket 659, Added through code , so that even record is deleted it will recreate
-        """
-        web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        self.env['ir.config_parameter'].sudo().set_param('web.shopsps_com', 'https://www.shopsps.com')
-        matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
 
-        if any([x in web_base_url for x in matches]):
-            url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        else:
-            url = self.env['ir.config_parameter'].sudo().get_param('web.shopsps_com')
 
-        return url
+#
+# class SalePaymentLink(models.TransientModel):
+#     _inherit = "payment.link.wizard"
+#     _description = "Generate Sales Payment Link"
 
-    def _generate_link(self):
-        """ Override of the base method to add the order_id in the link. """
-        for payment_link in self:
-            # only add order_id for SOs,
-            # otherwise the controller might try to link it with an unrelated record
-            # NOTE: company_id is not necessary here, we have it in order_id
-            # however, should parsing of the id fail in the controller, let's include
-            # it anyway
-            if payment_link.res_model == 'sale.order':
-                record = self.env[payment_link.res_model].browse(payment_link.res_id)
-                payment_link.link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
-                                    '&partner_id=%s&order_id=%s&company_id=%s&access_token=%s') % (
-                                        self.get_base_url_custom(),
-                                        urls.url_quote_plus(payment_link.description),
-                                        payment_link.amount,
-                                        payment_link.currency_id.id,
-                                        payment_link.partner_id.id,
-                                        payment_link.res_id,
-                                        payment_link.company_id.id,
-                                        payment_link.access_token
-                                    )
-            else:
-                self._generate_link_invoice_custom()
+    # def get_base_url_custom(self):
+    #     """
+    #     Returns Custom URL as per client requirement
+    #     Ticket 659, Added through code , so that even record is deleted it will recreate
+    #     """
+    #     web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    #     self.env['ir.config_parameter'].sudo().set_param('web.shopsps_com', 'https://www.shopsps.com')
+    #     matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
+    #
+    #     if any([x in web_base_url for x in matches]):
+    #         url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    #     else:
+    #         url = self.env['ir.config_parameter'].sudo().get_param('web.shopsps_com')
+    #
+    #     return url
 
-    def _generate_link_invoice_custom(self):
-        for payment_link in self:
-            record = self.env[payment_link.res_model].browse(payment_link.res_id)
-            link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
-                    '&partner_id=%s&access_token=%s') % (
-                        self.get_base_url_custom(),
-                        urls.url_quote_plus(payment_link.description),
-                        payment_link.amount,
-                        payment_link.currency_id.id,
-                        payment_link.partner_id.id,
-                        payment_link.access_token
-                    )
-            if payment_link.company_id:
-                link += '&company_id=%s' % payment_link.company_id.id
-            if payment_link.res_model == 'account.move':
-                link += '&invoice_id=%s' % payment_link.res_id
-            payment_link.link = link
+    # def _generate_link(self):
+    #     """ Override of the base method to add the order_id in the link. """
+    #     for payment_link in self:
+    #         # only add order_id for SOs,
+    #         # otherwise the controller might try to link it with an unrelated record
+    #         # NOTE: company_id is not necessary here, we have it in order_id
+    #         # however, should parsing of the id fail in the controller, let's include
+    #         # it anyway
+    #         if payment_link.res_model == 'sale.order':
+    #             record = self.env[payment_link.res_model].browse(payment_link.res_id)
+    #             payment_link.link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
+    #                                 '&partner_id=%s&order_id=%s&company_id=%s&access_token=%s') % (
+    #                                     self.get_base_url_custom(),
+    #                                     urls.url_quote_plus(payment_link.description),
+    #                                     payment_link.amount,
+    #                                     payment_link.currency_id.id,
+    #                                     payment_link.partner_id.id,
+    #                                     payment_link.res_id,
+    #                                     payment_link.company_id.id,
+    #                                     payment_link.access_token
+    #                                 )
+    #         else:
+    #             self._generate_link_invoice_custom()
+
+    # def _generate_link_invoice_custom(self):
+    #     for payment_link in self:
+    #         record = self.env[payment_link.res_model].browse(payment_link.res_id)
+    #         link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
+    #                 '&partner_id=%s&access_token=%s') % (
+    #                     self.get_base_url_custom(),
+    #                     urls.url_quote_plus(payment_link.description),
+    #                     payment_link.amount,
+    #                     payment_link.currency_id.id,
+    #                     payment_link.partner_id.id,
+    #                     payment_link.access_token
+    #                 )
+    #         if payment_link.company_id:
+    #             link += '&company_id=%s' % payment_link.company_id.id
+    #         if payment_link.res_model == 'account.move':
+    #             link += '&invoice_id=%s' % payment_link.res_id
+    #         payment_link.link = link
