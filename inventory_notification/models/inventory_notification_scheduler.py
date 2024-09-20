@@ -480,49 +480,54 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <table style="height: 96px; width: 601px;" border="0">
                                     <tbody>
                                     <tr style="height: 78px;">
-                                    <td style="width: 156px; height: 78px;">
-                                    <p style="text-align: left;"><strong>Brittany Edwards</strong></p>
-                                    <p style="text-align: left;">412-434-0214</p>
-                                    </td>
-                                    <td style="width: 154px; height: 78px;">
-                                    <p><strong>Maddie Cotter</strong></p>
-                                    <p>412-240-4049&nbsp;</p>
-                                    </td>
-                                    <td style="width: 154px; height: 78px;">
-                                    <p><strong>Shannon Parker</strong></p>
-                                    <p>412-564-9011&nbsp;</p>
-                                    </td>
-                                    <td style="width: 157px; height: 78px;">
-                                    <p style="text-align: left;"><strong>Phil Kemp</strong></p>
-                                    <p style="text-align: left;">412-745-1327</p>
-                                    </td>
-                                    <td style="width: 157px; height: 78px;">
-                                    <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
-                                    <p style="text-align: left;">(412) 745-0317</p>
+                                    
+                                        <td style="width: 154px; height: 78px;">
+                                        <p><strong>Maddie Cotter</strong></p>
+                                        <p>412-240-4049&nbsp;</p>
+                                        </td>
+                                        
+                                        <td style="width: 154px; height: 78px;">
+                                        <p><strong>Shannon Parker</strong></p>
+                                        <p>412-564-9011&nbsp;</p>
+                                        </td>
+                                        
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Phil Kemp</strong></p>
+                                        <p style="text-align: left;">412-745-1327</p>
+                                        </td>
+                                        
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
+                                        <p style="text-align: left;">412-745-0317</p>
                                     </td>
                                     
                                     </tr>
                                     <tr style="height: 76px;">
-                                    <td style="width: 156px; height: 76px;">
-                                    <p><strong>Carley Fritsch</strong></p>
-                                    <p>(412) 643-4597</p>
-                                    </td>
-                                    <td style="width: 172px; height: 76px;">
-                                    <p><strong>Sasha Khripkova</strong></p>
-                                    <p>(412) 643-3816</p>
-                                    </td>
-                                    <td style="width: 156px; height: 76px;">
-                                    <p><strong>Theresa Carmody</strong></p>
-                                    <p>(412) 286-2212</p>
-                                    </td>
-                                    <td style="width: 157px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
-                                    <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
-                                    </td>
-                                    <td style="width: 172px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
-                                    <p style="text-align: left;">412-248-1284</p>
-                                    </td>
+                                        
+                                        <td style="width: 156px; height: 76px;">
+                                        <p><strong>Carley Fritsch</strong></p>
+                                        <p>412-643-4597</p>
+                                        </td>
+                                        
+                                        <td style="width: 172px; height: 76px;">
+                                        <p><strong>Sasha Khripkova</strong></p>
+                                        <p>412-643-3816</p>
+                                        </td>
+                                        
+                                        <td style="width: 156px; height: 76px;">
+                                        <p><strong>Theresa Carmody</strong></p>
+                                        <p>412-286-2212</p>
+                                        </td>
+                                        
+                                        <td style="width: 157px; height: 76px;">
+                                        <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
+                                        <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
+                                        </td>
+                                        
+                                        <td style="width: 172px; height: 76px;">
+                                        <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
+                                        <p style="text-align: left;">412-248-1284</p>
+                                        </td>
                                     </tr>
                                     </tbody>
                                     </table>
