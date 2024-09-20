@@ -18,7 +18,7 @@
                 <xpath expr="/form/header/button[@name='action_send_offer_email']" position="after">
                     <button name="action_import_order_lines" string="Import" type="object"  class="btn-primary" attrs="{'invisible': [('state', 'not in', ('done', 'cancel'))]}" />
                     <button name="action_import_order_lines_all_column" string="Manual Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
-                    <button name="action_import_order_lines_app_new" string="Appraisal Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" />
+                    <button name="action_import_order_lines_app_new" string="Appraisal Import" type="object"  class="btn-primary" attrs="{'invisible':[('state', 'in', ('purchase','cancel'))]}" groups="vendor_offer.offerapproval_user_access"/>
                 </xpath>
             </field>
         </record>

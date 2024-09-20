@@ -462,7 +462,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                   font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" 
                   class="o_default_snippet_text">Order Online Here</a>
                                   </div>
-                                  </center>
+                                  </center><br/><br/>
                 
                 
                 
@@ -504,14 +504,22 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </tr>
                                     <tr style="height: 76px;">
                                     <td style="width: 156px; height: 76px;">
-                                    <p><strong>Christopher Odell</strong></p>
-                                    <p>412-745-0338</p>
+                                    <p><strong>Carley Fritsch</strong></p>
+                                    <p>(412) 643-4597</p>
+                                    </td>
+                                    <td style="width: 172px; height: 76px;">
+                                    <p><strong>Sasha Khripkova</strong></p>
+                                    <p>(412) 643-3816</p>
+                                    </td>
+                                    <td style="width: 156px; height: 76px;">
+                                    <p><strong>Theresa Carmody</strong></p>
+                                    <p>(412) 286-2212</p>
                                     </td>
                                     <td style="width: 157px; height: 76px;">
                                     <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
                                     <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
                                     </td>
-                                    <td style="width: 123px; height: 76px;">
+                                    <td style="width: 172px; height: 76px;">
                                     <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
                                     <p style="text-align: left;">412-248-1284</p>
                                     </td>

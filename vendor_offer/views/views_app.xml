@@ -130,9 +130,9 @@
                             Equipment is present in product list </span>
                         <br/> <br/> <br/>
                         <button name="action_recalculate_vendor_offer" class="btn-primary"
-                                     string="Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': [('import_type_ven', '==', 'all_field_import')]}" type="object"/>
+                                     string="Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': [('import_type_ven', '==', 'all_field_import')]}" type="object" groups="vendor_offer.offerapproval_user_access"/>
                         <button name="action_manual_recalculate_vendor_offer" class="btn-primary"
-                                     string="Manual Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': ['|',('import_type_ven', '=', 'new_appraisal'),('import_type_ven', '=', False)]}" type="object"/>
+                                     string="Manual Calculate"  context="{'new_app_cal': True}" attrs="{'invisible': ['|',('import_type_ven', '=', 'new_appraisal'),('import_type_ven', '=', False)]}" type="object" groups="vendor_offer.offerapproval_user_access"/>
 
                         <notebook>
                              <page string="Products">

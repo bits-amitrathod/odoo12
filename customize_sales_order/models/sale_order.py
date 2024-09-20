@@ -20,7 +20,7 @@ class sale_order(models.Model):
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
-    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", tracking=True,  domain="['&',['active','=',True],['share','=',False]]")
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", tracking=True,  domain="['&',['active','=',True],['share','=',False]]", compute="get_customer_success")
     #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
 
     # @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
@@ -78,6 +78,11 @@ class sale_order(models.Model):
         for so in self:
             so.national_account = so.partner_id.national_account_rep.id
 
+    # Added function to get  customer success field value
+    def get_customer_success(self):
+        for so in self:
+            so.customer_success = so.partner_id.customer_success.id
+
     @api.onchange('client_order_ref')
     @api.depends('client_order_ref')
     def onchange_client_order_ref(self):
@@ -113,6 +118,10 @@ class sale_order(models.Model):
                 vals['national_account'] = res_partner.national_account_rep.id
             elif res_partner and res_partner.parent_id and res_partner.parent_id.national_account_rep and res_partner.parent_id.national_account_rep.id:
                 vals['national_account'] = res_partner.parent_id.national_account_rep.id
+            if res_partner and res_partner.customer_success and res_partner.customer_success.id:
+                vals['customer_success'] = res_partner.customer_success.id
+            elif res_partner and res_partner.parent_id and res_partner.parent_id.customer_success and res_partner.parent_id.customer_success.id:
+                vals['customer_success'] = res_partner.parent_id.customer_success.id
         return super(sale_order, self).create(vals)
 
     @api.depends('order_line.price_total')
@@ -165,6 +174,10 @@ class sale_order(models.Model):
                     'author_id': self.env.user.partner_id.id,
                 }
                 self.env['mail.message'].sudo().create(stock_picking_val)
+
+        # For Follower Adding
+        if self.customer_success.id:
+            self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
 
     def _get_carrier_tracking_ref(self):
         for so in self:
@@ -238,6 +251,11 @@ class sale_order(models.Model):
         elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.national_account_rep \
                 and self.partner_id.commercial_partner_id.national_account_rep.id:
             self.national_account = self.partner_id.commercial_partner_id.national_account_rep.id
+        if self.partner_id and self.partner_id.customer_success and self.partner_id.customer_success.id:
+            self.customer_success = self.partner_id.customer_success.id
+        elif self.partner_id and self.partner_id.commercial_partner_id and self.partner_id.commercial_partner_id.customer_success \
+                and self.partner_id.commercial_partner_id.customer_success.id:
+            self.customer_success = self.partner_id.commercial_partner_id.customer_success.id
         # TODO: UPG_ODOO16_NOTE
         # addons/sale/models/sale_order.py line No 339-350
         # I think That Handled using Depends that's Why this is commented
