@@ -41,7 +41,7 @@ class CustomerCreditNote(models.TransientModel):
                             'debit': acc_move_line.debit,
                             'amount_residual': acc_move_line.amount_residual,
                             'amount_residual_currency': acc_move_line.amount_residual_currency,
-                            'display_type':"line_note",
+                            # 'display_type':"line_note",
                             'tax_base_amount':0
                         }))
 
@@ -60,7 +60,7 @@ class CustomerCreditNote(models.TransientModel):
                             'credit': acc_move_line.debit,
                             'amount_residual': abs(acc_move_line.amount_residual),
                             'amount_residual_currency': abs(acc_move_line.amount_residual_currency),
-                            'display_type': 'product',
+                            # 'display_type': 'product',
                             'tax_base_amount': 0
                         }))
 
