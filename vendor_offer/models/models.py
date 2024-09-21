@@ -128,6 +128,26 @@ class VendorOffer(models.Model):
     vendor_cust_id = fields.Char(string="Customer ID",store=True,readonly=False)
     cash_text_pdf = fields.Char(string="",compute='_cash_text_pdf_fun')
     offer_expired = fields.Boolean(string='Offer Expired ?')
+    offer_approved = fields.Boolean(string='Offer is Approved', track_visibility='onchange')
+
+    def set_expiration_flag_old_offer(self):
+        date_expired = fields.Datetime.today() - datetime.timedelta(days=21)
+
+
+        expired_offers = self.env['purchase.order'].search([
+            ('date_offered', '<', date_expired),
+            ('offer_expired', '=', False),
+            ('state', 'in', ['ven_draft', 'ven_sent']),
+        ])
+
+        for offer in expired_offers:
+            offer.write({'offer_expired': True, 'offer_approved': False})
+
+    def action_approve_offer(self):
+        self.ensure_one()
+        self.write({'offer_approved': True})
+        return True
+
     @api.onchange('cash_text_pdf')
     @api.depends('cash_text_pdf')
     def _cash_text_pdf_fun(self):
@@ -788,7 +808,22 @@ class VendorOffer(models.Model):
         #     if self.offer_type not in ('cash','credit'):
         #         #raise ValidationError(_('Offer Type must be either "Cash" or "Credit" to Accept '))
         #         raise UserError(_('Offer Type must be either "Cash" or "Credit" not both to Accept'))
+        print("oe", self.offer_expired, self.date_offered, self.offer_approved)
+        if (self.offer_expired is True) and (self.offer_approved is False):
 
+            form_view_id = self.env.ref('vendor_offer.vendor_offer_approve_popup').id
+            action = {
+                'type': 'ir.actions.act_window',
+                'views': [(form_view_id, 'form')],
+                'view_mode': 'tree,form',
+                'name': _('Offer Approval'),
+                'res_model': 'purchase.order',
+                'res_id': self.id,
+                'domain': [('id', '=', self.id)],
+                'target': 'new'
+            }
+
+            return action
 
         if self.offer_type == 'cashcredit' or not self.offer_type:
             self.offer_type_popup = 'cash'
