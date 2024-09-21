@@ -43,7 +43,7 @@ def migrate(cr, version):
     # DELETE views
     # cr.execute("""DELETE FROM mail_template WHERE id in (13, 14, 134);""")
     cr.execute("""DELETE FROM ir_model_data WHERE name in ('email_template_edi_purchase', 'email_template_edi_purchase_done', 'email_template_edi_purchase_reminder')""")
-    cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'sps_theme%' and type = 'qweb' and id not in (5508,8605);""")
+    cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'sps_theme%' and type = 'qweb' and id not in (5508);""")
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'website_sales%' and type = 'qweb';""")
     cr.execute("""DELETE FROM ir_ui_view WHERE key ilike 'website_quote_ext%' and type = 'qweb';""")
     cr.execute("""DELETE FROM ir_ui_view WHERE name ilike 'product.product.form_monitor_ex';""")
