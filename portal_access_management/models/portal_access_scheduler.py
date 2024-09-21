@@ -60,18 +60,12 @@ class PortalUserCustom(models.TransientModel):
             user_changes.clear()
             email_list_cc.clear()
             if (customer.start_date == False and customer.end_date == False) \
-                    or (customer.end_date != False and self.string_to_date(
-                customer.end_date) >= today_start) \
-                    or (customer.start_date != False and self.string_to_date(
-                customer.start_date) <= today_start) \
-                    or (
-                    customer.start_date != False and customer.end_date != False and self.string_to_date(
-                customer.start_date) <= today_start and self.string_to_date(
-                customer.end_date) >= today_start) \
-                    or (customer.end_date is None):
-                contacts = self.env['res.partner'].search(
-                    [('parent_id', '=', customer.id), ('email', '!=', ''), ('active', '=', True)])
+                or (customer.end_date != False and self.string_to_date(customer.end_date) >= today_start) \
+                or (customer.start_date != False and self.string_to_date(customer.start_date) <= today_start) \
+                or (customer.start_date != False and customer.end_date != False and self.string_to_date(customer.start_date) <= today_start and self.string_to_date(customer.end_date) >= today_start) \
+                or (customer.end_date is None):
 
+                contacts = self.env['res.partner'].search([('parent_id', '=', customer.id), ('email', '!=', ''), ('active', '=', True)])
                 for contact in contacts:
                     if (contact.email != customer.email and contact.email not in email_list_cc):
                         if (contact.start_date == False and contact.end_date == False) \
