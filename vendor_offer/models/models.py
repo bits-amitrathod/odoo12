@@ -808,7 +808,6 @@ class VendorOffer(models.Model):
         #     if self.offer_type not in ('cash','credit'):
         #         #raise ValidationError(_('Offer Type must be either "Cash" or "Credit" to Accept '))
         #         raise UserError(_('Offer Type must be either "Cash" or "Credit" not both to Accept'))
-        print("oe", self.offer_expired, self.date_offered, self.offer_approved)
         if (self.offer_expired is True) and (self.offer_approved is False):
 
             form_view_id = self.env.ref('vendor_offer.vendor_offer_approve_popup').id
