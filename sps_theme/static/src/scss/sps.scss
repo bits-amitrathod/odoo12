@@ -122,7 +122,7 @@ td{
 // written this class to add custom css for product column in order line and invoices
 .custom-column-width span {
     display:inline-flex !important;
-    min-width:170px !important;
+    min-width: 170px !important;
     white-space:normal !important;
     }
 
@@ -130,4 +130,15 @@ td{
     border-bottom: 1px solid;
 }
 
+//modify td css for vendor offer form
+.o_list_table{
+        table-layout:auto !important;
+    }
+
+.custom_column_width_vendor_offer {
+    display:inline-flex !important;
+    min-width: 90px !important;
+    max-width:170px !important;
+    white-space:normal !important;
+}
 
