@@ -142,7 +142,7 @@
                                     <form duplicate="false">
                                         <group>
                                             <group>
-                                                <field name="product_id" style="min-width:90px;"/>
+                                                <field name="product_id" style="min-width:90px;" class=""/>
                                                 <field name="product_qty_app_new"/>
                                                 <field name="sku_code" readonly="1" string="Product SKU"/>
                                                 <field name="product_brand_id" readonly="1"/>
@@ -187,8 +187,8 @@
                                         <field name="order_id" invisible="1"/>
 
 
-                                        <field name="sku_code" readonly="1" string="Product SKU"/>
-                                        <field name="product_id" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}" string="Product"/>
+                                        <field name="sku_code" readonly="1" string="Product SKU" />
+                                        <field name="product_id" class="custom_column_width_vendor_offer" attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}" string="Product" />
                                         <field name="product_brand_id" readonly="1"/>
                                         <field name="product_tier" readonly="1"/>
                                         <field name="product_qty" />
