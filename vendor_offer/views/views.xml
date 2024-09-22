@@ -104,7 +104,6 @@
                     <sheet>
                         <group>
                             <field name="carrier_id"/>
-                            <field name="delivery_package_type_id" invisible="1"/>
                             <field name="product_packaging"/>
                             <field name="weight" class="oe_inline"/>
                             <field name="package_count"/>
@@ -192,8 +191,6 @@
                                 <field name="acq_manager_email"  invisible="1"/>
                                 <field name="acq_manager_phone" invisible="1" />
                                 <field name="vendor_cust_id"/>
-<!--                                UPG_ODOO16_NOTE below field commented due to error&ndash;&gt;-->
-<!--                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}" invisible="1" />-->
                                 <field name="company_id"  options="{'no_create': True}"  />
                                 <field name="partner_id" widget="res_partner_many2one" context="{ 'show_vat': True}" string="Facility Name" placeholder="Name, TIN, Email, or Reference"  />
                                 <field name="acq_user_id"/>
