@@ -2,96 +2,118 @@
 <odoo>
 <template id="vendor_offer.report_vendorofferacceleration_document">
 
-    <t t-call="web.external_layout">
+     <t t-call="web.external_layout">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
-         <h2 style="font-size:18px;" align="center"><strong>PURCHASE OFFER</strong></h2>
+         <h2 style="font-size:18px;" align="center"><strong>SURGICAL SURPLUS PURCHASE OFFER</strong></h2>
         <div class="page" style="margin-top:8px">
             <div class="oe_structure"/>
-             <h2 style="font-size:12px;color:red" align="center"><strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</strong></h2>
+             <h2 style="font-size:14px;color:red" align="center"><strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</strong></h2>
             <div class="row ">
                 <div class="col-6 col-lg-6 col-xs-6">
                      <strong>BUYER NAME / ADDRESS:</strong>
-                    <div t-if="o.dest_address_id" style="font-size:13px!important;">
-                        <div t-field="o.dest_address_id" style="font-size:13px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-                         <span t-field="o.acq_manager_email" style="font-size:13px!important;"/>
+                    <div t-if="o.dest_address_id" style="font-size:16px!important;">
+                        <div t-field="o.dest_address_id" style="font-size:16px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+                         <span t-field="o.acq_manager_email" style="font-size:16px!important;"/>
                          <br/>
-                         <span t-field="o.acq_manager_phone" style="font-size:13px!important;"/>
+                         <span t-field="o.acq_manager_phone" style="font-size:16px!important;"/>
                     </div>
-                    <div t-if="not o.dest_address_id and o.picking_type_id.warehouse_id" style="font-size:13px!important;">
-                        <span t-field="o.picking_type_id.warehouse_id.name" style="font-size:13px!important;"/>
-                        <div t-field="o.picking_type_id.warehouse_id.partner_id" style="font-size:13px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-                         <span t-field="o.acq_manager_email" style="font-size:13px!important;"/>
+                    <div t-if="not o.dest_address_id and o.picking_type_id.warehouse_id" style="font-size:16px!important;">
+                        <span t-field="o.picking_type_id.warehouse_id.name" style="font-size:16px!important;"/>
+                        <div t-field="o.picking_type_id.warehouse_id.partner_id" style="font-size:16px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+                         <span t-field="o.acq_manager_email" style="font-size:16px!important;"/>
                          <br/>
-                         <span t-field="o.acq_manager_phone" style="font-size:13px!important;"/>
+                         <span t-field="o.acq_manager_phone" style="font-size:16px!important;"/>
                     </div>
                 </div>
                 <div class="col-6 col-lg-6 col-xs-6 col-xs-offset-1">
                       <strong>SELLER NAME / ADDRESS:</strong>
-                    <div t-field="o.partner_id" style="font-size:13px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+                    <div t-field="o.partner_id" style="font-size:16px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
                         <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>
                 </div>
             </div>
-            <h2 style="color:red;font-size:13px;" align="center"><strong>***CONFIDENTIAL***</strong></h2><hr/>
+            <h2 style="color:red;font-size:14px;" align="center"><strong>***CONFIDENTIAL***</strong></h2><hr/>
                 <p style="margin: 3px 0; display:flex">
 
                <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
-                   <span style="font-weight:600;font-size:13px !important;">OFFER PRICE  : </span>
-                     <span style="font-weight:600;font-size:13px !important;" t-field="o.cash_amount_total"/>
-                     <span style="font-weight:600;font-size:13px!important;">Cash Back</span>
+                   <span style="font-weight:bold;font-size:16px !important;">OFFER PRICE  : </span>
+                     <span style="font-weight:bold;font-size:16px !important;" t-field="o.cash_amount_total"/>
+                     <span style="font-weight:bold;font-size:16px!important;">Cash Back</span>
                      <span>or</span>
-                     <span style="font-weight:600;font-size:13px !important;" t-field="o.credit_amount_total"/>
-                     <span style="font-weight:600;font-size:13px!important;">Credit to Purchase</span>
+                     <span style="font-weight:bold;font-size:16px !important;" t-field="o.credit_amount_total"/>
+                     <span style="font-weight:bold;font-size:16px!important;">Credit to Purchase</span>
                </div>
                 <div t-if="o.offer_type =='credit'">
-                    <span style="font-weight:600;font-size:13px !important;">OFFER PRICE  : </span>
-                     <span style="font-weight:600;font-size:13px !important;" t-field="o.credit_amount_total"/>
-                     <span style="font-weight:600;font-size:13px!important;">Credit to Purchase</span>
+                    <span style="font-weight:bold;font-size:16px !important;">OFFER PRICE  : </span>
+                     <span style="font-weight:bold;font-size:16px !important;" t-field="o.credit_amount_total"/>
+                     <span style="font-weight:bold;font-size:16px!important;">Credit to Purchase</span>
                </div>
                   <div t-if="o.offer_type =='cash'">
-                      <span style="font-weight:600;font-size:13px !important;">OFFER PRICE  : </span>
-                     <span style="font-weight:600;font-size:13px !important;" t-field="o.cash_amount_total"/>
-                     <span style="font-weight:600;font-size:13px!important;">Cash Back</span>
+                      <span style="font-weight:bold;font-size:16px !important;">OFFER PRICE  : </span>
+                     <span style="font-weight:bold;font-size:16px !important;" t-field="o.cash_amount_total"/>
+                     <span style="font-weight:bold;font-size:16px!important;">Cash Back</span>
                </div>
 
             </p>
 
            <div><p style="margin: 3px 0;"><span t-field="o.credit_offer_type_pdf_text"> </span></p></div>
-            <div t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit' or not o.offer_type) and not o.credit_offer_type_pdf_text"><p style="margin: 3px 0;"><span>Credit Offer is valid for 12 months from the date of issue</span></p></div>
-            <div><p style="margin: 5px 0;font-size:13px;"><strong>ACCELERATION CLAUSE:</strong></p></div>
-            <div><p style="margin: 3px 0;font-size:13px;">If the Seller receives an offer from another prospective buyer higher than SPS’ original bid, then SPS will honor an increased Fair Market Value rate to surpass that offer by 10% up to a maximum added value of $3,000.00. Must be completed before the offer acceptance. Any competing offers exceeding 20 percent of SPS’s will be subject to review and may not qualify for the acceleration clause. </p></div>
-              <div><p style="margin: 3px 0;font-size:13px;">This offer must be accepted within __3__ business days of delivery date unless otherwise noted.  Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
-              <div><p style="margin: 3px 0;font-size:13px;">Speedy Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div>
-              <div><p style="margin: 3px 0;font-size:13px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div>
+            <ul>
+             <t t-if="(o.offer_type =='credit' or o.offer_type =='cashcredit' or not o.offer_type) and not o.credit_offer_type_pdf_text">
+            <li><div><p style="margin: 3px 0;font-size:16px;">Credit Offer is valid for 12 months from the date of issue</p></div></li></t>
+            <li><div><p style="margin: 3px 0;font-size:16px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div></li>
+              <li><div><p style="margin: 3px 0;font-size:16px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div></li>
+            </ul>
+
+            <div><p style="margin: 5px 0;font-size:16px;"><strong>ACCELERATION CLAUSE:</strong></p></div>
+            <ul>
+            <li><div><p style="margin: 3px 0;font-size:16px;">If the Seller receives an offer from another prospective buyer higher than SPS’s original bid, then SPS will honor an increased Fair Market Value rate to match and surpass that offer by 5% up to a maximum added value of $3,000.00. Must be completed before the offer is accepted. Any competing offers exceeding 20% of SPS’s offer will be subject to review and may not qualify for the acceleration clause. </p></div></li>
+              <li><div><p style="margin: 3px 0;font-size:16px;">This offer must be accepted within __3__ business days of delivery date unless otherwise noted.  Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div></li>
+            </ul>
+              <div><p style="margin: 3px 0;font-size:16px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
+
+              <ul>
+              <li><div><p style="margin: 3px 0;font-size:16px;">Expedited Delivery to Buyer within 5 business days; please include this purchase offer inside each shipment</p></div></li>
+              <li><div><p style="margin: 3px 0;font-size:16px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div></li>
+              <li><div><p style="margin: 3px 0;font-size:16px;">Any extra quantities or products received after the shipment is received in our warehouse will be salvaged with no additional value.</p></div></li>
+            </ul>
 
 
               <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
-                    <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
-                    <strong>Credit issued immediately </strong> following completion of SPS Quality Control inspection.
-                    <strong>Cash issued </strong><span t-field="o.cash_text_pdf"/>
-                    <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:13px !important;">0 Days</span>
-                    from completion of SPS Quality Control inspection.</p>
+                    <p style="margin: 5px 0;font-size:16px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong></p>
+                    <ul>
+                      <p style="margin: 5px 0;font-size:16px;">
+                      <li><strong>Credit issued immediately </strong>following completion of SPS Quality Control inspection.</li>
+                      <li><strong>Cash issued </strong><span t-field="o.cash_text_pdf"/>
+                      <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:16px !important;">0 Days</span>
+                      from completion of SPS Quality Control inspection.</li></p>
+                    </ul>
               </div>
 
             <div t-if="o.offer_type =='cash'">
-                 <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
-                   <strong>Cash issued </strong><span t-field="o.cash_text_pdf"/>
-                 <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:13px !important;">0 Days</span>
-                 from completion of SPS Quality Control inspection.</p>
+                 <p style="margin: 5px 0;font-size:16px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong></p>
+                 <ul>
+                   <p style="margin: 5px 0;font-size:16px;">
+                   <!--<span t-if="o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.temp_payment_term"/>-->
+                   <!--<span t-if="not o.temp_payment_term" style="font-weight:600;font-size:14px !important;" t-field="o.payment_term_id.name"/>-->
+                     <li><strong>Cash issued </strong><span t-field="o.cash_text_pdf"/>
+                   <span t-if="not o.payment_term_id.name and not o.temp_payment_term" style="font-weight:600;font-size:16px !important;">0 Days</span>
+                   from completion of SPS Quality Control inspection.</li></p>
+                 </ul>
             </div>
 
               <div t-if="o.offer_type =='credit'">
-                  <p style="margin: 5px 0;font-size:13px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong>
-                  <strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</p>
+                  <p style="margin: 5px 0;font-size:16px;"><strong>PREFERRED SETTLEMENT PERIOD:</strong></p>
+                  <ul>
+                    <p style="margin: 5px 0;font-size:16px;">
+                    <li><strong>Credit issued immediately </strong> after completion of SPS quality control inspection.</li></p>
+                  </ul>
               </div>
 
-              <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL DISPOSABLES:</u></strong> ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED. NO SALES SAMPLES OR CPT PRODUCTS.</p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><strong><u>SURGICAL EQUIPMENT:</u></strong> OFFER IS BASED UPON SELLER’S LISTED CONDITION OF EQUIPMENT.</p></div>
+            <div style="page-break-before: always;"></div>
 
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPS’S QUALITY CONTROL PROCESS INDENTIFIES ANY DAMAGES OR DISCREPENCIES IN THE SELLER’S STATED CONDITION AND/OR EXPIRATION OF ITEM(S).</strong></p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>FOR DETAILED TERMS OF PURCHASE, REFER TO THE SPS WEBSITE: <a>https://www.shopsps.com/terms_of_purchase</a></strong></p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><strong>YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SELLER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
-              <div><p style="margin: 3px 0;font-size:13px;"><img src="/vendor_offer/static/img/unchecked.png" style="height:10px;width:10px;margin-right:8px;"/><strong/>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
+
+              <div><p style="margin: 3px 0;font-size:16px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPS’S QUALITY CONTROL PROCESS IDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED. SALVAGER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED. ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED.  NO SALES SAMPLES OR CPT PRODUCTS. YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SALVAGER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
+              <div><p style="margin: 3px 0;font-size:16px;"><strong>FOR DETAILED TERMS OF PURCHASE, REFER TO THE SPS WEBSITE: https://www.shopsps.com/terms_of_surplus_purchase</strong></p></div>
+              <div><p style="margin: 3px 0;font-size:16px;"><img src="/vendor_offer/static/img/unchecked.png" style="height:10px;width:10px;margin-right:8px;"/><strong/>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
             <table class="table table-condensed" style="width:850px;">
             <tbody>
                 <tr>
@@ -117,7 +139,10 @@
                 </tr>
             </tbody>
         </table>
-              </div><br/><br/><br/><br/>
+      </div>
+
+      <div style="page-break-before: always;"></div>
+
         <div class="page " style="">
           <div class="oe_structure"/>
              <h2><p>SURGICAL SURPLUS PURCHASE OFFER <span t-field="o.name"/></p></h2>
@@ -164,78 +189,78 @@
                         </td>
                     </tr>
 
-                     <tr t-if="o.offer_type=='cash'" >
-                        <td></td> <td></td> <td></td> <td></td>
+                     <tr t-if="o.offer_type=='cash'">
+                        <td/> <td/> <td/> <td/>
                         <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.cash_amount_total" />
+                              <span t-field="o.cash_amount_total"/>
 
                          </td>
                     </tr>
-                    <tr  t-if="o.offer_type=='credit' and o.credit_amount_qpq_flag == True " >
-                        <td></td> <td></td> <td></td> <td></td>
+                    <tr t-if="o.offer_type=='credit' and o.credit_amount_qpq_flag == True ">
+                        <td/> <td/> <td/> <td/>
                         <td>
                             Credit Amount
                         </td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.credit_amount_untaxed_before_qpa" />
+                              <span t-field="o.credit_amount_untaxed_before_qpa"/>
 
                          </td>
                     </tr>
-                    <tr  t-if="o.offer_type=='credit' and o.credit_amount_qpq_flag == True " >
-                        <td></td> <td></td> <td></td> <td></td>
+                    <tr t-if="o.offer_type=='credit' and o.credit_amount_qpq_flag == True ">
+                        <td/> <td/> <td/> <td/>
                         <td>
                             Additional 3 %
                         </td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.credit_amount_qpq" />
+                              <span t-field="o.credit_amount_qpq"/>
 
                          </td>
                     </tr>
-                     <tr  t-if="o.offer_type=='credit'">
-                        <td></td> <td></td> <td></td> <td></td>
+                     <tr t-if="o.offer_type=='credit'">
+                        <td/> <td/> <td/> <td/>
                         <td>
                             Credit Amount Total
                         </td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.credit_amount_total" />
+                              <span t-field="o.credit_amount_total"/>
 
                          </td>
                     </tr>
-                    <tr  t-if="o.offer_type=='cashcredit' or not o.offer_type">
-                        <td></td> <td></td> <td></td> <td></td>
+                    <tr t-if="o.offer_type=='cashcredit' or not o.offer_type">
+                        <td/> <td/> <td/> <td/>
                         <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.cash_amount_total" />
+                              <span t-field="o.cash_amount_total"/>
 
                          </td>
                     </tr>
-                    <tr  t-if="(o.offer_type=='cashcredit' or not o.offer_type ) and o.credit_amount_qpq_flag == True">
-                        <td></td> <td></td> <td></td> <td></td>
-                        <td >
+                    <tr t-if="(o.offer_type=='cashcredit' or not o.offer_type ) and o.credit_amount_qpq_flag == True">
+                        <td/> <td/> <td/> <td/>
+                        <td>
                             Credit Amount
                         </td> <!--<td></td>    <td></td>-->
-                         <td class="text-right" >
-                              <span t-field="o.credit_amount_untaxed_before_qpa" />
+                         <td class="text-right">
+                              <span t-field="o.credit_amount_untaxed_before_qpa"/>
                          </td>
                     </tr>
-                    <tr  t-if="(o.offer_type=='cashcredit' or not o.offer_type) and o.credit_amount_qpq_flag == True">
-                        <td></td> <td></td> <td></td> <td></td>
+                    <tr t-if="(o.offer_type=='cashcredit' or not o.offer_type) and o.credit_amount_qpq_flag == True">
+                        <td/> <td/> <td/> <td/>
                         <td>
                             Additional 3 %
                         </td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.credit_amount_qpq" />
+                              <span t-field="o.credit_amount_qpq"/>
 
                          </td>
                     </tr>
-                    <tr  t-if="o.offer_type=='cashcredit' or not o.offer_type">
-                        <td></td> <td></td> <td></td> <td></td>
+                    <tr t-if="o.offer_type=='cashcredit' or not o.offer_type">
+                        <td/> <td/> <td/> <td/>
                         <td>
                             Credit Amount Total
                         </td> <!--<td></td>    <td></td>-->
                          <td class="text-right">
-                              <span t-field="o.credit_amount_total" />
+                              <span t-field="o.credit_amount_total"/>
 
                          </td>
                     </tr>

@@ -284,6 +284,9 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
     def payment_pay( self, reference=None, amount=None, currency_id=None, partner_id=None, company_id=None,provider_id=None, access_token=None, **kwargs):
         res = super(PaymentPortalCustom,self).payment_pay(reference=reference,amount=amount, currency_id=currency_id, partner_id=partner_id,company_id=company_id,provider_id=provider_id,access_token=access_token,**kwargs)
 
+        res.qcontext = res.qcontext
+        # Removing the "Purchase Order" provider form provider list
+        res.qcontext['providers'] = res.qcontext['providers'].filtered(lambda p: p.name != 'Purchase Order')
         # BITS custom code..below to add the sale_order and invoice ir ro session.............................
         order_id = self._cast_as_int(kwargs.get('sale_order_id',0))
         if order_id:

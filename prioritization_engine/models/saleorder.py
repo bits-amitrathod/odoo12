@@ -91,10 +91,10 @@ class SaleOrder(models.Model):
                 order.with_context(**email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
         return True
 
-    def _find_mail_template(self, force_confirmation_template=False):
+    def _find_mail_template(self):
         template_id = False
 
-        if force_confirmation_template or (self.state == 'sale' and not self.env.context.get('proforma', False)):
+        if self.state == 'sale' and not self.env.context.get('proforma', False):
             # template_id = int(self.env['ir.config_parameter'].sudo().get_param('sale.default_confirmation_template'))
             # template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
             if not template_id:
