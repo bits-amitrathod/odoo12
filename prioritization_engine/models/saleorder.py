@@ -91,31 +91,37 @@ class SaleOrder(models.Model):
                 order.with_context(**email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
         return True
 
-    def _find_mail_template(self):
+    def _get_common_confirmation_template(self):
         template_id = False
-
         if self.state == 'sale' and not self.env.context.get('proforma', False):
-            # template_id = int(self.env['ir.config_parameter'].sudo().get_param('sale.default_confirmation_template'))
-            # template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
             if not template_id:
-                template_id = self.env['ir.model.data']._xmlid_to_res_id('sale_order_cstm.mail_template_sale_confirmation_cstm', raise_if_not_found=True)
+                template_id = self.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm',
+                                           raise_if_not_found=True)
         if not template_id:
-            template_id = self.env['ir.model.data']._xmlid_to_res_id('sale_order_cstm.email_template_sale_custom_dub', raise_if_not_found=True)
+            template_id = self.env.ref('sale_order_cstm.email_template_sale_custom_dub', raise_if_not_found=True)
         return template_id
+
+    #Sometimes it gets called directly
+    def _get_confirmation_template(self):
+        return self._get_common_confirmation_template()
+
+    def _find_mail_template(self):
+        return self._get_common_confirmation_template()
 
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
         self.ensure_one()
-        template_id = self._find_mail_template()
+        self.order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
-        template = self.env['mail.template'].browse(template_id)
-        if template.lang:
+        template = self._find_mail_template()
+        # template = self.env['mail.template'].browse(template_id)
+        if template and template.lang:
             lang = template._render_lang(self.ids)[self.id]
         ctx = {
             'default_model': 'sale.order',
             'default_res_id': self.ids[0],
-            'default_use_template': bool(template_id),
-            'default_template_id': template_id,
+            'default_use_template': bool(template),
+            'default_template_id': template.id if template else None,
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
             'custom_layout': "mail.mail_notification_paynow",
@@ -132,6 +138,19 @@ class SaleOrder(models.Model):
             ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
         else:
             ctx['email_from'] = None
+
+        customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
+        if customer.account_manager_cust:
+            if ctx['email_from']:
+                ctx['email_from'] = ctx['email_from'] + ',' + customer.account_manager_cust.login
+            else:
+                ctx['email_from'] = customer.account_manager_cust.login
+
+        if customer.customer_success:
+            if ctx['email_from']:
+                ctx['email_from'] = ctx['email_from'] + ',' + customer.customer_success.login
+            else:
+                ctx['email_from'] = customer.customer_success.login
 
         return {
             'type': 'ir.actions.act_window',
