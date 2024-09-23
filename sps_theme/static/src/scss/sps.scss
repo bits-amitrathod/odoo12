@@ -1,4 +1,14 @@
 
+body.o_web_client{
+    font-family: "Roboto", sans-serif !important;
+    font-weight: 500 !important;
+}
+th{
+    font-weight: bold !important;
+}
+.fw-bold {
+    font-weight: 600 !important;
+}
 
 // Shared with web client and login screen
 .o_home_menu_background {
@@ -45,7 +55,10 @@
 
 .o_main_navbar{
     border-bottom: 1px solid #394158;
-    background-color: #394a58;
+    background: #394a58;
+    .o_menu_brand{
+        font-size: 22px;
+    }
      ul > {
          li > {
            a{
