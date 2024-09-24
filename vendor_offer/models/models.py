@@ -662,22 +662,6 @@ class VendorOffer(models.Model):
                 'state': 'ven_sent'}
             )
 
-        # Attaching the shipping label to email template
-        template.sudo().attachment_ids = False
-
-        if self.shipping_number:
-            attachment  = self.env['ir.attachment'].search(
-                [('res_model', '=', 'purchase.order'),
-                 ('mimetype', '=', 'application/pdf'), ('name', 'ilike', '%' + self.name + '%'),
-                     ('name', 'like', '%FedEx_Label%')], order="id desc")
-            ship_label = attachment and attachment[0] or False
-            if ship_label:
-                template.sudo().write({'attachment_ids': [(0, 0, {'name': ship_label.name,
-                                        'type': 'binary',
-                                        'mimetype': 'application/pdf',
-                                        'store_fname': ship_label.name,
-                                        'datas': ship_label.datas})]})
-
         return {
             'name': _('Compose Email'),
             'type': 'ir.actions.act_window',
