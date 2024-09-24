@@ -134,7 +134,7 @@
                 <label for="product_brand_id"/>
                 <field name="product_brand_id"/><div/>
             </field>
-            <label for="name" string="Product Name" position="after">
+            <label for="name" position="after">
                 <div><field class="text-break" name="name" placeholder="e.g. Cheese Burger" readonly="1"/></div>
             </label>
         </field>
