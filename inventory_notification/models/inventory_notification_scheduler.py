@@ -1550,7 +1550,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                  'datas': base64.b64encode(pdf)})
                                          ]
 
-            local_context['descrption'] = Markup(local_context['descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>')
+            local_context['descrption'] =  local_context['descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>'
 
             if ship_label is not None:
                 values1['attachment_ids'].append(
@@ -1562,6 +1562,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 )
                 local_context['descrption'] = local_context['descrption'] + 'and Shipping label <b> "' + ship_label.name + ' "</b>'
 
+            # finally markup the description
+            local_context['descrption'] = Markup(local_context['descrption'])
             values1['model'] = None
             values1['res_id'] = False
             template_id = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)

@@ -40,7 +40,7 @@ class FedexDelivery(models.Model):
         srm.web_authentication_detail(superself.fedex_developer_key, superself.fedex_developer_password)
         srm.client_detail(superself.fedex_account_number, superself.fedex_meter_number)
         srm.transaction_detail(order.id)
-        package_type = popup.product_packaging.package_type_id.shipper_package_code or self.fedex_default_package_type_id.shipper_package_code
+        package_type = popup.product_packaging.shipper_package_code or self.fedex_default_package_type_id.shipper_package_code
         srm.shipment_request(self.fedex_droppoff_type, self.fedex_service_type, package_type, self.fedex_weight_unit,
                              self.fedex_saturday_delivery)
         srm.shipment_request_email(order)
