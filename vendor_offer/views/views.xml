@@ -25,7 +25,9 @@
             <field name="name">Appraisal</field>
             <field name="category_id" ref="approval_vendor_offer"/>
         </record>
-
+        <record id="it_user_access" model="res.groups">
+            <field name="name">IT</field>
+        </record>
 
         <!-- explicit list view definition -->
         <record model="ir.ui.view" id="vendor_offer.list_view">
