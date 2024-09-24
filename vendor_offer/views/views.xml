@@ -695,6 +695,20 @@
                 <xpath expr="//filter[@name='requisition']" position="replace"/>
             </field>
      </record>
+    <record id="vendor_offer_approve_popup" model="ir.ui.view">
+        <field name="name">ven.offer.approve.vendor</field>
+        <field name="model">purchase.order</field>
+        <field name="arch" type="xml">
+            <form string="Offer Approval">
+                <group>
+                          <div style="white-space: nowrap;">Vendor Offer Expired. Needs Approval</div>
+                </group>
+                <footer>
+                    <button string="Back" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
 
     </data>
 </odoo>
