@@ -45,6 +45,10 @@
                                 string="Add Note"/>
                         <button name="action_confirm_offer_both" states="ven_draft,ven_sent"
                                 context="{'vendor_offer_data': True}" string="Offer Accepted" type="object"/>
+                        <button name="action_approve_offer" states="ven_draft,ven_sent"
+                                context="{'vendor_offer_data': True}" string="Approve" type="object"
+                                groups="vendor_offer.offerapproval_user_access"
+                                attrs="{'invisible':[('offer_expired', '=', False)]}" />
                         <field name="status" widget="statusbar" statusbar_visible="ven_draft,ven_sent,purchase"
                                readonly="1"/>
                         <field name="vendor_offer_data" invisible="1"/>
