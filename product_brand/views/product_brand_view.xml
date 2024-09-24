@@ -179,6 +179,12 @@
             <field name="name" position="after">
                 <field name="product_brand_id"/>
             </field>
+
+            <xpath expr="//tree//field[@name='name']" position="attributes">
+                <attribute name="class"> column_white_space </attribute>
+            </xpath>
+
+
         </field>
     </record>
 
