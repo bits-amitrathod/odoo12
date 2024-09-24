@@ -249,9 +249,9 @@ class WebsiteSales(WebsiteSale):
 
         return response
 
-    def payment_confirmation(self, **post):
+    def shop_payment_confirmation(self, **post):
 
-        responce = super(WebsiteSales, self).payment_confirmation(**post)
+        responce = super(WebsiteSales, self).shop_payment_confirmation(**post)
 
         # SPS Custom code to sent the Quotation email to customer when payment confirms............
         order = responce.qcontext['order']

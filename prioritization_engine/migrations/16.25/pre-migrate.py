@@ -573,5 +573,27 @@ def ks_dashboard_ninja_queries(cr):
         WHERE id = 255;
     """)
 
+    cr.execute("""
+            UPDATE ks_dashboard_ninja_item set ks_custom_query = 'SELECT
+                rp.name,
+                COUNT(ma.id)
+            FROM
+                mail_activity ma
+            INNER JOIN
+                res_users ru ON ma.user_id = ru.id
+            INNER JOIN
+                res_partner rp ON ru.partner_id = rp.id
+            INNER JOIN
+                res_groups_users_rel ug ON ru.id = ug.uid
+            INNER JOIN
+                res_groups rg ON ug.gid = rg.id
+            WHERE
+                rg.name ->> ''en_US'' = ''CS'' AND ma.date_done BETWEEN %(ks_start_date)s and %(ks_end_date)s
+            GROUP BY
+                rp.name
+            ORDER BY
+                rp.name'
+            WHERE id = 267;
+        """)
 
     cr.execute("""UPDATE ir_ui_menu set action = concat('ir.actions.client,',  (SELECT id FROM ir_actions WHERE name ->> 'en_US' = 'My Dashboard' AND type = 'ir.actions.client'))  WHERE id = 1355;""")

@@ -91,15 +91,22 @@ class SaleOrder(models.Model):
                 order.with_context(**email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
         return True
 
-    def _find_mail_template(self):
+    def _get_common_confirmation_template(self):
         template_id = False
-
         if self.state == 'sale' and not self.env.context.get('proforma', False):
             if not template_id:
-                template_id = self.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm', raise_if_not_found=True)
+                template_id = self.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm',
+                                           raise_if_not_found=True)
         if not template_id:
             template_id = self.env.ref('sale_order_cstm.email_template_sale_custom_dub', raise_if_not_found=True)
         return template_id
+
+    #Sometimes it gets called directly
+    def _get_confirmation_template(self):
+        return self._get_common_confirmation_template()
+
+    def _find_mail_template(self):
+        return self._get_common_confirmation_template()
 
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
