@@ -26,6 +26,15 @@
             <field name="category_id" ref="approval_vendor_offer"/>
         </record>
 
+        <record model="ir.module.category" id="it_group_category">
+             <field name="name">IT</field>
+             <field name="description">User access levels for IT group</field>
+             <field name="sequence">10</field>
+        </record>
+        <record id="it_user_access" model="res.groups">
+            <field name="name">IT</field>
+            <field name="category_id" ref="it_group_category"/>
+        </record>
 
         <!-- explicit list view definition -->
         <record model="ir.ui.view" id="vendor_offer.list_view">
