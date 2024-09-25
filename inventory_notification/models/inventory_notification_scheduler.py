@@ -120,7 +120,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'closing_content': 'Warehouse Team',
             'description': Markup("Hi " + final_user.display_name +
                            ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name + "<br/><br/>" +
-                           "<strong> Notes :  </strong>" + (picking.note or "N/A") + "",)
+                           "<strong> Notes :  </strong>" + (str(picking.note) or "N/A") + "",)
         }
         self.process_common_email_notification_template(super_user, final_user, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
@@ -181,7 +181,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                             "<strong> Date: </strong>" + (str(datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')) if picking.scheduled_date else "N/A") + "<br/>" +
                            "<strong> Customer Name:  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" +
                            "<strong> Shipping Address: </strong> <br/>" + shipping_adrs + "<br/>" +
-                           "<strong> Notes :  </strong>" + (picking.note or "N/A")),
+                           "<strong> Notes :  </strong>" + (str(picking.note) or "N/A")),
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done'],
             'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done'],
