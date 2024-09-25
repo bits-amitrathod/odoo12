@@ -34,16 +34,18 @@
                 <sheet>
                     <div class="oe_button_box" name="button_box">
                         <button name="%(action_open_brand_products)d"
-                            type="action"
-                            class="oe_stat_button"
-                            icon="fa-cubes">
+                                type="action"
+                                class="oe_stat_button"
+                                icon="fa-cubes">
                             <field name="products_count" widget="statinfo" string="Products"/>
                         </button>
                     </div>
                     <field name="logo" widget="image" class="oe_avatar"/>
                     <div class="oe_title">
-                            <label for="name" string="Manufacture Name" class="oe_edit_only"/>
-                            <h1><field name="name"/></h1>
+                        <label for="name" string="Manufacture Name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"/>
+                        </h1>
                     </div>
                     <group>
                         <group>
@@ -53,7 +55,7 @@
                             <field name="manufacturer_pname"/>
                         </group>
                         <group>
-                            <field name="manufacturer_purl" />
+                            <field name="manufacturer_purl"/>
                         </group>
                     </group>
                     <group string="Description">
@@ -100,7 +102,9 @@
                                 <span>
                                     <t t-esc="record.description.value.substr(0,200)"/>
                                     <t t-if="record.description.value.length > 200">
-                                        <a type="open"><b>...</b></a>
+                                        <a type="open">
+                                            <b>...</b>
+                                        </a>
                                     </t>
                                 </span>
                             </div>
@@ -118,8 +122,9 @@
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field string="Manufacture" name="product_brand_id"/>
-                <filter string="Manufacture" name="groupby_brand" domain="[]" context="{'group_by' : 'product_brand_id'}"/>
-<!--                <field name="pricelist_id" context="{'pricelist': self}" filter_domain="[]" groups="product.group_product_pricelist"/>-->
+                <filter string="Manufacture" name="groupby_brand" domain="[]"
+                        context="{'group_by' : 'product_brand_id'}"/>
+                <!--                <field name="pricelist_id" context="{'pricelist': self}" filter_domain="[]" groups="product.group_product_pricelist"/>-->
                 <separator/>
             </field>
         </field>
@@ -128,22 +133,36 @@
     <record id="product_template_form_brand_add" model="ir.ui.view">
         <field name="name">product.template.product.form</field>
         <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_form_view" />
+        <field name="inherit_id" ref="product.product_template_form_view"/>
         <field name="arch" type="xml">
             <field name="sale_ok" position="before">
                 <label for="product_brand_id"/>
-                <field name="product_brand_id"/><div/>
+                <field name="product_brand_id"/>
+                <div/>
             </field>
-            <label for="name" position="after">
-                <div><field class="text-break" name="name" placeholder="e.g. Cheese Burger" readonly="1"/></div>
-            </label>
+            <div class="oe_title" position="replace">
+                <div class="">
+                    <label for="name" string="Product Name"/>
+                    <h1 class="m-0">
+                        <div class="d-flex">
+                            <field class="text-break"  name="name"  attrs="{'readonly': True}" placeholder="e.g. Cheese Burger"/>
+                        </div>
+                    </h1>
+                </div>
+                <div>
+                    <div class="d-flex">
+                        <field name="priority" widget="priority" class="me-3"/>
+                        <field class="text-break product_name_size"  name="name"  placeholder="e.g. Cheese Burger"/>
+                    </div>
+                </div>
+            </div>
         </field>
     </record>
 
     <record id="view_product_template_kanban_brand" model="ir.ui.view">
         <field name="name">product kanban view: add brand</field>
         <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_kanban_view" />
+        <field name="inherit_id" ref="product.product_template_kanban_view"/>
         <field name="arch" type="xml">
             <xpath expr="//strong[hasclass('o_kanban_record_title')]" position="after">
                 <div>
@@ -152,7 +171,7 @@
                             type="action"
                             name="%(action_open_single_product_brand)d"
                     >
-                        <field name="product_brand_id" />
+                        <field name="product_brand_id"/>
                     </a>
                 </div>
             </xpath>
@@ -162,7 +181,7 @@
     <record id="view_product_variant_kanban_brand" model="ir.ui.view">
         <field name="name">product variant kanban view: add brand</field>
         <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_kanban_view" />
+        <field name="inherit_id" ref="product.product_kanban_view"/>
         <field name="arch" type="xml">
             <xpath expr="//div[hasclass('oe_kanban_details')]/strong[1]" position="after">
                 <div>
@@ -177,14 +196,14 @@
     <record id="view_product_template_tree_brand" model="ir.ui.view">
         <field name="name">product tree view: add brand</field>
         <field name="model">product.template</field>
-        <field name="inherit_id" ref="product.product_template_tree_view" />
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field name="product_brand_id"/>
             </field>
 
             <xpath expr="//tree//field[@name='name']" position="attributes">
-                <attribute name="class"> column_white_space </attribute>
+                <attribute name="class">column_white_space</attribute>
             </xpath>
 
 
@@ -194,7 +213,7 @@
     <record id="view_product_variant_tree_brand" model="ir.ui.view">
         <field name="name">product variant tree view: add brand</field>
         <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_product_tree_view" />
+        <field name="inherit_id" ref="product.product_product_tree_view"/>
         <field name="arch" type="xml">
             <field name="name" position="after">
                 <field name="product_brand_id"/>
@@ -211,8 +230,8 @@
     </record>
 
     <menuitem
-        name="Product Manufactures"
-        id="menu_product_brand"
-        action="action_product_brand"
-        parent="sale.prod_config_main"/>
+            name="Product Manufactures"
+            id="menu_product_brand"
+            action="action_product_brand"
+            parent="sale.prod_config_main"/>
 </odoo>
