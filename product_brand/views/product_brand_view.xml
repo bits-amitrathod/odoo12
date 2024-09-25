@@ -140,7 +140,11 @@
                 <field name="product_brand_id"/>
                 <div/>
             </field>
-            <div class="oe_title" position="replace">
+            <!--  Product title position replaced -->
+            <div class="oe_title"  position="replace">
+                <div class="d-none">
+                    <div class="oe_title"></div>
+                </div>
                 <div class="">
                     <label for="name" string="Product Name"/>
                     <h1 class="m-0">
