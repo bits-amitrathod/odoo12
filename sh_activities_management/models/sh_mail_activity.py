@@ -187,8 +187,9 @@ class MailActivity(models.Model):
     def _search_state(self,operator,value):
         not_done_ids = []
         done_ids = []
+        one_year_ago = fields.Date.to_string(datetime.now() - timedelta(days=270))
         if value == 'done':
-            for record in self.search([('active','=',False),('date_done','!=',False)]):
+            for record in self.search([('active','=',False),('date_done','>=',one_year_ago)]):
                 done_ids.append(record.id)
         elif value == 'cancel':
             for record in self.search([('active','=',False),('date_done','=',False)]):
