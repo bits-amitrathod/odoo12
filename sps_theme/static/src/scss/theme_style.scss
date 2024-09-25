@@ -237,7 +237,7 @@ header{
             display: block !important;
             .navbar-brand{
                 &.logo{
-                    width: 15%;
+                    width: 25%;
                     margin-right: 0px !important;
                     float: left;
                     @media screen and (max-width: 767px){
@@ -345,7 +345,7 @@ header{
             margin-top: 35px;
             margin-right: 15px;
              @media (max-width: 767px){
-                margin-top:25px;
+                margin-top:0px;
             }
         }
     }
@@ -1300,4 +1300,28 @@ li > * > li > ol {
             }
         }
     }
+}
+
+
+@media screen and (min-width: 767px){
+   header{
+        #top-header{
+            margin-bottom: -20px;
+        }
+        #top_menu_collapse{
+            margin-top: 40px;
+        }
+    }
+}
+
+@media screen and (max-width: 767px){
+   .o_wsale_products_searchbar_form{
+        display:none !important;
+   }
+   .products_pager{
+       margin-left: -16px;
+   }
+   .products_header{
+        flex-wrap: wrap !important;
+   }
 }
