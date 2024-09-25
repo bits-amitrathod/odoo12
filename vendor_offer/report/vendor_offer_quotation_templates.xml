@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-lg-6 col-xs-6 col-xs-offset-1">
-                      <strong>SELLER NAME / ADDRESS:</strong>
+                      <strong>SALVAGER NAME / ADDRESS:</strong>
                     <div t-field="o.partner_id" style="font-size:13px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
                         <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>
                 </div>
@@ -71,7 +71,7 @@
             </ul>
               <div><p style="margin: 3px 0;font-size:13px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
             <ul>
-              <li><div><p style="margin: 3px 0;font-size:13px;">Speedy Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div></li>
+              <li><div><p style="margin: 3px 0;font-size:13px;">Expedited Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div></li>
               <li><div><p style="margin: 3px 0;font-size:13px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div></li>
               <li><div><p style="margin: 3px 0;font-size:13px;">Any extra quantities or products received after the shipment is received in our warehouse will be salvaged with no additional value.</p></div></li>
             </ul>
@@ -143,6 +143,7 @@
 
 
               <div><p style="margin: 3px 0;font-size:13px;"><strong>SPS RESERVES THE RIGHT TO ADJUST THIS PURCHASE OFFER IN THE EVENT THAT SPS’S QUALITY CONTROL PROCESS IDENTIFIES ANY DAMAGES OR DISCREPENCIES WITH THE PRODUCT FURNISHED. SALVAGER WILL BE NOTIFIED IMMEDIATELY IF AND WHEN THIS OFFER IS ADJUSTED. ALL ITEMS MUST BE IN THE ORIGINAL MANUFACTURERS PACKAGING AND NOT REPROCESSED.  NO SALES SAMPLES OR CPT PRODUCTS. YOU WARRANT THAT YOU ARE THE LAWFUL OWNER OF THE AFOREMENTIONED GOODS, THAT THEY ARE FREE FROM ALL ENCUMBRANCES, AND THAT WE HAVE THE RIGHT TO SELL THESE GOODS. SALVAGER BINDS ITSELF, ITS SUCCESSORS AND ASSIGNS, TO WARRANT AND DEFEND SPS TITLE TO THESE GOODS AGAINST CLAIMS AND DEMANDS OF ALL PERSONS.</strong></p></div>
+              <div><p style="margin: 3px 0;font-size:13px;"><strong>For detailed Terms of Purchase, refer to the SPS website:<a>https://www.shopsps.com/terms_of_purchase</a></strong></p></div>
               <div><p style="margin: 3px 0;font-size:13px;"><img src="/vendor_offer/static/img/unchecked.png" style="height:10px;width:10px;margin-right:8px;"/><strong/>By checking the box to the left, you agree that: (1) you are a licensed facility with legitimate title ownership of the merchandise being sold; (2) you have quality system procedures to ensure the maintenance of safety, storage and distribution is properly being enforced; and (3) you are willing to demonstrate this to SPS upon request.</p></div>
             <table class="table table-condensed" style="width:850px;">
             <tbody>
@@ -152,7 +153,7 @@
                     <td style="border-bottom: 1px solid #fff;border-top: 1px solid #fff;"/>
                 </tr>
                  <tr>
-                     <td style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">SELLER SIGNATURE:</span></td>
+                     <td style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">SALVAGER SIGNATURE:</span></td>
                      <td style="border-bottom: 1px solid #000;"/>
                      <td style="border-bottom: 1px solid #fff;padding-left:30px; vertical-align: bottom;border-top: 1px solid #fff;"><span style="position: relative;top: 5px;">DATE: </span></td>
                 </tr>
@@ -344,7 +345,7 @@
                     </div>
                 </div>
                 <div class="col-6 col-lg-6 col-xs-6 col-xs-offset-1">
-                      <strong>SELLER NAME / ADDRESS:</strong>
+                      <strong>SALVAGER NAME / ADDRESS:</strong>
                     <div t-field="o.partner_id" style="font-size:14px!important;"
                         t-options='{"widget": "contact", "fields": ["address", "name", "phone"], "no_marker": True, "phone_icons": True}'/>
 <!--                        <p t-if="o.partner_id.vat"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></p>-->
@@ -382,7 +383,7 @@
             <div><p style="margin: 3px 0;font-size:14px;">This offer must be accepted within 3 business days of delivery date unless otherwise noted.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;">Once the offer is accepted, the offer price is contingent upon requirements detailed below.</p></div>
               <div><p style="margin: 3px 0;font-size:14px;"><strong>OFFER PRICE CONDITIONAL UPON</strong>:</p></div>
-              <div><p style="margin: 3px 0;font-size:14px;">Speedy Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div>
+              <div><p style="margin: 3px 0;font-size:14px;">Expedited Delivery to Buyer within 5 business days  Please included this purchase offer inside each shipment</p></div>
               <div><p style="margin: 3px 0;font-size:14px;">Quality Control Inspection within 10 business days upon receipt of goods</p></div>
 
             <div t-if="o.offer_type =='cashcredit' or not o.offer_type">
@@ -468,7 +469,7 @@
                     <td style="border-bottom: 1px solid #fff;border-top: 1px solid #fff;"></td>
                 </tr>
                  <tr>
-                     <td  style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">SELLER SIGNATURE:</span></td>
+                     <td  style="vertical-align: bottom;border: none;"><span style="position: relative;top: 5px;">SALVAGER SIGNATURE:</span></td>
                      <td style="border-bottom: 1px solid #000;" ></td>
                      <td style="border-bottom: 1px solid #fff;padding-left:30px; vertical-align: bottom;border-top: 1px solid #fff;"><span style="position: relative;top: 5px;">DATE: </span></td>
                 </tr>
