@@ -232,6 +232,14 @@ class FedexDelivery(models.Model):
         return res
 
         # // Below method is override for sales order fedex shipping Label PO
+
+    # TODO
+    """
+        UPG_ODOO16_NOTE: 
+        # below method "fedex_send_shipping" is odoo core method and we overrided it but have to comment it beacuse causing error 
+                
+    """
+
     #@api.multi
     def fedex_send_shipping(self, pickings):
         _logger.info('Override fedex_send_shipping method call')
