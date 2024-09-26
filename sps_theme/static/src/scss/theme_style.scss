@@ -1235,7 +1235,7 @@ li > * > li > ol {
         border-radius: 0.25rem;
         padding: 2px 15px;
         &:has(input:checked){
-            background-color: $red2;
+            background-color: $red;
             color: white;
         }
     }
@@ -1310,6 +1310,9 @@ li > * > li > ol {
         }
         #top_menu_collapse{
             margin-top: 40px;
+            .o_no_autohide_item{
+                margin-left: 0px !important;
+            }
         }
     }
 }

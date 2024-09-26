@@ -55,9 +55,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                     outgoing_server_list.active = False
 
     def process_manual_notification_scheduler(self):
-        _logger.info("Process Manual Notification Scheduler called..")
-        limit = 40
-        self.process_notification_scheduler(limit)
+        _logger.info("process_manual_notification_scheduler called..")
+        self.process_notification_scheduler()
 
     def process_notification_scheduler(self, limit=None):
         _logger.info("process_notification_scheduler called")
@@ -103,6 +102,12 @@ class InventoryNotificationScheduler(models.TransientModel):
         users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.order_processor.id)])
 
         final_user = users if users else users_sale_person if users_sale_person else super_user
+
+        to_user = picking.sale_id.customer_success if picking.sale_id.customer_success else False
+        if not to_user and picking.sale_id.account_manager:
+            to_user = picking.sale_id.account_manager
+        final_user = to_user or final_user
+
         sales_order = []
         for stock_move in Stock_Moves:
             sale_order = {
@@ -122,9 +127,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                            ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name + "<br/><br/>" +
                            "<strong> Notes :  </strong>" + (str(picking.note) or "N/A") + "",)
         }
-        self.process_common_email_notification_template(super_user, final_user, vals['subject'], vals['description'],
+
+        email_to = picking.sale_id.account_manager.login if picking.sale_id.account_manager else False
+        if picking.sale_id.customer_success:
+            email_to = ','.join(filter(None, [email_to, picking.sale_id.customer_success.login]))
+        email_to = email_to or final_user.sudo().email
+
+        self.process_common_email_notification_template(super_user, email_to, vals['subject'], vals['description'],
                                                         vals['sale_order_lines'], vals['header'],
-                                                        vals['columnProps'], vals['closing_content'])
+                                                        vals['columnProps'], vals['closing_content'], type=True)
 
     def pick_notification_for_user(self, picking):
         Stock_Moves_list = self.env['stock.move'].search([('picking_id', '=', picking.id)])
@@ -553,6 +564,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                             email_list_cc.append(customr.user_id.email)
                     if customr.account_manager_cust.email:
                         email_list_cc.append(customr.account_manager_cust.email)
+                        if customr.customer_success and customr.customer_success.email:
+                            email_list_cc.append(customr.customer_success.email)
                     sort_col = True
                     self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                    product_list,
@@ -1019,7 +1032,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                    header, columnProps, closing_content, email_to_team=None,
                                                    picking=None,
                                                    custom_template="inventory_notification.common_mail_template",
-                                                   is_employee=True):
+                                                   is_employee=True,
+                                                   type=False):
         template = self.env.ref(custom_template)
 
         product_dict = {}
@@ -1098,7 +1112,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'description': description,
                 'template': template,
                 'is_employee': is_employee,
-                'closing_content': closing_content
+                'closing_content': closing_content,
+                'type': type
             }
             self.send_email_and_notification(vals, picking)
 
@@ -1106,7 +1121,10 @@ class InventoryNotificationScheduler(models.TransientModel):
         email = ""
         if vals['email_to_team']:
             email = vals['email_to_team']
-        if vals['email_to_user']:
+        # type check added for pull email notification changes
+        if vals['type']:
+            email = vals['email_to_user']
+        elif vals['email_to_user']:
             email = vals['email_to_user'].sudo().email
 
         local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],

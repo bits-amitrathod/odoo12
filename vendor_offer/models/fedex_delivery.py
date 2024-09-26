@@ -2,6 +2,7 @@
 import logging
 import time
 
+from docutils.nodes import reference
 from zeep.helpers import serialize_object
 
 from odoo import api, models, fields, _, tools
@@ -286,9 +287,10 @@ class FedexDelivery(models.Model):
             # For india picking courier is not accepted without this details in label.
             po_number = order.display_name or False
             dept_number = False
-            if picking.partner_id.country_id.code == 'IN' and picking.picking_type_id.warehouse_id.partner_id.country_id.code == 'IN':
-                po_number = 'B2B' if picking.partner_id.commercial_partner_id.is_company else 'B2C'
-                dept_number = 'BILL D/T: SENDER'
+            """........BITS......No need of dept_number in the label that's why commenting the below code..........."""
+            # if picking.partner_id.country_id.code == 'IN' and picking.picking_type_id.warehouse_id.partner_id.country_id.code == 'IN':
+            #     po_number = 'B2B' if picking.partner_id.commercial_partner_id.is_company else 'B2C'
+            #     dept_number = 'BILL D/T: SENDER'
 
             # TODO RIM master: factorize the following crap
 
@@ -308,6 +310,10 @@ class FedexDelivery(models.Model):
             carrier_tracking_refs = []
             lognote_pickings = picking.sale_id.picking_ids if picking.sale_id else picking
 
+            """...........BITS....No need of reference that's why commenting the below code.................... """
+            # reference = picking.display_name
+            reference = False
+
             for sequence, package in enumerate(packages, start=1):
 
                 srm.add_package(
@@ -317,7 +323,7 @@ class FedexDelivery(models.Model):
                     sequence_number=sequence,
                     po_number=po_number,
                     dept_number=dept_number,
-                    reference=picking.display_name,
+                    reference=reference,
                 )
                 srm.set_master_package(net_weight, len(packages), master_tracking_id=master_tracking_id)
 
