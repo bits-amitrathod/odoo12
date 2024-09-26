@@ -13,8 +13,8 @@ class PurchaseOrderPopUp(models.TransientModel):
         if active_model and active_id:
             purchase_order = self.env[active_model].sudo().browse(int(active_id))
             carrier = purchase_order.carrier_id
-        else:
-            carrier = self.env['delivery.carrier'].search([('name', '=', 'Vendor_Fedex Ground')])
+
+        carrier = carrier or self.env['delivery.carrier'].with_context({'active_test':False}).search([('name', '=', 'Vendor_Fedex Ground')])
         if carrier:
             return carrier.id
 
