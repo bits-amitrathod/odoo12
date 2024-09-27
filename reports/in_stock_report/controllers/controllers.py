@@ -426,13 +426,15 @@ class ReportPrintInStockExport(http.Controller):
                             "$" + " {0:.2f}".format(line['list_price']), line['actual_quantity'], line['product_uom'],
                             line['min_expiration_date'], line['max_expiration_date']])
 
-        res = request.make_response(
-            self.from_data(["partner_name", "brand_name", "sku_code", "product_name", "price_list"
+
+        xl_data = self.from_data(["partner_name", "brand_name", "sku_code", "product_name", "price_list"
                                , "actual_quantity", "product_uom", "min_expiration_date", "max_expiration_date"],
-                           records),
+                           records)
+
+        res = request.make_response(xl_data,
             headers=[('Content-Disposition', content_disposition('in_stock_report' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
-        res.set_cookie('fileToken', token)
+        # res.set_cookie('fileToken', token)
 
         return res

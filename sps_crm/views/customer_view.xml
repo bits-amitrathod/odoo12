@@ -348,16 +348,11 @@
         </xpath>
 
         <xpath expr="//body/t/tr/td[3]" position="before">
-                    <!--<td>
-                         <t t-set="qty_available" t-value="int(wish.product_id.qty_available)"/>
-                            <b><t t-esc="qty_available"/></b>
-                         </td>-->
-                    <td>
-                         <t t-set="actual_quantity" t-value="int(wish.product_id.actual_quantity)"/>
-                            <b><t t-esc="actual_quantity"/></b>
-                         </td>
-                </xpath>
-
+            <td class="align-middle">
+                <t t-set="actual_quantity" t-value="int(wish.product_id.actual_quantity)"/>
+                <b><t t-esc="actual_quantity"/></b>
+             </td>
+        </xpath>
         <xpath expr="//input[@id='b2b_wish']" position="attributes">
             <attribute name='checked'>True</attribute>
         </xpath>
