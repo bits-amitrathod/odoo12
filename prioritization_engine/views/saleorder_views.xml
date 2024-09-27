@@ -323,4 +323,11 @@
                <br/>
            </xpath>
         </template>
+        <template id="inherit_report_purchaseorder_document" inherit_id="purchase.report_purchaseorder_document">
+            <xpath expr="//table[contains(@class, 'o_main_table')]" position="attributes">
+                <attribute name="class">table table-sm o_main_table</attribute>
+            </xpath>
+        </template>
+
+
 </odoo>

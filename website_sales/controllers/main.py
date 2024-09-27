@@ -69,21 +69,21 @@ class WebsiteSales(WebsiteSale):
         response = super(WebsiteSales,self).shop(page=page, category=category, search=search, min_price=min_price, max_price=max_price, ppg=ppg, **post)
 
         payload = response.qcontext
-        c_all_id = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
-        product_brands = request.env['product.brand']
 
-        if category:
-            if str(c_all_id.id) == str(category) if isinstance(category, str) else str(category.id) :
-                product_brands = request.env['product.brand'].search([])
-            else:
-                s = str(category) if isinstance(category, str) else str(category.id)
-                request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+ s)
-                r = request.env.cr.fetchall()
-                pt_list = request.env['product.template'].sudo().search([('id', 'in', r)])
-                for b in pt_list:
-                    if b.product_brand_id:
-                        if not b.product_brand_id in product_brands:
-                            product_brands.append(b.product_brand_id)
+        # c_all_id = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
+        # product_brands = request.env['product.brand']
+        # if category:
+        #     if str(c_all_id.id) == str(category) if isinstance(category, str) else str(category.id) :
+        #         product_brands = request.env['product.brand'].search([])
+        #     else:
+        #         s = str(category) if isinstance(category, str) else str(category.id)
+        #         request.env.cr.execute("SELECT product_template_id FROM product_public_category_product_template_rel where product_public_category_id = "+ s)
+        #         r = request.env.cr.fetchall()
+        #         pt_list = request.env['product.template'].sudo().search([('id', 'in', r)])
+        #         for b in pt_list:
+        #             if b.product_brand_id:
+        #                 if not b.product_brand_id in product_brands:
+        #                     product_brands.append(b.product_brand_id)
 
         irConfig = request.env['ir.config_parameter'].sudo()
         payload['isVisibleWebsiteExpirationDate'] = irConfig.get_param('website_sales.website_expiration_date')
@@ -117,21 +117,16 @@ class WebsiteSales(WebsiteSale):
             payload['productExpiration'] = productMaxMinDates
 
         porductRows = [[]]
-        i = 1
         for val in payload['products']:
             porductRows[-1].append(val)
-            # if i % 4 == 0:
-            #     porductRows.append([])
-            # i += 1
 
         payload['porductRows'] = porductRows
-        # payload['brands'] = product_brands
-        # payload['brand_id'] = int(brand) if brand else 0
-        # payload['keep'] = keep
 
-        if category and category.name == "surgical equipment":
-            title = "Surplus Surgical Equipment"
-            sub_title = "Shop Surplus Surgical Equipment"
+        if category:
+            category = request.env['product.public.category'].search([('id', '=', int(category))], limit=1)
+            if category.name == "surgical equipment":
+                title = "Surplus Surgical Equipment"
+                sub_title = "Shop Surplus Surgical Equipment"
 
         payload['title'] = title
         payload['sub_title'] = sub_title
