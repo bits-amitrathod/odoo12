@@ -61,6 +61,15 @@ class VendorOfferProduct(models.Model):
     dont_recalculate_offer_price = fields.Boolean(string='Do not Recalculate', store=True)
     do_not_change_retail = fields.Boolean(string="Do Not Change retail", default=False)
     do_not_change_offer = fields.Boolean(string="Do Not Change offer", default=False)
+    can_edit = fields.Boolean(compute='_compute_can_edit')
+
+    def _compute_can_edit(self):
+
+        for po_line in self:
+            can_edit = self.env.user.has_group('vendor_offer.offerapproval_user_access') or self.env.user.has_group(
+                'vendor_offer.it_user_access')
+            po_line.can_edit = can_edit
+
 
     # @api.multi
     def _calculat_delv_price(self):
