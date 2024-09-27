@@ -51,26 +51,25 @@
             <!-- NOTE:- ODOO16_MIG :- Working -->
             <!-- Show in Invoice PDF :- Bill To and Ship To Address -->
             <xpath expr="//div[hasclass('row')]" position="replace">
-                <div class="row" style="margin:0px;margin-top:0;padding-top:40px;margin-bottom: 5%">
+                <div class="row justify-content-between">
                     <t t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
-                        <div class="col-6"  style="margin-top: 21px;margin-bottom: 30px;border: 1px solid #ddd;display:inline-block;width:50%;vertical-align: top;">
-                            <strong >Bill To:</strong>
-                            <div t-field="o.partner_id"
-                                 t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
-                            <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></div>
-                        </div>
-                        <div class="col-6" style="margin-top: 21px;margin-bottom: 30px;border: 1px solid #ddd;margin-left:5px;width:49%;display:inline-block;">
-                            <div t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
-                                <strong>Ship To:</strong>
-                                <div t-field="o.partner_shipping_id"
-                                     t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
-                            </div>
-                        </div>
+                      <div class="col-6" style="border: 1px solid #ddd;padding:10px; width:49%; margin-right:2%">
+                        <strong>Bill To:</strong>
+                        <div t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                        <div t-if="o.partner_id.vat" class="mt16"><t t-esc="o.company_id.country_id.vat_label or 'TIN'"/>: <span t-field="o.partner_id.vat"/></div>
+                      </div>
+                      <div class="col-6" style="border: 1px solid #ddd;padding:10px; width:49%">
+                          <div t-if="o.partner_shipping_id and (o.partner_shipping_id != o.partner_id)">
+                              <strong>Ship To:</strong>
+                              <div t-field="o.partner_shipping_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
+                          </div>
+                      </div>
+
                     </t>
                     <t t-elif="o.partner_shipping_id and (o.partner_shipping_id == o.partner_id)">
                         <div class="offset-col-6 col-6" name="address_same_as_shipping">
                             <t t-set="address">
-                                <address class="mb-0" t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                                <address class="mb-0" t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
                                 <div t-if="o.partner_id.vat" id="partner_vat_address_same_as_shipping">
                                     <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-esc="o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>
                                     <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/>
@@ -81,7 +80,7 @@
                     <t t-else="">
                         <div class="offset-col-6 col-6" name="no_shipping">
                             <t t-set="address">
-                                <address class="mb-0" t-field="o.partner_id" t-options='{"widget": "contact", "fields": ["address", "name"], "no_marker": True}'/>
+                                <address class="mb-0" t-field="o.partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True}"/>
                                 <div t-if="o.partner_id.vat" id="partner_vat_no_shipping">
                                     <t t-if="o.company_id.account_fiscal_country_id.vat_label" t-esc="o.company_id.account_fiscal_country_id.vat_label" id="inv_tax_id_label"/>
                                     <t t-else="">Tax ID</t>: <span t-field="o.partner_id.vat"/>
@@ -90,38 +89,37 @@
                         </div>
                     </t>
                 </div>
-         </xpath>
-        <!-- Adding Subtotal and Total Section -->
-        <xpath expr="//div[@class='clearfix mb-4']" position="after">
-            <!-- Add this block for subtotals and totals -->
-            <div class="row">
-                <div class="col-6 offset-6">
-                    <table class="table table-sm o_invoice_report_totals">
-                        <tbody>
-                            <tr t-if="o.amount_untaxed">
-                                <td class="text-end"><strong>Subtotal</strong></td>
-                                <td class="text-end">
-                                    <span t-field="o.amount_untaxed" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                </td>
-                            </tr>
-                            <tr t-if="o.amount_tax">
-                                <td class="text-end"><strong>Taxes</strong></td>
-                                <td class="text-end">
-                                    <span t-field="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="text-end"><strong>Total</strong></td>
-                                <td class="text-end">
-                                    <span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+            </xpath>
+            <!-- Adding Subtotal and Total Section -->
+            <xpath expr="//div[@class='clearfix mb-4']" position="after">
+                <!-- Add this block for subtotals and totals -->
+                <div class="row">
+                    <div class="col-6 offset-6">
+                        <table class="table table-sm o_invoice_report_totals">
+                            <tbody>
+                                <tr t-if="o.amount_untaxed">
+                                    <td class="text-end"><strong>Subtotal</strong></td>
+                                    <td class="text-end">
+                                        <span t-field="o.amount_untaxed" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr t-if="o.amount_tax">
+                                    <td class="text-end"><strong>Taxes</strong></td>
+                                    <td class="text-end">
+                                        <span t-field="o.amount_tax" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-end"><strong>Total</strong></td>
+                                    <td class="text-end">
+                                        <span t-field="o.amount_total" t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </xpath>
-    </template>
-
+            </xpath>
+        </template>
     </data>
 </odoo>
