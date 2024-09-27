@@ -273,7 +273,7 @@ class VendorOffer(models.Model):
         return {
             'name': 'Requests for Vendor Offer',
             'view_mode': 'form',
-            'view_id': self.env.ref('vendor_offer.view_vendor_offer_form').id,
+            'view_id': self.env.ref('vendor_offer.view_vendor_offer_form_main').id,
             'res_model': 'purchase.order',
             'context': "{'vendor_offer_data': True}",
             'type': 'ir.actions.act_window',
