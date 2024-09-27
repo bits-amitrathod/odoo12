@@ -213,9 +213,12 @@
                                                options="{'no_create': True}"
                                                attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"
                                                 optional="hide"/>
+                                        <field name="can_edit" invisible="1"/>
                                         <field name="margin" />
                                         <field name="multiplier"
-                                               attrs="{'readonly': [('import_type_ven_line', '==', 'all_field_import')]}"/>
+                                               options="{'no_edit': True, 'no_create': True, 'no_open': True}"
+                                               attrs="{'readonly': ['|',('import_type_ven_line', '==', 'all_field_import'),('can_edit', '=', False)]}"/>
+
 
 
                                         <field name="original_sku" readonly="1" string="Imported SKU" optional="hide"/>

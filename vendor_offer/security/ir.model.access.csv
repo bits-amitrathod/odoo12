@@ -1,7 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_competition_competition_user,competition.competition user,model_competition_competition,purchase.group_purchase_user,1,1,0,0
 access_competition_competition_manager,competition.competition manager,model_competition_competition,purchase.group_purchase_manager,1,1,1,1
-access_multiplier_multiplier_user,multiplier.multiplier user,model_multiplier_multiplier,purchase.group_purchase_user,1,1,0,0
+access_multiplier_multiplier_user,multiplier.multiplier user,model_multiplier_multiplier,purchase.group_purchase_user,1,0,0,0
+access_multiplier_multiplier_user_offerapproval,multiplier.multiplier offerapproval,model_multiplier_multiplier,vendor_offer.offerapproval_user_access,1,1,1,1
+access_multiplier_multiplier_user_it,multiplier.multiplier it,model_multiplier_multiplier,vendor_offer.it_user_access,1,1,1,1
 access_multiplier_multiplier_manager,multiplier.multiplier manager,model_multiplier_multiplier,purchase.group_purchase_manager,1,1,1,1
 access_tier_tier_user,tier.tier user,model_tier_tier,purchase.group_purchase_user,1,1,0,0
 access_tier_tier_manager,tier.tier manager,model_tier_tier,purchase.group_purchase_manager,1,1,1,1
