@@ -12,6 +12,15 @@ class Multiplier(models.Model):
     margin = fields.Float('Margin %', digits='Product Unit of Measure', required=True)
 
 
+    can_edit = fields.Boolean(compute='_compute_can_edit')
+
+
+    def _compute_can_edit(self):
+        can_edit = self.env.user.has_group('vendor_offer.offerapproval_user_access') or self.env.user.has_group(
+            'vendor_offer.it_user_access')
+        for user in self:
+            user.can_edit = can_edit
+
 class Competition(models.Model):
     _name = 'competition.competition'
     _description = "Competition"
