@@ -2,14 +2,14 @@
 <odoo>
 
     <record id="view_production_lot_tree_cstm" model="ir.ui.view">
-        <field name="name">stock.production.lot.tree</field>
-        <field name="model">stock.production.lot</field>
+        <field name="name">stock.lot.tree</field>
+        <field name="model">stock.lot</field>
         <field name="inherit_id" ref="stock.view_production_lot_tree" />
         <field name="arch" type="xml">
           <field  name="product_id" position="after">
                 <!--<field name="use_date" string="Expiration Date" />-->
                 <field name="alert_date" invisible="True"  />
-		        <field name="product_qty" invisible="context.get('lot_date_display_name_so')"/>
+		        <field name="product_qty" invisible="context.get('lot_date_display_name_so')" />
               <field name="available_qty_for_sale" />
           </field>
           <tree  position="attributes" >
@@ -19,8 +19,8 @@
     </record>
 
     <record id="search_product_lot_filter_inherit_product_Quantity" model="ir.ui.view">
-        <field name="name">stock.production.lot.search.inherit.Quantity</field>
-        <field name="model">stock.production.lot</field>
+        <field name="name">stock..lot.search.inherit.Quantity</field>
+        <field name="model">stock.lot</field>
         <field name="inherit_id" ref="stock.search_product_lot_filter"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='product_id']" position="after">
@@ -31,8 +31,8 @@
      </record>
 
     <record id="stock_production_lot_view_form_notebook_attr" model="ir.ui.view">
-        <field name="name">stock.production.lot.notebook.form</field>
-        <field name="model">stock.production.lot</field>
+        <field name="name">stock.lot.notebook.form</field>
+        <field name="model">stock.lot</field>
         <field name="inherit_id" ref="product_expiry.view_move_form_expiry"/>
         <field name="arch" type="xml">
             <xpath expr="//sheet/notebook" position="attributes">
@@ -40,56 +40,5 @@
             </xpath>
         </field>
     </record>
-
-    <!--<record id="product_expiry_view_move_form_expiry_inherit" model="ir.ui.view">
-        <field name="name">stock.production.lot.tree</field>
-        <field name="model">stock.production.lot</field>
-        <field name="inherit_id" ref="product_expiry.view_move_form_expiry"/>
-        <field name="arch" type="xml">
-            <xpath expr="//page[@name='expiration_dates']" position="replace">
-                <page string="Dates" name="expiration_dates" attrs="{'invisible': [('use_expiration_date', '=', False)]}">
-                    <field name="use_expiration_date" invisible="1"/>
-                    <group string="Dates">
-                        <group>
-                            <field name="use_date" string="Expiration Date" attrs="{'required': True}" />
-                            <field name="removal_date" invisible="1" />
-                        </group>
-                        <group>
-                            <field name="expiration_date" invisible="1"/>
-                            <field name="alert_date" attrs="{'required': True}" />
-                        </group>
-                    </group>
-                </page>
-            </xpath>
-            <xpath expr="//div[hasclass('oe_title')]" position="inside">
-                <field name="product_expiry_alert" invisible="1"/>
-                <span class="badge badge-danger" attrs="{'invisible': [('product_expiry_alert', '=', False)]}">Expiration Alert</span>
-            </xpath>
-        </field>
-    </record>-->
-
-    <!--<record id="product_expiry.view_move_form_expiry_simple" model="ir.ui.view">
-        <field name="name">stock.production.lot.inherit.form</field>
-        <field name="model">stock.production.lot</field>
-          <field name="view_id" ref="product_expiry.view_move_form_expiry_simple"/>
-        <field name="arch" type="xml">
-        <xpath expr="//group[@name='main_group']" position="after">
-            <group string="Dates">
-                <group>
-                    <field name="use_date" string="Expiration Date" attrs="{'required': True}"/>
-                    <field name="removal_date" invisible="1"/>
-                </group>
-                <group>
-                    <field name="expiration_date" invisible="1"/>
-                    <field name="alert_date" attrs="{'required': True}"/>
-                </group>
-            </group>
-        </xpath>
-        <xpath expr="//div[hasclass('oe_title')]" position="inside">
-            <field name="product_expiry_alert" invisible="1"/>
-            <span class="label label-danger" attrs="{'invisible': [('product_expiry_alert', '=', False)]}">Expiration Alert</span>
-        </xpath>
-        </field>
-    </record>-->
 
 </odoo>

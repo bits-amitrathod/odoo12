@@ -52,15 +52,19 @@ You can change the model as well as python function name from javascript.
         'web',
     ],
     "data": [
-        "view/web_assets.xml",
     ],
-    "qweb":[
-        'static/src/xml/widget_view.xml',
-    ],
+    'assets': {
+        'web.assets_backend': [
+            'web_one2many_selectable/static/src/js/widgets.js',
+            'web_one2many_selectable/static/src/xml/widget_view.xml',
+
+        ],
+    },
     "auto_install": False,
     "installable": True,
     "application": False,
     "external_dependencies": {
-        'python': [],
+    'python': [],
     },
+    'license': 'AGPL-3'
 }

@@ -109,25 +109,27 @@
             <field name="model">popup.ka.revenue</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="start_month"/>
-                            <field name="start_year"/>
+                            <group>
+                                <field name="start_month"/>
+                                <field name="start_year"/>
+                            </group>
+                            <group>
+                                <field name="end_month"/>
+                                <field name="end_year"/>
+                            </group>
                         </group>
                         <group>
-                            <field name="end_month"/>
-                            <field name="end_year"/>
+                            <group>
+                                <field name="key_account"/>
+                            </group>
                         </group>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="key_account"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -154,27 +156,29 @@
             <field name="model">report.ka.revenue.export</field>
             <field name="arch" type="xml">
                 <form string="Export Revenue By Key Account Report">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="start_month"/>
-                            <field name="start_year"/>
+                            <group>
+                                <field name="start_month"/>
+                                <field name="start_year"/>
+                            </group>
+                            <group>
+                                <field name="end_month"/>
+                                <field name="end_year"/>
+                            </group>
                         </group>
                         <group>
-                            <field name="end_month"/>
-                            <field name="end_year"/>
+                            <group>
+                                <field name="key_account"/>
+                            </group>
                         </group>
-                    </group>
-                    <group>
-                        <group>
-                            <field name="key_account"/>
-                        </group>
-                    </group>
-                    <div><b>Click On ' Export To File ' button to export Revenue By Key Account report file</b></div>
-                    <footer>
-                        <button name="download_excel_ka_revenue" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <div><b>Click On ' Export To File ' button to export Revenue By Key Account report file</b></div>
+                        <footer>
+                            <button name="download_excel_ka_revenue" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

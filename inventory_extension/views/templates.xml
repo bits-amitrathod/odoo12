@@ -1,12 +1,12 @@
 <odoo>
     <data>
 
-        <template id="assets_backend" inherit_id="web.assets_backend" name="pick Popup">
+        <!--<template id="assets_backend" inherit_id="web.assets_backend" name="pick Popup">
         <xpath expr='.' position="inside">
             <link type="text/css" rel='stylesheet' href='/inventory_extension/static/src/css/pick_popup.css'/>
             <script type="text/javascript" src="/inventory_extension/static/src/js/pick_popup.js"></script>
         </xpath>
-    </template>
+    </template>-->
 
         <record id="view_picking_form_mark_all_button1" model="ir.ui.view">
             <field name="name">stock.picking.form.mark.all.button</field>
@@ -14,16 +14,52 @@
             <field name="inherit_id" ref="stock.view_picking_form"/>
             <field name="arch" type="xml">
                 <data>
-                    <xpath expr="/form/header/button[last()]" position="after">
+                    <!--Rename the set quantity button as Mark all done -->
+                    <xpath expr="//button[@name='action_set_quantities_to_reservation']" position="attributes">
+                        <attribute name="string">
+                            Mark all Done
+                        </attribute>
+                    </xpath>
+
+
+                    <!-- As per client requirement client want to remove MARK ALL DONE button and Renamed SET QUANTITY button as Mark all button -->
+
+                    <!--  <xpath expr="/form/header/button[last()]" position="after">
                         <field name="is_mark_all_button_visible" invisible="1"/>
-                        <button name="action_button_mark_all_done"  attrs="{'invisible': [('is_mark_all_button_visible', '=', False)]}"
+                        <button name="action_button_mark_all_done"
+                                attrs="{'invisible': [('is_mark_all_button_visible', '=', False)]}"
                                 type="object"
                                 string="Mark All Done" id="warn_btn"/>
-                        <!-- Custome button For Lot reservation -->
-                        <!--<button name="action_button_manual_reservation"  attrs="{'invisible': [('picking_type_id', '!=', 1)]}"
-                                type="object"
-                                string="Manual Reservation" id="warn_btn"/>-->
-                    </xpath>
+                    </xpath>-->
+
+
+                    <!-- Rearrange Validate button at first and revert back changes -->
+                    <!--
+                                        &lt;!&ndash; Remove the original 'Validate' button &ndash;&gt;
+                                        <xpath expr="//header/button[@name='button_validate']" position="replace"/>
+
+                                        &lt;!&ndash; changed position of Validate button after Mark all done button in PICK&ndash;&gt;
+                                        <xpath expr="//header/button[@name='action_button_mark_all_done']" position="after">
+                                            <button name="button_validate"
+                                                    attrs="{'invisible': ['|', ('state', 'in', ('waiting','confirmed')), ('show_validate', '=', False)]}"
+                                                    string="Validate" type="object" class="oe_highlight" groups="stock.group_stock_user"
+                                                    data-hotkey="v"/>
+                                        </xpath>
+
+
+                                        &lt;!&ndash; Remove the original 'Validate' button &ndash;&gt;
+                                        <xpath expr="//header/button[@name='button_validate']" position="replace"/>
+
+                                        &lt;!&ndash; changed position of Validate button after Mark all done button in PULL and OUT&ndash;&gt;
+                                        <xpath expr="//header/button[@name='action_button_mark_all_done']" position="after">
+                                            <button name="button_validate"
+                                                    attrs="{'invisible': ['|', ('state', 'not in', ('waiting', 'confirmed')), ('show_validate', '=', False)]}"
+                                                    string="Validate" type="object" groups="stock.group_stock_user"
+                                                    class="o_btn_validate" data-hotkey="v"/>
+                                        </xpath>
+                    -->
+
+
                     <xpath expr="/form/sheet/group/group/field[@name='partner_id']" position="after">
                         <field name="acq_user_id"/>
                     </xpath>
@@ -35,10 +71,10 @@
                     </xpath>
                     <xpath expr="//div[hasclass('oe_title')]" position="after">
                         <div class="center mt8" attrs="{'invisible': [('picking_warn_msg', '=', False)]}">
-                        <h3 style="text-align: left; color: #c4262e;">
-                          <field name="picking_warn_msg"></field>
-                        </h3>
-                    </div>
+                            <h3 style="text-align: left; color: #c4262e;">
+                                <field name="picking_warn_msg"></field>
+                            </h3>
+                        </div>
                     </xpath>
                 </data>
             </field>

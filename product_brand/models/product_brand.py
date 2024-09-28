@@ -11,6 +11,7 @@ from odoo import api, fields, models
 
 class ProductBrand(models.Model):
     _name = 'product.brand'
+    _description = "ProductBrand"
 
     name = fields.Char('Manufacture Name', related='partner_id.name',readonly=True,store=True)
     description = fields.Text('Description', translate=True)
@@ -40,26 +41,7 @@ class ProductBrand(models.Model):
     #@api.multi
     @api.depends('product_ids')
     def _get_products_count(self):
-        if len(self)==1:
-            self.products_count = len(self.product_ids)
-
-
-class ProductTemplate(models.Model):
-    _inherit = 'product.template'
-
-    product_brand_id = fields.Many2one(
-        'product.brand',
-        string='Manufacture',
-        help='Select a Manufacture for this product'
-    )
-
-    list_price = fields.Float(
-        'Sales Price', default=1.0,
-        digits='Product Price',
-        help="Price at which the product is sold to customers.", tracking=True)
-
-    active = fields.Boolean('Active', default=True,
-                            help="If unchecked, it will allow you to hide the product without removing it.", tracking=True)
+        self.products_count = len(self.product_ids)
 
 
 class WebsitePublishedMixin(models.AbstractModel):

@@ -1,12 +1,11 @@
 <odoo>
-
-    <report id="action_todo_model_report"
-            string="Purchase History"
-            model="purchase.order.line"
-            report_type="qweb-html"
-            file="purchase_history_custome.purchase_report"
-            name="purchase_history_custome.purchase_report"
-    />
+    <record id="action_todo_model_report" model="ir.actions.report">
+        <field name="name">Purchase History</field>
+        <field name="model">purchase.order.line</field>
+        <field name="report_type">qweb-html</field>
+        <field name="report_name">purchase_history_custome.purchase_report</field>
+        <field name="report_file">purchase_history_custome.purchase_report</field>
+    </record>
 
     <template id="purchase_report">
         <t t-call="web.html_container">

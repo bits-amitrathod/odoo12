@@ -1,0 +1,60 @@
+.sh_activity_dashboard_div .btn-success {border: none;background: #fff;border-radius: 5px;padding: 7px 16px;text-transform: uppercase;font-weight: 500;font-size: 11px;letter-spacing: 0.5px;color: #003e85;box-shadow: 0 2px 5px #d4d4d4;transition: all .5s;margin: 2px 0px;}
+.sh_activity_dashboard_div .btn-success:hover{box-shadow: 0 5px 5px #d5d5d5;}
+/*****************change in counter-area***********************/
+.sh_activity_dashboard_div section {padding: 20px 0px;}
+.sh_activity_dashboard_div .counter-area .custom-card {margin-bottom: 20px;border: 0;box-shadow: 0 3px 8px 0 rgba(162, 169, 204, 0.24), 0 3px 16px 0 rgba(162, 169, 204, 0.24);}
+.sh_activity_dashboard_div .counter-area .card {position: relative;display: flex;flex-direction: column;min-width: 0;word-wrap: break-word;background-color: #fff;background-clip: border-box;border: 1px solid #e1e6f1;border-radius: 0px;}
+.sh_activity_dashboard_div .counter-area .sh-card-body {flex: 1 1 auto;padding: 15px 20px;}
+.sh_activity_dashboard_div .counter-area .sh-card-body .media i {font-size: 50px;}
+.sh_activity_dashboard_div .counter-area .sh-card-body .media .media-body {margin-top: 15px;}
+.sh_activity_dashboard_div .counter-area .fs-20 {font-size: 20px;}
+.sh_activity_dashboard_div .counter-area h3 {margin-bottom: 0.5rem;font-weight: 700;line-height: 1.2;margin-top: 0;}
+.sh_activity_dashboard_div .counter-area p {font-size: 14px;font-weight: 600;}
+.sh_activity_dashboard_div .counter-area .card .dash1,.sh_activity_dashboard_div .counter-area .card {border-radius: 5px;transition: all .5s;}
+.sh_activity_dashboard_div .counter-area .custom-card:hover {cursor: pointer;}
+
+/*effect*/
+.sh_activity_dashboard_div .card {display: inline-block;transition-property: transform;transition: all .5s;}
+.sh_activity_dashboard_div .card:hover {transform: scale(1.02);box-shadow: 0 5px 10px 0 rgba(162, 169, 204, 0.24), 0 5px 19px 0 rgba(162, 169, 204, 0.24);}
+.sh_activity_dashboard_div .filter .col2 {padding: 0px 28px;}
+
+/*22-2-2022*/
+.sh_activity_dashboard_div{min-width: 650px;max-width: 1140px;border: 1px solid #c8c8d3;box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);padding: 8px 6px;margin: 25px auto;background-color: #fff;border-radius: 0.25rem;}
+.sh_activity_dashboard_div section.filter .counter-area #js_id_sh_crm_activity_todo_tbl_div .sh_tbl_div,
+.sh_activity_dashboard_div section.filter .counter-area #js_id_sh_crm_activity_all_tbl_div .sh_tbl_div,
+.sh_activity_dashboard_div section.filter .counter-area #js_id_sh_crm_activity_completed_tbl_div .sh_tbl_div,
+.sh_activity_dashboard_div section.filter .counter-area #js_id_sh_crm_activity_overdue_tbl_div .sh_tbl_div,
+.sh_activity_dashboard_div section.filter .counter-area #js_id_sh_crm_activity_cancelled_tbl_div .sh_tbl_div{overflow: auto;}
+
+html .o_web_client > .o_action_manager > .o_action{overflow: auto !important;}
+
+
+section.counter-area ul.pagination{
+    position:relative;
+    z-index:0;
+}
+
+.sh_activity_dashboard_div .counter-area .sh-card-body .media i{margin-right: 1rem !important;}
+.sh_activity_dashboard_div .counter-area .sh-card-body .media .media-body{text-align: left;}
+.sh_activity_dashboard_div #start_date_div .input-group .input-group-prepend .input-group-text,
+.sh_activity_dashboard_div #end_date_div .input-group .input-group-prepend .input-group-text{padding: 0.675rem 0.75rem;}
+.sh_activity_dashboard_div #end_date_div .input-group{border-radius: 0.25rem;}
+.sh_activity_dashboard_div #end_date_div .input-group:focus-within,
+.sh_activity_dashboard_div #start_date_div .input-group:focus-within{border: 1px solid #71639e;}
+.sh_activity_dashboard_div #end_date_div .input-group:focus-within .form-control,
+.sh_activity_dashboard_div #start_date_div .input-group:focus-within .form-control{border-color: transparent;}
+.sh_activity_dashboard_div #end_date_div .input-group,.sh_activity_dashboard_div #start_date_div .input-group{border-radius: 0.25rem;}
+.sh_activity_dashboard_div table .badge{padding: 0.38em 0.6em;}
+.sh_activity_dashboard_div table td,.sh_activity_dashboard_div table th{vertical-align: middle;}
+.sh_activity_dashboard_div .sh_pagination{overflow-x: auto;}
+@media only screen and (max-width: 992px){
+    .sh_activity_dashboard_div section.filter .counter-area button.btn-success{margin-bottom: 5px;}
+    .sh_activity_dashboard_div table td, .sh_activity_dashboard_div table th{white-space: nowrap;}
+    .sh_activity_dashboard_div .sh_table{overflow: auto;}
+    .sh_activity_dashboard_div .sh_pagination{overflow-x: unset;}
+}
+@media only screen and (max-width: 767.98px){
+    .sh_activity_dashboard_div section.filter .counter-area .card:hover{transform: unset;}
+    .sh_activity_dashboard_div {min-width: 100%;width: 100%;padding-left: 0px;padding-right: 0px;}
+    .sh_activity_dashboard_div .filter .col2{padding: 0px 15px;}
+}

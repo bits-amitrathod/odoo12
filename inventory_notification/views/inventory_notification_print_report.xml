@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_print_report_inventory_notification"
-                string="Inventory Notification"
-                model="product.template"
-                report_type="qweb-html"
-                file="inventory_monitor.inventory_notification_print"
-                name="inventory_monitor.inventory_notification_print"
-        />
+
+<!--UPG_ODOO16_NOTE blow code is not working on staging as well and may be client is not using this so we are skipping this for now -->
+<!--        <report-->
+<!--                id="action_print_report_inventory_notification"-->
+<!--                string="Inventory Notification"-->
+<!--                model="product.template"-->
+<!--                report_type="qweb-html"-->
+<!--                file="inventory_monitor.inventory_notification_print"-->
+<!--                name="inventory_monitor.inventory_notification_print"-->
+<!--        />-->
     </data>
 </odoo>

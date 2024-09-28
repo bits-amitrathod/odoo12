@@ -26,6 +26,7 @@ class MailActivityNotesCustom(models.Model):
 
     sales_activity_notes = fields.Html("Sales Activity Notes", store=False, compute="_compute_act_note_field",
                                        search="pro_search_for_sales_activity_notes", readonly=False)
+
     acq_activity_notes = fields.Html("Acquisition Activity Notes", store=False, compute="_compute_act_note_field",
                                      search="pro_search_for_acq_activity_notes", readonly=False)
 
@@ -37,7 +38,8 @@ class MailActivityNotesCustom(models.Model):
         ('low', 'Low')], string='Priority', store=True)
 
     reference = fields.Reference(string='Related Document',
-                                 selection='_reference_models')
+                                 selection='_reference_models',
+                                  )
 
     email = fields.Char(related="related_partner_activity.email", readonly=True, store=False)
     phone = fields.Char(related="related_partner_activity.phone", readonly=True, store=False)
@@ -47,40 +49,51 @@ class MailActivityNotesCustom(models.Model):
     tags = fields.Many2many(related="related_partner_activity.category_id", readonly=True, store=False)
     # related field id studio field need to change
     direct_line = fields.Char(related="related_partner_activity.x_studio_direct_line", readonly=True, store=False)
-    time_zone = fields.Selection([
-        ('est', 'EST'),
-        ('cst', 'CST'),
-        ('mst', 'MST'),
-        ('pst', 'PST'),
-        ('ast', 'AST'),
-        ('hast', 'HAST')],related="related_partner_activity.time_zone", readonly=True, store=False)
+    time_zone = fields.Selection(related="related_partner_activity.time_zone", readonly=True, store=False)
     function = fields.Char(related="related_partner_activity.function", readonly=True, store=False)
 
     comment = fields.Html(string='Comments')
     dup_poc_note = fields.Html(string='Dup POC', store=False, compute="_compute_act_note_field",
-                                     search="pro_search_for_dup_poc", readonly=False)
+                               search="pro_search_for_dup_poc", readonly=False)
 
     ordered_online = fields.Boolean(related="related_partner_activity.x_studio_ordered_online", readonly=True,
-                                      store=False)
+                                    store=False)
     ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True, store=False)
 
     fiscal_year_end = fields.Selection(related="related_partner_activity.fiscal_year_end", readonly=True,
-                                    store=False)
+                                       store=False)
     top_subspecialties1 = fields.Many2many(related="related_partner_activity.top_subspecialties1", readonly=True,
-                                      store=False)
+                                           store=False)
 
     connected_in_ghx = fields.Boolean(related="related_partner_activity.x_studio_connected_in_ghx", readonly=True,
-                                           store=False)
+                                      store=False)
     ordered_with_ghx = fields.Boolean(related="related_partner_activity.x_studio_ordered_with_ghx", readonly=True,
-                                           store=False)
+                                      store=False)
     email_opt_out = fields.Boolean(related="related_partner_activity.email_opt_out", readonly=True,
-                                        store=False)
+                                   store=False)
 
     #date_done = fields.Date("Completed Date", index=True, readonly=False)
 
     # def write(self, vals):
     #     res = super().write(vals)
     #     return res
+
+    # While creating activity for particular user it should show that user selected automatically in account field.
+    # Set default customer for who we are creating activity
+    # set default value if no customer is selected
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super(MailActivityNotesCustom, self).default_get(fields_list)
+        if 'res_id' in res and res.get('res_model') == 'res.partner':
+            res['reference'] = 'res.partner,%s' % res['res_id']
+        else:
+            default_partner = self.env['res.partner'].search([], limit=1)
+            if default_partner:
+                res['reference'] = 'res.partner,%s' % default_partner.id
+            else:
+                res['reference'] = False
+        return res
 
     @api.model
     def _reference_models(self):
@@ -91,7 +104,7 @@ class MailActivityNotesCustom(models.Model):
         #                                              ('name', 'not like', 'sps'), ('name', 'not like', 'prioritization'),
         #                                              ('name', 'not like', 'Tests')])
 
-        model_list = ['Contact', 'Sales Order', 'Vendor Offer Automation', 'Lead/Opportunity']
+        model_list = ['Contact', 'Sales Order', 'Vendor Offer Automation Template', 'Lead/Opportunity']
         models = self.env['ir.model'].sudo().search([('state', '!=', 'manual'), ('name', 'in', model_list)])
         res = [(model.model, model.name)
                for model in models
@@ -206,7 +219,7 @@ class MailActivityNotesCustom(models.Model):
                 'feedback': '',
                 'display_assignee': self.user_id != self.env.user
             },
-            subtype_id=self.env['ir.model.data'].xmlid_to_res_id('mail.mt_activities'),
+            subtype_id=self.env['ir.model.data']._xmlid_to_res_id('mail.mt_activities'),
             mail_activity_type_id=self.activity_type_id.id,
         )
         messages |= record.sudo().message_ids[0]
@@ -317,11 +330,12 @@ class MailActivityNotesCustom(models.Model):
                     'feedback': self.feedback,
                     'display_assignee': activity_id.user_id != self.env.user
                 },
-                subtype_id=self.env['ir.model.data'].xmlid_to_res_id('mail.mt_activities'),
+                subtype_id=self.env['ir.model.data']._xmlid_to_res_id('mail.mt_activities'),
                 mail_activity_type_id=activity_id.activity_type_id.id,
             )
             messages |= record.sudo().message_ids[0]
 
+            # chnaged view id here mail.mail_activity_view_form similar as odoo14
             view_id = self.env.ref(
                 'sh_activities_management.sh_mail_activity_view_form_n').id
             if copy_of_activity:
@@ -427,7 +441,7 @@ class MailThreadExtendCRM(models.AbstractModel):
         if udpated_fields:
             # fetch "parent" subscription data (aka: subtypes on project to propagate on task)
             doc_data = [(model, [updated_values[fname] for fname in fnames]) for model, fnames in updated_relation.items()]
-            res = self.env['mail.followers']._get_subscription_data(doc_data, None, None, include_pshare=True, include_active=True)
+            res = self.env['mail.followers']._get_subscription_data(doc_data, None, include_pshare=True, include_active=True)
             for fid, rid, pid, cid, subtype_ids, pshare, active in res:
                 # use project.task_new -> task.new link
                 sids = [parent[sid] for sid in subtype_ids if parent.get(sid)]
@@ -452,8 +466,8 @@ class MailThreadExtendCRM(models.AbstractModel):
 
         self.env['mail.followers']._insert_followers(
             self._name, self.ids,
-            list(new_partners), new_partners,
-            list(new_channels), new_channels,
+            partner_ids = new_partners,subtypes=None,
+            customer_ids = [],
             check_existing=True, existing_policy=followers_existing_policy)
 
         # notify people from auto subscription, for example like assignation
@@ -477,8 +491,6 @@ class MailThreadExtendCRM(models.AbstractModel):
         if not self.env.registry.ready:  # Don't send notification during install
             return
 
-        view = self.env['ir.ui.view'].browse(self.env['ir.model.data'].xmlid_to_res_id(template))
-
         for record in self:
             model_description = self.env['ir.model']._get(record._name).display_name
             values = {
@@ -486,7 +498,7 @@ class MailThreadExtendCRM(models.AbstractModel):
                 'model_description': model_description,
                 'access_link': record._notify_get_action_link('view'),
             }
-            assignation_msg = view._render(values, engine='ir.qweb', minimal_qcontext=True)
+            assignation_msg = self.env['ir.ui.view']._render_template(template, values)
             assignation_msg = self.env['mail.render.mixin']._replace_local_links(assignation_msg)
             # record.message_notify(
             #     subject=_('You have been assigned to %s', record.display_name),

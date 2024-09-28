@@ -5,61 +5,54 @@
             <t t-call="web.external_layout">
                 <page>
                     <div class="oe_structure"/>
-                    <div class="row">
-                    <center>
-                        <b>
-                            <h2> Surgical Product Solutions </h2>
-                            <h4> Inventory Monitor</h4>
-                        </b>
-                    </center>
-                    <center>
-                    </center>
-                    </div>
-                    <br/>
+                        <div class="row">
+                            <center>
+                                <b>
+                                    <h2> Surgical Product Solutions </h2>
+                                    <h4> Inventory Monitor</h4>
+                                </b>
+                            </center>
+                        </div>
+                        <br/>
                     <div >
                     <table class="table  table-condensed" style="border: 1px solid black;width:100%">
-                            <thead>
-                                <tr style="border: 1px solid black;">
-<!--                                    <th style="border: 1px solid black;text-align: center;">Manufacture Name </th>-->
-                                    <th style="border: 1px solid black;text-align: center;">SKU / Catalog No</th>
-                                    <th style="border: 1px solid black;text-align: center;">Product Name</th>
-                                    <th style="border: 1px solid black;text-align: center;">Max Inv Level</th>
-                                    <th style="border: 1px solid black;text-align: center;">Current % Of Max Inv Level</th>
-                                    <th style="border: 1px solid black;text-align: center;">Qty In Stock</th>
-                                    <th style="border: 1px solid black;text-align: center;">Future % Of Max Inv Level</th>
-                                    <th style="border: 1px solid black;text-align: center;">Qty On Order</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                    <tr t-foreach="data" t-as="order">
-<!--                                         <td style="border: 1px solid black;">-->
-<!--                                            <span t-esc="order.product_brand_id.name"/>-->
-<!--                                        </td>-->
-                                        <td style="border: 1px solid black;">
-                                            <span t-esc="order.sku_code"/>
-                                        </td>
+                        <thead>
+                            <tr style="border: 1px solid black;">
+                                <th style="border: 1px solid black;text-align: center;">SKU / Catalog No</th>
+                                <th style="border: 1px solid black;text-align: center;">Product Name</th>
+                                <th style="border: 1px solid black;text-align: center;">Max Inv Level</th>
+                                <th style="border: 1px solid black;text-align: center;">Current % Of Max Inv Level</th>
+                                <th style="border: 1px solid black;text-align: center;">Qty In Stock</th>
+                                <th style="border: 1px solid black;text-align: center;">Future % Of Max Inv Level</th>
+                                <th style="border: 1px solid black;text-align: center;">Qty On Order</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="data" t-as="order">
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="order.sku_code"/>
+                                </td>
 
-                                        <td style="border: 1px solid black;">
-                                            <span t-esc="order.product_id.name"/>
-                                        </td>
-                                        <td align="center" style="border: 1px solid black;">
-                                            <span t-esc="order.max_inventory_level"/>
-                                        </td>
-                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.max_inventory_percent"  /><span>%</span>
-                                        </td>
-                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.qty_in_stock"  />
-                                        </td>
-                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.max_inventory_future_percent" /> <span>%</span>
-                                        </td>
-                                        <td align="right" style="border: 1px solid black;white-space:nowrap;">
-                                              <span t-esc="order.qty_on_order" />
-                                        </td>
-
-                                    </tr>
-                            </tbody>
+                                <td style="border: 1px solid black;">
+                                    <span t-esc="order.product_id.name"/>
+                                </td>
+                                <td align="center" style="border: 1px solid black;">
+                                    <span t-esc="order.max_inventory_level"/>
+                                </td>
+                                <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                      <span t-esc="order.max_inventory_percent"  /><span>%</span>
+                                </td>
+                                <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                      <span t-esc="order.qty_in_stock"  />
+                                </td>
+                                <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                      <span t-esc="order.max_inventory_future_percent" /> <span>%</span>
+                                </td>
+                                <td align="right" style="border: 1px solid black;white-space:nowrap;">
+                                      <span t-esc="order.qty_on_order" />
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                     </div>
                 </page>

@@ -10,7 +10,7 @@ from werkzeug.urls import url_encode
 from odoo import http
 import io
 import re
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 #from reports.report_custom_product_catalog.models.catalog import InventoryCustomProductPopUp
 
 try:
@@ -38,6 +38,7 @@ except ImportError:
 
 class ReportCustomProductCatalog(models.TransientModel):
     _name = 'report.report_custom_product_catalog.catalog_temp'
+    _description = 'Report Custom Product Catalog'
 
     def _get_report_values(self, docids, data=None):
         popup = self.env['popup.custom.product.catalog'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
@@ -48,7 +49,7 @@ class ReportCustomProductCatalog(models.TransientModel):
         return {'data': self.env['product.product'].with_context(context).browse(docids)}
 
     def fetchData(self,ctx):
-        sql_query = """select array_agg(product_id), json_object_agg(product_id, id) from stock_production_lot 
+        sql_query = """select array_agg(product_id), json_object_agg(product_id, id) from stock_lot 
         where """
         if ctx.end_date and ctx.start_date:
             e_date = datetime.datetime.strptime(str(ctx.end_date), "%Y-%m-%d")
@@ -179,7 +180,6 @@ class ProductCatalogXL(http.Controller):
         return data
 
     @http.route('/web/ProductCatalog/download_document_xl', type='http', auth="public")
-    @serialize_exception
     def download_document_xl(self, token=1, debug=1):
 
         #  token=1,debug=1   are added if the URL contains extra parameters , which in some case URL does contain
@@ -218,6 +218,7 @@ class ProductCatalogXL(http.Controller):
 
 class ReportProductWise(models.AbstractModel):
     _name = 'report.report_custom_product_catalog.product_catalog_temp'
+    _description = 'Report Product Wise template'
 
     def _get_report_values(self, docids, data=None):
         return {'data': self.env['product.product'].browse(docids)}

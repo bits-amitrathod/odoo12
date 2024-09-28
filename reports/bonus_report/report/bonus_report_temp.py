@@ -17,6 +17,8 @@ class Discount():
 
 class ReportProductVendorList(models.AbstractModel):
     _name = 'report.bonus_report.bonusreport_temp_test'
+    _description = "Report Product VendorList Bonus"
+
     @api.model
     def _get_report_values(self, docids, data=None):
 

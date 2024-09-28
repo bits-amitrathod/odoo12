@@ -26,7 +26,6 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'reports/todo_task_report.xml',
-        'views/templates.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
@@ -35,4 +34,5 @@
     'installable': True,
     'auto_install': False,
     'application': True,
+    'license': 'LGPL-3',
 }

@@ -1,5 +1,6 @@
     # -*- coding: utf-8 -*-
 
+from markupsafe import Markup
 from odoo import models, fields, api
 import logging
 from datetime import datetime
@@ -17,12 +18,7 @@ SUPERUSER_ID_INFO = 2
 
 class InventoryNotificationScheduler(models.TransientModel):
     _name = 'inventory.notification.scheduler'
-
-    # warehouse_email = "vasimkhan@benchmarkit.solutions"
-    # sales_email = "rohitkabadi@benchmarkit.solutions"
-    # acquisitions_email = "ajinkyanimbalkar@benchmarkit.solutions"
-    # all_email = "tushargodase@benchmarkit.solutions"
-    # appraisal_email = "amitrathod@benchmarkit.solutions"
+    _description = "InventoryNotificationScheduler"
 
     warehouse_email = "warehouse@surgicalproductsolutions.com"
     sales_email = "sales@surgicalproductsolutions.com"
@@ -32,6 +28,8 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @api.model
     def process_outgoing_server_scheduler(self):
+        """
+        """
         current_time = datetime.now().time()
         _logger.info("process_outgoing_server_scheduler called  %s ..", current_time)
 
@@ -60,8 +58,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         _logger.info("process_manual_notification_scheduler called..")
         self.process_notification_scheduler()
 
-    @api.model
-    # @api.multi
     def process_notification_scheduler(self, limit=None):
         _logger.info("process_notification_scheduler called")
         if limit is None:
@@ -69,6 +65,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_in_stock_scheduler(limit)
 
     def pick_notification_for_customer(self, picking):
+        """
+        this method is not in use for now.
+        """
         Stock_Moves = self.env['stock.move'].search([('picking_id', '=', picking.id)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
@@ -85,11 +84,11 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Picking Done For Sale Order # " + picking.sale_id.name,
-            'description': "Hi " + picking.sale_id.partner_id.display_name + ",<br/> <br/>Please find detail Of Sale Order: "
-                           + picking.sale_id.name,
+            'description': Markup("Hi " + picking.sale_id.partner_id.display_name +
+                                  ",<br/> <br/>Please find detail Of Sale Order: "+ picking.sale_id.name),
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
-            'closing_content': "Thanks & Regards,  <br/> Warehouse Team	"
+            'closing_content': "Warehouse Team"
         }
         self.process_common_email_notification_template(super_user, users, vals['subject'],
                                                         vals['description'], vals['sale_order_lines'], vals['header'],
@@ -123,23 +122,15 @@ class InventoryNotificationScheduler(models.TransientModel):
             'subject': "Pull Done For Sale Order # " + picking.sale_id.name,
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
-            'closing_content': 'Thanks & Regards,<br/> Warehouse Team',
-            'description': "Hi " + final_user.display_name +
+            'closing_content': 'Warehouse Team',
+            'description': Markup("Hi " + final_user.display_name +
                            ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name + "<br/><br/>" +
-                           "<strong> Notes :  </strong>" + (picking.note or "N/A") + "",
+                           "<strong> Notes :  </strong>" + (str(picking.note) or "N/A") + "",)
         }
-        # < strong > Notes: < / strong > " + (str(picking.sale_id.sale_note) if picking.sale_id.sale_note else "
-        # N / A
-        # ")
-        '''vals['description'] = "Hi " + picking.sale_id.user_id.display_name + \
-                              ", <br/><br/> Please find detail Of Sale Order: " + picking.sale_id.name+ "<br/>"+\
-                             '''
 
         email_to = picking.sale_id.account_manager.login if picking.sale_id.account_manager else False
-
         if picking.sale_id.customer_success:
             email_to = ','.join(filter(None, [email_to, picking.sale_id.customer_success.login]))
-
         email_to = email_to or final_user.sudo().email
 
         self.process_common_email_notification_template(super_user, email_to, vals['subject'], vals['description'],
@@ -153,7 +144,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             temp = self.env['stock.move.line'].search([('move_id', '=', stock_move.id)])
             Stock_Moves_line.append(temp)
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
-        users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
+        # users = self.env['res.users'].search([('active', '=', True), ('id', '=', picking.sale_id.user_id.id)])
         sales_order = []
         for stock_move_line in Stock_Moves_line:
             for stock_move_line_single in stock_move_line:
@@ -189,29 +180,23 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Pick Done For Sale Order # " + picking.sale_id.name,
-            'description': "Hi Shipping Team, <br/><br/> " +
-                           "<div style=\"text-align: center;width: 100%;\"><strong>The PICK has been completed!</strong></div><br/>" +
-                           "<strong> Salesperson: </strong>" + (
-                                       sale_order_ref.user_id.partner_id.name or "N/A") + "<br/>" + \
-                           "<strong> Order Processor: </strong>" + (
-                                       sale_order_ref.order_processor.partner_id.name or "N/A") + "<br/>" + \
-                           "<strong> Please proceed with the pulling and shipping of Sales Order: </strong>" + sale_order_ref.name + "<br/>" + \
-                           "<strong> Customer PO #:  </strong>" + (sale_order_ref.client_order_ref or "N/A") + "<br/>" + \
-                           "<strong> Carrier Info:  </strong>" + (sale_order_ref.carrier_info or "N/A") + "<br/>" + \
-                           "<strong> Carrier Account #:  </strong>" + (
-                                   sale_order_ref.carrier_acc_no or "N/A") + "<br/>" + \
-                           "<strong> Delivery Method #:  </strong>" + (sale_order_ref.carrier_id.name or "N/A")
-                           + "<br/>" + "<strong> Date: </strong>" + \
-                           (str(datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime(
-                               '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
-                           "<br/><strong> Customer Name:  </strong>" + (
-                                   sale_order_ref.partner_id.name or "") + "<br/>" + \
-                           "<strong> Shipping Address: </strong> <br/>" + shipping_adrs + "<br/>" + \
-                           "<strong> Notes :  </strong>" + (picking.note or "N/A"),
+            'description': Markup("Hi Shipping Team,  <br/><br/> " +
+                           "<div style='text-align: center;width: 100%;'><strong>The PICK has been completed!</strong></div><br/>" +
+                           "<strong> Salesperson: </strong>" + (sale_order_ref.user_id.partner_id.name or "N/A") + "<br/>" +
+                           "<strong> Order Processor: </strong>" + (sale_order_ref.order_processor.partner_id.name or "N/A") + "<br/>" +
+                           "<strong> Please proceed with the pulling and shipping of Sales Order: </strong>" + sale_order_ref.name + "<br/>" +
+                           "<strong> Customer PO #:  </strong>" + (sale_order_ref.client_order_ref or "N/A") + "<br/>" +
+                           "<strong> Carrier Info:  </strong>" + (sale_order_ref.carrier_info or "N/A") + "<br/>" +
+                           "<strong> Carrier Account #:  </strong>" + (sale_order_ref.carrier_acc_no or "N/A") + "<br/>" +
+                           "<strong> Delivery Method #:  </strong>" + (sale_order_ref.carrier_id.name or "N/A") + "<br/>" +
+                            "<strong> Date: </strong>" + (str(datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime('%m/%d/%Y')) if picking.scheduled_date else "N/A") + "<br/>" +
+                           "<strong> Customer Name:  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" +
+                           "<strong> Shipping Address: </strong> <br/>" + shipping_adrs + "<br/>" +
+                           "<strong> Notes :  </strong>" + (str(picking.note) or "N/A")),
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Quantity Done'],
             'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done'],
-            'closing_content': 'Thanks & Regards, <br/> Sales Team'
+            'closing_content': 'Sales Team'
         }
 
         self.process_common_email_notification_template(super_user, None, vals['subject'], vals['description'],
@@ -279,7 +264,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         #      "<tr><td> <strong> Vendor Name </strong></td> <td> "+ ( sale_order_ref.partner_id.name or "") + "</td></tr>"\
         #      "<tr><td> <strong> Notes </strong></td><td>" + str_note + "</td></tr></table>"
         flag = True
-        table_data = " <table style = \"width:100%\"> <tr> <td><strong> Notes :</strong></td>"
+        table_data = " <table style = 'width:100%'> <tr> <td><strong> Notes :</strong></td>"
         if sale_order_ref.notes_activity:
             for note in sale_order_ref.notes_activity:
                 if flag == True:
@@ -300,23 +285,17 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Shipment Done For Purchase Order # " + picking.purchase_id.name,
-            # 'description': "Hi acquisitions Team, <br/><br/> ",
-            # 'description': "Hi Acquisitions Team, <br/><br/> " +
-            #                "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" + table_data,
-            'description': "Hi Acquisitions Team, <br/><br/> " +
-                           "<div style=\"text-align: center;width: 100%;\"><strong>The Shipment has been completed!</strong></div><br/>" +
-                           "<strong> Please proceed  Purchase Order : </strong>" + sale_order_ref.name + "<br/>" + \
-                           "<strong> Date : </strong>" + (
-                               str(datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime(
-                                   '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
-                           "<br/><strong> Vendor Name :  </strong>" + (
-                                       sale_order_ref.partner_id.name or "") + "<br/>" + table_data,
+            'description': Markup("Hi Acquisitions Team, <br/><br/> " +
+                           "<div style='text-align: center;width: 100%;'><strong>The Shipment has been completed!</strong></div><br/>" +
+                           "<strong> Please proceed  Purchase Order : </strong>" + sale_order_ref.name + "<br/>" +
+                           "<strong> Date : </strong>" + (str(datetime.strptime(str(picking.scheduled_date), "%Y-%m-%d %H:%M:%S").strftime( '%m/%d/%Y')) if picking.scheduled_date else "N/A") + \
+                           "<br/><strong> Vendor Name :  </strong>" + (sale_order_ref.partner_id.name or "") + "<br/>" + table_data),
 
             'header': ['Catalog number', 'Description', 'Initial Quantity', 'Lot', 'Expiration Date', 'Qty Put In Lot',
                        'Quantity Done', 'Status'],
             'columnProps': ['sku', 'Product', 'qty', 'lot_name', 'lot_expired_date', 'qty_done_in_lot', 'qty_done',
                             'status'],
-            'closing_content': 'Thanks & Regards, <br/> Team'
+            'closing_content': 'Team'
         }
 
         # Email Attachment
@@ -374,13 +353,14 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Sale Order # " + picking.sale_id.name + " is Out for Delivery for customer " + partner_name,
-            'description': "Hi " + (
-                        picking.sale_id.user_id.display_name or "Salesperson") + ",<br><br> Please find detail Of Sale Order: "
-                           + picking.sale_id.name + " and their tracking is " + tracking +
-                           "<br><br> <strong> Notes : </strong>" + str(picking.note or "N/A") + "",
+            'description': Markup("Hi " + (
+                        picking.sale_id.user_id.display_name or "Salesperson")
+                                  + ",<br><br> Please find detail Of Sale Order: "
+                                  + picking.sale_id.name + " and their tracking is " + tracking
+                                  + "<br><br> <strong> Notes : </strong>" + str(picking.note or "N/A") + ""),
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
-            'closing_content': 'Thanks & Regards, <br/> Warehouse Team'
+            'closing_content': 'Warehouse Team'
         }
         print("Inside Out")
         print(users.email)
@@ -472,10 +452,11 @@ class InventoryNotificationScheduler(models.TransientModel):
                         # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
                         if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
                             products[line.product_id.id] = line.product_id
+
                 subject = "Your Updated SPS Ordering List"
 
-                descrption =  """ 
-                
+                descrption =  Markup("""  
+
                  <strong>Good morning """ + customr.name + """,</strong>
                   <br/> <br/> Listed below are items you have previously requested or purchased with us that are 
                   currently in stock. You will also see two links to either download our
@@ -497,12 +478,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                 
                 
                 
-                """
+                """)
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date', 'Max Exp. Date', 'Unit Of Measure']
                 columnProps = ['product_brand_id.name', 'sku_code', 'name', 'customer_price_list', 'actual_quantity',
                                'str_min', 'str_max', 'uom_id.name']
-                closing_content = """
+                closing_content = Markup("""
                                     Please reply to this email or contact your Account Manager to hold product or place an order. If you would like to place an order on your own please click on the link "Order Online Here".
                                     <br/> Thank you <br/>
 
@@ -510,49 +491,54 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     <table style="height: 96px; width: 601px;" border="0">
                                     <tbody>
                                     <tr style="height: 78px;">
-                                    <td style="width: 156px; height: 78px;">
-                                    <p style="text-align: left;"><strong>Brittany Edwards</strong></p>
-                                    <p style="text-align: left;">412-434-0214</p>
-                                    </td>
-                                    <td style="width: 154px; height: 78px;">
-                                    <p><strong>Maddie Cotter</strong></p>
-                                    <p>412-240-4049&nbsp;</p>
-                                    </td>
-                                    <td style="width: 154px; height: 78px;">
-                                    <p><strong>Shannon Parker</strong></p>
-                                    <p>412-564-9011&nbsp;</p>
-                                    </td>
-                                    <td style="width: 157px; height: 78px;">
-                                    <p style="text-align: left;"><strong>Phil Kemp</strong></p>
-                                    <p style="text-align: left;">412-745-1327</p>
-                                    </td>
-                                    <td style="width: 157px; height: 78px;">
-                                    <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
-                                    <p style="text-align: left;">(412) 745-0317</p>
+                                    
+                                        <td style="width: 154px; height: 78px;">
+                                        <p><strong>Maddie Cotter</strong></p>
+                                        <p>412-240-4049&nbsp;</p>
+                                        </td>
+                                        
+                                        <td style="width: 154px; height: 78px;">
+                                        <p><strong>Shannon Parker</strong></p>
+                                        <p>412-564-9011&nbsp;</p>
+                                        </td>
+                                        
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Phil Kemp</strong></p>
+                                        <p style="text-align: left;">412-745-1327</p>
+                                        </td>
+                                        
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
+                                        <p style="text-align: left;">412-745-0317</p>
                                     </td>
                                     
                                     </tr>
                                     <tr style="height: 76px;">
-                                    <td style="width: 156px; height: 76px;">
-                                    <p><strong>Carley Fritsch</strong></p>
-                                    <p>(412) 643-4597</p>
-                                    </td>
-                                    <td style="width: 172px; height: 76px;">
-                                    <p><strong>Sasha Khripkova</strong></p>
-                                    <p>(412) 643-3816</p>
-                                    </td>
-                                    <td style="width: 156px; height: 76px;">
-                                    <p><strong>Theresa Carmody</strong></p>
-                                    <p>(412) 286-2212</p>
-                                    </td>
-                                    <td style="width: 157px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
-                                    <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
-                                    </td>
-                                    <td style="width: 172px; height: 76px;">
-                                    <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
-                                    <p style="text-align: left;">412-248-1284</p>
-                                    </td>
+                                        
+                                        <td style="width: 156px; height: 76px;">
+                                        <p><strong>Carley Fritsch</strong></p>
+                                        <p>412-643-4597</p>
+                                        </td>
+                                        
+                                        <td style="width: 172px; height: 76px;">
+                                        <p><strong>Sasha Khripkova</strong></p>
+                                        <p>412-643-3816</p>
+                                        </td>
+                                        
+                                        <td style="width: 156px; height: 76px;">
+                                        <p><strong>Theresa Carmody</strong></p>
+                                        <p>412-286-2212</p>
+                                        </td>
+                                        
+                                        <td style="width: 157px; height: 76px;">
+                                        <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
+                                        <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
+                                        </td>
+                                        
+                                        <td style="width: 172px; height: 76px;">
+                                        <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
+                                        <p style="text-align: left;">412-248-1284</p>
+                                        </td>
                                     </tr>
                                     </tbody>
                                     </table>
@@ -561,7 +547,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                         <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
                                     </div>
 
-                                    """
+                                    """)
                 if products:
                     product_list.extend(list(products.values()))
                     # Remove excluded product from list
@@ -597,6 +583,11 @@ class InventoryNotificationScheduler(models.TransientModel):
     @api.model
     # @api.multi
     def process_notification_scheduler_everyday(self, custom_date=None):
+        """
+            This is Everyday scheduler
+        :param custom_date:
+        :return:
+        """
         self.process_new_product_scheduler()
         self.process_notify_available()
         self.process_packing_list()
@@ -616,34 +607,25 @@ class InventoryNotificationScheduler(models.TransientModel):
         dayName = today_date.weekday()
         weekday = days[dayName]
 
-        # customers = self.env['res.partner'].search(
-        #     [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
-        #      (weekday, '=', True), ('todays_notification', '=', False)])
+        customers = self.env['res.partner'].search(
+            [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+             (weekday, '=', True), ('todays_notification', '=', False)])
 
-        # for customer in customers:
-        #     try:
-        #         if (customer.start_date == False and customer.end_date == False) \
-        #                 or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-        #             customer.end_date) >= today_start) \
-        #                 or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
-        #             customer.start_date) <= today_start) \
-        #                 or (
-        #                 customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
-        #             customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-        #             customer.end_date) >= today_start) \
-        #                 or (customer.end_date is None):
-        #             customer.write({'todays_notification': True})
-
-        try:
-            query = """ update res_partner set todays_notification = true where customer_rank >= 1 and is_parent = true
-            and email is not null and active = true and ((todays_notification = false) or (todays_notification is Null)) 
-            and  """+weekday+""" = true  
-            and ( (start_date is null and end_date is null )     or  (end_date is not null and  end_date > CURRENT_DATE)   
-            or  (start_date is not null and  start_date < CURRENT_DATE)    ) 	    """
-
-            self.env.cr.execute(query)
-        except Exception as e:
-            _logger.exception(e)
+        for customer in customers:
+            try:
+                if (customer.start_date == False and customer.end_date == False) \
+                        or (customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.end_date) >= today_start) \
+                        or (customer.start_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.start_date) <= today_start) \
+                        or (
+                        customer.start_date != False and customer.end_date != False and InventoryNotificationScheduler.string_to_date(
+                    customer.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                    customer.end_date) >= today_start) \
+                        or (customer.end_date is None):
+                    customer.write({'todays_notification': True})
+            except Exception as e:
+                _logger.exception(e)
 
     def process_new_product_scheduler(self):
         today_date = datetime.now() - timedelta(days=1)
@@ -652,14 +634,14 @@ class InventoryNotificationScheduler(models.TransientModel):
             [('create_date', '>=', today_start), ('notification_date', '=', None),
              ('product_tmpl_id.type', '=', 'product')])
         subject = "New Product In Inventory"
-        descrption = "Hi Team, <br><br/> Please find below a listing of some new products added to the inventory today:"
+        description = Markup("Hi Team, <br></br> <b>Please</b> find below a listing of some new products added to the inventory today:")
         header = ['Catalog #', 'Description', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date',
                   'Max Expiration Date', 'Quantity On Hand', 'Forecasted Quantity', 'Unit Of Measure']
         columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type', 'minExpDate',
                        'maxExpDate', 'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
-        closing_content = "Thanks & Regards,<br/>Warehouse Team"
+        closing_content = "Warehouse Team"
 
-        self.process_common_product_scheduler(subject, descrption, products, header, columnProps, closing_content,
+        self.process_common_product_scheduler(subject, description, products, header, columnProps, closing_content,
                                               self.sales_email)
 
     def process_packing_list(self):
@@ -681,18 +663,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         if len(picking) > 0:
             self.process_packing_email_notification(vals)
 
-            # final_date = fields.Datetime.from_string(today_start)
-        # products = self.env['product.product'].search([('stock_move_ids.sale_line_id', '!=', False),
-        #                                                ('stock_move_ids.state', '=', 'done'),
-        #                                                ('stock_move_ids.picking_id', '!=', False),
-        #                                                ('stock_move_ids.move_line_ids.state', '=', 'done'),
-        #                                                ('stock_move_ids.move_line_ids.write_date', '>=', last_day),
-        #                                                ('stock_move_ids.move_line_ids.write_date', '<', final_date),
-        #                                                ('stock_move_ids.move_line_ids.qty_done', '>', 0),
-        #                                                ('stock_move_ids.move_line_ids.lot_id', '!=', None)
-        #                                                ])
-        #self.process_notification_for_product_red_status(products)
-
     def process_on_hold_customer(self):
         customers = self.env['res.partner'].search([('on_hold', '=', True), ('is_parent', '=', True)])
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
@@ -705,8 +675,8 @@ class InventoryNotificationScheduler(models.TransientModel):
             email_form = super_user
             # email_to = user
             subject = 'Customer On Hold'
-            description = 'Hi Shipping Team, <br/><br/>Please find below the list of customers whose "On-hold status" has been released from Accounting Department.'
-            closing_content = "Thanks & Regards, <br/> Accounting Team"
+            description = Markup('Hi Shipping Team, <br/><br/> Please find below the list of customers whose "On-hold status" has been released from Accounting Department.')
+            closing_content = "Accounting Team"
             self.process_common_email_notification_template(email_form, None, subject, description,
                                                             customers, header, columnProps, closing_content,
                                                             self.warehouse_email)
@@ -721,7 +691,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     #email_to = user
                     subject = 'Customer On Hold'
                     description = 'Hi Shipping Team, <br/><br/>Please find below the list of customers whose "On-hold status" has been released from Accounting Department.'
-                    closing_content = "Thanks & Regards, <br/> Accounting Team"
+                    closing_content = "Accounting Team"
                     self.process_common_email_notification_template(email_form, None, subject, description,
                                                                     customers, header, columnProps, closing_content,
                                                                     self.warehouse_email)'''
@@ -753,11 +723,10 @@ class InventoryNotificationScheduler(models.TransientModel):
             vals = {
                 'sale_order_lines': sales_order,
                 'subject': "Shipment need to release for " + partner_id.display_name,
-                'description': "Hi team, <br/><br/> Payment has been received. Please release the following orders for "
-                               "shipping:",
+                'description': Markup("Hi team, <br/><br/> Payment has been received. Please release the following orders for shipping:"),
                 'header': ['Customer Name', 'Sales order', 'Shipping Address'],
                 'columnProps': ['customer_name', 'sales_order', 'shipping_address'],
-                'closing_content': "Thanks & Regards, <br/>Accounting Team"
+                'closing_content': "Accounting Team"
             }
             '''for user in users:
                 has_group = user.has_group('stock.group_stock_manager')
@@ -837,10 +806,6 @@ class InventoryNotificationScheduler(models.TransientModel):
             }
             if product.inventory_percent_color > 125:
                 green_products.append(vals)
-        # if green_products:
-        #     self.process_notify_green_product(green_products, None, super_user)
-        # if yellow_products:
-        #     self.process_notify_yellow_product(yellow_products, None, super_user)
 
         '''for user in users:
             has_group = user.has_group('purchase.group_purchase_manager') or user.has_group(
@@ -873,7 +838,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                           'Product Price', 'Min Expiration Date', 'Max Expiration Date']
                 columnProps = ['manufacturer', 'sku_reference', 'product_code', 'product_name', 'actual_quantity',
                                'product_price_symbol', 'minExDate', 'maxExDate']
-                closing_content = "Thanks & Regards, <br/> Warehouse Team"
+                closing_content = "Warehouse Team"
                 self.process_common_email_notification_template(super_user, user, subject,
                                                                 description, products, header, columnProps,
                                                                 closing_content)
@@ -907,7 +872,7 @@ class InventoryNotificationScheduler(models.TransientModel):
     def process_notify_red_product(self, products, to_user, from_user):
         pass
         # subject = "Products which are in red status"
-        # description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red):"
+        # description = Markup("Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red):")
         # header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
         #           'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure']
         # columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
@@ -919,15 +884,14 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     def process_notify_low_product(self, products, to_user, from_user, max_inventory_level_duration):
         subject = "Products which are in Low Stock"
-        description = "Hi Team, <br><br/>Please find a listing below of products whose inventory level status is now Color(Red) : <br/><br/> <b>On Basis of Max Inventory Level Duration </b>  : " + str(
-            max_inventory_level_duration) + " Days"
+        description = Markup("Hi Team, <br/><br/> Please find a listing below of products whose inventory level status is now Color(Red) : <br/><br/> <b>On Basis of Max Inventory Level Duration </b>  : " + str(max_inventory_level_duration) + " Days")
         header = ['Catalog #', 'Product Description', 'Sales Price', 'Cost', 'Product Type',
                   'Qty On Hand', 'Forecasted Quantity', 'Unit Of Measure', 'Current inventory Level',
                   'Max Inventory Level', 'Suggested Order Qty', 'Price Range']
         columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure', 'current_inventory_percent',
                        'max_inventory_level', 'suggested_order_qty', 'price_range']
-        closing_content = "Thanks & Regards,<br/> Admin Team"
+        closing_content = "Admin Team"
         _logger.info(" ********low Stock ***** email send **** after prepareing sub,hear etc...... ********")
         self.process_common_email_notification_template(from_user, to_user, subject,
                                                         description, products, header, columnProps, closing_content,
@@ -1016,6 +980,10 @@ class InventoryNotificationScheduler(models.TransientModel):
             _logger.info(" ********low Stock ***** email send **** after red product fount ******** 2")
 
     def process_notify_available(self):
+        """
+        This Method Check for the products in stack if product have a new stock after today's date
+        :return:
+        """
         today_date = date.today()
         today_start = fields.Date.to_string(today_date)
         last_day = fields.Date.to_string(datetime.now() - timedelta(days=1))
@@ -1023,20 +991,16 @@ class InventoryNotificationScheduler(models.TransientModel):
             [('create_date', '>=', last_day), ('quantity', '>', 0), ('product_tmpl_id.notify', '=', True), ])
         products = quant.mapped('product_id')
         subject = "Products Back In Stock"
-        descrption = "Hi Team, <br><br/> Please find below a listing of products now back in stock:"
+        description = Markup("Hi Team, <br/><br/> Please find below a listing of products now back in stock:")
         header = ['Catalog #', 'Description', 'Sales Price', 'Cost', 'Product Type', 'Min Expiration Date',
                   'Max Expiration Date',
                   'Quantity On Hand', 'Forecasted Quantity', 'Unit Of Measure']
         columnProps = ['sku_code', 'product_name', 'sale_price', 'standard_price', 'product_type', 'minExpDate',
                        'maxExpDate',
                        'qty_on_hand', 'forecasted_qty', 'unit_of_measure']
-        closing_content = "Thanks & Regards,<br/> Warehouse Team"
-        self.process_common_product_scheduler(subject, descrption, products, header, columnProps, closing_content,
+        closing_content = "Warehouse Team"
+        self.process_common_product_scheduler(subject, description, products, header, columnProps, closing_content,
                                               self.sales_email)
-        # quant = self.env['stock.quant'].search(
-        #     [('write_date', '>=', last_day), ('quantity', '>', 0), ])
-        # products = quant.mapped('product_id')
-        #self.process_notification_for_product_green_status(products)
 
     def process_packing_email_notification(self, vals):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
@@ -1053,18 +1017,18 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'email_from': super_user.email, 'email_to': self.warehouse_email, 'datetime': datetime,
                          'int': int
                          }
-        try:
-            msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
-                'email_from'] + " \n --To-- " + local_context['email_to']
-            _logger.info(msg)
-            template.with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
-        except:
-            error_msg = "mail sending fail for email id: %r" + local_context[
-                'email_to'] + " sending error report to admin"
-            _logger.info(error_msg)
-            print(error_msg)
+        # try:
+        msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
+            'email_from'] + " \n --To-- " + local_context['email_to']
+        _logger.info(msg)
+        template.with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
+        # except:
+        error_msg = "mail sending fail for email id: %r" + local_context[
+            'email_to'] + " sending error report to admin"
+        _logger.info(error_msg)
+        print(error_msg)
 
-    def process_common_email_notification_template(self, email_from_user, email_to_user, subject, descrption, products,
+    def process_common_email_notification_template(self, email_from_user, email_to_user, subject, description, products,
                                                    header, columnProps, closing_content, email_to_team=None,
                                                    picking=None,
                                                    custom_template="inventory_notification.common_mail_template",
@@ -1094,7 +1058,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     [('id', '=', stock_warehouse_id.lot_stock_id.id), ])
                 if stock_location_id:
                     self.env.cr.execute(
-                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        "SELECT  min(use_date), max (use_date) FROM stock_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
                         (stock_location_id.id, product['id'],))
                     query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
@@ -1145,7 +1109,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 'email_to_user': email_to_user,
                 'email_to_team': email_to_team,
                 'subject': subject,
-                'description': descrption,
+                'description': description,
                 'template': template,
                 'is_employee': is_employee,
                 'closing_content': closing_content,
@@ -1166,24 +1130,20 @@ class InventoryNotificationScheduler(models.TransientModel):
         local_context = {'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
                          'email_from': vals['email_from_user'].sudo().email,
                          'email_to': email, 'subject': vals['subject'],
-                         'descrption': vals['description'], 'closing_content': vals['closing_content']}
+                         'description': vals['description'], 'closing_content': vals['closing_content']}
 
-        html_file = self.env['inventory.notification.html'].search([])
-        finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
-                                                  vals['headers'], vals['coln_name'])
+        # UPG_ODOO16_NOTE below commented code is not in use ...................
+        # html_file = self.env['inventory.notification.html'].search([])
+        # finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],vals['headers'], vals['coln_name'])
+        # ..............................................................................
 
-        '''if hasattr(vals['email_to_user'], 'partner_ids'):
-            partner_ids = [vals['email_to_user'].partner_ids.id]
-        else:
-            partner_ids = [vals['email_to_user'].id]'''
         try:
             if email:
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
 
-                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO,
-                                                                                            raise_exception=True)
+                template_id = vals['template'].with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
                 # File Attachment Code
                 if not picking is None:
                     # stock_picking_type = self.env['stock.picking.type'].search([('name', '=', 'Delivery Orders')])
@@ -1191,10 +1151,9 @@ class InventoryNotificationScheduler(models.TransientModel):
 
                     docids = self.env['sale.packing_list_popup'].get_packing_report(picking.sale_id)
                     data = None
-                    pdf = self.env.ref('packing_list.action_report_inventory_packing_list_pdf').sudo()._render_qweb_pdf(
-                        docids,
-                        data=data)[
-                        0]
+                    report_ref = 'packing_list.action_report_inventory_packing_list_pdf'
+                    pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(
+                        report_ref, res_ids=docids, data=data)[0]
                     values1 = {}
                     values1['attachment_ids'] = [(0, 0, {'name': 'Packing_List_' + (picking.origin) + '.pdf',
                                                          'type': 'binary',
@@ -1207,10 +1166,10 @@ class InventoryNotificationScheduler(models.TransientModel):
 
                     self.env['mail.mail'].sudo().browse(template_id).write(values1)
                     # current_mail.mail_message_id.write(values1)
-        except:
-            error_msg = "mail sending fail for email id: %r" + email + " sending error report to admin"
+        except Exception as e:
+            error_msg = "mail sending fail for email id: %r" + email + " sending error report to admin \n"
             _logger.info(error_msg)
-
+            _logger.info(" SPS Exception %s", e)
     def process_email_in_stock_scheduler_template(self, email_from_user, email_to_user, subject, descrption, products,
                                                   header, columnProps, closing_content, email_to_team, email_list_cc,
                                                   sort_col=False,
@@ -1238,7 +1197,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     [('id', '=', stock_warehouse_id.lot_stock_id.id), ])
                 if stock_location_id:
                     self.env.cr.execute(
-                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        "SELECT  min(use_date), max (use_date) FROM stock_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
                         (stock_location_id.id, product['id'],))
                     query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
@@ -1287,8 +1246,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 elif column_name == 'customer_price_list':
                     print("Inside customer_price_list ")
                     column = '$' + " {0:.2f}".format(
-                        partner_id.property_product_pricelist.get_product_price(product, product.actual_quantity,
-                                                                                partner_id))
+                        partner_id.property_product_pricelist._get_product_price(product, product.actual_quantity))
                     print(column)
                 else:
                     if isinstance(product, dict):
@@ -1354,28 +1312,29 @@ class InventoryNotificationScheduler(models.TransientModel):
             'email_cc': ",".join(vals['email_list_cc']),
             'closing_content': vals['closing_content']
         }
-        html_file = self.env['inventory.notification.html'].search([])
-        finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
-                                                  vals['headers'], vals['coln_name'])
-        # print(finalHTML)
-        if hasattr(vals['email_to_user'], 'partner_ids'):
-            partner_ids = [vals['email_to_user'].partner_ids.id]
-        else:
-            partner_ids = [vals['email_to_user'].id]
+        # UPG_ODOO16_NOTE below commented code is not in use ...................
+        # html_file = self.env['inventory.notification.html'].search([])
+        # finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],vals['headers'], vals['coln_name'])
+        # if hasattr(vals['email_to_user'], 'partner_ids'):
+        #     partner_ids = [vals['email_to_user'].partner_ids.id]
+        # else:
+        #     partner_ids = [vals['email_to_user'].id]
+        # ........................................................................
+
         try:
             if vals['email_to_user'].sudo().email:
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
                     'email_from'] + " \n --To-- " + local_context['email_to']
                 _logger.info(msg)
-                template_id = vals['template'].with_context(local_context).send_mail(SUPERUSER_ID_INFO,
-                                                                                     raise_exception=True)
+                template_id = vals['template'].with_context(local_context)
+                template_id.send_mail(SUPERUSER_ID_INFO, raise_exception=True)
         except:
             erro_msg = "mail sending fail for email id: %r" + vals[
                 'email_to_user'].sudo().email + " sending error report to admin"
             _logger.info(erro_msg)
             print(erro_msg)
 
-    def process_common_product_scheduler(self, subject, descrption, products, header, columnProps, closing_content,
+    def process_common_product_scheduler(self, subject, description, products, header, columnProps, closing_content,
                                          email_to_team):
         super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
         users = self.env['res.users'].search([('active', '=', True)])
@@ -1406,7 +1365,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 forecasted_qty = product.virtual_available
                 if stock_location_id:
                     self.env.cr.execute(
-                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        "SELECT  min(use_date), max (use_date) FROM stock_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
                         (stock_location_id.id, product.id,))
                     query_result = self.env.cr.dictfetchone()
                 if query_result and query_result['min']:
@@ -1434,7 +1393,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 product_list.append(vals)
                 product.write({'notification_date': today_start})
             self.process_common_email_notification_template(super_user, None, subject,
-                                                            descrption, product_list, header, columnProps,
+                                                            description, product_list, header, columnProps,
                                                             closing_content, email_to_team)
 
     def check_isAvailable(self, value):
@@ -1478,7 +1437,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     [('id', '=', stock_warehouse_id.lot_stock_id.id), ])
                 if stock_location_id:
                     self.env.cr.execute(
-                        "SELECT  min(use_date), max (use_date) FROM stock_production_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
+                        "SELECT  min(use_date), max(use_date) FROM stock_lot spl LEFT JOIN   stock_quant sq ON sq.lot_id=spl.id LEFT JOIN  stock_location sl ON sl.id=sq.location_id   where sl.id = %s and  sq.product_id = %s",
                         (stock_location_id.id, product['id'],))
                     query_result = self.env.cr.dictfetchone()
             for column_name in columnProps:
@@ -1548,14 +1507,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                          'email_to': email, 'subject': vals['subject'],
                          'descrption': vals['description'], 'closing_content': vals['closing_content']}
 
-        html_file = self.env['inventory.notification.html'].search([])
-        finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],
-                                                  vals['headers'], vals['coln_name'])
-
-        '''if hasattr(vals['email_to_user'], 'partner_ids'):
-            partner_ids = [vals['email_to_user'].partner_ids.id]
-        else:
-            partner_ids = [vals['email_to_user'].id]'''
         try:
             if email:
                 msg = "\n Email sent --->  " + local_context['subject'] + "\n --From--" + local_context[
@@ -1568,11 +1519,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                 if not picking is None:
                     docids = self.env['stock.move.line'].search([('picking_id', '=', picking.id), ]).ids
                     data = None
-                    pdf = \
-                        self.env.ref('sps_receiving_list_report.action_sps_receiving_list_report')._render_qweb_pdf(
-                            docids,
-                            data=data)[
-                            0]
+                    report_ref = 'sps_receiving_list_report.action_sps_receiving_list_report'
+                    pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(report_ref, res_ids=docids, data=data)[0]
                     values1 = {}
                     values1['attachment_ids'] = [(0, 0, {'name': 'Receiving_List_' + (picking.origin) + '.pdf',
                                                          'type': 'binary',
@@ -1597,9 +1545,9 @@ class InventoryNotificationScheduler(models.TransientModel):
         local_context = {'email_from': super_user_email,
                          'email_to': self.warehouse_email + ', ' + self.sales_email + ', ' + self.appraisal_email,
                          'subject': 'Vendor Offer Acceptance Notification ' + purchase_order.name,
-                         'descrption': 'Hi Team, <br><br/> ' + ' Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' + (
-                             ' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "."),
-                         'closing_content': "Thanks & Regards,<br/> Admin Team"}
+                         'descrption': 'Hi Team, <br/><br/> Vendor Offer has been accepted for <b>"' + purchase_order.name + '"</b> and Appraisal No# is <b>"' + purchase_order.appraisal_no + '"</b>' +
+                                              (' with Offer Type <b>"' + purchase_order.offer_type + '"</b>.' if purchase_order.offer_type else "."),
+                         'closing_content': "Admin Team"}
         try:
             ship_label = None;
             if purchase_order.shipping_number:
@@ -1609,9 +1557,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                      ('name', 'like', '%FedEx_Label%')], order="id desc")[0]
 
             data = None
-            pdf = self.env.ref('vendor_offer.action_report_vendor_offer_accepted')._render_qweb_pdf(purchase_order_id,
-                                                                                                   data=data)[
-                0]
+            report_ref =  'vendor_offer.action_report_vendor_offer_accepted'
+            pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(report_ref, res_ids=purchase_order_id,data=data)[0]
             values1 = {}
             values1['attachment_ids'] = [(0, 0, {'name': 'Vendor_Offer_' + (purchase_order.name) + '.pdf',
                                                  'type': 'binary',
@@ -1620,8 +1567,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                  'datas': base64.b64encode(pdf)})
                                          ]
 
-            local_context['descrption'] = local_context[
-                                              'descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>'
+            local_context['descrption'] =  local_context['descrption'] + ' <br><br/> PFA files for Vendor Offer ' + ' <b>" Vendor_Offer_' + purchase_order.name + '.pdf " </b>'
+
             if ship_label is not None:
                 values1['attachment_ids'].append(
                     (0, 0, {'name': ship_label.name,
@@ -1630,17 +1577,18 @@ class InventoryNotificationScheduler(models.TransientModel):
                             'store_fname': ship_label.name,
                             'datas': ship_label.datas})
                 )
-                local_context['descrption'] = local_context[
-                                                  'descrption'] + 'and Shipping label <b> "' + ship_label.name + ' "</b>'
+                local_context['descrption'] = local_context['descrption'] + 'and Shipping label <b> "' + ship_label.name + ' "</b>'
 
+            # finally markup the description
+            local_context['descrption'] = Markup(local_context['descrption'])
             values1['model'] = None
             values1['res_id'] = False
             template_id = template.with_context(local_context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)
             self.env['mail.mail'].sudo().browse(template_id).write(values1)
 
-        except:
+        except Exception as error:
             error_msg = "mail sending fail for email id: %r" + super_user_email + " sending error report to admin"
-            _logger.info(error_msg)
+            _logger.info(error_msg + str(error))
 
     @staticmethod
     def string_to_date(date_string):

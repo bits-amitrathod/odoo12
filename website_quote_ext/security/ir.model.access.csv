@@ -2,9 +2,7 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_website_stock_quant,website.stock.quant,stock.model_stock_quant,,1,0,0,0
 access_website_quotation,sale.quotation.website,prioritization_engine.model_sale_order,,1,0,0,0
 access_website_prioritization,prioritization_engine.online,prioritization_engine.model_prioritization_engine_prioritization,,1,0,0,0
-access_website_lot_online,stock.production.lot.website,stock.model_stock_production_lot,,1,0,0,0
+access_website_lot_online,stock.production.lot.website,stock.model_stock_lot,,1,0,0,0
 access_website_product,product.product.online,product.model_product_product,,1,0,0,0
 access_website_purchase,purchase.order,purchase.model_purchase_order,,1,1,1,0
 access_website_sale_line,sale.order.line,sale.model_sale_order_line,,0,0,0,1
-
-access_ir.model_portal_cstm,ir.model,website_form.model_ir_model,base.group_portal,1,0,0,0

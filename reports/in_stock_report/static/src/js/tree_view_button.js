@@ -1,41 +1,50 @@
-odoo.define('in_stock_report_button', function (require) {
-"use strict";
+/** @odoo-module **/
 
-var core = require('web.core');
-var framework = require('web.framework');
+import { registry } from '@web/core/registry';
+import { listView } from '@web/views/list/list_view';
+import { ListController } from '@web/views/list/list_controller';
+//import { session } from "@web/session";
+import { blockUI, unblockUI } from "web.framework";
+var session = require('web.session');
+var ajax = require('web.ajax');
 
-var ListController = require('web.ListController');
+export class InStockReportListController extends ListController {
+    setup() {
+        super.setup();
+//        this.archiveEmployee = useArchiveEmployee();
+    }
+    onClickExport() {
+        var url = '/web/export/in_stock_report'
+        this.actionService.doAction({
+            type: "ir.actions.act_url",
+            url: url,
+        });
+    }
+//    onError(error){
+//        console.log("------------aa-----------",error)
+//        var message = error.messages
+//        throw new Error(message);
+//    }
+//    filter_button() {
+//        console.log("------------343aa-----------")
+//        var self = this;
+//        blockUI();
+//        ajax.get_file({
+//            url: '/web/export/in_stock_report',
+//            complete: unblockUI,
+//            error: self.onError,
+//            success: function(){
+//                console.log("------------aa-----------")
+//                unblockUI()
+//            }
+//        })
+//
+//    }
+}
 
-    ListController.include({
+registry.category('views').add('in_stock_list', {
+    ...listView,
+    Controller: InStockReportListController,
+    buttonTemplate: 'in_stock_report.buttons',
+});
 
-        renderButtons: function($node) {
-
-        this._super.apply(this, arguments);
-
-            if (this.$buttons) {
-                let filter_button = this.$buttons.find('.o_list_export_button');
-                filter_button && filter_button.click(this.proxy('filter_button'));
-            }
-
-        },
-
-
-
-        filter_button: function () {
-         console.log("------------343aa-----------")
-            framework.blockUI();
-           this.getSession().get_file({
-                url: '/web/export/in_stock_report',
-                complete: framework.unblockUI,
-                error: (error) => this.call('crash_manager', 'rpc_error', error),
-                success: function(){
-                    console.log("------------aa-----------")
-                    framework.unblockUI()
-                }
-            })
-
-        }
-
-    });
-
-})

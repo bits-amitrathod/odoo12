@@ -16,10 +16,12 @@
 
     # always loaded
     'data': [
+        'security/ir.model.access.csv',
         'views/views.xml',
     ],
 
     'application' :True,
     'auto-install': False,
     'installable': True,
+    'license': 'LGPL-3',
 }

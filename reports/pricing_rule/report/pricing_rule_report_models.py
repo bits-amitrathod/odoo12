@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class OnHandByDateReportModel(models.AbstractModel):
     _name = 'report.pricing_rule.inv_pricing_rule_template'
+    _description = "report Pricing Rule Template"
 
     @api.model
     def _get_report_values(self, docids, data=None):

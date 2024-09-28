@@ -8,7 +8,7 @@
            <value eval="{'noupdate': False}"/>
        </function>
        <record id="stock.mail_template_data_delivery_confirmation" model="mail.template">
-           <field name="email_from"><![CDATA["${(object.company_id.name or user.company_id.name)|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
+           <field name="email_from">{{(object.company_id.name or user.company_id.name)}} {{(object.company_id.email or user.email)}}</field>
        </record>
        <function name="write" model="ir.model.data">
            <function name="search" model="ir.model.data">

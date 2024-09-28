@@ -8,12 +8,13 @@ _logger = logging.getLogger(__name__)
 
 class ReturnrdSales(models.Model):
     _name = "report.returned.sales.order"
+    _description = "Reports Returnrd Sales"
     _auto = False
 
     name = fields.Char("Sales Order#")
     order_id = fields.Many2one('sale.order', string='Order', )
     cost_price = fields.Float("Qty Ordered")
-    done_qty = fields.Float("Qty Done",digits=dp.get_precision('Product Unit of Measure'), required=True)
+    done_qty = fields.Float("Qty Done",digits='Product Unit of Measure', required=True)
     product_uom_id = fields.Many2one('uom.uom', 'UOM')
     partner_id = fields.Many2one('res.partner', string='Customer', )
     product_id = fields.Many2one('product.product', string='Product Name', )

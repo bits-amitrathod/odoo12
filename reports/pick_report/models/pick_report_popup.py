@@ -16,14 +16,14 @@ class PickingReportPopUp(models.TransientModel):
     def open_table(self):
         location_group=""
         carrier_id=""
-        if self.picking_id.picking_type_id.warehouse_id:
+        if self.picking_id.picking_type_id and self.picking_id.picking_type_id.warehouse_id:
             location_group=self.picking_id.picking_type_id.warehouse_id.code
         if self.picking_id.carrier_id:
             carrier_id = self.picking_id.carrier_id.name
         data_dict = {'scheduled_date': self.picking_id.scheduled_date,
                      'priority': self.picking_id.priority,
                      'state': self.picking_id.state.capitalize(),
-                     'type': self.picking_id.picking_type_id.name,
+                     'type': self.picking_id.picking_type_id and self.picking_id.picking_type_id.name or "",
                      'location_group':location_group,
                      'carrier_id':carrier_id
                      }
@@ -41,7 +41,7 @@ class PickingReportPopUp(models.TransientModel):
         for stock_move in moves:
             sku = stock_move.product_id.product_tmpl_id.sku_code
             ext = sku and (str(sku) + " - ") or ""
-            products_list.append([stock_move.state, stock_move.product_uom_qty,
+            products_list.append([stock_move.state, stock_move.reserved_uom_qty,
                                   [ext + stock_move.product_id.product_tmpl_id.name,
                                    (stock_move.lot_id.name or "N/A"), str(stock_move.lot_id.use_date or "N/A")],
                                   stock_move.location_id.complete_name,
@@ -64,17 +64,18 @@ class PickingReportPopUp(models.TransientModel):
     def get_pick_report(self, picking_id):
         location_group = ""
         carrier_id = ""
-        if picking_id.picking_type_id.warehouse_id:
+        if picking_id.picking_type_id and picking_id.picking_type_id.warehouse_id:
             location_group = picking_id.picking_type_id.warehouse_id.code
         if picking_id.carrier_id:
             carrier_id = picking_id.carrier_id.name
         data_dict = {'scheduled_date': picking_id.scheduled_date,
                      'priority': picking_id.priority,
                      'state': picking_id.state.capitalize(),
-                     'type': picking_id.picking_type_id.name,
+                     'type': picking_id.picking_type_id and picking_id.picking_type_id.name or "",
                      'location_group': location_group,
                      'carrier_id': carrier_id
                      }
+
 
         if picking_id.sale_id.id:
             data_dict.update({'order_id': picking_id.sale_id.name})

@@ -6,6 +6,7 @@ log = logging.getLogger(__name__)
 
 class ReportKaRevenue(models.AbstractModel):
     _name = 'report.revenue_by_ka.ka_revenue_temp_test'
+    _description = "Report Ka Revenue"
 
     @api.model
     def _get_report_values(self, docids, data=None):

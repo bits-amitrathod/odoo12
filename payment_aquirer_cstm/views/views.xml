@@ -1,5 +1,19 @@
 <odoo>
     <data>
+
+    <template id="redirect_form">
+        <form t-att-action="api_url" method="post">
+            <t t-if="return_url">
+                <input type="hidden" name="return_url" t-att-value="return_url"/>
+            </t>
+            <input type="hidden" name="reference" t-att-value="reference"/>
+            <input type="hidden" name="amount" t-att-value="amount"/>
+            <input type="hidden" name="currency" t-att-value="currency"/>
+            <input type="hidden" name="txid" t-att-value="tx_id"/>
+        </form>
+    </template>
+
+
         <template id="default_acquirer_button">
             <input type="hidden" name="data_set" t-att-data-action-url="tx_url"/>
             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -12,27 +26,19 @@
             <input type="hidden" name="txid" t-att-value="tx_id"/>
         </template>
 
-
-        <record id="payment_acquirer_purchaseorder" model="payment.acquirer">
+        <record id="payment_acquirer_purchaseorder" model="payment.provider">
             <field name="name">Purchase Order</field>
-            <field name="view_template_id" ref="default_acquirer_button"/>
+            <field name="display_as">Purchase Order</field>
             <field name="module_id" ref="base.module_payment_aquirer_cstm"/>
-            <field name="journal_id"></field>
-            <field name="provider">purchaseorder</field>
+            <field name="journal_id">17</field>
             <field name="company_id" ref="base.main_company"/>
-            <field name="description" type="html">
-                <p>
-                    Payment by Purchase Order
-                </p>
-                <ul class="list-inline">
-                    <li><i class="fa fa-check"/>Online Payment
-                    </li>
-                </ul>
-            </field>
+            <field name="redirect_form_view_id" ref="redirect_form"/>
+
         </record>
 
+
         <record id="view_delivery_carrier_form_custom" model="ir.ui.view">
-            <field name="name">delivery.carrier.form</field>
+            <field name="name">delivery.carrier.form.custom.inherit</field>
             <field name="model">delivery.carrier</field>
             <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
             <field name="arch" type="xml">
@@ -43,18 +49,5 @@
                 </xpath>
             </field>
         </record>
-
-        <!-- Scheduled Action -->
-        <!--<record id="action_delete_old_records" model="ir.cron">
-            <field name="name">Delete Old Records</field>
-            <field name="model_id" ref="model_product_process_list"/>
-            <field name="interval_number">5</field> &lt;!&ndash; Run every 5 minutes &ndash;&gt;
-            <field name="interval_type">minutes</field>
-            <field name="numbercall">-1</field> &lt;!&ndash; Run indefinitely &ndash;&gt;
-            <field name="state">code</field>
-            <field name="active">False</field>
-            <field name="code">model._delete_old_records()</field>
-        </record>-->
-
     </data>
 </odoo>

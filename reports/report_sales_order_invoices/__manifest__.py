@@ -24,12 +24,9 @@
         'report/report_sales_order_invoices.xml',
         'report/sales_order_invoices.xml'
     ],
-    # only loaded in demonstration mode
-    # 'demo': [
-    #     'demo/demo.xml',
-    # ],
 
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
 }

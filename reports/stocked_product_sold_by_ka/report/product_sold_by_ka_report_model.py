@@ -7,6 +7,7 @@ log = logging.getLogger(__name__)
 
 class ReportProductSoldByKa(models.AbstractModel):
     _name = 'report.stocked_product_sold_by_ka.product_sold_by_ka_template'
+    _description = "Report Product Sold By Ka"
 
     @api.model
     def _get_report_values(self, docids, data=None):

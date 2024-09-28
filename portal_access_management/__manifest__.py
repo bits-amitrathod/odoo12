@@ -10,6 +10,7 @@
 
     # always loaded
     'data': [
+         'security/ir.model.access.csv',
          'views/portal_access_scheduler.xml',
          'data/portal_data.xml',
          'views/views.xml',
@@ -18,4 +19,5 @@
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
 }

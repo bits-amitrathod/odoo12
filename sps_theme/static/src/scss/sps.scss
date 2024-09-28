@@ -1,4 +1,11 @@
 
+body.o_web_client{
+    font-family: "Roboto", sans-serif !important;
+    font-weight: 500 !important;
+}
+th{
+    font-weight: bold !important;
+}
 
 // Shared with web client and login screen
 .o_home_menu_background {
@@ -6,7 +13,7 @@
         linear-gradient(to right bottom, #394a58, #d6e9f8) !important;
         /*linear-gradient(to right bottom, #77717e, #c9a8a9);*/
     background-size: cover;
- .o_caption {
+    .o_caption {
         color: #fff !important;
         text-shadow: none !important;
     }
@@ -18,12 +25,12 @@
     }
     .o_menu_systray{
         li{
-        .badge{
-        background-color: #C4262E !important;
-        border-color: #C4262E !important}
-        i{
-        color: #fff !important;
-        }
+            .badge{
+                background-color: #C4262E !important;
+                border-color: #C4262E !important}
+            i{
+                color: #fff !important;
+            }
         }
     }
 }
@@ -44,18 +51,20 @@
 }
 
 .o_main_navbar{
-border-bottom: 1px solid #394158;
-background-color: #394a58;
- ul > {
-     li > {
-
-       a{
-        &:hover{
-            background-color: #C4262E !important;
-        }
-       }
+    border-bottom: 1px solid #394158;
+    background: #394a58;
+    .o_menu_brand{
+        font-size: 22px;
+    }
+     ul > {
+         li > {
+           a{
+            &:hover{
+                background-color: #C4262E !important;
+            }
+           }
+         }
      }
- }
 }
 .o_searchview .o_searchview_facet .o_searchview_facet_label{
     background-color: #C4262E !important;
@@ -63,6 +72,7 @@ background-color: #394a58;
 }
 .btn{
     &.btn-primary{
+        color: white;
         background: #c4262e;
         border-color: #c4262e;
         &:focus{
@@ -77,10 +87,15 @@ background-color: #394a58;
     &.btn-secondary{
         color: #c4262e;
     }
+    &.btn-light{
+        border-color: #f6f7fa;
+        color: #212529;
+        background: #FFF !important;
+    }
 }
 
 .o_control_panel .breadcrumb > li a{
-color: #C4262E !important;
+    color: #C4262E !important;
 }
 
 td{
@@ -94,4 +109,57 @@ td{
 }
 .o_ChatterTopbar_actions .btn-link:hover{
     color: #C4262E !important;
+}
+
+
+//override the tab css to remove horizontal scroll
+.o_notebook .nav {
+    display: flex;
+    flex-wrap: wrap !important;
+}
+
+//override css to remove vertical scroll
+.o_notebook .o_notebook_headers{
+    overflow-x: visible !important;
+}
+
+//override css of sales order line table
+.o_section_and_note_list_view{
+    table-layout:auto !important;
+    }
+
+
+// written this class to add custom css for product column in order line and invoices
+.custom-column-width span {
+    display:inline-flex !important;
+    min-width: 170px !important;
+    white-space:normal !important;
+    }
+
+.label_underline {
+    border-bottom: 1px solid;
+}
+
+//modify td css for vendor offer form
+.o_list_table{
+        table-layout:auto !important;
+    }
+
+.custom_column_width_vendor_offer {
+    display:inline-flex !important;
+    min-width: 90px !important;
+    max-width:170px !important;
+    white-space:normal !important;
+}
+
+//inventory product column draggable issue
+.column_white_space{
+     white-space: normal !important;
+}
+
+
+.product_name_size {
+    width: 100% !important;
+    font-size: 1.2rem;
+    box-sizing: border-box;
 }

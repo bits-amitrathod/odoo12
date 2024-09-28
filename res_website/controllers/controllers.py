@@ -8,6 +8,7 @@ import werkzeug
 from odoo import fields, http, modules, SUPERUSER_ID
 from odoo.http import request
 from odoo.addons.http_routing.models.ir_http import slug
+from odoo.addons.website_blog.controllers.main import WebsiteBlog
 
 class Website_Resource(http.Controller):
     @http.route([
@@ -56,16 +57,14 @@ class Website_Resource(http.Controller):
 
         })
 
-class blog_resource(odoo.addons.website_blog.controllers.main.WebsiteBlog):
+class blog_resource(WebsiteBlog):
 
     @http.route([
         '''/blog/<model("blog.blog"):blog>/<model("blog.post", "[('blog_id','=',blog.id)]"):blog_post>''',
     ], type='http', auth="public", website=True, sitemap=True)
     def blog_posts(self, blog, blog_post, tag_id=None, page=1, enable_editor=None, **post):
         """ Prepare all values to display the blog.
-
         :return dict values: values for the templates, containing
-
          - 'blog_post': browse of the current post
          - 'blog': browse of the current blog
          - 'blogs': list of browse records of blogs

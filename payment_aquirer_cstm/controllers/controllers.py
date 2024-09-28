@@ -10,11 +10,13 @@ from odoo.osv import expression
 from odoo.addons.portal.controllers.mail import _message_post_helper
 import werkzeug
 from odoo import api, fields, models, tools, SUPERUSER_ID
+from odoo.tools import ustr
+from odoo.tools.translate import _
 from odoo.exceptions import AccessError, MissingError
-from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq, ustr
-from odoo import api, fields, models, _
+from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT, consteq
+from odoo import api, fields, models
 from odoo.tools.float_utils import float_repr
-from odoo.addons.payment.controllers.portal import PaymentProcessing
+from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
 from odoo.addons.payment_paypal.controllers.main import PaypalController
 from odoo.exceptions import UserError, ValidationError
 
@@ -71,8 +73,7 @@ class PaymentAquirerCstm(http.Controller):
         # request.session.set('sale_transaction_id', request.session.get('__website_sale_last_tx_id'))
         return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
 
-    @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True,
-                csrf=False)
+    @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def cart_update(self, purchase_order, **kw):
         order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
         order.client_order_ref = purchase_order
@@ -94,6 +95,10 @@ class PaymentAquirerCstm(http.Controller):
     def check_having_carrier_with_account_no(self):
         Monetary = request.env['ir.qweb.field.monetary']
         order = request.website.sale_get_order()
+        if not order:
+            order_id = request.session.get('sale_order_id',0)
+            order = request.env['sale.order'].sudo().browse(order_id)
+
         if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
             return {'carrier_acc_no': True}
         else:
@@ -103,16 +108,6 @@ class PaymentAquirerCstm(http.Controller):
                 res_currency = request.env.user.company_id.currency_id
                 if res_currency:
                     currency = res_currency
-            # return {
-            #     'carrier_acc_no': False,
-            #     'status': order.delivery_rating_success,
-            #     'error_message': order.delivery_message,
-            #     'is_free_delivery': not bool(order.amount_delivery),
-            #     'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}),
-            #     'new_amount_untaxed': Monetary.value_to_html(order.amount_untaxed, {'display_currency': currency}),
-            #     'new_amount_tax': Monetary.value_to_html(order.amount_tax, {'display_currency': currency}),
-            #     'new_amount_total': Monetary.value_to_html(order.amount_total, {'display_currency': currency}),
-            # }
 
             gen_pay = False
             if order.id:
@@ -126,17 +121,9 @@ class PaymentAquirerCstm(http.Controller):
 
             return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}), 'status': order.delivery_rating_success, 'gen_pay_link': gen_pay}
 
-    # def _format_amount(self, amount, currency):
-    #     fmt = "%.{0}f".format(currency.decimal_places)
-    #     lang = request.env['res.lang']._lang_get(request.env.context.get('lang') or 'en_US')
-    #     return lang.format(fmt, currency.round(amount), grouping=True, monetary=True)\
-    #         .replace(r' ', u'\N{NO-BREAK SPACE}').replace(r'-', u'-\N{ZERO WIDTH NO-BREAK SPACE}')
-
-
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
-    @http.route(['/shop/payment'], type='http', auth="public", website=True)
-    def payment(self, **post):
-        responce = super(WebsiteSalesPaymentAquirerCstm, self).payment(**post)
+    def shop_payment(self, **post):
+        responce = super(WebsiteSalesPaymentAquirerCstm, self).shop_payment(**post)
 
         if 'expedited_shipping' not in request.session:
             request.session['expedited_shipping'] = "Ground"
@@ -145,7 +132,7 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         ctx = responce.qcontext
 
-        if 'acquirers' not in ctx:
+        if 'providers' not in ctx:
             ctx['showShippingNote'] = False
             ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session[
                 'expedited_shipping'] or ""
@@ -157,16 +144,10 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
                     break
             return responce
 
-        if 'order' in ctx:
-            if not ctx['order'].partner_id.allow_purchase:
-                for x in ctx['acquirers']:
-                    if x.name == 'Purchase Order':
-                        ctx['acquirers'].remove(x)
-        else:
-            if 'acquirers' in ctx:
-                for x in ctx['acquirers']:
-                    if x.name == 'Purchase Order':
-                        ctx['acquirers'].remove(x)
+        # if ('order' in ctx and not ctx['order'].partner_id.allow_purchase) or ('order' not in ctx) :
+        if ('order' in ctx and not ctx['order'].partner_id.allow_purchase) or ('order' not in ctx):
+            if 'providers' in ctx:
+                ctx['providers'] = ctx['providers'] and ctx['providers'].filtered(lambda p:p.name != 'Purchase Order')
 
         ctx['showShippingNote'] = False
         ctx['expedited_shipping'] = 'expedited_shipping' in request.session and request.session['expedited_shipping'] or ""
@@ -179,20 +160,15 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         return responce
 
-    @http.route(['/shop/confirmation'], type='http', auth="public", website=True)
-    def payment_confirmation(self, **post):
-        responce = super(WebsiteSalesPaymentAquirerCstm, self).payment_confirmation(**post)
+    # @http.route(['/shop/confirmation'], type='http', auth="public", website=True, sitemap=False)
+    def shop_payment_confirmation(self, **post):
+        responce = super(WebsiteSalesPaymentAquirerCstm, self).shop_payment_confirmation(**post)
         order = responce.qcontext['order']
         sale_note = ""
         if 'sales_team_message' in request.session:
             if request.session['sales_team_message']:
                 sale_note = request.session['sales_team_message']
                 request.session.pop('sales_team_message')
-                # order_sudo = order.sudo()
-                # body = _(sale_note)
-                # _message_post_helper(res_model='sale.order', res_id=order_sudo.id, message=body,
-                #                      message_type='notification', subtype="mail.mt_note",
-                #                      **({'token': order.access_token} if order.access_token else {}))
 
         if order.carrier_id.code == "my_shipper_account" and 'expedited_shipping' in request.session:
             if request.session['expedited_shipping']:
@@ -210,7 +186,9 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         # remove Product from Product Process
         product_process = request.env['product.process.list'].sudo()
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # UPG_ODOO16_NOTE  line.product_id.inventory_availability "inventory_availability" field is missing on product.product model
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
 
         return responce
@@ -223,7 +201,8 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         product_process = request.env['product.process.list'].sudo()
         # this is custom code  used to handle Same Items being sold simultaneously
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 cart_qty = sum(order.order_line.filtered(lambda p: p.product_id.id == line.product_id.id).mapped(
                     'product_uom_qty'))
                 avl_qty = line.product_id.with_context(warehouse=order.warehouse_id.id).virtual_available
@@ -247,7 +226,8 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
 
         # add Products in process
         for line in order.order_line:
-            if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            # if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+            if line.product_id.type == 'product' and line.product_id.show_availability:
                 product_process.create({
                     'product_id': line.product_id.id,
                     'so_name': order.name,
@@ -262,25 +242,18 @@ class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.W
         request.session['sales_team_message'] = sales_team_message
 
 
-class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment):
+class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
 
     def action_send_mail_after_payment_final(self, ref=None):
         template = request.env.ref('payment_aquirer_cstm.email_after_payment_done').sudo()
-
         if ref:
             so_name = str(ref.reference.split("-", 1)[0])
             values = {'subject': 'Payment Done - ' + so_name + ' ', 'model': None, 'res_id': False}
             email_to = 'sales@surgicalproductsolutions.com'
-            email_cc = 'accounting@surgicalproductsolutions.com'
-            email_from = "info@surgicalproductsolutions.com"
-
             sale_order = request.env['sale.order'].sudo().search([('name', '=', so_name)], limit=1)
             if sale_order:
                 if sale_order.account_manager:
                     user_id_email = sale_order.account_manager.login
-                    if sale_order.customer_success:
-                        email_cc = email_cc + ',' + sale_order.customer_success.login
-
                 elif sale_order.user_id:
                     if sale_order.user_id.name == "National Accounts" and sale_order.national_account:
                         user_id_email = sale_order.national_account.login
@@ -292,6 +265,10 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
                     user_id_email = sale_order.user_id.login
 
             email_to = user_id_email
+
+            email_cc = 'accounting@surgicalproductsolutions.com'
+            email_from = "info@surgicalproductsolutions.com"
+
             sales_rep = sale_order.user_id.name if sale_order.user_id else None
 
             local_context = {'email_from': email_from, 'email_cc': email_cc, 'email_to': email_to,
@@ -304,216 +281,202 @@ class WebsitePaymentCustom(odoo.addons.payment.controllers.portal.WebsitePayment
             except Exception as exc:
                 response = {'message': 'Unable to connect to SMTP Server'}
 
-    @http.route(['/website_payment/pay'], type='http', auth='public', website=True, sitemap=False)
-    def pay(self, reference='', order_id=None, amount=False, currency_id=None, acquirer_id=None, partner_id=False,
-            access_token=None, **kw):
-        """
-        Generic payment page allowing public and logged in users to pay an arbitrary amount.
+    def payment_pay( self, reference=None, amount=None, currency_id=None, partner_id=None, company_id=None,provider_id=None, access_token=None, **kwargs):
+        res = super(PaymentPortalCustom,self).payment_pay(reference=reference,amount=amount, currency_id=currency_id, partner_id=partner_id,company_id=company_id,provider_id=provider_id,access_token=access_token,**kwargs)
 
-        In the case of a public user access, we need to ensure that the payment is made anonymously - e.g. it should not be
-        possible to pay for a specific partner simply by setting the partner_id GET param to a random id. In the case where
-        a partner_id is set, we do an access_token check based on the payment.link.wizard model (since links for specific
-        partners should be created from there and there only). Also noteworthy is the filtering of s2s payment methods -
-        we don't want to create payment tokens for public users.
-
-        In the case of a logged in user, then we let access rights and security rules do their job.
-        """
-        env = request.env
-        user = env.user.sudo()
-        reference = normalize('NFKD', reference).encode('ascii', 'ignore').decode('utf-8')
-        if partner_id and not access_token:
-            raise werkzeug.exceptions.NotFound
-        if partner_id and access_token:
-            token_ok = request.env['payment.link.wizard'].check_token(access_token, int(partner_id), float(amount),
-                                                                      int(currency_id))
-            if not token_ok:
-                raise werkzeug.exceptions.NotFound
-
-        invoice_id = kw.get('invoice_id')
-
-        # Default values
-        values = {
-            'amount': 0.0,
-            'currency': user.company_id.currency_id,
-        }
-
-        # Check sale order
-        if order_id:
-            try:
-                order_id = int(order_id)
-                if partner_id:
-                    # `sudo` needed if the user is not connected.
-                    # A public user woudn't be able to read the sale order.
-                    # With `partner_id`, an access_token should be validated, preventing a data breach.
-                    order = env['sale.order'].sudo().browse(order_id)
-                else:
-                    order = env['sale.order'].browse(order_id)
-                values.update({
-                    'currency': order.currency_id,
-                    'amount': order.amount_total,
-                    'order_id': order_id
-                })
-            except:
-                order_id = None
-
-        if invoice_id:
-            try:
-                values['invoice_id'] = int(invoice_id)
-            except ValueError:
-                invoice_id = None
-
-        # Check currency
-        if currency_id:
-            try:
-                currency_id = int(currency_id)
-                values['currency'] = env['res.currency'].browse(currency_id)
-            except:
-                pass
-
-        # Check amount
-        if amount:
-            try:
-                amount = float(amount)
-                values['amount'] = amount
-            except:
-                pass
-
-        # Check reference
-        reference_values = order_id and {'sale_order_ids': [(4, order_id)]} or {}
-        values['reference'] = env['payment.transaction']._compute_reference(values=reference_values, prefix=reference)
-
-        # Check acquirer
-        acquirers = None
-        if order_id and order:
-            cid = order.company_id.id
-        elif kw.get('company_id'):
-            try:
-                cid = int(kw.get('company_id'))
-            except:
-                cid = user.company_id.id
-        else:
-            cid = user.company_id.id
-
-        #Check partner
-        if not user._is_public():
-            # NOTE: this means that if the partner was set in the GET param, it gets overwritten here
-            # This is something we want, since security rules are based on the partner - assuming the
-            # access_token checked out at the start, this should have no impact on the payment itself
-            # existing besides making reconciliation possibly more difficult (if the payment partner is
-            # not the same as the invoice partner, for example)
-            partner_id = user.partner_id.id
-        elif partner_id:
-            partner_id = int(partner_id)
-
-        #if user._is_public():
+        res.qcontext = res.qcontext
+        # Removing the "Purchase Order" provider form provider list
+        res.qcontext['providers'] = res.qcontext['providers'].filtered(lambda p: p.name != 'Purchase Order')
+        # BITS custom code..below to add the sale_order and invoice ir ro session.............................
+        order_id = self._cast_as_int(kwargs.get('sale_order_id',0))
         if order_id:
             request.session['sale_order_id'] = order_id
-        if order_id and order:
+        if order_id:
             pay_link = request.env['sale.pay.link.cust'].search([('sale_order_id', '=', order_id)])
             if pay_link:
                 pay_link.allow_pay_gen_payment_link = True
             else:
-                log_id = request.env['sale.pay.link.cust'].create({
+                request.env['sale.pay.link.cust'].create({
                     'sale_order_id': order_id,
                     'allow_pay_gen_payment_link': True
                 })
-            partner_id = int(partner_id)
 
+        invoice_id = self._cast_as_int(kwargs.get('invoice_id'))
         if invoice_id:
             pay_link = request.env['sale.pay.link.cust'].search([('invoice_id', '=', invoice_id)])
             if pay_link:
                 pay_link.allow_pay_gen_payment_link = True
-                request.session['payment_link_invoice_id'] = invoice_id
             else:
-                log_id = request.env['sale.pay.link.cust'].create({
+                request.env['sale.pay.link.cust'].create({
                         'invoice_id': invoice_id,
                         'allow_pay_gen_payment_link': True
                     })
-                request.session['payment_link_invoice_id'] = invoice_id
-                partner_id = int(partner_id)
+            request.session['payment_link_invoice_id'] = invoice_id
+        return res
 
-        values.update({
-            'partner_id': partner_id,
-            'bootstrap_formatting': True,
-            'error_msg': kw.get('error_msg')
-        })
+    # @http.route(['/website_payment/pay'], type='http', auth='public', website=True, sitemap=False)
+    # def pay(self, reference='', order_id=None, amount=False, currency_id=None, provider_id=None, partner_id=False,
+    #         access_token=None, **kw):
+    #     """
+    #     Generic payment page allowing public and logged in users to pay an arbitrary amount.
+    #
+    #     In the case of a public user access, we need to ensure that the payment is made anonymously - e.g. it should not be
+    #     possible to pay for a specific partner simply by setting the partner_id GET param to a random id. In the case where
+    #     a partner_id is set, we do an access_token check based on the payment.link.wizard model (since links for specific
+    #     partners should be created from there and there only). Also noteworthy is the filtering of s2s payment methods -
+    #     we don't want to create payment tokens for public users.
+    #
+    #     In the case of a logged in user, then we let access rights and security rules do their job.
+    #     """
+    #     env = request.env
+    #     user = env.user.sudo()
+    #     reference = normalize('NFKD', reference).encode('ascii', 'ignore').decode('utf-8')
+    #     if partner_id and not access_token:
+    #         raise werkzeug.exceptions.NotFound
+    #     if partner_id and access_token:
+    #         token_ok = request.env['payment.link.wizard'].check_token(access_token, int(partner_id), float(amount),
+    #                                                                   int(currency_id))
+    #         if not token_ok:
+    #             raise werkzeug.exceptions.NotFound
+    #
+    #     invoice_id = kw.get('invoice_id')
+    #
+    #     # Default values
+    #     values = {
+    #         'amount': 0.0,
+    #         'currency': user.company_id.currency_id,
+    #     }
+    #
+    #     # Check sale order
+    #     if order_id:
+    #         try:
+    #             order_id = int(order_id)
+    #             if partner_id:
+    #                 # `sudo` needed if the user is not connected.
+    #                 # A public user woudn't be able to read the sale order.
+    #                 # With `partner_id`, an access_token should be validated, preventing a data breach.
+    #                 order = env['sale.order'].sudo().browse(order_id)
+    #             else:
+    #                 order = env['sale.order'].browse(order_id)
+    #             values.update({
+    #                 'currency': order.currency_id,
+    #                 'amount': order.amount_total,
+    #                 'order_id': order_id
+    #             })
+    #         except:
+    #             order_id = None
+    #
+    #     if invoice_id:
+    #         try:
+    #             values['invoice_id'] = int(invoice_id)
+    #         except ValueError:
+    #             invoice_id = None
+    #
+    #     # Check currency
+    #     if currency_id:
+    #         try:
+    #             currency_id = int(currency_id)
+    #             values['currency'] = env['res.currency'].browse(currency_id)
+    #         except:
+    #             pass
+    #
+    #     # Check amount
+    #     if amount:
+    #         try:
+    #             amount = float(amount)
+    #             values['amount'] = amount
+    #         except:
+    #             pass
+    #
+    #     # Check reference
+    #     reference_values = order_id and {'sale_order_ids': [(4, order_id)]} or {}
+    #     values['reference'] = env['payment.transaction']._compute_reference(values=reference_values, prefix=reference)
+    #
+    #     # Check Providers
+    #     providers = None
+    #     if order_id and order:
+    #         cid = order.company_id.id
+    #     elif kw.get('company_id'):
+    #         try:
+    #             cid = int(kw.get('company_id'))
+    #         except:
+    #             cid = user.company_id.id
+    #     else:
+    #         cid = user.company_id.id
+    #
+    #     #Check partner
+    #     if not user._is_public():
+    #         # NOTE: this means that if the partner was set in the GET param, it gets overwritten here
+    #         # This is something we want, since security rules are based on the partner - assuming the
+    #         # access_token checked out at the start, this should have no impact on the payment itself
+    #         # existing besides making reconciliation possibly more difficult (if the payment partner is
+    #         # not the same as the invoice partner, for example)
+    #         partner_id = user.partner_id.id
+    #     elif partner_id:
+    #         partner_id = int(partner_id)
+    #
+    #     values.update({
+    #         'partner_id': partner_id,
+    #         'bootstrap_formatting': True,
+    #         'error_msg': kw.get('error_msg')
+    #     })
+    #
+    #     provider_domain = ['&', ('state', 'in', ['enabled', 'test']), ('company_id', '=', cid)]
+    #     if partner_id:
+    #         partner = request.env['res.partner'].browse([partner_id])
+    #         provider_domain = expression.AND([
+    #             provider_domain,
+    #             ['|', ('country_ids', '=', False), ('country_ids', 'in', [partner.sudo().country_id.id])]
+    #         ])
+    #     if provider_id:
+    #         providers = env['payment.provider'].browse(int(provider_id)) if provider_id else env['payment.provider'].search(provider_domain)
+    #     if not providers:
+    #         providers = env['payment.provider'].search(provider_domain)
+    #
+    #     # UPG_ODOO16_NOTE no need of below line because it is removed from odoo 16 flow
+    #     # values['providers'] = self._get_acquirers_compatible_with_current_user(providers)
+    #
+    #     # Removing the "Purchase Order" provider form provider list
+    #     values['providers'] = values['providers'].filtered(lambda p: p.name != 'Purchase Order')
+    #
+    #     if partner_id:
+    #         values['pms'] = request.env['payment.token'].search([
+    #             ('provider_id', 'in', providers.ids),
+    #             ('partner_id', 'child_of', partner.commercial_partner_id.id)
+    #         ])
+    #     else:
+    #         values['pms'] = []
+    #
+    #     return request.render('payment.pay', values)
 
-        acquirer_domain = ['&', ('state', 'in', ['enabled', 'test']), ('company_id', '=', cid)]
-        if partner_id:
-            partner = request.env['res.partner'].browse([partner_id])
-            acquirer_domain = expression.AND([
-                acquirer_domain,
-                ['|', ('country_ids', '=', False), ('country_ids', 'in', [partner.sudo().country_id.id])]
-            ])
-        if acquirer_id:
-            acquirers = env['payment.acquirer'].browse(int(acquirer_id))
-        if order_id:
-            acquirers = env['payment.acquirer'].search(acquirer_domain)
-        if not acquirers:
-            acquirers = env['payment.acquirer'].search(acquirer_domain)
+    @http.route('/payment/confirmation', type='http', methods=['GET'], auth='public', website=True)
+    def payment_confirm(self, tx_id, access_token, **kwargs):
 
-        values['acquirers'] = self._get_acquirers_compatible_with_current_user(acquirers)
-        for item in values['acquirers']:
-            if item.display_name == 'Purchase Order':
-                values['acquirers'].remove(item)
-        if partner_id:
-            values['pms'] = request.env['payment.token'].search([
-                ('acquirer_id', 'in', acquirers.ids),
-                ('partner_id', 'child_of', partner.commercial_partner_id.id)
-            ])
-        else:
-            values['pms'] = []
+        res = super(PaymentPortalCustom,self).payment_confirm(tx_id=tx_id,access_token=access_token,**kwargs)
 
-        return request.render('payment.pay', values)
-
-    @http.route(['/website_payment/confirm'], type='http', auth='public', website=True, sitemap=False)
-    def confirm(self, **kw):
-        tx_id = int(kw.get('tx_id', 0))
-        access_token = kw.get('access_token')
+        tx_id = self._cast_as_int(tx_id)
         if tx_id:
-            if access_token:
-                tx = request.env['payment.transaction'].sudo().browse(tx_id)
-                secret = request.env['ir.config_parameter'].sudo().get_param('database.secret')
-                valid_token_str = '%s%s%s' % (
-                tx.id, tx.reference, float_repr(tx.amount, precision_digits=tx.currency_id.decimal_places))
-                valid_token = hmac.new(secret.encode('utf-8'), valid_token_str.encode('utf-8'),
-                                       hashlib.sha256).hexdigest()
-                if not consteq(ustr(valid_token), access_token):
-                    raise werkzeug.exceptions.NotFound
-            else:
-                tx = request.env['payment.transaction'].browse(tx_id)
-            if tx.state in ['done', 'authorized']:
-                status = 'success'
-                message = tx.acquirer_id.done_msg
-            elif tx.state == 'pending':
-                status = 'warning'
-                message = tx.acquirer_id.pending_msg
-            else:
-                status = 'danger'
-                message = tx.state_message or _('An error occured during the processing of this payment')
-            odoo.addons.payment.controllers.portal.PaymentProcessing.remove_payment_transaction(tx)
-            if tx and tx.reference and tx.reference.startswith("SO"):
-                #_logger.info("***    Reference Start With SO ***")
-                self.action_send_mail_after_payment_final(tx)
-            return request.render('payment.confirm', {'tx': tx, 'status': status, 'message': message})
-        else:
-            return request.redirect('/my/home')
+            tx_sudo = request.env['payment.transaction'].sudo().browse(tx_id)
 
-class PaymentProcessing(PaymentProcessing):
+        if tx_sudo and tx_sudo.reference and tx_sudo.reference.startswith("SO"):
+            self.action_send_mail_after_payment_final(tx_sudo)
+        return res
+
+
+class PaymentProcessing(PaymentPostProcessing):
 
     @http.route()
     def payment_status_page(self, **kwargs):
         # Remove product from
         order_id = request.session.sale_order_id
         if order_id:
-            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1).sudo()
+            order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
             # order = request.env['sale.order'].sudo().browse(request.session.sale_order_id)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:
-                if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always',
-                                                                                                    'threshold']:
+                if line.product_id.type == 'product' and line.product_id.show_availability:
                     product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
-        return super(PaymentProcessing, self).payment_status_page(**kwargs)
+        return super(PaymentProcessing, self).display_status(**kwargs)
 
 
 class PaypalController(PaypalController):
@@ -525,7 +488,7 @@ class PaypalController(PaypalController):
             # order = request.env['sale.order'].search([('id', '=', request.session.sale_order_id)], limit=1)
             product_process = request.env['product.process.list'].sudo()
             for line in order.order_line:
-                if line.product_id.type == 'product' and line.product_id.inventory_availability in ['always', 'threshold']:
+                if line.product_id.type == 'product' and line.product_id.show_availability:
                     product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
 
         return super(PaypalController, self).paypal_cancel(**post)

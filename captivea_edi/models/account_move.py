@@ -64,7 +64,7 @@ class AccountMove(models.Model):
     x_studio_edi_reference = fields.Char('EDI Reference', copy=False)
     x_edi_accounting_id = fields.Char('Accounting ID', copy=False)
     x_edi_store_number = fields.Char('Store number', copy=False)
-    invn_sent = fields.Boolean('Invoice Notification Sent?', copy=False)
+    invn_sent = fields.Boolean('Invoice Notification Sent?', copy=False, default=False)
     edi_log_id = fields.Many2one('setu.edi.log', copy=False)
     sale_order_of = fields.Selection([('true', 'Truecommerce'), ('ghx', 'GHX')])
 
@@ -115,7 +115,7 @@ class AccountMove(models.Model):
             'amount_by_group': line.move_id.amount_tax,
             'scac': pick and pick.x_scac_kuebix or '',
             'carrier_tracking_ref': pick and pick.carrier_tracking_ref or '',
-            'ship_via': pick.shipping_service or '',
+            'ship_via': pick and pick.shipping_service or '',
             'carrier_id': False,
             'x_edi_transaction_type': line.move_id.x_edi_transaction_type,
             'x_edi_ship_to_type': line.move_id.x_edi_ship_to_type

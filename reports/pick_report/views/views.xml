@@ -5,18 +5,20 @@
             <field name="model">pick_report.popup</field>
             <field name="arch" type="xml">
                 <form string="Filter">
-                    <group>
+                    <sheet>
+                        <group>
                             <field name="picking_id"/>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        </group>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
 
-        <record id="action_pick_report" model="ir.actions.act_window">
+        <record id="action_pick_report_sps" model="ir.actions.act_window">
             <field name="name">Pick Report</field>
             <field name="res_model">pick_report.popup</field>
 <!--            <field name="view_type">form</field>-->
@@ -27,7 +29,8 @@
         </record>
 
 
-        <menuitem name="Pick Report" id="pick_report_menu" parent="stock.menu_warehouse_report"
-                  action="pick_report.action_pick_report"/>
+        <menuitem name="Pick Report" id="pick_report_menu"
+                  parent="stock.menu_warehouse_report"
+                  action="pick_report.action_pick_report_sps"/>
     </data>
 </odoo>

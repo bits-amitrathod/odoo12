@@ -7,19 +7,21 @@
             <field name="model">popup.discount.summary</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="sale_order"/>
-                            <field name="partner_id"/>
-                            <field name="compute_at_date" widget="radio" value="0"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', '1')]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', '1')]}"/>
+                            <group>
+                                <field name="sale_order"/>
+                                <field name="partner_id"/>
+                                <field name="compute_at_date" widget="radio" value="0"/>
+                                <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', '1')]}"/>
+                                <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', '1')]}"/>
+                            </group>
                         </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -47,6 +49,7 @@
                     <field name="r_discount" widget="monetary" optional="show"/>
                     <field name="r_amount" widget="monetary" optional="show"/>
                     <!--<field name="r_total" widget="monetary"/>-->
+                    <field name="company_id" invisible="1"></field>
                     <field name="currency_id"  invisible="1" optional="show" />
                     <field name="state" invisible="1"/>
                 </tree>

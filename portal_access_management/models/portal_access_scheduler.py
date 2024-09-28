@@ -18,8 +18,15 @@ def extract_email(email):
     return addresses[0] if addresses else ''
 
 
+
+class ResPartner(models.Model):
+    _inherit = 'res.partner'
+    portal_access_email_sent = fields.Boolean('Portal Access Email Sent', default=False)
+
+
 class PortalAccessScheduler(models.TransientModel):
     _name = 'portal.access.scheduler'
+    _description = "PortalAccessScheduler"
 
     @api.model
     def portal_access_scheduler(self):
@@ -32,11 +39,12 @@ class PortalUserCustom(models.TransientModel):
 
     custom_portal_access = fields.Boolean('Portal Access for purchasing platform', default=False)
 
+    # TODO....
+    # ('customer', '=', True), customer column is not found error was showing so we removed that domain from below search query
     def get_all_partners(self):
-        today_date = date.today()
-        today_start = today_date
+        today_start = date.today()
         customers = self.env['res.partner'].search(
-            [('customer', '=', True), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
+            [('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
              ('portal_access_email_sent', '!=', True),
              '|', '|', '|', '|', '|', '|', ('monday', '=', True), ('tuesday', '=', True), ('wednesday', '=', True),
              ('thursday', '=', True), ('friday', '=', True), ('saturday', '=', True), ('sunday', '=', True)],
@@ -52,18 +60,12 @@ class PortalUserCustom(models.TransientModel):
             user_changes.clear()
             email_list_cc.clear()
             if (customer.start_date == False and customer.end_date == False) \
-                    or (customer.end_date != False and self.string_to_date(
-                customer.end_date) >= today_start) \
-                    or (customer.start_date != False and self.string_to_date(
-                customer.start_date) <= today_start) \
-                    or (
-                    customer.start_date != False and customer.end_date != False and self.string_to_date(
-                customer.start_date) <= today_start and self.string_to_date(
-                customer.end_date) >= today_start) \
-                    or (customer.end_date is None):
-                contacts = self.env['res.partner'].search(
-                    [('parent_id', '=', customer.id), ('email', '!=', ''), ('active', '=', True)])
+                or (customer.end_date != False and self.string_to_date(customer.end_date) >= today_start) \
+                or (customer.start_date != False and self.string_to_date(customer.start_date) <= today_start) \
+                or (customer.start_date != False and customer.end_date != False and self.string_to_date(customer.start_date) <= today_start and self.string_to_date(customer.end_date) >= today_start) \
+                or (customer.end_date is None):
 
+                contacts = self.env['res.partner'].search([('parent_id', '=', customer.id), ('email', '!=', ''), ('active', '=', True)])
                 for contact in contacts:
                     if (contact.email != customer.email and contact.email not in email_list_cc):
                         if (contact.start_date == False and contact.end_date == False) \
@@ -89,17 +91,15 @@ class PortalUserCustom(models.TransientModel):
                     # make sure that each contact appears at most once in the list
                     if contact.id not in contact_ids:
                         contact_ids.add(contact.id)
-                        in_portal = False
-                        if contact.user_ids:
-                            in_portal = self.env.ref('base.group_portal') in contact.user_ids[0].groups_id
-                        if in_portal is False:
+                        is_portal = contact.user_ids and contact.user_ids[0].has_group('base.group_portal')
+                        if not is_portal:
                             error_msg = self.get_error_message(contact)
                             if not error_msg:
-                                in_portal = True
+                                is_portal = True
                                 user_changes.append((0, 0, {
                                     'partner_id': contact.id,
                                     'email': contact.email,
-                                    'in_portal': in_portal,
+                                    'is_portal': is_portal,
                                     # 'user_id': SUPERUSER_ID,
                                 }))
 
@@ -108,7 +108,7 @@ class PortalUserCustom(models.TransientModel):
                     records = self.env['portal.wizard'].search([], order="id desc", limit=1)
                     try:
                         records.custom_portal_access = True
-                        records.user_ids.action_apply()
+                        records.user_ids.action_grant_access()
                     except Exception as e:
                         _logger.error("%s", e)
 
@@ -163,11 +163,6 @@ class PortalUserCustom(models.TransientModel):
         return datetime.strptime(str(datestring), DEFAULT_SERVER_DATE_FORMAT).date()
     
     
-class ResPartner(models.Model):
-    _inherit = 'res.partner'
-
-    portal_access_email_sent = fields.Boolean('Portal Access Email Sent', default=False)
-
 
 
 

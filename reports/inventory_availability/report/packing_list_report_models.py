@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class OnHandByDateReportModel(models.AbstractModel):
     _name = 'report.packing_list.sale_packing_list_template'
+    _description = "OnHand By Date Report Model"
 
     @api.model
     def _get_report_values(self, docids, data=None):

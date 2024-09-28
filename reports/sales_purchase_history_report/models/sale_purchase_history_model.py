@@ -16,7 +16,7 @@ class SalePurchaseHistory(models.Model):
     product_sku_ref = fields.Char("Product SKU", compute='_compare_data', store=False)
     customer_name = fields.Char("Customer Name",compute='_compare_data', store=False)
     delivered_date = fields.Datetime("Delivered Date",compute='_compare_data', store=False)
-    qty_delivered_converted = fields.Float("Delivered Qty",compute='_compare_data', store=False,digits=dp.get_precision('Product Unit of Measure'))
+    qty_delivered_converted = fields.Float("Delivered Qty",compute='_compare_data', store=False,digits='Product Unit of Measure')
     unit_price_converted = fields.Monetary("Unit Price", currency_field='currency_id', store=False)
     total_price_converted = fields.Monetary("Total", currency_field='currency_id', store=False)
     product_uom_converted = fields.Many2one('uom.uom', 'Unit of Measure', currency_field='currency_id', store=False)
@@ -54,7 +54,7 @@ class SalePurchaseHistory(models.Model):
                     stock_picking = self.env['stock.picking'].search([('sale_id', '=', sale_order_line.order_id.id),('state', '=', 'done'),('location_dest_id','=',stock_location.id)])
                     if stock_picking:
                         for picking in stock_picking:
-                            for move_line in picking.move_lines:
+                            for move_line in picking.move_line_ids:
                                 if move_line.product_id.id == sale_order_line.product_id.id:
                                     #sale_order_line.qty_delivered_converted += move_line.product_uom_qty
                                     sale_order_line.qty_delivered_converted = sale_order_line.qty_delivered
@@ -69,7 +69,7 @@ class SalePurchaseHistory(models.Model):
                                         sale_order_line.unit_price_converted = sale_order_line.price_unit
                                         sale_order_line.total_price_converted = (
                                                 sale_order_line.price_unit * sale_order_line.qty_delivered)
-                                    sale_order_line.product_uom_converted = move_line.product_uom
+                                    sale_order_line.product_uom_converted = move_line.product_uom_id
                             if picking.date_done:
                                 sale_order_line.delivered_date = picking.date_done
                             else:

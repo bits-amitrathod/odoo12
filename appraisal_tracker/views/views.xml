@@ -2,18 +2,13 @@
     <data>
 
         <record model="ir.ui.view" id="appraisal_tracker.list">
-            <field name="name">purchase.order list3</field>
+            <field name="name">purchase.order.appraisal.tracker.tree.view</field>
             <field name="model">purchase.order</field>
             <field name="priority">21</field>
             <field name="arch" type="xml">
 
                 <tree create="false" delete="false">
                     <field name="appraisal_no" attrs="{'invisible':[('state', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <!--<field name="priority" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"/>-->
-                    <!--<field name="revision" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"-->
-                           <!--class="text-center"/>-->
-                    <!--<field name="revision_date" attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"-->
-                           <!--class="text-center"/>-->
                     <field name="status" invisible="1"/>
                     <field name="state" invisible="1"/>
                     <field name="acq_user_id" string='Acq Manager'
@@ -47,30 +42,11 @@
                     <field name="tier2_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
                     <field name="less_than_40_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
                     <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <!--<field name="tier1_margin"-->
-                           <!--options='{"bg_color": "#f3f397 : t1color"+"==3;"+"#c9fbcf : t1color"+"==2;"+"#ff7098 : t1color"+"==1"}'-->
-                           <!--string="T1 Margin"-->
-                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
-                    <!--<field name="tier2_margin"-->
-                           <!--options='{"bg_color": "#f3f397 : t2color"+"==3;"+"#c9fbcf : t2color"+"==2;"+"#ff7098 : t2color"+"==1"}'-->
-                           <!--string="T2 Margin"-->
-                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
-                     <!--<field name="less_than_40_margin"-->
-                           <!--options='{"bg_color": "#f3f397 : lscolor"+"==3;"+"#c9fbcf : lscolor"+"==2;"+"#ff7098 : lscolor"+"==1"}'-->
-                           <!--string="Broker Margin"-->
-                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
-                    <!--<field name="broker_margin"-->
-                           <!--options='{"bg_color": "#f3f397 : color"+"==3;"+"#c9fbcf : color"+"==2;"+"#ff7098 : color"+"==1"}'-->
-                           <!--string="Margin Detail"-->
-                           <!--attrs="{'invisible':[('status', 'not in', ('purchase','cancel'))]}"></field>-->
+
                     <field name="status_ven_app" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
-                    <!--<field name="color" invisible="1"/>-->
-                      <!--<field name="t1color" invisible="1"/>-->
-                      <!--<field name="t2color" invisible="1"/>-->
-                      <!--<field name="lscolor" invisible="1"/>-->
 
                     <field name="currency_id" invisible="1"/>
-                    <field name="message_unread" invisible="1"/>
+<!--                    <field name="message_unread" invisible="1"/>-->
                 </tree>
 
             </field>
@@ -78,9 +54,10 @@
 
 
         <record id="appraisal_tracker_offer_form" model="ir.ui.view">
-            <field name="name">purchase.order.form</field>
+            <field name="name">purchase.order.appraisal.tracker.form.view</field>
             <field name="model">purchase.order</field>
             <!--<field name="context">[status: 'purchase']</field>-->
+            <field name="priority" eval="20"/>
             <field name="arch" type="xml">
 
 
@@ -104,7 +81,7 @@
                                     class="oe_stat_button"
                                     icon="fa-truck"
                                     attrs="{'invisible':[('state', 'in', ('draft','sent','to approve')),('picking_ids','=',[])]}">
-                                <field name="picking_count" widget="statinfo" string="Receipt"
+                                <field name="incoming_picking_count" widget="statinfo" string="Receipt"
                                        help="Incoming Shipments"/>
                                 <field name="picking_ids" invisible="1"/>
                             </button>
@@ -227,14 +204,10 @@
 
                                 </field>
                                 <group>
-                                       <field name="vendor_offer_data" invisible="1"/>
+                                   <field name="vendor_offer_data" invisible="1"/>
                                     <group class="oe_subtotal_footer oe_right">
-
                                         <field name="amount_untaxed" widget="monetary" string="Untaxed Offer Price"/>
                                         <field name="amount_tax" string="Taxes"/>
-                                         <div class="oe_subtotal_footer_separator oe_inline">
-                                            <!--<label for="amount_total"/>-->
-                                        </div>
                                         <field name="amount_total" widget="monetary" string="Total Offer Price" class="oe_subtotal_footer_separator"/>
 
                                     </group>
@@ -242,38 +215,22 @@
                                         <field name="rt_price_subtotal_amt" widget="monetary"
                                                string="Untaxed Retail Price"/>
                                         <field name="rt_price_tax_amt" string="Taxes"/>
-                                         <div class="oe_subtotal_footer_separator oe_inline">
-                                            <!--<label for="rt_price_total_amt"/>-->
-                                        </div>
                                         <field name="rt_price_total_amt"  widget="monetary" string="Total Retail Price" class="oe_subtotal_footer_separator"/>
                                     </group>
 
-                            <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
                                         <field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>
                                         <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="billed_offer_total"/>
-                                        </div>
-                                        <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="final_billed_offer_total"/>
-                                        </div>
-                                        <field name="final_billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                                        <field name="billed_offer_total"  class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                                        <field name="final_billed_offer_total"  class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                                    </group>
 
-                            </group>
-
-                            <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
+                                    <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
                                         <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
                                         <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="billed_retail_total"/>
-                                        </div>
-                                        <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                                        <div class="oe_subtotal_footer_separator oe_inline">
-                                            <label for="final_billed_retail_total"/>
-                                        </div>
-                                        <field name="final_billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
-                            </group>
+                                        <field name="billed_retail_total"  class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
+                                        <field name="final_billed_retail_total"  class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                                    </group>
                                 </group>
                                 <field name="notes" class="oe_inline"
                                        placeholder="Define your terms and conditions ..."/>
@@ -282,7 +239,7 @@
                             <page string="Deliveries">
                                 <group>
                                     <group>
-                                        <field name="date_planned" readonly="1"/>
+                                        <field name="date_planned" string="Receipt Date" readonly="1"/>
                                         <field name="shipping_label_issued" readonly="1"/>
                                     </group>
                                     <group>
@@ -313,13 +270,13 @@
             <field name="type">ir.actions.act_window</field>
             <field name="res_model">purchase.order</field>
             <field name="domain">[('state','in',('purchase','cancel','ven_draft','ven_sent','done')),('status','in',('purchase','cancel','ven_draft','ven_sent','done'))]</field>
-            <!--<field name="domain">[('vendor_offer_data','=',True)]</field>-->
             <field name="context">{'vendor_offer_data': True}</field>
             <field name="view_mode">form,tree</field>
             <field name="view_ids" eval="[(5, 0, 0),
         (0, 0, {'view_mode': 'tree', 'view_id': ref('appraisal_tracker.list')},),
         (0, 0, {'view_mode': 'form', 'view_id': ref('appraisal_tracker_offer_form')})
         ]"/>
+           <!-- TODO:UPG_ODOO16_NOTE       (0, 0, {'view_mode': 'form', 'view_id': ref('appraisal_tracker_offer_form')})-->
             <field name="help" type="html">
                 <p class="oe_view_nocontent_create">
                     Click to create a request for quotation.
@@ -336,15 +293,14 @@
             </field>
         </record>
 
-        <report
-                id="action_report_appraisal_tracker"
+        <record id="action_report_appraisal_tracker" model="ir.actions.report">
+            <field name="name">Appraisal Tracker</field>
+            <field name="model">purchase.order</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">appraisal_tracker.appraisal_tracker_report</field>
+            <field name="report_file">appraisal_tracker.appraisal_tracker_report</field>
+        </record>
 
-                string="Appraisal Tracker"
-                model="purchase.order"
-                report_type="qweb-html"
-                file="appraisal_tracker.appraisal_tracker_report"
-                name="appraisal_tracker.appraisal_tracker_report"
-        />
 
 
         <record id="appraisal_tracker_view_purchase_order_filter" model="ir.ui.view">
@@ -365,7 +321,7 @@
             <field name="name">res.partner.form.wholesaler</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
-            <field eval="20" name="priority"/>
+            <field name="priority" eval="22"/>
             <field name="arch" type="xml">
                   <field name="on_hold" position="after">
                       <field name="is_wholesaler" />
@@ -378,29 +334,21 @@
             <field name="model">appraisaltracker.export</field>
             <field name="arch" type="xml">
                 <form string="Export Appraisal Tracker">
-                    <group>
+                    <sheet>
                         <div>Click On ' Export To File ' button to export Appraisal Tracker file</div>
-                    </group>
-                    <footer>
-                        <button name="download_excel_appraisal_tracker" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="download_excel_appraisal_tracker" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
 
-        <!--<act_window name="Export Appraisal Tracker"-->
-                    <!--res_model="appraisaltracker.export"-->
-                    <!--src_model="purchase.order"-->
-                    <!--view_mode="form"-->
-                    <!--target="new"-->
-                    <!--key2="client_action_multi"-->
-                    <!--id="appraisal_tracker_act_window"/>-->
 
         <record id="appraisal_tracker_act_window" model="ir.actions.act_window">
                 <field name="name">Export Appraisal Tracker</field>
-<!--                <field name="type">ir.actions.act_window</field>-->
                 <field name="res_model" >appraisaltracker.export</field>
                 <field name="binding_model_id" ref="purchase.model_purchase_order"/>
                 <field name="view_mode">form</field>

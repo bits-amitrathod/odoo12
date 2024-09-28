@@ -131,7 +131,7 @@ class Picking(models.Model):
     @api.depends('location_id')
     def get_ship_from_warehouse(self):
         for pick in self:
-            pick.ship_from_warehouse = pick.location_id.get_warehouse()
+            pick.ship_from_warehouse = pick.location_id.warehouse_id
 
     def release_available_to_promise(self):
         res = super(Picking, self).release_available_to_promise()
@@ -184,10 +184,12 @@ class Picking(models.Model):
              ('instance_of', '=', self.sale_order_of)])
         if sftp_conf:
             ftpdpath = sftp_conf['ftp_shipack_dpath']
-            file_name = '/tmp/' + str(DOC_PREFIX_ASN) + '_' + \
-                        str(order.name) + 'OUT' + str(self.id) + '_' + str(order.partner_id.name) \
-                        + '.csv' if self.sale_order_of == 'true' else '/tmp/' + str(
-                DOC_PREFIX_ASN) + '_' + 'message_id' + str(datetime.now()) + '.txt'  # mayBe x_edi_reference is better
+            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
+            file_name = f"/tmp/{DOC_PREFIX_ASN}_"
+            if self.sale_order_of == 'true':
+                file_name += f"OUT_{self.id}_{order.partner_id.name}.csv"
+            else:
+                file_name += f"message_id_{timestamp}.txt"
             with open(file_name, 'w') as file_pointer:
                 if self.sale_order_of == 'true':
                     cvs_rows = []
@@ -553,7 +555,7 @@ REF^CN^%s~""" % (self.carrier_tracking_ref or '')
         for rec in self:
             if rec.sale_id:
                 for move in rec.move_line_ids_without_package:
-                    move.initial_product_uom_qty = move.product_uom_qty
+                    move.initial_product_uom_qty = move.reserved_qty
         res = super(Picking, self)._action_done()
         for record in self:
             # if self:

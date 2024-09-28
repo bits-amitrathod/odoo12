@@ -6,6 +6,7 @@ log = logging.getLogger(__name__)
 
 class ReportProductSaleByCount(models.AbstractModel):
     _name = 'report.dormant_customers.dorm_cust_report_temp'
+    _description = "Report dormant_customers Product Sale By Count"
 
     @api.model
     def _get_report_values(self, docids, data=None):

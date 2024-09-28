@@ -8,28 +8,27 @@
             <field name="arch" type="xml">
                 <xpath expr="//div[@data-key='stock']" position="inside" >
                 <!--              <xpath expr="//div[hasclass('settings')]" position="inside">-->
-                        <h2>Inventory Monitor</h2>
-
-                         <div class="row mt16 o_settings_container" id="production_lot_info">
-                            <div class="col-xs-12 col-md-6 o_setting_box">
-                               <div class="o_setting_left_pane">
-                                <field name="max_inventory_level"/>
-                               </div>
-                                <div class="o_setting_right_pane">
-                                    <label for="max_inventory_level"/>
-                                    <div class="text-muted">
-                                       Manage max inventory level based on sales made
-                                    </div>
-                                     <div class="content-group">
-                                        <div class="mt16" attrs="{'invisible': [('max_inventory_level', '=', False)]}">
-                                            <field name="max_inventory_level_duration" class="oe_inline"/>
-                                            <span>days</span>
-                                             <p style="color: #025325;" >Duration of max inventory level should be less than 365 days</p>
-                                        </div>
+                    <h2>Inventory Monitor</h2>
+                     <div class="row mt16 o_settings_container" id="production_lot_info">
+                        <div class="col-xs-12 col-md-6 o_setting_box">
+                           <div class="o_setting_left_pane">
+                            <field name="max_inventory_level"/>
+                           </div>
+                            <div class="o_setting_right_pane">
+                                <label for="max_inventory_level"/>
+                                <div class="text-muted">
+                                   Manage max inventory level based on sales made
+                                </div>
+                                 <div class="content-group">
+                                    <div class="mt16" attrs="{'invisible': [('max_inventory_level', '=', False)]}">
+                                        <field name="max_inventory_level_duration" class="oe_inline"/>
+                                        <span>days</span>
+                                         <p style="color: #025325;" >Duration of max inventory level should be less than 365 days</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
                 </xpath>
             </field>
     </record>
@@ -41,108 +40,34 @@
          ids =       <value eval="[ref('inventory_monitor.product_max_inventory_settings')]"/>
          context =   <value eval="{}"/>
     </function>-->
-    <record id="product_form_monitor_ex" model="ir.ui.view">
-        <field name="name">product.product.form_monitor_ex</field>
+    <record id="product_form_inventory_monitor_ex" model="ir.ui.view">
+        <field name="name">product.template.form.inventory.monitor_ex</field>
         <field name="model">product.template</field>
         <field name="inherit_id" ref="purchase.view_product_account_purchase_ok_form"/>
         <field name="arch" type="xml">
-             <xpath expr="//field[@name='purchase_ok']/parent::div/parent::div" position="after"  >
-                 <field name="inventory_monitor"/>
-                 <label for="inventory_monitor"/>
-
+             <xpath expr="//div[@name='options']" position="inside">
+                 <span class="d-inline-block">
+                    <field name="inventory_monitor"/>
+                    <label for="inventory_monitor"/>
+                </span>
              </xpath>
         </field>
     </record>
-<!--    <record id="product_template_monitor_search_view" model="ir.ui.view">
-        <field name="name">product.template.search</field>
-        <field name="model">product.template</field>
-        <field name="arch" type="xml">
-            <search string="Product">
-                <field name="name" string="Product" filter_domain="['|','|',('default_code','ilike',self),('name','ilike',self),('barcode','ilike',self)]"/>
-                <field name="categ_id" filter_domain="[('categ_id', 'child_of', raw_value)]"/>
-                <separator/>
-                <filter string="Services" name="services" domain="[('type','=','service')]"/>
-                <filter string="Products" name="consumable" domain="[('type', 'in', ['consu', 'product'])]"/>
-                <separator/>
-                <filter string="Can be Sold" name="filter_to_sell" domain="[('sale_ok','=',1)]"/>
-                <filter string="Can be Purchased" name="filter_to_purchase" domain="[('purchase_ok', '=', 1)]"/>
-                <filter string="Can be Monitor" name="filter_to_monitor" domain="[('inventory_monitor', '=', 1)]"/>
-                <separator/>
-                <filter string="Archived" name="inactive" domain="[('active','=',False)]"/>
-                <field string="Attributes" name="attribute_line_ids" groups="product.group_product_variant"/>
-                <field name="pricelist_id" widget="selection" context="{'pricelist': self}" filter_domain="[]" groups="product.group_sale_pricelist"/> &lt;!&ndash; Keep widget=selection on this field to pass numeric `self` value, which is not the case for regular m2o widgets! &ndash;&gt;
-                <separator/>
-                <filter string="Late Activities" name="activities_overdue"
-                    domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
-                    help="Show all records which has next action date is before today"/>
-                <filter string="Today Activities" name="activities_today"
-                    domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                <filter string="Future Activities" name="activities_upcoming_all"
-                    domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
-                    ]"/>
-            </search>
-        </field>
-    </record>
-    <record id="view_inventory_moniter_line_tree" model="ir.ui.view">
-        <field name="name">product.template.tree</field>
-        <field name="model">product.template</field>
-        <field name="context">{"inventory_monitor":1}</field>
-        <field name="arch" type="xml">
-            <tree string="Inventory Monitor">
-                <field name="product_brand_id"/>
-                <field name="sku_code"/>
-                <field name="name" string="Product Name"/>
-                <field name="max_inventory_level" />
-                <field name="inventory_percent_color" invisible="1" />
-                <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>
-                <field name="qty_in_stock"/>
-                <field name="future_percent_color" invisible="1"/>
-                <field name="max_inventory_future_percent"  options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>
-                <field name="qty_on_order"/>
-                <field name="inventory_monitor" invisible="1" eval="True"/>
-                <field name="type"/>
-            </tree>
-        </field>
-    </record>
-    <record id="product_normal_action_puchased_ext" model="ir.actions.act_window">
-        <field name="name">Inventory Monitor</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">product.template</field>
-        <field name="view_type">form</field>
-        <field name="view_mode">tree,form,search</field>
-        <field name="domain">[('type', '=', 'product')]</field>
-        <field name="context">{"search_default_filter_to_monitor":1}</field>
-        <field name="search_view_id" ref="product_template_monitor_search_view"/>
-        <field name="view_id" ref="view_inventory_moniter_line_tree"/>
-        <field name="help" type="html">
-          <p class="oe_view_nocontent_create">
-            Click to define a new product.
-          </p><p>
-            You must define a product for everything you purchase, whether
-            it's a physical product, a consumable or services you buy to
-            subcontractors.
-          </p><p>
-            The product form contains detailed information to improve the
-            purchase process: prices, procurement logistics, accounting data,
-            available vendors, etc.
-          </p>
-        </field>
-    </record>-->
+
 
     <record id="view_inventory_moniter_line_tree_test" model="ir.ui.view">
         <field name="name">inventory.monitor.tree</field>
         <field name="model">inventory.monitor</field>
-        <!--<field name="context">{"inventory_monitor":1}</field>-->
         <field name="arch" type="xml">
             <tree string="Inventory Monitor" create="false" edit="false" delete="false">
                 <field name="sku_code" />
                 <field name="product_id" />
                 <field name="max_inventory_level" />
                 <field name="inventory_percent_color" invisible="1" />
-                <field name="max_inventory_percent" options='{"bg_color": "#e86a61:inventory_percent_color&lt;=75;#f7fa4b:inventory_percent_color&gt;75 and inventory_percent_color&lt;125 ;#c9f3c9:inventory_percent_color&gt;125"}' widget = "Percent"/>
+                <field name="max_inventory_percent" options='{"bg_color": "#e86a61:inventory_percent_color&lt;=75;#f7fa4b:inventory_percent_color&gt;75 and inventory_percent_color&lt;125 ;#c9f3c9:inventory_percent_color&gt;125"}' widget="percentage"/>
                 <field name="qty_in_stock"/>
                 <field name="future_percent_color" invisible="1"/>
-                <field name="max_inventory_future_percent"  options='{"bg_color": "#e86a61:future_percent_color&lt;=75;#f7fa4b:future_percent_color&gt;75 and inventory_percent_color&lt;125 ;#c9f3c9:future_percent_color&gt;125"}' widget = "Percent"/>
+                <field name="max_inventory_future_percent"  options='{"bg_color": "#e86a61:future_percent_color&lt;=75;#f7fa4b:future_percent_color&gt;75 and inventory_percent_color&lt;125 ;#c9f3c9:future_percent_color&gt;125"}' widget="percentage"/>
                 <field name="qty_on_order"/>
                 <field name="inventory_monitor" invisible="1" eval="True"/>
                 <field name="type" />
@@ -155,7 +80,6 @@
     <record id="view_inventory_moniter_line_form_test" model="ir.ui.view">
         <field name="name">inventory.monitor.tree</field>
         <field name="model">inventory.monitor</field>
-        <!--<field name="context">{"inventory_monitor":1}</field>-->
         <field name="arch" type="xml">
             <form string="Inventory Monitor" create="false" edit="false" delete="false">
                <sheet>
@@ -163,19 +87,11 @@
                        <field name="sku_code" />
                        <field name="product_id" />
                        <field name="max_inventory_level" />
-                       <label for="max_inventory_percent"/>
-                       <div>
-                            <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}'/>
-                            <span>%</span>
-                       </div>
+                        <field name="max_inventory_percent" options='{"bg_color": "#c9f3c9:inventory_percent_color&lt;=75;#f3b8b4:inventory_percent_color&lt;45;#f5e5b8:inventory_percent_color&gt;=125"}' widget="percentage"/>
                    </group>
                    <group>
                        <field name="qty_in_stock"/>
-                       <label for="max_inventory_future_percent"/>
-                       <div>
-                            <field name="max_inventory_future_percent" options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}'/>
-                            <span>%</span>
-                       </div>
+                        <field name="max_inventory_future_percent" options='{"bg_color": "#c9f3c9:future_percent_color&lt;=75;#f3b8b4:future_percent_color&lt;45;#f5e5b8:future_percent_color&gt;=125"}' widget="percentage"/>
                        <field name="qty_on_order"/>
                        <field name="type" />
                    </group>
@@ -185,21 +101,21 @@
     </record>
 
     <record model="ir.ui.view" id="product_template_form_view_procurement_button1">
-            <field name="name">product.template_max_inventory_level_duration</field>
-            <field name="model">product.template</field>
-            <field name="inherit_id" ref="product.product_template_only_form_view"/>
-            <field name="arch" type="xml">
-                <data>
-                    <xpath expr="//group[@name='operations']" position="inside">
-                        <label for="max_inventory_product_level_duration" attrs="{'invisible': [('inventory_monitor', '=', False)]}"/>
-                        <div attrs="{'invisible': [('inventory_monitor', '=', False)]}">
-                            <field name="max_inventory_product_level_duration" class="oe_inline"   />
-                            <span> days</span>
-                        </div>
-                    </xpath>
-                </data>
-            </field>
-        </record>
+        <field name="name">product.template_max_inventory_level_duration</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <data>
+                <xpath expr="//group[@name='operations']" position="inside">
+                    <label for="max_inventory_product_level_duration" attrs="{'invisible': [('inventory_monitor', '=', False)]}"/>
+                    <div attrs="{'invisible': [('inventory_monitor', '=', False)]}">
+                        <field name="max_inventory_product_level_duration" class="oe_inline"   />
+                        <span> days</span>
+                    </div>
+                </xpath>
+            </data>
+        </field>
+    </record>
 
       <!-- Product menu-->
 <!--    <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext" action="product_normal_action_puchased_ext"-->
@@ -210,14 +126,14 @@
          <field name="priority">50</field>
         <field name="arch" type="xml">
              <form>
-                 <group>
-                             <div >
-                                 <span> <b>Max Inventory Level Duration &amp;nbsp;&amp;nbsp; </b> </span>
-                                    <field  name="max_inventory_level_duration" class="oe_inline"   />
-                                 <span> Days</span>
-                                  <p style="color: #1aaa58;" > * Duration of max inventory level should be less than 365 days</p>
-                            </div>
-                    </group>
+                 <sheet>
+                     <div>
+                         <span> <b>Max Inventory Level Duration &amp;nbsp;&amp;nbsp; </b> </span>
+                         <field  name="max_inventory_level_duration" class="oe_inline"   />
+                         <span> Days</span>
+                          <p style="color: #1aaa58;" > * Duration of max inventory level should be less than 365 days</p>
+                    </div>
+                </sheet>
                     <footer>
                         <button name="open_table" string="View Report" type="object" class="btn-primary"/>
                         <button string="Cancel" class="btn-default" special="cancel"/>
@@ -230,12 +146,10 @@
     <record id="max_inventory_level_duration" model="ir.actions.act_window">
         <field name="name"> Max Inventory Level Duration </field>
         <field name="res_model">max.inventory.popup</field>
-        <!--<field name="view_type">form</field>-->
         <field name="view_mode">form</field>
         <field name="view_id" ref="max_inventory_level_duration_popup"/>
         <field name="target">new</field>
     </record>
-
 
        <menuitem name="Inventory Monitor" id="menu_procurement_partner_contact_form_ext_test" action="max_inventory_level_duration"
           parent="stock.menu_stock_warehouse_mgmt" sequence="50"/>

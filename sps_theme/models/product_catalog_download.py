@@ -2,12 +2,11 @@ from typing import Dict, Any
 
 from odoo import models, fields, api
 import logging
-from odoo.addons.http_routing.models.ir_http import slugify, _guess_mimetype
-
 _logger = logging.getLogger(__name__)
 
 class website_product_download_catelog_cstm(models.Model):
     _name = 'sps_theme.product_download_catelog'
+    _description = "website_product_download_catelog_cstm"
 
     file = fields.Binary('File')
     filename = fields.Char()
@@ -18,7 +17,6 @@ class website_product_download_catelog_cstm(models.Model):
         self.setActive(vals)
         return super(website_product_download_catelog_cstm, self).create(vals)
 
-    #@api.multi
     def write(self, vals):
         self.setActive(vals)
         return super(website_product_download_catelog_cstm, self).write(vals)

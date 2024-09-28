@@ -5,14 +5,21 @@ from odoo.exceptions import ValidationError, AccessError
 
 class PurchaseOrderPopUp(models.TransientModel):
     _name = 'purchase.order.shipping.popup'
+    _description = "Purchase Order PopUp"
 
     def _get_default_carrier(self):
-        carrier = self.env['delivery.carrier'].search([('name', '=', 'Vendor_Fedex Ground')])
+        active_model  = self._context.get('active_model')
+        active_id  = self._context.get('active_id')
+        if active_model and active_id:
+            purchase_order = self.env[active_model].sudo().browse(int(active_id))
+            carrier = purchase_order.carrier_id
+
+        carrier = carrier or self.env['delivery.carrier'].with_context({'active_test':False}).search([('name', '=', 'Vendor_Fedex Ground')])
         if carrier:
             return carrier.id
 
     def _get_default_packaging(self):
-        packing = self.env['product.packaging'].search([('name', '=', 'FEDEX_YOUR_PACKAGING')])
+        packing = self.env['stock.package.type'].search([('name', '=', 'FEDEX_YOUR_PACKAGING')], limit=1)
         if packing:
             return packing.id
 
@@ -27,8 +34,9 @@ class PurchaseOrderPopUp(models.TransientModel):
 
     carrier_id = fields.Many2one('delivery.carrier', 'Carrier', required=True, ondelete='cascade',
                                  domain="[('delivery_type','=','fedex')]", default=_get_default_carrier)
-    product_packaging = fields.Many2one('product.packaging', string='Package',
-                                        domain="[('package_carrier_type','=','fedex')]", default=_get_default_packaging)
+
+    product_packaging = fields.Many2one('stock.package.type', string='Package', domain="[('package_carrier_type','=','fedex')]", default=_get_default_packaging)
+
     weight = fields.Float('Weight', default=_get_default_weight)
     package_count = fields.Integer("Packages Count", default=1)
 

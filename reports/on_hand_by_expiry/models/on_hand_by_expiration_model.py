@@ -11,9 +11,10 @@ _logger = logging.getLogger(__name__)
 
 class OnHandByExpiry(models.Model):
     _name = "on_hand_by_expiry"
+    _description = "OnHand By Expiry"
     _auto = False
 
-    qty = fields.Float("Product Qty",digits=dp.get_precision('Product Unit of Measure'))
+    qty = fields.Float("Product Qty",digits='Product Unit of Measure')
     product_id = fields.Many2one('product.product', string='Product Name')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
     location_id = fields.Many2one('stock.location', string='Location')
@@ -53,7 +54,7 @@ class OnHandByExpiry(models.Model):
                     WHEN l.alert_date >= '""" + str(current_date) + """' THEN 'Valid'
                 END AS status
             FROM 
-                stock_production_lot l LEFT JOIN stock_quant sq ON sq.lot_id = l.id 
+                stock_lot l LEFT JOIN stock_quant sq ON sq.lot_id = l.id 
                 LEFT JOIN product_product p ON p.id = sq.product_id LEFT JOIN product_template t 
                 ON t.id = p.product_tmpl_id LEFT JOIN stock_location sl On sl.id = sq.location_id 
                 LEFT JOIN stock_warehouse sw ON sl.id = sw.lot_stock_id      

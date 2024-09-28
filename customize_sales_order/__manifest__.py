@@ -18,11 +18,14 @@
     'data': [
         'security/ir.model.access.csv',
         'views/views.xml',
+        'views/customer_views.xml',
         'views/templates.xml',
         'data/mail_template_data_cstm.xml',
     ],
 
     'application': True,
     'installable': True,
-    'auto_install': True
+    'auto_install': True,
+    'license': 'LGPL-3',
+
 }

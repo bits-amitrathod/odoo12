@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
- <!--Wizard For warning -->
-    <record id="wizard_message_form_for_pick" model="ir.ui.view">
+        <!--Wizard For warning -->
+        <record id="wizard_message_form_for_pick" model="ir.ui.view">
             <field name="name">Thesis Wizard  Message Pick Opration</field>
             <field name="model">warning.popup.wizard</field>
             <field name="type">form</field>
@@ -10,11 +10,11 @@
                 <form string="Message" version="7.0">
                     <field name="picking_warn_msg" colspan="4" nolabel="1" readonly="1"  widget="html"/>
                     <footer>
-<!--                        <button name="btn_approve_oric" type="object" string="Yes" class="oe_highlight"/>                             -->
+                        <!--                        <button name="btn_approve_oric" type="object" string="Yes" class="oe_highlight"/>                             -->
                         <button special="cancel" string="Ok"/>
                     </footer>
                 </form>
             </field>
-    </record>
+        </record>
     </data>
 </odoo>

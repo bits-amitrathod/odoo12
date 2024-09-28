@@ -3,11 +3,11 @@
        <record id="on_hold_doc_response" model="mail.template">
             <field name="name">On Hold Document Response</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html">${ctx['body']}</field>
-            <field name="body_html"><![CDATA[
+            <field name="email_from">{{object.company_id.name}}{{(object.company_id.email or user.email)}}</field>
+            <field name="email_to">{{object.email}</field>
+            <field name="subject"> Email response {{(object.company_id.email or user.email)}}</field>
+            <field name="body_html">{{ctx.get('body')}}</field>
+            <field name="body_html" type="html">
                 <p>
                     Hi Administrator,
                 </p>
@@ -26,34 +26,34 @@
                         <th style="border:1px solid black;border-collapse:collapse;">Reason</th>
                     </tr>
                     <tr>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['emailFrom']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customerName']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['email']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['documentName']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['documentStatus']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['source']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['reason']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('emailFrom')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('customerName')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('email')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('documentName')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('documentStatus')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('source')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('date')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('reason')}}</td>
                     </tr>
                 </table>
                 <p>
-                    Thanks & Regards,<br/>
+                    Thanks &amp; Regards,<br/>
                     ODOO
                 </p>
 
-            ]]></field>
+            </field>
             <!--<field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="stockhawk_sales_order_confirm_email_response" model="mail.template">
             <field name="name">final email response on uploaded documents</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="email_cc"><![CDATA[${ctx['salesperson_email']}]]></field>
-            <field name="subject">Sales Order Confirm #<![CDATA[${ctx['sales_order_name']}]]></field>
-            <field name="body_html">${ctx['body']}</field>
-            <field name="body_html"><![CDATA[
+            <field name="email_from">{{object.company_id.name}}{{(object.company_id.email or user.email)}}</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="email_cc">{{ctx.get('salesperson_email')}}</field>
+            <field name="subject">Sales Order Confirm #{{ctx.get('sales_order_name')}}</field>
+            <field name="body_html">{{ctx.get('body')}}</field>
+            <field name="body_html" type="html">
                 <p>
                     Hi Administrator,
                 </p>
@@ -66,23 +66,23 @@
                         <th style="border:1px solid black;border-collapse:collapse;">Sale Order</th>
                         <th style="border:1px solid black;border-collapse:collapse;">Upload Type</th>
                         <th style="border:1px solid black;border-collapse:collapse;">Date</th>
-                        &lt;!&ndash;<th style="border:1px solid black;border-collapse:collapse;">Status</th>&ndash;&gt;
+                        <th style="border:1px solid black;border-collapse:collapse;">Status</th>
                         <th style="border:1px solid black;border-collapse:collapse;">Note</th>
                     </tr>
                     <tr>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customer_name']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_name']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['upload_type']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
-                        &lt;!&ndash;<td style="border:1px solid black;border-collapse:collapse;">${ctx['sales_order_status']}</td>&ndash;&gt;
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['note']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('customer_name')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('sales_order_name')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('upload_type')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('date')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('sales_order_status')}}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">{{ctx.get('note')}}</td>
                     </tr>
                 </table>
                 <P style="text-align: left; margin-top: 10px;">
-                    Thanks & Regards,<br/>
+                    Thanks &amp; Regards,<br/>
                     Odoo
                 </P>
-            ]]></field>
+           </field>
             <!--<field name="user_signature" eval="False"/>-->
         </record>
     </data>

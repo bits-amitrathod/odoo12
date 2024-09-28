@@ -14,6 +14,7 @@ _logger = logging.getLogger(__name__)
 class PrioritizationEngine(models.TransientModel):
     # _inherit = 'crm.team'
     _name = 'prioritization.engine.model'
+    _description = "Prioritization Engine Model"
 
 #     team_type = fields.Selection([('prioritization', 'Prioritization')])
 
@@ -26,6 +27,7 @@ class PrioritizationEngine(models.TransientModel):
         self.allocated_product_dict.clear()
         self.allocated_product_for_gl_account_dict.clear()
         _logger.debug('In product_allocation_by_priority')
+        _logger.info('Document Count: %d', len(document_ids))
         # get available production lot list.
         available_product_lot_dict = self.get_available_product_lot_dict(document_ids)
         if len(available_product_lot_dict) > 0:
@@ -486,10 +488,11 @@ class PrioritizationEngine(models.TransientModel):
                                             'product_uom_qty': allocated_product['allocated_product_quantity']}
 
                     sale_order_line = self.env['sale.order.line'].create(dict(sale_order_line_dict))
-                    discount = sale_order_line.get_discount()
-
-                    if discount and discount > 0.0:
-                        sale_order_line.write({'discount': discount})
+                    # TODO: UPD ODOO16 Discount Cal Method Changed in parent we need to check this
+                    # discount = sale_order_line.get_discount()
+                    #
+                    # if discount and discount > 0.0:
+                    #     sale_order_line.write({'discount': discount})
 
                     if allocated_product['cust_req_status'] == 'Fulfilled':
                         self.update_customer_request_status(allocated_product['customer_request_id'], 'Fulfilled',
@@ -597,22 +600,22 @@ class PrioritizationEngine(models.TransientModel):
                         if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                             template = self.env.ref(
                                 'customer-requests.final_email_response_on_uploaded_document').sudo()
-                            if sps_cust_uploaded_documents.source == 'Portal':
-                                sps_cust_uploaded_documents.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
+                            if sps_cust_uploaded_document.source == 'Portal':
+                                sps_cust_uploaded_document.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
                     else:
                         if len(sps_customer_requirement) > 0:
                             if sps_cust_uploaded_document.status == 'In Process' and len(
                                     sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                                 template = self.env.ref('customer-requests.email_response_on_uploaded_document').sudo()
-                                if sps_cust_uploaded_documents.source == 'Portal':
-                                    sps_cust_uploaded_documents.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
+                                if sps_cust_uploaded_document.source == 'Portal':
+                                    sps_cust_uploaded_document.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
                             if sps_cust_uploaded_document.status == 'draft' and len(high_priority_requests) == 0:
                                 sps_cust_uploaded_document.write({'status': 'In Process'})
                                 if len(sps_customer_requirements) == len(sps_customer_requirements_all_non_voided):
                                     template = self.env.ref(
                                         'customer-requests.email_response_on_uploaded_document').sudo()
-                                    if sps_cust_uploaded_documents.source == 'Portal':
-                                        sps_cust_uploaded_documents.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
+                                    if sps_cust_uploaded_document.source == 'Portal':
+                                        sps_cust_uploaded_document.write({'document_logs': 'Unfortunately, we are currently out of stock on the products that you requested. We have documented your request on your account.'})
                         else:
                             sps_cust_uploaded_document.write({'status': 'Completed'})
 
@@ -687,8 +690,8 @@ class PrioritizationEngine(models.TransientModel):
 
             for stock_pick in sale_order.picking_ids:
                 if stock_pick.state == 'assigned':
-                    if stock_pick.move_lines and len(stock_pick.move_lines) > 0:
-                        for stock_move in stock_pick.move_lines:
+                    if stock_pick.move_line_ids and len(stock_pick.move_line_ids) > 0:
+                        for stock_move in stock_pick.move_line_ids:
                             # get length of hold
                             _setting_object = self.env['sps.customer.requests'].get_settings_object(
                                 sale_order['partner_id'].id, stock_move['product_id'].id)
@@ -703,8 +706,10 @@ class PrioritizationEngine(models.TransientModel):
                                 #duration_in_hours = self.return_duration_in_hours(duration)
                                 duration_in_minutes = self.return_duration_in_minutes(duration)
                                 if _setting_object and int(_setting_object.length_of_hold) <= int(duration_in_minutes):
-                                    _logger.info('call stock_move._do_unreserve()')
-                                    stock_move._do_unreserve()
+                                    # TODO: UPD_ODOO16_Note _do_unreserve is removed
+                                    # _logger.info('call stock_move._do_unreserve()')
+                                    # stock_move._do_unreserve()
+                                    pass
                                 else:
                                     _logger.info('Product is in length of hold, unable to release quantity.')
             self.change_sale_order_state(sale_order)

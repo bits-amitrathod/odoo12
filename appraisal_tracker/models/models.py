@@ -24,9 +24,9 @@ class apprisal_tracker_vendor(models.Model):
 
     _inherit = "purchase.order"
 
-    tier1_extra_retail = fields.Monetary(string="Tier 1 Extra Retail", track_visibility='onchange')
-    tier2_extra_retail = fields.Monetary(string="Tier 2 Extra Retail", track_visibility='onchange')
-    less_than_40_extra_retail = fields.Monetary(string="< 40% Extra Retail", track_visibility='onchange')
+    tier1_extra_retail = fields.Monetary(string="Tier 1 Extra Retail", tracking=True)
+    tier2_extra_retail = fields.Monetary(string="Tier 2 Extra Retail", tracking=True)
+    less_than_40_extra_retail = fields.Monetary(string="< 40% Extra Retail", tracking=True)
 
     tier1_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="Tier 1 Retail")
     tier2_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="Tier 2 Retail")
@@ -37,12 +37,6 @@ class apprisal_tracker_vendor(models.Model):
     tier1_margin = fields.Char(compute="_value_broker_margin", store=False, string="Tier 1 Margin")
     tier2_margin = fields.Char(compute="_value_broker_margin", store=False, string="Tier 2 Margin")
     less_than_40_margin = fields.Char(compute="_value_broker_margin", store=False, string="< 40% Margin")
-
-    # color = fields.Integer(compute="_value_broker_margin", store=False)
-    #
-    # t1color = fields.Integer(compute="_value_broker_margin", store=False)
-    # t2color = fields.Integer(compute="_value_broker_margin", store=False)
-    # lscolor = fields.Integer(compute="_value_broker_margin", store=False)
 
     status_ven_app = fields.Char(string="Status",store=False)
     vendor_cust_id_app = fields.Char(string="Customer ID", store=False ,compute="_value_broker_margin")
@@ -324,68 +318,65 @@ class ProductProduct(models.Model):
     _inherit = 'product.product'
 
 
-    def _compute_average_price(self, qty_invoiced, qty_to_invoice, stock_moves):
-        """Go over the valuation layers of `stock_moves` to value `qty_to_invoice` while taking
-        care of ignoring `qty_invoiced`. If `qty_to_invoice` is greater than what's possible to
-        value with the valuation layers, use the product's standard price.
-
-        :param qty_invoiced: quantity already invoiced
-        :param qty_to_invoice: quantity to invoice
-        :param stock_moves: recordset of `stock.move`
-        :returns: the anglo saxon price unit
-        :rtype: float
-        """
-        try:
-            self.ensure_one()
-            if not qty_to_invoice:
-                return 0.0
-
-            returned_quantities = defaultdict(float)
-            for move in stock_moves:
-                if move.origin_returned_move_id:
-                    returned_quantities[move.origin_returned_move_id.id] += abs(sum(move.stock_valuation_layer_ids.mapped('quantity')))
-            candidates = stock_moves\
-                .sudo()\
-                .filtered(lambda m: not (m.origin_returned_move_id and sum(m.stock_valuation_layer_ids.mapped('quantity')) >= 0))\
-                .mapped('stock_valuation_layer_ids')\
-                .sorted()
-            qty_to_take_on_candidates = qty_to_invoice
-            tmp_value = 0  # to accumulate the value taken on the candidates
-            for candidate in candidates:
-                
-                logging.error("=========== ============= candidate")
-                logging.error(candidate.id)
-                candidate_quantity = abs(candidate.quantity)
-                if candidate.stock_move_id.id in returned_quantities:
-                    candidate_quantity -= returned_quantities[candidate.stock_move_id.id]
-                if float_is_zero(candidate_quantity, precision_rounding=candidate.uom_id.rounding):
-                    continue  # correction entries
-                if not float_is_zero(qty_invoiced, precision_rounding=candidate.uom_id.rounding):
-                    qty_ignored = min(qty_invoiced, candidate_quantity)
-                    qty_invoiced -= qty_ignored
-                    candidate_quantity -= qty_ignored
-                    if float_is_zero(candidate_quantity, precision_rounding=candidate.uom_id.rounding):
-                        continue
-                qty_taken_on_candidate = min(qty_to_take_on_candidates, candidate_quantity)
-
-                qty_to_take_on_candidates -= qty_taken_on_candidate
-                logging.error("=========== ============= candidate.quantity")
-                logging.error(candidate.quantity)
-                tmp_value += qty_taken_on_candidate * \
-                    ((candidate.value + sum(candidate.stock_valuation_layer_ids.mapped('value'))) / candidate.quantity)
-                if float_is_zero(qty_to_take_on_candidates, precision_rounding=candidate.uom_id.rounding):
-                    break
-
-            # If there's still quantity to invoice but we're out of candidates, we chose the standard
-            # price to estimate the anglo saxon price unit.
-            if not float_is_zero(qty_to_take_on_candidates, precision_rounding=self.uom_id.rounding):
-                negative_stock_value = self.standard_price * qty_to_take_on_candidates
-                tmp_value += negative_stock_value
-
-            return tmp_value / qty_to_invoice
-
-        except Exception as e:
-            logging.error("prod issue po \n Exception12: %s" % str(e))
-
-
-    
+    # def _compute_average_price(self, qty_invoiced, qty_to_invoice, stock_moves, is_returned=False):
+    #     """Go over the valuation layers of `stock_moves` to value `qty_to_invoice` while taking
+    #     care of ignoring `qty_invoiced`. If `qty_to_invoice` is greater than what's possible to
+    #     value with the valuation layers, use the product's standard price.
+    #
+    #     :param qty_invoiced: quantity already invoiced
+    #     :param qty_to_invoice: quantity to invoice
+    #     :param stock_moves: recordset of `stock.move`
+    #     :returns: the anglo saxon price unit
+    #     :rtype: float
+    #     """
+    #     try:
+    #         self.ensure_one()
+    #         if not qty_to_invoice:
+    #             return 0.0
+    #
+    #         returned_quantities = defaultdict(float)
+    #         for move in stock_moves:
+    #             if move.origin_returned_move_id:
+    #                 returned_quantities[move.origin_returned_move_id.id] += abs(sum(move.stock_valuation_layer_ids.mapped('quantity')))
+    #         candidates = stock_moves\
+    #             .sudo()\
+    #             .filtered(lambda m: not (m.origin_returned_move_id and sum(m.stock_valuation_layer_ids.mapped('quantity')) >= 0))\
+    #             .mapped('stock_valuation_layer_ids')\
+    #             .sorted()
+    #         qty_to_take_on_candidates = qty_to_invoice
+    #         tmp_value = 0  # to accumulate the value taken on the candidates
+    #         for candidate in candidates:
+    #
+    #             logging.error("=========== ============= candidate")
+    #             logging.error(candidate.id)
+    #             candidate_quantity = abs(candidate.quantity)
+    #             if candidate.stock_move_id.id in returned_quantities:
+    #                 candidate_quantity -= returned_quantities[candidate.stock_move_id.id]
+    #             if float_is_zero(candidate_quantity, precision_rounding=candidate.uom_id.rounding):
+    #                 continue  # correction entries
+    #             if not float_is_zero(qty_invoiced, precision_rounding=candidate.uom_id.rounding):
+    #                 qty_ignored = min(qty_invoiced, candidate_quantity)
+    #                 qty_invoiced -= qty_ignored
+    #                 candidate_quantity -= qty_ignored
+    #                 if float_is_zero(candidate_quantity, precision_rounding=candidate.uom_id.rounding):
+    #                     continue
+    #             qty_taken_on_candidate = min(qty_to_take_on_candidates, candidate_quantity)
+    #
+    #             qty_to_take_on_candidates -= qty_taken_on_candidate
+    #             logging.error("=========== ============= candidate.quantity")
+    #             logging.error(candidate.quantity)
+    #             tmp_value += qty_taken_on_candidate * \
+    #                 ((candidate.value + sum(candidate.stock_valuation_layer_ids.mapped('value'))) / candidate.quantity)
+    #             if float_is_zero(qty_to_take_on_candidates, precision_rounding=candidate.uom_id.rounding):
+    #                 break
+    #
+    #         # If there's still quantity to invoice but we're out of candidates, we chose the standard
+    #         # price to estimate the anglo saxon price unit.
+    #         if not float_is_zero(qty_to_take_on_candidates, precision_rounding=self.uom_id.rounding):
+    #             negative_stock_value = self.standard_price * qty_to_take_on_candidates
+    #             tmp_value += negative_stock_value
+    #
+    #         return tmp_value / qty_to_invoice
+    #
+    #     except Exception as e:
+    #         logging.error("prod issue po \n Exception12: %s" % str(e))

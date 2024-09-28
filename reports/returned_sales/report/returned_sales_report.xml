@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_returned_sales"
-                string="Returned Sales"
-                model="report.returned.sales.order"
-                report_type="qweb-html"
-                file="returned_sales.returned_sales_temp"
-                name="returned_sales.returned_sales_temp"
-                />
+        <record id="action_report_returned_sales" model="ir.actions.report">
+            <field name="name">Returned Sales</field>
+            <field name="model">report.returned.sales.order</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">returned_sales.returned_sales_temp</field>
+            <field name="report_file">returned_sales.returned_sales_temp</field>
+        </record>
     </data>
 </odoo>

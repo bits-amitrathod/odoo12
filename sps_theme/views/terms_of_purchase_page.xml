@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 <!--    <template id="terms_of_purchase_template" name="Terms Of Purchase">-->
 <!--        <t t-name="website.terms_of_purchase">-->
@@ -791,10 +792,10 @@
                                         </p>
                                     </li>
 
-                                    </ol>
-                                    <br></br><br></br><br></br>
-                                    <ol  class="ol1">
-                                           <div class="subtitle text-center">
+                                        </ol>
+                                        <br/><br/><br/>
+                                        <ol class="ol1">
+                                            <div class="subtitle text-center">
                                                 <span class="s1">ADDENDUM 1</span>
                                             </div>
                                         <div class="subtitle text-center">
@@ -865,6 +866,10 @@
                                             <b>(c) SKU / LOT Tracking.</b> SPS shall maintain and track all SKU &amp; LOT numbers of the
                                             Product from time of release.
                                         </p>
+                                        <p class="s1">
+                                            <b>(d) Extra Products Received.</b> Any extra quantities or products received after the shipment
+                                            is received in our warehouse will be salvaged with no additional value.
+                                        </p>
                                     </li>
 
                                     <li class="li2">
@@ -930,14 +935,17 @@
                                             consigned to SPS under this Agreement before the Products are transferred to SPS's facilities.
                                         </p>
                                         <p class="s1">
-                                            <b>(b) Sales and Selling Price.</b> SPS's purchase price of each Product shall be as stated on a
+                                            <b>(b) Extra Products Received.</b> Any extra quantities or products received after the shipment
+                                            is received in our warehouse will be salvaged with no additional value.
+                                        </p>
+                                        <p class="s1">
+                                            <b>(c) Sales and Selling Price.</b> SPS's purchase price of each Product shall be as stated on a
                                             Purchase Order to Customer. SPS's Product resale price shall be solely within its discretion.
                                         </p>
                                         <p class="s1">
-                                            <b>(c) Sales Reports.</b> SPS shall make available to Customer via quarterly reports a standard
+                                            <b>(d) Sales Reports.</b> SPS shall make available to Customer via quarterly reports a standard
                                             point of sale report if requested by Customer in writing.
-                                        </p>
-                                    </li>
+                                        </p></li>
 
                                     <li class="li2">
                                         <span class="s3">ACCEPTANCE OF PURCHASE ORDERS</span>

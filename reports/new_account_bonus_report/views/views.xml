@@ -68,18 +68,20 @@
             <field name="model">popup.new.account.bonus.report</field>
             <field name="arch" type="xml">
                 <form>
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="business_development"/>
+                            <group>
+                                <field name="business_development"/>
+                            </group>
+                            <group>
+                                <field name="key_account"/>
+                            </group>
                         </group>
-                        <group>
-                            <field name="key_account"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -106,20 +108,22 @@
             <field name="model">new.account.bonus.report.export</field>
             <field name="arch" type="xml">
                 <form string="Export New Account Bonus Report">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="business_development"/>
+                            <group>
+                                <field name="business_development"/>
+                            </group>
+                            <group>
+                                <field name="key_account"/>
+                            </group>
                         </group>
-                        <group>
-                            <field name="key_account"/>
-                        </group>
-                    </group>
-                    <div>Click On ' Export To File ' button to export New Account Bonus Report file</div>
-                    <footer>
-                        <button name="download_excel_bd_new_account" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <div>Click On ' Export To File ' button to export New Account Bonus Report file</div>
+                        <footer>
+                            <button name="download_excel_bd_new_account" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

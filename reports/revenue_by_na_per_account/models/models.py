@@ -10,6 +10,8 @@ _logger = logging.getLogger(__name__)
 
 class RevenueByNaPerAccount(models.Model):
     _name = 'report.na.revenue.per.account'
+    _description = "Revenue By Na Per Account"
+
     _auto = False
 
     sale_order_id = fields.Many2one('sale.order', 'Sale Order#')
@@ -100,6 +102,7 @@ class RevenueByNaPerAccount(models.Model):
 
 class RevenueByNaPerAccountExport(models.TransientModel):
     _name = 'report.na.revenue.per.account.export'
+    _description = "Revenue By Na Per Account Export"
 
     compute_at_date = fields.Selection([
         ('0', 'Show All'),

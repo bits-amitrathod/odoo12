@@ -7,6 +7,7 @@ log = logging.getLogger(__name__)
 
 class ReportProductsOnOrder(models.AbstractModel):
     _name = 'report.returned_sales.returned_sales_temp'
+    _description = "Report Products OnOrder"
 
     @api.model
     def _get_report_values(self, docids, data=None):

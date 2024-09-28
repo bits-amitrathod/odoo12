@@ -5,6 +5,7 @@ import logging
 
 class ReportPurchaseSalespersonWise(models.AbstractModel):
     _name = 'report.aging_report.purchase_report'
+    _description = "Report Purchase Salesperson Wise"
 
     @api.model
     def _get_report_values(self, docids, data=None):

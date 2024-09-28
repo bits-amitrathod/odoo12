@@ -18,6 +18,7 @@ class InventoryAvailability(models.Model):
 
 class InventoryAvailabilityReport(models.AbstractModel):
     _name = 'report.inventory_availability.inventory_availability_print'
+    _description = "Inventory Availability Report"
 
     @api.model
     def _get_report_values(self, docids, data=None):

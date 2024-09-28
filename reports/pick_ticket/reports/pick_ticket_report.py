@@ -4,6 +4,7 @@ from odoo import api, models
 
 class ReportPickTicketOrderOrDate(models.AbstractModel):
     _name = 'report.pick_ticket.pick_ticket_report1'
+    _description = 'ReportPickTicketOrderOrDate'
 
     @api.model
     def _get_report_values(self, docids, data=None):

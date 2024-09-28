@@ -10,8 +10,8 @@
             	<group>
             		<group>
             			<field name="sale_order_ids" widget="many2many_tags" invisible="1"/>
-            			<field name="partner_id" domain="[('customer','=',True)]"/>
-            			<field name="sale_order_id" domain="[('partner_id','=',partner_id)]"/>
+            			<field name="partner_id" />
+            			<field name="sale_order_id"/>
             			<field name="merge_type" widget="radio"/>
             		</group>
             	</group>
@@ -24,7 +24,7 @@
         </field>
     </record>
 
-    <act_window id="sh_merge_sale_order_multi_action"
+  <!--  <act_window id="sh_merge_sale_order_multi_action"
                 multi="True"
                 key2="client_action_multi"
                 name="Merge Sale Orders"
@@ -32,10 +32,25 @@
                 src_model="sale.order"
                 view_mode="form"
                 target="new"
-<!--                view_type="form"-->
-                />            
-                
-                
-	</data>
+&lt;!&ndash;                view_type="form"&ndash;&gt;
+               TODO: UPG_ODOO16_NOTE  />-->
+
+        <!--<act_window id="sh_merge_sale_order_multi_action"
+                    name="Merge Sale Orders"
+                    res_model="sh.mso.merge.sale.order.wizard"
+                    view_mode="form"
+                    target="new"
+        />-->
+        <!-- Above action updated -->
+        <record id="sh_merge_sale_order_multi_action" model="ir.actions.act_window">
+            <field name="name">Merge Sale Orders</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sh.mso.merge.sale.order.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+
+    </data>
 </odoo>
                 

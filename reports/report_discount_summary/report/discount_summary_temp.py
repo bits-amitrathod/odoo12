@@ -4,6 +4,7 @@ from odoo import api, fields, models
 
 class ReportSalesSalespersonWise(models.AbstractModel):
     _name = 'report.report_discount_summary.discountsummary_temp_test'
+    _description = "Report Sales Salesperson Wise"
 
     @api.model
     def _get_report_values(self, docids, data=None):

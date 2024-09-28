@@ -12,11 +12,10 @@
             </tree>
           </field>
     </record>
-
-		<record id="resource_form" model="ir.ui.view" >
-          <field name="name">Resource List</field>
-          <field name="model">resource.webresource</field>
-          <field name="arch" type="xml">
+    <record id="resource_form" model="ir.ui.view" >
+        <field name="name">Resource List</field>
+        <field name="model">resource.webresource</field>
+        <field name="arch" type="xml">
             <form string="Resource">
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -36,33 +35,30 @@
                                 <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
                             </button>
                     </div>
-<!--                    <field name="image" widget="image" class="oe_avatar" options="{&quot;preview_image&quot;: &quot;image_thumb&quot;}"/>-->
                      <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image'}"/>
-				    <group>
+                    <group>
                         <field name="title" string="Title"/>
                         <field name="category" />
                         <field name="description" string="Description"/>
                         <field name="url" string="URL"/>
-				</group>
+                    </group>
                 </sheet>
             </form>
-          </field>
+        </field>
     </record>
 
-        <record id="resource_menu_action" model="ir.actions.act_window">
-        	<field name="name">Resource</field>
-        	<field name="res_model">resource.webresource</field>
-        	<!-- <field name="view_type">form</field> -->
-<!--            <field name="view_id" ref="resource_tree"/>-->
-        	<field name="view_mode">tree,form</field>
-        </record>
+    <record id="resource_menu_action" model="ir.actions.act_window">
+        <field name="name">Resource</field>
+        <field name="res_model">resource.webresource</field>
+        <field name="view_mode">tree,form</field>
+    </record>
 
-        <menuitem name="Resources"
-            id="menu_website_resources_root"
-            sequence="42"
-            parent="website.menu_website_configuration"
-            groups="website.group_website_designer"
-            action="resource_menu_action"/>
+    <menuitem name="Resources"
+        id="menu_website_resources_root"
+        sequence="42"
+        parent="website.menu_website_configuration"
+        groups="website.group_website_designer"
+        action="resource_menu_action"/>
 
 	</data>
 </odoo>

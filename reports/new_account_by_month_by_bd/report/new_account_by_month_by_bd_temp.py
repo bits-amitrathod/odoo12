@@ -6,6 +6,7 @@ log = logging.getLogger(__name__)
 
 class ReportBdNewAccount(models.AbstractModel):
     _name = 'report.new_account_by_month_by_bd.bd_new_account_temp_test'
+    _description = "Report Bd New Account"
 
     @api.model
     def _get_report_values(self, docids, data=None):

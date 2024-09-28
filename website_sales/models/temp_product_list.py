@@ -9,7 +9,8 @@ _logger = logging.getLogger(__name__)
 
 class TempProductList(models.Model):
     _name = 'quotation.product.list'
-    _description = ""
+    _description = "Temp Product List"
+
     _auto = False
 
     product_list = {}
@@ -104,24 +105,24 @@ class TempProductList(models.Model):
                 FROM
                     stock_quant
                 INNER JOIN
-                    stock_production_lot
+                    stock_lot
                 ON
                     (
-                        stock_quant.lot_id = stock_production_lot.id)
+                        stock_quant.lot_id = stock_lot.id)
                 INNER JOIN
                     stock_location
                 ON
                     (
                         stock_quant.location_id = stock_location.id)
                 WHERE
-                    stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+                    stock_location.usage in('internal', 'transit') and stock_lot.product_id  = %s
                     """,
                     (query_result['product_id'],))
                 result = self.env.cr.dictfetchone()
 
                 if partner.property_product_pricelist.id and product:
-                    price_list_without_round_off = partner.property_product_pricelist.get_product_price(
-                        product, product.product_tmpl_id.actual_quantity, partner)
+                    price_list_without_round_off = partner.property_product_pricelist._get_product_price(
+                        product, product.product_tmpl_id.actual_quantity)
                     #price_list = float("{0:.2f}".format(price_list_without_round_off))
                     price_list = round(price_list_without_round_off,2)
                 else:
@@ -244,24 +245,24 @@ class TempProductList(models.Model):
                 FROM
                     stock_quant
                 INNER JOIN
-                    stock_production_lot
+                    stock_lot
                 ON
                     (
-                        stock_quant.lot_id = stock_production_lot.id)
+                        stock_quant.lot_id = stock_lot.id)
                 INNER JOIN
                     stock_location
                 ON
                     (
                         stock_quant.location_id = stock_location.id)
                 WHERE
-                    stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+                    stock_location.usage in('internal', 'transit') and stock_lot.product_id  = %s
                     """,
                     (query_result['product_id'],))
                 result = self.env.cr.dictfetchone()
 
                 if partner.property_product_pricelist.id and product:
-                    price_list_without_round_off = partner.property_product_pricelist.get_product_price(
-                        product, product.product_tmpl_id.actual_quantity, partner)
+                    price_list_without_round_off = partner.property_product_pricelist._get_product_price(
+                        product, product.product_tmpl_id.actual_quantity)
                     #price_list = float("{0:.2f}".format(price_list_without_round_off))
                     price_list = round(price_list_without_round_off,2)
                 else:

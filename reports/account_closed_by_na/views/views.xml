@@ -57,21 +57,23 @@
             <field name="model">popup.na.account.closed</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="start_date"/>
-                            <field name="national_account"/>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="national_account"/>
+                            </group>
+                            <group>
+                                <!--<b>Filter By Revenue</b>-->
+                                <field name="delivery_start_date"/>
+                                <field name="delivery_end_date"/>
+                            </group>
                         </group>
-                        <group>
-                            <!--<b>Filter By Revenue</b>-->
-                            <field name="delivery_start_date"/>
-                            <field name="delivery_end_date"/>
-                        </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -97,23 +99,25 @@
             <field name="model">report.na.account.closed.export</field>
             <field name="arch" type="xml">
                 <form string="Export Revenue From Accounts Closed In 18 Months By NA Report">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="start_date"/>
-                            <field name="national_account"/>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="national_account"/>
+                            </group>
+                            <group>
+                                <!--<b>Filter By Revenue</b>-->
+                                <field name="delivery_start_date"/>
+                                <field name="delivery_end_date"/>
+                            </group>
                         </group>
-                        <group>
-                            <!--<b>Filter By Revenue</b>-->
-                            <field name="delivery_start_date"/>
-                            <field name="delivery_end_date"/>
-                        </group>
-                    </group>
-                    <div>Click On ' Export To File ' button to export Revenue From Accounts Closed In 18 Months By NA report file</div>
-                    <footer>
-                        <button name="download_excel_na_account_closed" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <div>Click On ' Export To File ' button to export Revenue From Accounts Closed In 18 Months By NA report file</div>
+                        <footer>
+                            <button name="download_excel_na_account_closed" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

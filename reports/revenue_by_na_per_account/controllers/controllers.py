@@ -2,7 +2,7 @@
 import datetime
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt, DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
@@ -66,6 +66,9 @@ class ExportRevenueByNaPerAccount(http.Controller):
                         cell_style = datetime_style
                     elif isinstance(cell_value, datetime.date):
                         cell_style = date_style
+                    elif isinstance(cell_value, dict) and 'en_US' in cell_value:
+                        cell_value = cell_value.get('en_US') or cell_value.get(list(cell_value.keys())[0]) or ''
+
                     worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
 
         fp = io.BytesIO()
@@ -78,7 +81,6 @@ class ExportRevenueByNaPerAccount(http.Controller):
     @http.route('/web/export/revenue_by_na_per_account_export/<string:start_date>/<string:end_date>/<string:national_account_id>',
                 type='http',
                 auth="public")
-    @serialize_exception
     def download_document_xl(self, start_date, end_date, national_account_id, token=1, debug=1, **kw):
 
         select_query = """

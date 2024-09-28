@@ -39,6 +39,7 @@ class AutomaticWorkflowJob(models.Model):
     invoices, pickings...  """
 
     _name = 'automatic.workflow.job'
+    _description = "Automatic Workflow Job"
 
     @api.model
     def _validate_sale_orders(self, order_filter):
@@ -56,10 +57,8 @@ class AutomaticWorkflowJob(models.Model):
         sales = sale_obj.search(create_filter)
         _logger.debug('Sale Orders to create Invoice: %s', sales.ids)
         for sale in sales:
-            with savepoint(self.env.cr), force_company(self.env,
-                                                       sale.company_id):
-                payment = self.env['sale.advance.payment.inv'].create(
-                    {'advance_payment_method': 'all'})
+            with savepoint(self.env.cr), force_company(self.env, sale.company_id):
+                payment = self.env['sale.advance.payment.inv'].create({'advance_payment_method': 'all'})
                 payment.with_context(active_ids=sale.ids).create_invoices()
 
     # @api.model

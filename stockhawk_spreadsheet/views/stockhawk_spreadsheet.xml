@@ -23,8 +23,8 @@
                               <br></br>
                               <center>
 <!--                                  <img src="/stockhawk_spreadsheet/static/src/images/StockHawk_Logo_TM_R1.png" class="img-fluid"/>-->
-                              <img src="/stockhawk_spreadsheet/static/src/images/Stockhawk_Rapid_Order_R1.png" class="img-fluid"   style=" max-width: 30%;" /> </center>
-                              <div class="container">
+                                <img src="/stockhawk_spreadsheet/static/src/images/Stockhawk_Rapid_Order_R1.png" class="img-fluid"   style=" max-width: 30%;" /> </center>
+                                <div class="container">
 <!--                                  <center style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 25px;">Rapid Quote</center>-->
                                 <center style="padding-top: 15px; padding-bottom: 14px;"> <span style="color: rgb(50, 61, 73); font-family: &quot;Open Sans&quot;, sans-serif; font-size: 20px;">
                                     Let Stockhawk instantly generate your order.
@@ -38,13 +38,13 @@
                                 </span>
                               </div>
                               <!--loader-->
-                              <div id="loader1" style="display: none;">
+                                <div id="loader1" style="display: none;">
                                     <span id="loader" class="loader" ></span>
 <!--                                    <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11;filter: drop-shadow(2px 4px 6px black);display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Quote</h4>-->
                                     <h4 style="text-align:center;top:   63% !important;border-top: 42px !important;margin: 8% !important;position: absolute;right: 24%;z-index: 11; display: block;/*! margin: 0px auto; */">Please wait while we process your Rapid Order</h4>
                               </div>
                               <!-- The Modal -->
-                                <div class="modal" id="help">
+                                <div class="modal" tabindex="-1" id="help" role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <!-- Modal Header -->
@@ -75,12 +75,12 @@
                                             </div>
                                             <!-- Modal footer -->
                                             <div class="modal-footer">
-                                                <button type="button" id="helpClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
+                                                <button type="button" id="helpClose" class="btn btn-primary abc ml" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
                                   </div>
-                              <div class="modal" id="paste">
+                                <div class="modal" id="paste" role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <!-- Modal Header -->
@@ -97,12 +97,12 @@
                                             </div>
                                             <!-- Modal footer -->
                                             <div class="modal-footer">
-                                                <button type="button" id="helpClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
+                                                <button type="button" id="helpClose" class="btn btn-primary abc ml" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
                               </div>
-                                <div class="modal" id="myModal">
+                                <div class="modal" id="myModal" role="dialog">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
                                             <!-- Modal Header -->
@@ -116,8 +116,8 @@
                                             </div>
                                             <!-- Modal footer -->
                                             <div class="modal-footer">
-                                                <button type="button" id="myModalOK" class="btn btn-primary abc ml" data-dismiss="modal">Yes</button>
-                                                <button type="button" id="myModalClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
+                                                <button type="button" id="myModalOK" class="btn btn-primary abc ml" data-bs-dismiss="modal">Yes</button>
+                                                <button type="button" id="myModalClose" class="btn btn-primary abc ml" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
@@ -135,16 +135,16 @@
                                             </div>
                                             <!-- Modal footer -->
                                             <div class="modal-footer">
-                                                <button type="button" id="errorModalOK" class="btn btn-primary abc ml" data-dismiss="modal">Ok</button>
-                                                <button type="button" id="errorModalClose" class="btn btn-primary abc ml" data-dismiss="modal">Close</button>
+                                                <button type="button" id="errorModalOK" class="btn btn-primary abc ml" data-bs-dismiss="modal">Ok</button>
+                                                <button type="button" id="errorModalClose" class="btn btn-primary abc ml" data-bs-dismiss="modal">Close</button>
                                             </div>
                                         </div>
                                     </div>
                                   </div>
                               <center>
                                   <div class="text-right spreadsheet">
-                                    <button style="justify-content: center; margin-top:15px;" type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#help"> Info </button>
-                                    <button id="pastemod" hidden="hidden" style="justify-content: center;" type="button" class="btn btn-primary abc ml" data-toggle="modal" data-target="#paste"> paste </button>
+                                    <button style="justify-content: center; margin-top:15px;" type="button" class="btn btn-primary abc ml" data-bs-toggle="modal" data-bs-target="#help"> Info </button>
+                                    <button id="pastemod" hidden="hidden" style="justify-content: center;" type="button" class="btn btn-primary abc ml" data-bs-toggle="modal" data-bs-target="#paste"> paste </button>
                                   </div>
                                   <div class="spreadsheet mb-5" id="x-spreadsheet-demo"></div>
                               </center>

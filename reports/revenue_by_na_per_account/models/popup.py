@@ -4,6 +4,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 class NaRevenuePerAccountReportPopup(models.TransientModel):
     _name = 'popup.na.revenue.per.account'
+    _description = "Na Revenue Per Account Report Popup"
 
     start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)), help="Choose a date to get the Revenu By National Account Per Account at that  Start date")
     end_date = fields.Date('End Date',default=fields.date.today(), help="Choose a date to get the Revenue By National Account Per Account at that  End date")

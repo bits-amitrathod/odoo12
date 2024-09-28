@@ -13,6 +13,8 @@
         'purchase',
         'vendor_offer',
         'account',
+        'project',
+        'hr_recruitment',
         'sh_activities_management'
     ],
     'data': [
@@ -35,4 +37,5 @@
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'AGPL-3'
 }

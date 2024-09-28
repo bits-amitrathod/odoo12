@@ -9,6 +9,7 @@ class VendorOffer(http.Controller):
     def index(self, **kw):
         return "Hello, world"
 
+    # UPG_ODOO16_NOTE below controller is not using anywhere in the code
     @http.route('/vendor_offer/vendor_offer/objects/', auth='public')
     def list(self, **kw):
         return http.request.render('vendor_offer.listing', {
@@ -16,6 +17,7 @@ class VendorOffer(http.Controller):
             'objects': http.request.env['vendor_offer.vendor_offer'].search([]),
         })
 
+    # UPG_ODOO16_NOTE below controller is not using anywhere in the code
     @http.route('/vendor_offer/vendor_offer/objects/<model("vendor_offer.vendor_offer"):obj>/', auth='public')
     def object(self, obj, **kw):
         return http.request.render('vendor_offer.object', {

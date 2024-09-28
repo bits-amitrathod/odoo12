@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 class ProductSaleByCountPopUp(models.TransientModel):
 
     _name = 'popup.returned.sales'
+    _description = 'ProductSaleByCountPopUp'
 
     compute_at_date = fields.Selection([
         ('0', 'All '),

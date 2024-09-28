@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_margins"
-                string="Margins"
-                model="margins"
-                report_type="qweb-html"
-                file="margins.margins_temp"
-                name="margins.margins_temp"
-                />
-        <report
-                id="action_report_margins_group_by_customer"
-                string="Margins"
-                model="margins.group_by_cust"
-                report_type="qweb-html"
-                file="margins.margins_group_by_cust_temp"
-                name="margins.margins_group_by_cust_temp"
-                />
+        <!-- Report Action -->
+        <record id="action_report_margins" model="ir.actions.report">
+            <field name="name">Margins</field>
+            <field name="model">margins</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">margins.margins_temp</field>
+            <field name="report_file">margins.margins_temp</field>
+        </record>
+
+        <!-- Report Action -->
+        <record id="action_report_margins_group_by_customer" model="ir.actions.report">
+            <field name="name">Margins</field>
+            <field name="model">margins.group_by_cust</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">margins.margins_group_by_cust_temp</field>
+            <field name="report_file">margins.margins_group_by_cust_temp</field>
+        </record>
     </data>
 </odoo>

@@ -7,15 +7,17 @@
             <field name="model">popup.product.vendor.list</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="product_id"/>
+                            <group>
+                                <field name="product_id"/>
+                            </group>
                         </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -65,29 +67,6 @@
                 </form>
             </field>
         </record>
-        <!--<record id="product_vendor_list_form" model="ir.ui.view">-->
-            <!--<field name="name">productvendorlist.productvendorlist.form</field>-->
-            <!--<field name="model">productvendorlist.productvendorlist</field>-->
-
-             <!--&lt;!&ndash;&lt;!&ndash;<field name="priority">20</field>&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;<field name="inherit_id" ref="product.product_template_form_view"/>&ndash;&gt;-->
-            <!--<field name="arch" type="xml">-->
-                <!--<form  >-->
-
-                    <!--&lt;!&ndash;<group name="Category" string="Category">&ndash;&gt;-->
-                        <!--&lt;!&ndash;<group>&ndash;&gt;-->
-                              <!--&lt;!&ndash;<field name="location"/>&ndash;&gt;-->
-                              <!--&lt;!&ndash;<field name="sku_code"/>&ndash;&gt;-->
-                        <!--&lt;!&ndash;</group>&ndash;&gt;-->
-                        <!--&lt;!&ndash;<group>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<field name="premium"/>&ndash;&gt;-->
-                            <!--&lt;!&ndash;<field name="manufacturer_pref"/>&ndash;&gt;-->
-                         <!--&lt;!&ndash;</group>&ndash;&gt;-->
-                     <!--&lt;!&ndash;</group>&ndash;&gt;-->
-                <!--</form>-->
-            <!--</field>-->
-        <!--</record>-->
-
 
         <menuitem id="menu_product_vendor_list_report"
                   name="Product Vendor List"

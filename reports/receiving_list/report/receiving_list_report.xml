@@ -1,23 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_receiving_list"
-                string="Receiving List"
-                model="popup.receiving.list"
-                report_type="qweb-html"
-                file="receiving_list.receiving_list_temp"
-                name="receiving_list.receiving_list_temp"
-                menu="False"
-                />
+        <record id="action_report_receiving_list" model="ir.actions.report">
+            <field name="name">Receiving List</field>
+            <field name="model">popup.receiving.list</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">receiving_list.receiving_list_temp</field>
+            <field name="report_file">receiving_list.receiving_list_temp</field>
+            <field name="print_report_name">'Receiving List - %s' % (object.name)</field>
+            <field name="binding_model_id" ref="model_popup_receiving_list"/>
+            <field name="binding_type">report</field>
+            <!-- <field name="menu" eval="False"/>-->
+        </record>
 
-        <report id="action_sps_receiving_list_report_receipt"
-            string="Receiving List"
-            model="stock.picking"
-            report_type="qweb-html"
-            file="receiving_list.receiving_list_temp"
-            name="receiving_list.receiving_list_temp"
-            menu="False"
-            />
+         <record id="action_sps_receiving_list_report_receipt" model="ir.actions.report">
+            <field name="name">Receiving List</field>
+            <field name="model">stock.picking</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">receiving_list.receiving_list_temp</field>
+            <field name="report_file">receiving_list.receiving_list_temp</field>
+            <field name="print_report_name">'Receiving List - %s' % (object.name)</field>
+             <!-- <field name="binding_model_id" ref="model_stock_picking"/>-->
+            <field name="binding_type">report</field>
+            <!--<field name="menu" eval="False"/>-->
+        </record>
+
     </data>
 </odoo>

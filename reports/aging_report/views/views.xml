@@ -19,9 +19,7 @@
             </field>
         </record>
 
-
-
-           <record model="ir.ui.view" id="aging_report_form">
+       <record model="ir.ui.view" id="aging_report_form">
             <field name="name">aging.report.form</field>
             <field name="model">aging.report</field>
             <field name="arch" type="xml">
@@ -41,11 +39,11 @@
                     </sheet>
                 </form>
             </field>
-        </record>
+       </record>
 
 
         <!--</record>-->
-         <record id="view_stock_quantity" model="ir.ui.view">
+     <record id="view_stock_quantity" model="ir.ui.view">
         <field name="name">Aging Report</field>
         <field name="model">aging_popup.view.model</field>
         <field name="arch" type="xml">
@@ -68,7 +66,7 @@
         </field>
     </record>
 
-        <record id="action_stock_quantity" model="ir.actions.act_window">
+    <record id="action_stock_quantity" model="ir.actions.act_window">
         <field name="name">Aging Report</field>
         <field name="res_model">aging_popup.view.model</field>
         <!-- <field name="view_type">form</field> -->
@@ -77,12 +75,11 @@
         <field name="target">new</field>
     </record>
 
-
-        <menuitem id="purchase_history_report1"
-                  action="action_stock_quantity"
-                  name="Aging Report"
-                  parent="stock.menu_warehouse_report"
-                  sequence="4"/>
+    <menuitem id="purchase_history_report1"
+              action="action_stock_quantity"
+              name="Aging Report"
+              parent="stock.menu_warehouse_report"
+              sequence="4"/>
 
 
     </data>

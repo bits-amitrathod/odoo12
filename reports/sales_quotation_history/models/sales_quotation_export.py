@@ -10,7 +10,7 @@ class SalesQuotationExport(models.Model):
     qe_customer_name = fields.Char("Customer Name", compute='_compare_data_exp', store=False)
     qe_delivered_date = fields.Datetime("Delivered Date", compute='_compare_data_exp', store=False)
     qe_qty_delivered_converted = fields.Float("Delivered Qty", compute='_compare_data_exp', store=False,
-                                           digits=dp.get_precision('Product Unit of Measure'))
+                                           digits='Product Unit of Measure')
     qe_unit_price_converted = fields.Monetary("Unit Price", currency_field='currency_id', store=False)
     qe_total_price_converted = fields.Monetary("Total", currency_field='currency_id', store=False)
     qe_product_uom_converted = fields.Many2one('uom.uom', 'Unit of Measure', currency_field='currency_id', store=False)
@@ -18,6 +18,9 @@ class SalesQuotationExport(models.Model):
     qe_quotations_per_code = fields.Integer(string='Open Quotations Per Code',
                                          compute='_compare_data_exp',
                                          readonly=True, store=False)
+
+    def _valid_field_parameter(self, field, name):
+        return name == 'currency_field' or super()._valid_field_parameter(field, name)
 
     #@api.multi
     def _compare_data_exp(self):

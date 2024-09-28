@@ -15,13 +15,14 @@
     'depends': ['base','sale_management'],
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/quotation_saleperson_report.xml',
-        'report/quotation_saleperson_temp.xml'
+        # 'views/views.xml',
+        # 'report/quotation_saleperson_report.xml',
+        # 'report/quotation_saleperson_temp.xml'
 
     ],
 
     'application': True,
     'auto-install': False,
     'installable': True,
+    'license': 'LGPL-3',
 }

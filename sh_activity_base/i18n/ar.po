@@ -28,7 +28,7 @@ msgstr "إدارة النشاط"
 #. module: sh_activity_base
 #: model:ir.model,name:sh_activity_base.model_res_company
 msgid "Companies"
-msgstr "الشركات"
+msgstr "شركات"
 
 #. module: sh_activity_base
 #: model:ir.model,name:sh_activity_base.model_res_config_settings
@@ -38,7 +38,7 @@ msgstr "إعدادات التكوين"
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Days After Due Date"
-msgstr "يوما بعد تاريخ الاستحقاق"
+msgstr "أيام بعد تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
@@ -57,43 +57,43 @@ msgstr "اسم العرض"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__activity_due_notification
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Due Activity Notification"
-msgstr "إشعار آخر يرجع"
+msgstr "إشعار النشاط الواجب"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_after_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_after_first_notify
 msgid "Enter First Days After Due Date"
-msgstr "أدخل الأولى أيام بعد تاريخ الاستحقاق"
+msgstr "أدخل الأيام الأولى بعد تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_before_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_before_first_notify
 msgid "Enter First Days Before Due Date"
-msgstr "أدخل الأولى قبل أيام من تاريخ الاستحقاق"
+msgstr "أدخل الأيام الأولى قبل تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_after_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_after_second_notify
 msgid "Enter Second Days After Due Date"
-msgstr "أدخل يوم الثاني بعد تاريخ الاستحقاق"
+msgstr "أدخل الأيام الثانية بعد تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__enter_before_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__enter_before_second_notify
 msgid "Enter Second Days Before Due Date"
-msgstr "أدخل يوم الثاني قبل تاريخ الاستحقاق"
+msgstr "أدخل الأيام الثانية قبل تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__after_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__after_first_notify
 msgid "First Days After Due Date"
-msgstr "أول يوم بعد تاريخ الاستحقاق"
+msgstr "الأيام الأولى بعد تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__before_first_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__before_first_notify
 msgid "First Days Before Due Date"
-msgstr "أول أيام قبل تاريخ الاستحقاق"
+msgstr "الأيام الأولى قبل تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_mail_activity__id
@@ -107,12 +107,12 @@ msgstr "هوية شخصية"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company____last_update
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings____last_update
 msgid "Last Modified on"
-msgstr "آخر تعديل ل"
+msgstr "آخر تعديل في"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_mail_activity__text_note
 msgid "Notes In Char format "
-msgstr "شكل ملاحظات وشار"
+msgstr "ملاحظات في شكل char"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__notify_create_user_after_first
@@ -126,7 +126,7 @@ msgstr "شكل ملاحظات وشار"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__notify_create_user_before_second
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__notify_create_user_due
 msgid "Notify Create User"
-msgstr "يخطر إنشاء مستخدم"
+msgstr "إعلام إنشاء مستخدم"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__ondue_date_notify
@@ -138,18 +138,18 @@ msgstr "في تاريخ الاستحقاق"
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__after_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__after_second_notify
 msgid "Second Days After Due Date"
-msgstr "يوم الثاني بعد تاريخ الاستحقاق"
+msgstr "الأيام الثانية بعد تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_company__before_second_notify
 #: model:ir.model.fields,field_description:sh_activity_base.field_res_config_settings__before_second_notify
 msgid "Second Days Before Due Date"
-msgstr "يوم الثانية قبل تاريخ الاستحقاق"
+msgstr "الأيام الثانية قبل تاريخ الاستحقاق"
 
 #. module: sh_activity_base
 #: model_terms:ir.ui.view,arch_db:sh_activity_base.sh_res_config_settings_mail_activity_form_inherit
 msgid "Set Options to True and enter notification days"
-msgstr "خيارات مجموعة إلى True وأدخل أيام الإخطار"
+msgstr "تعيين خيارات إلى TRUE وتدخل أيام الإعلام"
 
 #. module: sh_activity_base
 #: model:ir.actions.act_window,name:sh_activity_base.activity_config_settings_action

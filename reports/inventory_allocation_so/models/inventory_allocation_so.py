@@ -10,6 +10,8 @@ _logger = logging.getLogger(__name__)
 class inventory_allocation_so(models.Model):
 
     _name = "inventory.allocation_so"
+    _description = "Inventory Allocation SO"
+
     _auto = False
     sale_order_name = fields.Char(string="Name")
     product_id = fields.Many2one('product.template', string='Product Name', )

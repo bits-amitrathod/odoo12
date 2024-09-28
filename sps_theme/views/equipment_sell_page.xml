@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
    <template id="equipment_sell_template1" name="Sell Page">
       <t t-name="website.equipment">
@@ -279,8 +280,7 @@
                            <img src="/sps_theme/static/src/images/buy.jpg" class="img-fluid"/>
                         </div>
                            <div class="col-md-12 text-center btn-wrapper mt-5">
-                               <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
-                                <!--<button class="btn btn-info btn-sm">Shop Equipment</button>-->
+<!--                               <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>-->
                             </div>
                      </div>
                   </div>
@@ -295,93 +295,79 @@
                              </div>
                              <div class="row">
                                 <div class="col-md-12">
-                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                    <div class="input-group has-float-label form-field o_website_form_required_custom">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Business Name *" id="bussiness_name" name="bussiness_name" required=""/>
-<!--                                        <label class="control-label" for="bussiness_name">Business Name</label>-->
                                     </div>
                                 </div>
                                   <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                    <div class="input-group has-float-label form-field o_website_form_required_custom">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Business Address *" id="bussiness_address" name="bussiness_address" required=""/>
-<!--                                        <label class="control-label" for="bussiness_address">Business Address</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                    <div class="input-group has-float-label form-field o_website_form_required_custom">
                                         <input type="text" class="form-control o_website_form_input" placeholder="City *" id="City" name="City" required=""/>
-<!--                                        <label class="control-label" for="City">City</label>-->
                                     </div>
                                 </div>
                                  <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                    <div class="input-group has-float-label form-field o_website_form_required_custom">
                                         <input type="text" class="form-control o_website_form_input" placeholder="State/Province *" id="state" name="state" required=""/>
-<!--                                        <label class="control-label" for="state">State/Province</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field o_website_form_required_custom">
+                                    <div class="input-group has-float-label form-field o_website_form_required_custom">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Zip Code *" id="zipcode" name="zipcode" required=""/>
-<!--                                        <label class="control-label" for="zipcode">Zip Code</label>-->
                                     </div>
                                 </div>
                                  <div class="col-md-6">
-                                    <div class="form-group has-float-label ">
+                                    <div class="input-group has-float-label ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="First Name" id="first_name" name="first_name"/>
-<!--                                        <label class="control-label" for="first_name">First Name</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group has-float-label">
+                                    <div class="input-group has-float-label">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Last Name" id="last_name" name="last_name"/>
-<!--                                        <label class="control-label" for="last_name">Last Name</label>-->
                                     </div>
                                 </div>
 
                                  <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field ">
+                                    <div class="input-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Phone" id="Phone" name="Phone"/>
-<!--                                        <label class="control-label" for="Phone">Phone</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field ">
+                                    <div class="input-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Email" id="Email" name="Email"/>
-<!--                                        <label class="control-label" for="Email">Email</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field ">
+                                    <div class="input-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) First Name" id="contact_first_name" name="contact_first_name"/>
-<!--                                        <label class="control-label" for="contact_first_name">Contact Name (for final signature) First Name</label>-->
                                     </div>
                                 </div>
                                  <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field ">
+                                    <div class="input-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Contact Name (for final signature) Last Name" id="contact_last_name" name="contact_last_name"/>
-<!--                                        <label class="control-label" for="contact_last_name">Contact Name (for final signature) Last Name</label>-->
                                     </div>
                                 </div>
 
                                  <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field ">
+                                    <div class="input-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Manufacturer" id="Manufacturer" name="Manufacturer"/>
-<!--                                        <label class="control-label" for="Manufacturer">Manufacturer</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group has-float-label form-field ">
+                                    <div class="input-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Part Number" id="part_number" name="part_number"/>
-<!--                                        <label class="control-label" for="part_number">Part Number</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-12">
-                                     <div class="form-group has-float-label form-field ">
+                                     <div class="input-group has-float-label form-field ">
                                         <textarea id="description" placeholder="Description" class="form-control o_website_form_input" name="description"  rows="1"><t t-esc="request.params.get('description', '')" /></textarea>
-<!--                                        <label class="control-label" for="description">Description</label>-->
                                      </div>
                                 </div>
                                  <div class="col-md-5">
-                                        <div class="form-group  has-float-label form-field o_website_form_required_custom">
+                                        <div class="input-group  has-float-label form-field o_website_form_required_custom">
                                            <div class="o_website_form_date input-group" id="datepicker3" data-target-input="nearest">
                                              <input type="text" id="birthdate2" class="form-control datetimepicker-input o_website_form_input"  placeholder="Purchase Date" data-toggle="datetimepicker" data-target="#datepicker3" name="Purchase Date"/>
                                               <div class="input-group-append" data-target="#datepicker3"  data-toggle="datetimepicker">
@@ -391,24 +377,21 @@
                                         </div>
                                      </div>
                                 <div class="col-md-5">
-                                    <div class="form-group has-float-label form-field ">
+                                    <div class="input-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Condition" id="Condition" name="Condition"/>
-<!--                                        <label class="control-label" for="Condition">Condition</label>-->
                                     </div>
                                 </div>
                                 <div class="col-md-5">
-                                    <div class="form-group has-float-label form-field ">
+                                    <div class="input-group has-float-label form-field ">
                                         <input type="text" class="form-control o_website_form_input" placeholder="Quantity (Ea)" id="quantity" name="quantity"/>
-<!--                                        <label class="control-label" for="quantity">Quantity (Ea)</label>-->
                                     </div>
                                 </div>
 
                                 <div class="col-md-10 offset-md-2">
-                                    <div class="form-group file-input">
+                                    <div class="input-group file-input">
                                         <label class="control-label" for="Condition">Item Picture Upload</label>
                                         <label for="file" class="file-control">Choose File</label>
                                         <input type="file" onChange='getFileNameWithExt(event)' class="file-upload-control" id="file" name="file"/>
-
                                         <input id='outputfile' type='text' name='outputfile' class="selected-file" placeholder="No File Chosen" disabled="true"/>
                                     </div>
                                 </div>
@@ -421,10 +404,6 @@
                        <input class="form-field" type="hidden" name="subject" value="Received New 'Sell Your Surgical Equipment' Form"/>
                     </form>
                 </section>
-                 <!--<div class="seprator">
-                  <div class="red"></div>
-                  <div class="black"></div>
-               </div>-->
             </div>
          </t>
       </t>

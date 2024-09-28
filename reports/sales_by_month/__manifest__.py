@@ -14,11 +14,12 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/sales_by_month_report.xml',
-        'report/sales_by_month_report_template.xml'
+        # 'views/views.xml',
+        # 'report/sales_by_month_report.xml',
+        # 'report/sales_by_month_report_template.xml'
     ],
     'auto_install': False,
     'installable': True,
     'application': True,
+    'license': 'LGPL-3',
 }

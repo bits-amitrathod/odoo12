@@ -13,8 +13,9 @@
         "demo/res_users.xml",
     ],
     'data': [
-        'views/web_tree_dynamic_colored_field.xml',
+        # 'views/web_tree_dynamic_colored_field.xml',
     ],
     'installable': True,
     'auto_install': True,
+
 }

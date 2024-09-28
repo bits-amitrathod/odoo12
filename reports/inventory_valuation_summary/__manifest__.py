@@ -15,11 +15,12 @@
 
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/report_inventory_valuation_summary.xml',
-        'report/inventory_valuation_summary.xml'
+        # 'views/views.xml',
+        # 'report/report_inventory_valuation_summary.xml',
+        # 'report/inventory_valuation_summary.xml'
     ],
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
 }

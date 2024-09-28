@@ -1,0 +1,76 @@
+
+.nav-tabs .nav-item {
+    margin-bottom: -1px;
+    background: #f9f9f9 ;
+}
+
+.o_text_overflow {
+    width:190px;
+}
+
+.o_kanban_view {
+    .o_kanban_record{
+         .o_kanban_record_title{
+            overflow: hidden;
+            word-break: break-all;
+        }
+    }
+    .oe_kanban_card .oe_kanban_details, .o_kanban_view .o_kanban_record .oe_kanban_details {
+        width: 100%;
+        overflow: unset;
+        text-overflow: ellipsis;
+    }
+}
+
+.report_financial_table td{
+    white-space: normal !important;
+    max-width:180px fit-content;
+    width:180px;
+}
+.o_form_view.o_sale_order.vendor_offer_class{
+    display:block;
+}
+.vendor_offer_class{
+    .o_form_sheet_bg{
+        width: 100% !important;
+        max-width: 100%;
+    }
+    .clearfix.o_form_sheet{
+        max-width: 100% !important;
+    }
+    .o_chatter.oe_chatter{
+        width: 98%;
+        max-width: 100%;
+        border: 1px solid #ced4da;
+        box-shadow: 0 5px 20px -15px black;
+        margin-bottom: 5rem;
+    }
+    .o_FormRenderer_chatterContainer.o-aside {
+        width: 100%;
+        max-width: 98%;
+    }
+    .o_FormRenderer_chatterContaine {
+        width: 100%;
+        max-width: 98%;
+    }
+
+}
+
+@media (max-width:1440px) {
+     .vendor_offer_class .clearfix.o_form_sheet{
+        max-width: 98%;
+    }
+}
+h2{
+    font-size:29px;
+}
+.o_text_overflow {
+     width:190px;
+}
+.page h2{
+    margin-bottom: 15px !important
+    }
+.o_report_layout_standard .pt-5{
+    padding-top: 0rem !important
+}
+.zero_min_height + p{margin:0 !important;}

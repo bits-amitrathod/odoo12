@@ -106,8 +106,8 @@ class ReportProductActivity(models.Model):
                         purchase_order_line.product_qty                           AS change_qty,
                         res_partner.name                                          AS user,
                         product_template.sku_code                                 AS sku,
-                        stock_production_lot.name                                 AS lot,
-                        stock_production_lot.use_date                         AS expiration_date,
+                        stock_lot.name                                            AS lot,
+                        stock_lot.use_date                                        AS expiration_date,
                         product_template.id                                   AS product_id,
                         'Purchase' as type 
                     FROM
@@ -148,10 +148,10 @@ class ReportProductActivity(models.Model):
                         (
                             stock_move.id = stock_move_line.move_id)
                     LEFT OUTER JOIN
-                        stock_production_lot
+                        stock_lot
                     ON
                         (
-                            stock_move_line.lot_id = stock_production_lot.id)
+                            stock_move_line.lot_id = stock_lot.id)
                     INNER JOIN
                         stock_picking
                     ON
@@ -187,8 +187,8 @@ class ReportProductActivity(models.Model):
                         (stock_move_line.qty_done*-1)                                  AS change_qty,
                         res_partner.name                                          AS USER,
                         product_template.sku_code                                 AS sku,
-                        stock_production_lot.name                                 AS lot,
-                        stock_production_lot.use_date                         AS expiration_date,
+                        stock_lot.name                                 AS lot,
+                        stock_lot.use_date                         AS expiration_date,
                         product_template.id                                   AS product_id,
                         'Sales' as type
                     FROM
@@ -224,10 +224,10 @@ class ReportProductActivity(models.Model):
                         (
                             stock_move.id = stock_move_line.move_id)
                     INNER JOIN
-                        stock_production_lot
+                        stock_lot
                     ON
                         (
-                            stock_move_line.lot_id = stock_production_lot.id)
+                            stock_move_line.lot_id = stock_lot.id)
                     INNER JOIN
                         stock_picking
                     ON
@@ -268,8 +268,8 @@ class ReportProductActivity(models.Model):
                         stock_quant.quantity                                 AS change_qty,
                         res_partner.name                                          AS USER,
                         product_template.sku_code                                 AS sku,
-                        stock_production_lot.name                                 AS lot,
-                        stock_production_lot.use_date                         AS expiration_date,
+                        stock_lot.name                                            AS lot,
+                        stock_lot.use_date                                        AS expiration_date,
                         product_template.id                                   AS product_id,
                         'Stock' as type
                     FROM
@@ -305,10 +305,10 @@ class ReportProductActivity(models.Model):
                         (
                             product_product.product_tmpl_id = product_template.id)
                     INNER JOIN
-                        stock_production_lot
+                        stock_lot
                     ON
                         (
-                            stock_quant.lot_id = stock_production_lot.id)
+                            stock_quant.lot_id = stock_lot.id)
                     WHERE stock_quant.quantity > 0
                         """
         # if not date_clause is False:
@@ -327,8 +327,8 @@ class ReportProductActivity(models.Model):
                         (stock_scrap.scrap_qty*-1)                                     AS change_qty,
                         res_partner.name                                          AS USER,
                         product_template.sku_code                                 AS sku,
-                        stock_production_lot.name                                 AS lot,
-                        stock_production_lot.use_date                         AS expiration_date,
+                        stock_lot.name                                 AS lot,
+                        stock_lot.use_date                         AS expiration_date,
                         product_template.id                                   AS product_id,
                         'Scrap' as type
                     FROM
@@ -364,10 +364,10 @@ class ReportProductActivity(models.Model):
                         (
                             res_users.partner_id = res_partner.id)
                     INNER JOIN
-                        stock_production_lot
+                        stock_lot
                     ON
                         (
-                            stock_scrap.lot_id = stock_production_lot.id) 
+                            stock_scrap.lot_id = stock_lot.id) 
                     WHERE stock_scrap.state = 'done'
                                 """
 
@@ -391,8 +391,8 @@ class ReportProductActivity(models.Model):
                                    (stock_move_line.qty_done)                                  AS change_qty,
                                    res_partner.name                                          AS USER,
                                    product_template.sku_code                                 AS sku,
-                                   stock_production_lot.name                                 AS lot,
-                                   stock_production_lot.use_date                         AS expiration_date,
+                                   stock_lot.name                                 AS lot,
+                                   stock_lot.use_date                         AS expiration_date,
                                    product_template.id                                   AS product_id,
                                    'Receive' as type
                                FROM
@@ -424,10 +424,10 @@ class ReportProductActivity(models.Model):
                                    (
                                        product_template.id=product_product.product_tmpl_id)        
                                INNER JOIN
-                                   stock_production_lot
+                                   stock_lot
                                ON
                                    (
-                                       stock_production_lot.id=stock_move_line.lot_id  )
+                                       stock_lot.id=stock_move_line.lot_id  )
                                
                                INNER JOIN
                                    stock_location

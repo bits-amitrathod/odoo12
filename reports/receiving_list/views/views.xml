@@ -5,19 +5,21 @@
             <field name="model">popup.receiving.list</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="order_type" />
+                            <group>
+                                <field name="order_type" />
 
-                            <field name="sale_order_id" attrs="{'invisible': [('order_type', '!=', '0')], 'required' : [('order_type', '=', '0')]}" />
-                            <field name="purchase_order_id" attrs="{'invisible': [('order_type', '!=', '1')], 'required' : [('order_type', '=', '1')]}" />
+                                <field name="sale_order_id" attrs="{'invisible': [('order_type', '!=', '0')], 'required' : [('order_type', '=', '0')]}" />
+                                <field name="purchase_order_id" attrs="{'invisible': [('order_type', '!=', '1')], 'required' : [('order_type', '=', '1')]}" />
 
+                            </group>
                         </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

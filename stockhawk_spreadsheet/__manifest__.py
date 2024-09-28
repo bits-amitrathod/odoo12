@@ -13,13 +13,14 @@
 
     # always loaded
     'data': [
-        'security/ir.model.access.csv',
+        # 'security/ir.model.access.csv',
         'views/stockhawk_submission.xml',
-        'views/views.xml',
+        # 'views/views.xml',
         'views/stockhawk_spreadsheet.xml',
     ],
 
     'application': False,
     'installable': True,
     'auto_install': True,
+    'license': 'AGPL-3'
 }

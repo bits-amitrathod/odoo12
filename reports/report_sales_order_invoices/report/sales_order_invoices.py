@@ -3,6 +3,7 @@ from odoo import api, models
 
 class ReportSalesOrderInvoices(models.AbstractModel):
     _name = 'report.report_sales_order_invoices.sales_order_invoices'
+    _description = "Report Sales Order Invoices"
 
     @api.model
     def _get_report_values(self, docids, data=None):
