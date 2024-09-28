@@ -88,22 +88,24 @@
             <field name="model">report.product.sold.by.bd.export</field>
             <field name="arch" type="xml">
                 <form string="Export Short date and over stocked product sold by BD Report">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="compute_at_date" widget="radio" default="0"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <group>
+                                <field name="compute_at_date" widget="radio" default="0"/>
+                                <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                                <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            </group>
+                            <group>
+                                <field name="business_development"/>
+                            </group>
                         </group>
-                        <group>
-                            <field name="business_development"/>
-                        </group>
-                    </group>
-                    <div><b>Click On ' Export To File ' button to export Short date and over stocked product sold by BD report file</b></div>
-                    <footer>
-                        <button name="download_excel_product_sold_by_bd" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <div><b>Click On ' Export To File ' button to export Short date and over stocked product sold by BD report file</b></div>
+                        <footer>
+                            <button name="download_excel_product_sold_by_bd" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

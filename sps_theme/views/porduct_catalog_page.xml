@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
 
@@ -8,10 +9,6 @@
             <field name="res_model">sps_theme.product_download_catelog</field>
             <field name="view_mode">tree,form</field>
         </record>
-
-<!--
-        <menuitem id="menu_product_instock_notification" name="Product Catalog Download"
-                parent="website.menu_website_global_configuration" sequence="10"/>-->
 
         <menuitem id="menu_product_catalog_download" name="Product Catalog Download"
                   action="action_product_catalog_download"

@@ -1,9 +1,8 @@
 from odoo import models, api,_
 import logging
+SUPERUSER_ID_INFO = 2
 
 _logger = logging.getLogger(__name__)
-# Changes done due to odoo_12
-SUPERUSER_ID_INFO = 2
 
 class StockPicking(models.Model):
     _inherit = "stock.picking"
@@ -58,6 +57,7 @@ class StockPicking(models.Model):
             # check if exists in unique_list or not
             if x.product_id not in unique_list:
                 unique_list.append(x.product_id)
+
         return unique_list
 
     # PICK transfer has been validated then
@@ -77,5 +77,6 @@ class StockPicking(models.Model):
                                'subject': 'Pick Done Internal',
                                'facility_name': self.sale_id.partner_id.display_name,
                                'so_name': self.sale_id.name,
-                               'access_url': base_url}
+                               'access_url': base_url
+                               }
                     template.with_context(context).sudo().send_mail(SUPERUSER_ID_INFO, raise_exception=True)

@@ -24,6 +24,7 @@ class SaleOrder(models.Model):
         ('cancel', 'Cancelled'),
         ('void', 'Voided'),
     ], string='Status', readonly=True, copy=False, index=True, tracking=True, default='draft')
+
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
@@ -90,31 +91,37 @@ class SaleOrder(models.Model):
                 order.with_context(**email_ctx).message_post_with_template(email_ctx.get('default_template_id'))
         return True
 
-    def _find_mail_template(self, force_confirmation_template=False):
+    def _get_common_confirmation_template(self):
         template_id = False
-
-        if force_confirmation_template or (self.state == 'sale' and not self.env.context.get('proforma', False)):
-            # template_id = int(self.env['ir.config_parameter'].sudo().get_param('sale.default_confirmation_template'))
-            # template_id = self.env['mail.template'].search([('id', '=', template_id)]).id
+        if self.state == 'sale' and not self.env.context.get('proforma', False):
             if not template_id:
-                template_id = self.env['ir.model.data'].xmlid_to_res_id('sale_order_cstm.mail_template_sale_confirmation_cstm1', raise_if_not_found=False)
+                template_id = self.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm',
+                                           raise_if_not_found=True)
         if not template_id:
-            template_id = self.env['ir.model.data'].xmlid_to_res_id('sale_order_cstm.email_template_sale_custom_dub', raise_if_not_found=False)
+            template_id = self.env.ref('sale_order_cstm.email_template_sale_custom_dub', raise_if_not_found=True)
         return template_id
+
+    #Sometimes it gets called directly
+    def _get_confirmation_template(self):
+        return self._get_common_confirmation_template()
+
+    def _find_mail_template(self):
+        return self._get_common_confirmation_template()
 
     def action_quotation_send(self):
         ''' Opens a wizard to compose an email, with relevant mail template loaded by default '''
         self.ensure_one()
-        template_id = self._find_mail_template()
+        self.order_line._validate_analytic_distribution()
         lang = self.env.context.get('lang')
-        template = self.env['mail.template'].browse(template_id)
-        if template.lang:
+        template = self._find_mail_template()
+        # template = self.env['mail.template'].browse(template_id)
+        if template and template.lang:
             lang = template._render_lang(self.ids)[self.id]
         ctx = {
             'default_model': 'sale.order',
             'default_res_id': self.ids[0],
-            'default_use_template': bool(template_id),
-            'default_template_id': template_id,
+            'default_use_template': bool(template),
+            'default_template_id': template.id if template else None,
             'default_composition_mode': 'comment',
             'mark_so_as_sent': True,
             'custom_layout': "mail.mail_notification_paynow",
@@ -131,7 +138,6 @@ class SaleOrder(models.Model):
             ctx['email_from'] = self.order_line[0].customer_request_id.document_id.email_from
         else:
             ctx['email_from'] = None
-
 
         customer = self.partner_id.parent_id if self.partner_id.parent_id else self.partner_id
         if customer.account_manager_cust:
@@ -206,8 +212,8 @@ class SaleOrder(models.Model):
                     'body': body,
                     'model': 'stock.picking',
                     'message_type': 'notification',
-                    'no_auto_thread': False,
-                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'reply_to_force_new': False,
+                    'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': self.env.user.partner_id.id,
                 }
@@ -327,7 +333,7 @@ class SaleOrderLinePrioritization(models.Model):
 
         if self.order_id.pricelist_id and self.order_id.partner_id:
             vals['price_unit'] = self.env['account.tax']._fix_tax_included_price_company(
-                self._get_display_price(product), product.taxes_id, self.tax_id, self.company_id)
+                self._get_display_price(), product.taxes_id, self.tax_id, self.company_id)
         self.update(vals)
 
         return result
@@ -395,14 +401,14 @@ class StockPicking(models.Model):
         pickings_without_lots = self.browse()
         products_without_lots = self.env['product.product']
         for picking in self:
-            if not picking.move_lines and not picking.move_line_ids:
+            if not picking.move_ids and not picking.move_line_ids:
                 pickings_without_moves |= picking
 
             picking.message_subscribe([self.env.user.partner_id.id])
             picking_type = picking.picking_type_id
             precision_digits = self.env['decimal.precision'].precision_get('Product Unit of Measure')
             no_quantities_done = all(float_is_zero(move_line.qty_done, precision_digits=precision_digits) for move_line in picking.move_line_ids.filtered(lambda m: m.state not in ('done', 'cancel')))
-            no_reserved_quantities = all(float_is_zero(move_line.product_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in picking.move_line_ids)
+            no_reserved_quantities = all(float_is_zero(move_line.reserved_qty, precision_rounding=move_line.product_uom_id.rounding) for move_line in picking.move_line_ids)
             if no_reserved_quantities and no_quantities_done:
                 pickings_without_quantities |= picking
 
@@ -493,9 +499,7 @@ class AccountInvoice(models.Model):
     memo = fields.Char("Memo")
     shipping_terms = fields.Selection(string='Shipping Term', related='partner_id.shipping_terms', readonly=True)
     is_share = fields.Boolean(string='Is Shared', related='partner_id.is_share', readonly=True)
-    sale_margine = fields.Selection([
-        ('gifted', 'Gifted'),
-        ('legacy', 'Legacy')], string='Sales Level', related='partner_id.sale_margine', readonly=True)
+    sale_margine = fields.Selection(string='Sales Level', related='partner_id.sale_margine', readonly=True)
     preferred_method = fields.Selection(string='Preferred Invoice Delivery Method',
                                         related='partner_id.preferred_method', readonly=True)
 

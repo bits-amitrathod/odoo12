@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_purchase_history_wise"
-                string="Sales Purchase History report"
-                model="sale.order.line"
-                report_type="qweb-html"
-                file="sales_purchase_history_report.purchasehistory_temp"
-                name="sales_purchase_history_report.purchasehistory_temp"
-        />
+        <record id="action_report_purchase_history_wise" model="ir.actions.report">
+            <field name="name">Sales Purchase History Report</field>
+            <field name="model">sale.order.line</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">sales_purchase_history_report.purchasehistory_temp</field>
+            <field name="report_file">sales_purchase_history_report.purchasehistory_temp</field>
+        </record>
     </data>
 </odoo>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<odoo>
-    <template id="product_expiry_extension.assets_backend" name="Backend Assets (used in backend interface)" inherit_id="web.assets_backend">
-        <xpath expr="." position="inside">
-            <link rel="stylesheet" href="/product_expiry_extension/static/src/less/customize.style.less"/>
-        </xpath>
-    </template>
-</odoo>

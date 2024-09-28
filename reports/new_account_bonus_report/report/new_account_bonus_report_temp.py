@@ -8,6 +8,7 @@ log = logging.getLogger(__name__)
 
 class NewAccountBonusReport(models.AbstractModel):
     _name = 'report.new_account_bonus_report.new_account_bonus_report_test'
+    _description = "New Account Bonus Report"
 
     @api.model
     def _get_report_values(self, docids, data=None):

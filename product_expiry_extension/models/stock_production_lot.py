@@ -8,11 +8,12 @@ _logger = logging.getLogger(__name__)
 
 
 class ProductionLot(models.Model):
-    _inherit = 'stock.production.lot'
-    _name = 'stock.production.lot'
+    _inherit = 'stock.lot'
+    _name = 'stock.lot'
+    _description = "ProductionLot"
 
     expiration_date = fields.Datetime(string='End of Life Date',
-                                help='This is the date on which the goods with this Serial Number may become dangerous and must not be consumed.')
+                                      help='This is the date on which the goods with this Serial Number may become dangerous and must not be consumed.')
     use_date = fields.Datetime(string='Expiration Date',
                                help='This is the date on which the goods with this Serial Number start deteriorating, without being dangerous yet.')
     removal_date = fields.Datetime(string='Removal Date',
@@ -29,7 +30,7 @@ class ProductionLot(models.Model):
         for lot in self:
             pick_id = self.env.context.get('active_picking_id')
             stock_move = self.env['stock.move'].search([('picking_id', '=', pick_id)], limit=1)
-            aval_qty = self.env['stock.quant']._get_available_quantity(self.product_id, stock_move.location_id,
+            aval_qty = self.env['stock.quant']._get_available_quantity(lot.product_id, stock_move.location_id,
                                                                        lot_id=lot, package_id=None,
                                                                        owner_id=None, strict=False,
                                                                        allow_negative=False)
@@ -134,13 +135,13 @@ class ProductionLot(models.Model):
                     operator, value )
             return [('id', 'in', product_ids)]
         else:
-           pass
+            pass
 
     def _search_qty_available_new(self, operator, value):
         # lot_list = self.env['stock.production.lot'].search([('product_id','=',self._context['default_product_id']),('product_qty','>', value)]).ids
         lot_list = [0]
-        for lot in list(filter(lambda x: (x.product_qty > value), self.env['stock.production.lot'].search([('product_id','=',self._context['default_product_id'])]))):
-             lot_list.append(lot.id)
+        for lot in list(filter(lambda x: (x.product_qty > value), self.env['stock.lot'].search([('product_id','=',self._context['default_product_id'])]))):
+            lot_list.append(lot.id)
         return lot_list
 
     def _search_available_qty_for_sale(self, operator, value):
@@ -151,7 +152,7 @@ class ProductionLot(models.Model):
             '<=': lambda x, y: x <= y,
             '=': lambda x, y: x == y,
             '!=': lambda x, y: x != y
-            }
+        }
         comparison_function = comparison_functions.get(operator)
         if comparison_function:
             record = self.search([('product_id','=',self._context['default_product_id'])], limit=None)

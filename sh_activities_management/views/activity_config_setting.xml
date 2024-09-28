@@ -14,7 +14,7 @@
 								<field name="sh_display_multi_user" />
 							</div>
 							<div class="o_setting_right_pane">
-								<label for="sh_display_multi_user" />
+								<strong>Display Multi Users ?</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
@@ -23,7 +23,7 @@
 					<div class="row mt16 o_settings_container" id="dashboard_div">
 						<div class="col-md-6 o_setting_box">
 							<div class="o_setting_right_pane">
-								<label for="sh_planned_table" />
+								<strong>Planned Activities Table Limit</strong>
 								<br />
 								<field name="sh_planned_table" class="oe_inline" />
 							</div>
@@ -31,7 +31,7 @@
 						</div>
 						<div class="col-md-6 o_setting_box">
 							<div class="o_setting_right_pane">
-								<label for="sh_all_table" />
+								<strong>All Activities Table Limit</strong>
 								<br />
 								<field name="sh_all_table" class="oe_inline" />
 							</div>
@@ -39,7 +39,7 @@
 						</div>
 						<div class="col-md-6 o_setting_box">
 							<div class="o_setting_right_pane">
-								<label for="sh_completed_table" />
+								<strong>Completed Activities Table Limit</strong>
 								<br />
 								<field name="sh_completed_table" class="oe_inline" />
 							</div>
@@ -47,7 +47,7 @@
 						</div>
 						<div class="col-md-6 o_setting_box">
 							<div class="o_setting_right_pane">
-								<label for="sh_due_table" />
+								<strong>Due Activities Table Limit</strong>
 								<br />
 								<field name="sh_due_table" class="oe_inline" />
 							</div>
@@ -55,7 +55,7 @@
 						</div>
 						<div class="col-md-6 o_setting_box">
 							<div class="o_setting_right_pane">
-								<label for="sh_cancel_table" />
+								<strong>Cancelled Activities Table Limit</strong>
 								<br />
 								<field name="sh_cancel_table" class="oe_inline" />
 							</div>
@@ -83,98 +83,88 @@
 								<field name="sh_display_all_activities_counter" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_all_activities_counter" /> -->
-								<lable><b>All Activities</b></lable>
+								<strong>All Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_all_activities_table" string="All Activities Table"/>
+								<field name="sh_display_all_activities_table" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_all_activities_table" /> -->
-								<lable><b>All Activities</b></lable>
+								<strong>All Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_planned_activities_counter" string="Planned Activities"/>
+								<field name="sh_display_planned_activities_counter" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_planned_activities_counter" /> -->
-								<lable><b>Planned Activities</b></lable>
+								<strong>Planned Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_planned_activities_table" string="Planned Activites"/>
+								<field name="sh_display_planned_activities_table" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_planned_activities_table" /> -->
-								<lable><b>Planned Activities</b></lable>
+								<strong>Planned Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_completed_activities_counter" srtring="Compteled Activities"/>
+								<field name="sh_display_completed_activities_counter" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_completed_activities_counter" /> -->
-								<lable><b>Compteled Activities</b></lable>
+								<strong>Completed Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_completed_activities_table" string="Completed Activities"/>
+								<field name="sh_display_completed_activities_table" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_completed_activities_table" /> -->
-								<lable><b>Compteled Activities</b></lable>
+								<strong>Completed Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_overdue_activities_counter" string="Overdue Activities"/>
+								<field name="sh_display_overdue_activities_counter" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_overdue_activities_counter" /> -->
-								<lable><b>Overdue Activities</b></lable>
+								<strong>Overdue Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_overdue_activities_table" string="Overdue Activities"/>
+								<field name="sh_display_overdue_activities_table" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_overdue_activities_table" /> -->
-								<lable><b>Overdue Activities</b></lable>
+								<strong>Overdue Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_cancelled_activities_counter" string="Cancelled Activities"/>
+								<field name="sh_display_cancelled_activities_counter" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_cancelled_activities_counter" /> -->
-								<lable><b>Cancelled Activities</b></lable>
+								<strong>Cancelled Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
 						<div class="col-6 o_setting_box">
 							<div class="o_setting_left_pane">
-								<field name="sh_display_cancelled_activities_table" string="Cancelled Activities"/>
+								<field name="sh_display_cancelled_activities_table" />
 							</div>
 							<div class="o_setting_right_pane">
-								<!-- <label for="sh_display_cancelled_activities_table" /> -->
-								<lable><b>Cancelled Activities</b></lable>
+								<strong>Cancelled Activities</strong>
 								<div class="text-muted"></div>
 							</div>
 						</div>
@@ -186,7 +176,7 @@
 								<field name="sh_display_activity_reminder" />
 							</div>
 							<div class="o_setting_right_pane">
-								<label for="sh_display_activity_reminder" />
+								<strong>Activity Reminder ?</strong>
 								<div class="text-muted">
 								</div>
 							</div>
@@ -206,12 +196,12 @@
 								<field name="sh_document_model"/>
 							</div>
 							<div class="o_setting_right_pane">
-								<label for="sh_document_model"/>
+								<strong>Display document model wise activity ?</strong>
 							</div>
 						</div>
                         <div class="col-md-6 o_setting_box" attrs="{'invisible':[('sh_document_model','=',False)]}">
                             <div class="o_setting_right_pane">
-                            	<label for="sh_document_model_ids"/>
+                            	<strong>Document Models</strong>
                             	<br/>
                             	<field name="sh_document_model_ids" class="oe_inline" widget="many2many_tags" attrs="{'required':[('sh_document_model','=',True)]}"/>
                             </div>

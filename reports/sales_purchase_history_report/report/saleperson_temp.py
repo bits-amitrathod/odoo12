@@ -7,6 +7,7 @@ _logger = logging.getLogger(__name__)
 
 class ReportSalesSalespersonWise(models.AbstractModel):
     _name = 'report.sales_purchase_history_report.purchasehistory_temp'
+    _description = "Report Sales Salesperson Wise"
 
     @api.model
     def _get_report_values(self, docids, data=None):

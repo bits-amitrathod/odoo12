@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class ReportSalesQuotationExport(models.AbstractModel):
     _name = 'report.sales_quotation_history.salesquotationexport_temp'
+    _description = 'Report Sales Quotation Export'
 
     @api.model
     def _get_report_values(self, docids, data=None):

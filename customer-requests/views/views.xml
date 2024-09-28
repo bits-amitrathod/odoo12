@@ -172,7 +172,7 @@
             </field>
         </record>
 
-        <record id="view_form_import_template_stockhawk" model="ir.ui.view">
+        <record id="view_form_import_template_stockhawk2" model="ir.ui.view">
             <field name="name">Import Template customer form</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
@@ -187,13 +187,13 @@
             </field>
         </record>
 
-        <template id="assets_backend" name="base_import assets" inherit_id="web.assets_backend">
+        <!--template id="assets_backend" name="base_import assets" inherit_id="web.assets_backend">
             <xpath expr="." position="inside">
                 <script type="text/javascript"
                         src="/base_import/static/lib/javascript-state-machine/state-machine.js"></script>
                 <script type="text/javascript" src="/customer-requests/static/src/js/template_import.js"></script>
             </xpath>
-        </template>
+        </template>-->
 
         <record id="customer-template-client-action" model="ir.actions.client">
             <field name="name">Customer Import Template</field>
@@ -226,11 +226,11 @@
         <record id="new_email_in_inbox" model="mail.template">
             <field name="name">New Email In Inbox</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="email_cc"><![CDATA[${ctx['salesperson'] |safe}, ${ctx['key_account'] |safe}]]></field>
-            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html"><![CDATA[
+            <field name="email_from">{{object.company_id.name}},{{(object.company_id.email or user.email)}} </field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="email_cc">{{ctx.get('salesperson')}}, {{ctx.get('key_account')}}</field>
+            <field name="subject">Email response {{(object.company_id.email or user.email)}}</field>
+            <field name="body_html" type="html">
                 <p>
                     Hi Administrator,
                 </p>
@@ -246,21 +246,29 @@
                         <th style="border:1px solid black;border-collapse:collapse;">Date</th>
                     </tr>
                     <tr>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['emailFrom']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['emailSubject']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customerName']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">Email</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['emailFrom']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['emailSubject']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['customerName']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            Email
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['date']"/>
+                        </td>
                     </tr>
                 </table>
                 <p>
-                    Thanks & Regards,<br/>
+                    Thanks &amp; Regards,<br/>
                     ODOO <br/>
                     <img src="/website_quote_ext/static/src/img/stockhawk_logo_2.jpg" style="height: auto; width: 150px;" alt="Stockhawk"/>
-
                 </p>
-
-            ]]></field>
+            </field>
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
@@ -268,10 +276,10 @@
         <record id="set_log_email" model="mail.template">
             <field name="name">Logs For File Upload</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="subject"><![CDATA[API response <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html"><![CDATA[
+            <field name="email_from">{{object.company_id.name}} &lt;{{(object.company_id.email or user.email)}} &gt;</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="subject">API response {{(object.company_id.email or user.email)}}</field>
+            <field name="body_html" type="html">
                 <p>
                     Hi Administrator,
                 </p>
@@ -287,30 +295,39 @@
                         <th style="border:1px solid black;border-collapse:collapse;">Reason</th>
                     </tr>
                     <tr>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customerName']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['email']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">API</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['reason']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['customerName']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['email']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            API
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['date']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['reason']"/>
+                        </td>
                     </tr>
                 </table>
                 <p>
-                    Thanks & Regards,<br/>
+                    Thanks &amp; Regards,<br/>
                     ODOO
                 </p>
-
-            ]]></field>
+            </field>
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="set_log_email_response" model="mail.template">
             <field name="name">Logs For File Upload</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to">${object.email|safe}</field>
-            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html">${ctx['body']}</field>
-            <field name="body_html"><![CDATA[
+            <field name="email_from">{{object.company_id.name} &lt;{{(object.company_id.email or user.email)}}&gt;</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="subject">Email response {{(object.company_id.email or user.email)}}</field>
+            <field name="body_html">{{ctx.get('body')}}</field>
+            <field name="body_html" type="html">
                 <p>
                     Hi Administrator,
                 </p>
@@ -328,35 +345,48 @@
                         <th style="border:1px solid black;border-collapse:collapse;">Reason</th>
                     </tr>
                     <tr>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['emailFrom']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['emailSubject']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['customerName']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['email']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">Email</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['date']}</td>
-                        <td style="border:1px solid black;border-collapse:collapse;">${ctx['reason']}</td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['emailFrom']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['emailSubject']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['customerName']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['email']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            Email
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['date']"/>
+                        </td>
+                        <td style="border:1px solid black;border-collapse:collapse;">
+                            <t t-esc="ctx['reason']"/>
+                        </td>
                     </tr>
                 </table>
                 <p>
-                    Thanks & Regards,<br/>
+                    Thanks &amp; Regards,<br/>
                     Odoo
                 </p>
-
-            ]]></field>
+            </field>
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="email_response_on_uploaded_document" model="mail.template">
             <field name="name">email response on uploaded documents</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to"><![CDATA[${ctx['customerEmail']}]]></field>
-            <field name="email_cc"><![CDATA[${ctx['salespersonEmail'] |safe}, ${ctx['keyAccountEmail'] |safe}]]></field>
-            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html">${ctx['body']}</field>
-            <field name="body_html"><![CDATA[
+            <field name="email_from">{{object.company_id.name}} &lt;{{(object.company_id.email or user.email)}}&gt;</field>
+            <field name="email_to">{{ctx.get('customerEmail')}}</field>
+            <field name="email_cc">{{ctx.get{'salespersonEmail')}}, {{ctx.get('keyAccountEmail')}}</field>
+            <field name="subject">Email response {{(object.company_id.email or user.email)}}</field>
+            <field name="body_html">{{ctx.get('body')}}</field>
+            <field name="body_html" type="html">
                 <p>
-                    Dear ${ctx['customerName']},
+                    Dear <t t-esc="ctx['customerName']"/>,
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
                     Unfortunately, we are currently out of stock on the products that you requested.
@@ -364,31 +394,31 @@
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
                     Please feel free to reach out to your direct Account Manager if you need additional assistance.
-                </P>
-                <P style="text-align: left; margin-top: 10px;">
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
                     We Appreciate your business,
-                </P>
-                <P style="text-align: left; margin-top: 10px;">
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
                     SPS Sales Team
-                </P>
-                <P style="text-align: left; margin-top: 2px;">
+                </p>
+                <p style="text-align: left; margin-top: 2px;">
                     412-564-1280
                 </p>
-            ]]></field>
+            </field>
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <record id="final_email_response_on_uploaded_document" model="mail.template">
             <field name="name">final email response on uploaded documents</field>
             <field name="model_id" ref="base.model_res_users"/>
-            <field name="email_from"><![CDATA["${object.company_id.name|safe}" <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="email_to"><![CDATA[${ctx['customerEmail']}]]></field>
-            <field name="email_cc"><![CDATA[${ctx['salespersonEmail'] |safe}, ${ctx['keyAccountEmail'] |safe}]]></field>
-            <field name="subject"><![CDATA[Email response <${(object.company_id.email or user.email)|safe}>]]></field>
-            <field name="body_html">${ctx['body']}</field>
-            <field name="body_html"><![CDATA[
+            <field name="email_from">{{object.company_id.name}} &lt;{{(object.company_id.email or user.email)}}&gt;</field>
+            <field name="email_to">{{ctx.get('customerEmail')}}</field>
+            <field name="email_cc">{{ctx.get('salespersonEmail')}}, {{ctx.get('keyAccountEmail')}}</field>
+            <field name="subject">Email response {{(object.company_id.email or user.email)}}</field>
+            <field name="body_html">{{ctx.get('body')}}</field>
+            <field name="body_html" type="html">
                 <p>
-                    Dear ${ctx['customerName']},
+                    Dear <t t-esc="ctx['customerName']"/>,
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
                     Unfortunately, we are currently out of stock on the products that you requested.
@@ -396,17 +426,17 @@
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
                     Please feel free to reach out to your direct Account Manager if you need additional assistance.
-                </P>
-                <P style="text-align: left; margin-top: 10px;">
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
                     We Appreciate your business,
-                </P>
-                <P style="text-align: left; margin-top: 10px;">
+                </p>
+                <p style="text-align: left; margin-top: 10px;">
                     SPS Sales Team
-                </P>
-                <P style="text-align: left; margin-top: 2px;">
+                </p>
+                <p style="text-align: left; margin-top: 2px;">
                     412-564-1280
                 </p>
-            ]]></field>
+            </field>
 <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
@@ -415,7 +445,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_res_partner_filter"/>
             <field name="arch" type="xml">
-                <xpath expr="/search/filter[@name='customer']" position="after">
+                <xpath expr="/search/filter[@name='type_company']" position="after">
                     <filter string="Contract" name="contract" domain="[('contract', '!=', None)]"/>
                </xpath>
                 <xpath expr="/search" position="inside">

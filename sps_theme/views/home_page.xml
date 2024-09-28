@@ -1,10 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <template id="home_page_template" name="Main layout" inherit_id="website.homepage">
         <xpath expr="//div[@id='wrap']" position="replace">
             <t name="Home" priority="29" t-name="website.homepage">
                 <t t-set="pageName" t-value="'homepage'"/>
-
                 <div id="wrap"  class="oe_structure oe_empty">
+                    <img src="/web/image/1004913-88e5321c/1.png" width="100%" style="display: block; margin-left: auto; margin-right: auto; cursor: pointer;" onclick="location.href='https://shopsps.odoo.com/document/download/14/95b9fdfb-1955-4b8d-9b06-71b5e59be90c/5027'" loading="lazy"/>
                     <section class="video-section padding-80-y" >
                         <div class="container">
                             <div class="row">
@@ -16,13 +17,12 @@
                                     </div>
                                     <div class="text-left btn-wrapper">
                                         <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2" >Shop Products</a>
-                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
+<!--                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>-->
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="video-section-wrapper">
                                         <div class="video-wrapper">
-<!--                                            <a href="javascript:void(0)"  data-toggle="modal" data-target="#sellsps"><span class="sr-only">play</span></a>-->
                                             <iframe width="100%" class="myVideoClass" height="315" src="https://www.youtube.com/embed/Pqw3A5iIoKk?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
                                         </div>
                                     </div>
@@ -145,11 +145,10 @@
 												<p>PRODUCTS SHIP SAME DAY</p>
 											</div>
 										</div>
-
 									</div>
                                     <div class="col-12 text-center btn-wrapper mt-5">
                                         <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2">Shop Products</a>
-                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
+<!--                                        <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>-->
                                     </div>
 								</div>
 
@@ -303,33 +302,11 @@
                                </div>
                                  <div class=" col-12 text-center btn-wrapper mt-5 pt-5">
                                      <a itemprop="url" href="/shop" class="btn btn-info btn-sm mr-2">Shop Products</a>
-                                     <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>
+<!--                                     <a itemprop="url" href="/shop/capital-equipment" class="btn btn-info btn-sm">Shop Equipment</a>-->
                                 </div>
                             </div>
                         </div>
                     </section>
-                     <!--<div class="seprator"><div class="red"></div><div class="black"></div></div>-->
-
-
-                     <!--<div class="modal fade video-modal" id="sellsps" tabindex="-1" role="dialog" aria-hidden="true">
-                      <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">SPS</h5>
-                            <button type="button" class="close" data-dismiss="modal" id="close" aria-label="Close">
-                                <i class="icon-x"></i>
-                            </button>
-                          </div>
-                          <div class="modal-body p-0">
-                            <div class="video-section-wrapper m-0 border-0">
-                                <div class="video-wrapper">
-                                    <iframe width="100%" height="200" src="https://www.youtube.com/embed/L7dMasrhDFA?rel=0&amp;enablejsapi=1&amp;version=3&amp;playerapiid=ytplayer" autoplay="1"  class="myVideoClass" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe>
-                                </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>-->
                 </div>
             </t>
         </xpath>

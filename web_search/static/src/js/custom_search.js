@@ -10,7 +10,7 @@ odoo.define("website_search_autocomplete.custom_search", function (require) {
 //    });
 });
 
-odoo.define('website_sale.website_sale', function (require) {
+odoo.define('web_search.website_sale', function (require) {
 'use strict';
 
 var core = require('web.core');
@@ -190,7 +190,7 @@ publicWidget.registry.WebsiteSale = publicWidget.Widget.extend(VariantMixin, {
             if (data.warning) {
                 var cart_alert = $('.oe_cart').parent().find('#data_warning');
                 if (cart_alert.length === 0) {
-                    $('.oe_cart').prepend('<div class="alert alert-danger alert-dismissable" role="alert" id="data_warning">'+
+                    $('.oe_cart').prepend('<div class="alert alert-danger alert-dismissible" role="alert" id="data_warning">'+
                             '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button> ' + data.warning + '</div>');
                 }
                 else {

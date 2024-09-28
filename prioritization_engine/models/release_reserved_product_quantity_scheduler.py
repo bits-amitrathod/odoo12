@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class ReleaseReservedProductQuantityScheduler(models.Model):
     _name = 'release.reserved.product.quantity.cron.scheduler'
+    _description = "Release Reserved ProductvQuantityvScheduler"
 
     @api.model
     #@api.multi

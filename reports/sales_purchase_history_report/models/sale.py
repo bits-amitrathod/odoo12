@@ -4,6 +4,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 class SaleSalespersonReport(models.TransientModel):
     _name = 'sale.purchase.history.report'
+    _description = "Sale Salesperson Report"
 
     start_date = fields.Date('Start Date', required=True)
     end_date = fields.Date(string="End Date", required=True)

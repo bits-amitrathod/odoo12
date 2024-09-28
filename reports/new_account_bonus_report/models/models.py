@@ -10,6 +10,8 @@ _logger = logging.getLogger(__name__)
 
 class NewAccountBonusReport(models.Model):
     _name = 'new.account.bonus.report'
+    _description = "New Account Bonus Report"
+
     _auto = False
     _order = 'invoice_date asc'
 
@@ -263,6 +265,7 @@ class NewAccountBonusReport(models.Model):
 
 class NewAccountBonusReportExport(models.TransientModel):
     _name = 'new.account.bonus.report.export'
+    _description = "New Account Bonus Report Export"
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
                              help="Choose a date to get the New Account Bonus Report at that Start date")

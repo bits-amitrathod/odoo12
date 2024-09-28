@@ -23,6 +23,7 @@ from odoo import api, fields, models, _
 
 class ProductDetail(models.TransientModel):
     _name = "product.detail"
+    _description = "Product Detail"
 
 
     start_date = fields.Date(string="Start Date", required='1')

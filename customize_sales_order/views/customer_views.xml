@@ -1,0 +1,87 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record id="res_partner_view_purchase_buttons_inherit" model="ir.ui.view">
+            <field name="name">res.partner.view.purchase.buttons</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="purchase.res_partner_view_purchase_buttons"/>
+            <field name="arch" type="xml">
+                <field name="purchase_warn_msg" position="attributes">
+                    <attribute name="attrs">
+                        {
+                        'required':[('purchase_warn','!=', False), ('purchase_warn','!=','no-message')],
+                        'readonly':[('purchase_warn','=','no-message')]
+                        }
+                    </attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="res_partner_view_buttons_inherit" model="ir.ui.view">
+            <field name="name">res.partner.view.sale.buttons</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="sale.res_partner_view_buttons"/>
+            <field name="arch" type="xml">
+                <field name="sale_warn_msg" position="attributes">
+                    <attribute name="attrs">
+                        {
+                        'required':[('sale_warn','!=', False), ('sale_warn','!=','no-message')],
+                        'readonly':[('sale_warn','=','no-message')]
+                        }
+                    </attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="partner_view_buttons_inherit" model="ir.ui.view">
+            <field name="name">partner.view.buttons</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.partner_view_buttons"/>
+            <field name="arch" type="xml">
+                <field name="invoice_warn_msg" position="attributes">
+                    <attribute name="attrs">
+                        {
+                        'required':[('invoice_warn','!=', False), ('invoice_warn','!=','no-message')],
+                        'readonly':[('invoice_warn','=','no-message')]
+                        }
+                    </attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="partner_view_buttons_inherit" model="ir.ui.view">
+            <field name="name">partner.view.buttons</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.partner_view_buttons"/>
+            <field name="arch" type="xml">
+                <field name="invoice_warn_msg" position="attributes">
+                    <attribute name="attrs">
+                        {
+                        'required':[('invoice_warn','!=', False), ('invoice_warn','!=','no-message')],
+                        'readonly':[('invoice_warn','=','no-message')]
+                        }
+                    </attribute>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_partner_stock_warnings_form_inherit" model="ir.ui.view">
+            <field name="name">res.partner.stock.warning</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="stock.view_partner_stock_warnings_form"/>
+            <field name="arch" type="xml">
+                <field name="picking_warn_msg" position="attributes">
+                    <attribute name="attrs">
+                        {
+                        'required':[('picking_warn','!=', False), ('picking_warn','!=','no-message')],
+                        'readonly':[('picking_warn','=','no-message')]
+                        }
+                    </attribute>
+                </field>
+            </field>
+        </record>
+
+    </data>
+</odoo>
+

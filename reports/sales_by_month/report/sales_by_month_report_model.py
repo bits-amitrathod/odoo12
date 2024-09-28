@@ -8,6 +8,7 @@ log = logging.getLogger(__name__)
 
 class ReportProductSaleByCount(models.AbstractModel):
     _name = 'report.sales_by_month.sales_by_month_template'
+    _description = 'Report Product Sale By Count'
 
     @api.model
     def _get_report_values(self, docids, data=None):

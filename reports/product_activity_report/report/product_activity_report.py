@@ -3,6 +3,7 @@ from odoo import api, models
 
 class ReportProductActivityReport(models.AbstractModel):
     _name = 'report.product_activity_report.product_activity_report_template'
+    _description = 'Report Product Activity Report'
 
     @api.model
     def _get_report_values(self, docids, data=None):

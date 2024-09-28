@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_account_closed_by_bd_18"
-                string="Revenue From Accounts Closed In 18 Months By BD"
-                model="report.bd.account.closed_18"
-                report_type="qweb-html"
-                file="account_closed_by_bd_18.bd_account_closed_temp_test_18"
-                name="account_closed_by_bd_18.bd_account_closed_temp_test_18"
-        />
+        <record id="action_report_account_closed_by_bd_18" model="ir.actions.report">
+            <field name="name">Revenue From Accounts Closed In 18 Months By BD</field>
+            <field name="model">report.bd.account.closed_18</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">account_closed_by_bd_18.bd_account_closed_temp_test_18</field>
+            <field name="report_file">account_closed_by_bd_18.bd_account_closed_temp_test_18</field>
+        </record>
     </data>
 </odoo>

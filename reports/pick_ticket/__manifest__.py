@@ -12,12 +12,13 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/pick_ticket.xml',
-        'reports/pick_ticket.xml',
-        'reports/pick_ticket_template.xml',
+        # 'views/pick_ticket.xml',
+        # 'reports/pick_ticket.xml',
+        # 'reports/pick_ticket_template.xml',
     ],
     'images': ['static/description/banner.png'],
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
 }

@@ -5,15 +5,17 @@
             <field name="model">rma.report.popup</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="sale_order_id"/>
+                            <group>
+                                <field name="sale_order_id"/>
+                            </group>
                         </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>

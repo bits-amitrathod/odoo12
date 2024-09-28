@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_inventory_packing_list"
-                string="Inventory Packing List"
-                model="res.stock_packing_list"
-                report_type="qweb-html"
-                file="packing_list.sale_packing_list_template"
-                name="packing_list.sale_packing_list_template"
-        />
+        <!-- Report Action -->
+        <record id="action_report_inventory_packing_list" model="ir.actions.report">
+            <field name="name">Inventory Packing List</field>
+            <field name="model">res.stock_packing_list</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">packing_list.sale_packing_list_template</field>
+            <field name="report_file">packing_list.sale_packing_list_template</field>
+        </record>
     </data>
 </odoo>

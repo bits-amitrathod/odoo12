@@ -1,47 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- This Filter remove because its not working -->
-
-    <!--<record id="view_stock_inventory_valuation_summary" model="ir.ui.view">-->
-        <!--<field name="name">report.in.stock.report.default</field>-->
-        <!--<field name="model">report.in.stock.report</field>-->
-        <!--<field name="arch" type="xml">-->
-            <!--<search string="Product">-->
-                <!--<filter string="Valuation Summary" name="valuation_summary" domain="[]"-->
-                        <!--context="{'group_by' : ['warehouse', 'location', 'type']}"/>-->
-                <!--<separator/>-->
-            <!--</search>-->
-        <!--</field>-->
-    <!--</record>-->
-
     <record id="view_in_stock_report_line_tree" model="ir.ui.view">
         <field name="name">report.in.stock.report.tree</field>
         <field name="model">report.in.stock.report</field>
         <field name="arch" type="xml">
-            <tree create="false" edit="false" delete="false" string="In Stock Report">
+            <tree create="false" edit="false" delete="false" string="In Stock Report" js_class="in_stock_list">
                 <field name="partner_id" optional="show"/>
                 <field name="product_brand_id" optional="show"/>
                 <field name="sku_code" string="Product SKU" optional="show"/>
                 <field name="product_id" string="Product Name" optional="show"/>
-<!--                <field name="qty_available" string="Qty In Stock"/>-->
                 <field name="actual_quantity" optional="show"/>
                 <field name="uom_id" string="Product UOM" optional="show"/>
                 <field name="price_list" widget="monetary" optional="show"/>
                 <field name="currency_id"  invisible="1" optional="show"/>
                 <field name="min_expiration_date" optional="show"/>
                 <field name="max_expiration_date" optional="show"/>
-                <!--<field name="confirmation_date"/>-->
             </tree>
         </field>
     </record>
 
     <record id="action_popup_in_stock_report" model="ir.actions.act_window">
-    <field name="name">In Stock Report</field>
-    <field name="res_model">popup.report.in.stock.report</field>
-    <!-- <field name="view_type">form</field> -->
-            <field name="view_mode">form</field>
-            <field name="target">new</field>
+        <field name="name">In Stock Report</field>
+        <field name="res_model">popup.report.in.stock.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
     </record>
 
 
@@ -50,26 +33,27 @@
         <field name="model">popup.report.in.stock.report</field>
         <field name="arch" type="xml">
             <form string="Choose your date">
-                <group>
+                <sheet>
                     <group>
-                        <field name="partner_id"/>
-                        <field name="saleforce_ac"/>
-                        <field name="user_id"/>
-
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="saleforce_ac"/>
+                            <field name="user_id"/>
+                        </group>
+                        <group>
+                            <field name="warehouse_id"/>
+                            <field name="sku_code"/>
+                        </group>
+                        <group>
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
                     </group>
-                    <group>
-                        <field name="warehouse_id"/>
-                        <field name="sku_code"/>
-                    </group>
-                    <group>
-                        <field name="start_date"/>
-                        <field name="end_date"/>
-                    </group>
-                </group>
-                <footer>
-                    <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                    <button string="Cancel" class="btn-default" special="cancel"/>
-                </footer>
+                    <footer>
+                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-default" special="cancel"/>
+                    </footer>
+                </sheet>
             </form>
         </field>
     </record>

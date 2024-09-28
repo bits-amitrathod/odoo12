@@ -11,6 +11,7 @@ _logger = logging.getLogger(__name__)
 
 class AccountClosedByBd(models.Model):
     _name = 'report.bd.account.closed'
+    _description = "Account Closed By Bd"
     _auto = False
 
     sale_order_id = fields.Many2one('sale.order', 'Sale Order#')
@@ -18,7 +19,7 @@ class AccountClosedByBd(models.Model):
     state = fields.Char('Status')
     customer = fields.Many2one('res.partner', 'Customer Name')
     business_development = fields.Many2one('res.users', 'Business Development')
-    total_amount = fields.Float('Total', digits=dp.get_precision('Product Price'))
+    total_amount = fields.Float('Total', digits='Product Price')
     currency_id = fields.Many2one('res.currency', string='Currency')
 
     invoice_date = fields.Date('Invoice Date')
@@ -236,6 +237,7 @@ class AccountClosedByBd(models.Model):
 
 class AccountClosedByBdExport(models.TransientModel):
     _name = 'report.bd.account.closed.export'
+    _description = "Account Closed By Bd Export"
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
                              help="Choose a date to get the Revenue From Accounts Closed In 12 Months By BD at that End date")

@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class AvailableProductDict(models.TransientModel):
     _name = "available.product.dict"
+    _description = "Available Product Dict"
 
     available_production_lot_dict_to_be_returned = {}
     available_production_lot_dict = {}
@@ -19,7 +20,7 @@ class AvailableProductDict(models.TransientModel):
         sql_query = """Select sq.id, sq.product_id, sq.lot_id, sq.reserved_quantity, spl.use_date,  
                             sum(sq.quantity-sq.reserved_quantity) as available_qty from public.stock_quant sq 
                             Inner Join public.stock_location sl on sl.id = sq.location_id 
-                            Inner Join public.stock_production_lot spl on sq.lot_id = spl.id 
+                            Inner Join public.stock_lot spl on sq.lot_id = spl.id 
                             where sq.product_id IN (Select distinct product_id 
                             from public.sps_customer_requests where document_id
                             """
@@ -74,7 +75,7 @@ class AvailableProductDict(models.TransientModel):
         self.env.cr.execute("Select sq.id, sq.product_id, sq.lot_id, sq.reserved_quantity, spl.use_date, "
                             "sum(sq.quantity-sq.reserved_quantity) as available_qty from public.stock_quant sq "
                             "Inner Join public.stock_location sl on sl.id = sq.location_id "
-                            "Inner Join public.stock_production_lot spl on sq.lot_id = spl.id "
+                            "Inner Join public.stock_lot spl on sq.lot_id = spl.id "
                             "where sq.product_id = " + str(product_id) + " and sq.quantity > 0 "
                             "and spl.use_date is not null "
                             "and sl.usage = 'internal' and sl.active = true and spl.use_date >='"
@@ -106,7 +107,7 @@ class AvailableProductDict(models.TransientModel):
 
         self.env.cr.execute("Select sum(sq.quantity-sq.reserved_quantity) as count from public.stock_quant sq "
                             "Inner Join public.stock_location sl on sl.id = sq.location_id "
-                            "Inner Join public.stock_production_lot spl on sq.lot_id = spl.id "
+                            "Inner Join public.stock_lot spl on sq.lot_id = spl.id "
                             "where sq.product_id = " + str(product_id) + " and sq.quantity > 0 "
                             "and spl.use_date is not null "                                             
                             "and sl.usage = 'internal' and sl.active = true and spl.use_date >='"

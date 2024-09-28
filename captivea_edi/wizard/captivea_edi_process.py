@@ -8,6 +8,7 @@ from datetime import datetime
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError, ValidationError
 import pysftp
+import  logging
 
 GHX_GLOBAL = {}
 DOC_PREFIX_PO = '850'  # Prefix for Purchase Order Document
@@ -51,6 +52,7 @@ ASN_FIELDS = ['TRANSACTION TYPE', 'ACCOUNTING ID', 'SHIPMENT ID', 'SCAC',
               'QUANTITY SHIPPED', 'UOM', 'QUANTITY ORDERED', 'UNIT PRICE',
               'PACK SIZE', 'PACK UOM', 'INNER PACKS PER OUTER PACK']
 
+_logger = logging.getLogger(__name__)
 
 class CaptiveaEdiProcess(models.TransientModel):
     _name = 'captivea.ediprocess'
@@ -127,8 +129,26 @@ class CaptiveaEdiProcess(models.TransientModel):
         elif docs == 'no_connection':
             self.notification = "Invalid server details or Connection to server failed."
 
+    #  TODO: odoo16 -> Checked -> working properly
     def button_execute(self):
+        """
+        button_execute method of the captivea.ediprocess model is responsible for handling
+        the execution of the EDI process based on the user's selections in the wizard
 
+        1.The method checks if the import_850 field is selected.
+         the run_edi_process method is called to handle the import of 850 Purchase Order (PO) documents.
+
+        2.Depending on the user's selections for export_855, export_856, or export_810,
+        the method calls the corresponding export methods(manual_export_poack,manual_export_asn, or manual_export_invn)
+        to handle the export of 855 PO Acknowledgment(POA), 856 Advanced Ship Notice(ASN),or 810 Invoice(BIL) documents,
+        respectively.
+
+        3.After the export methods are called, the get_display_notification method is called to generate a notification
+         message based on the success or failure of the export process.
+
+        4.Finally, the method returns the res dictionary,
+         which is used to display the completion message in the form view.
+        """
         if self.import_850:
             res = self.run_edi_process()
         else:
@@ -348,7 +368,21 @@ class CaptiveaEdiProcess(models.TransientModel):
         """
         This function check the connection and check for any new file if exist
         it will read and create log entry based on data. and if data is proper
-        from log create funtion SO will also be created.
+        ** from log create function SO will also be created.
+        ** after log created it will remove the file from ftp server.
+
+        The code performs the following tasks:
+        1.Establishes a connection to the FTP server using the provided configuration details.
+        2.Retrieves a list of files from the specified FTP directory.
+        3.Iterates through each file, reads its content, and processes the data to create log entries and sales orders.
+        4.Validates the data and creates log entries for each PO.
+        5.Creates sales orders based on the validated data.
+        6.Removes the processed files from the FTP server.
+        7.Handles exceptions and logs any errors encountered during the processing.
+        8.Closes the connection to the FTP server.
+        9.Returns the list of sales orders and log entries created during the processing.
+
+        @param sftp_conf: sftp instance
         :return:
         """
         file_ref = False
@@ -452,6 +486,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                                 log_id._compute_log_status()
 
                             for log in log_ids:
+                                # If the log entry's status is not 'success', the sales order is unlinked.
                                 if log.status == 'success':
                                     order = self.env['captivea.edidocumentlog']._create_sale_order(log,
                                                                                                    file_ref_with_time)
@@ -633,15 +668,10 @@ class CaptiveaEdiProcess(models.TransientModel):
                         file_ref_with_time = attr.filename + str(datetime.now())
                         if sftp.isfile(file_path):
                             file = sftp.open(file_path)
-                            # sftp.get(file_path, '/tmp/test.txt')
-                            # csvdata = csv.DictReader(csvfile)
-                            # file = open('/tmp/test.txt','r')
                             log_id = False
                             log_ids = self.env['setu.edi.log']
-                            # txt_file = file.xreadlines()
                             txt_file = file.readlines()
                             lines = []
-                            # lines = [x for x in txt_file]
                             for line in txt_file:
                                 line = line.split('~')
                                 for l in line:
@@ -840,6 +870,9 @@ class CaptiveaEdiProcess(models.TransientModel):
                                 all_failed_log_ids |= log_id
 
                     except Exception as e:
+                        # _logger.debug(e.args)
+                        # _logger.debug(e.context)
+                        # _logger.debug(e.name)
                         log_id = self.env['setu.edi.log'].create({
                             'po_number': False,
                             'type': 'import',
@@ -911,6 +944,7 @@ class CaptiveaEdiProcess(models.TransientModel):
                 # validation_error = 'Product(s) not available.'
                 # return validation_error
                 product['has_exceptions'] = True
+            #TODO: UPD_ODOO16 - Remove this condition because it is set product[has_exceptions] to True always
             if product['uom'] and partner_uom_conf and not partner_uom_conf.line_ids.filtered(
                     lambda l: l.edi_uom.lower() == product['uom'].lower()):
                 product['has_exceptions'] = True

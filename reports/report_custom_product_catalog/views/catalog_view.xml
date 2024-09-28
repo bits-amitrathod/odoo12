@@ -117,34 +117,6 @@
             <field name="context">{'is_custom_report': False}</field>
         </record>
 
-
-        <!-- Export Change Need -->
-<!--
-        <record id="view_purchase_order_edit_note_form11" model="ir.ui.view">
-            <field name="name">product.product.export.product.catalog</field>
-            <field name="model">report.report_custom_product_catalog.catalog_temp</field>
-            <field name="arch" type="xml">
-                <form string="Export PPVendorPricing">
-                    <group>
-                        <div>Click On ' Export To File ' button to export Product Catalog file</div>
-                    </group>
-                    <footer>
-                        <button name="download_excel_product_catalog" string="Export To File" type="object"
-                                class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
-
-        <act_window name="Export-Custom Product Catalog"
-                    res_model="report.report_custom_product_catalog.catalog_temp"
-                    src_model="cust.pro.catalog"
-                    view_mode="form"
-                    target="new"
-                    key2="client_action_multi"
-                    id="custom_product_catalog_act_window"/>-->
-
         <menuitem id="sr_menu_custome_product_catalog_wizard"
                   name="Custom Product Catalog"
                   action="action_report_custom_product_catalog"

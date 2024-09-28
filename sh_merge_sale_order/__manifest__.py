@@ -55,12 +55,13 @@ combine sale order
     "application" : True,
     "data" : [
         
-            # "wizard/merge_sale_order.xml",
+            "wizard/merge_sale_order.xml",
             
             ],            
     "images": ["static/description/background.png",],              
     "auto_install":False,
     "installable" : True,
     "price": 25,
-    "currency": "EUR"   
+    "currency": "EUR",
+    "license": "LGPL-3",
 }

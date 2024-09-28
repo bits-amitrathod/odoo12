@@ -1,6 +1,6 @@
 About
 ============
-Do you want to show the activities list beautifully? Do you want to show the well-organized structure of activities? Do you want to show completed, uncompleted activities easily to your employees? Do you want to show an activity dashboard to the employee? Do you want to manage activities nicely with odoo?
+Do you want to show the activities list beautifully? Do you want to show the well-organized structure of activities?
 
 Installation
 ============

@@ -10,6 +10,8 @@ _logger = logging.getLogger(__name__)
 
 class AccountHierarchyReport(models.Model):
     _name = 'account.hierarchy.report'
+    _description = 'AccountHierarchyReport'
+
     _auto = False
 
     customer = fields.Many2one('res.partner', 'Customer Name')

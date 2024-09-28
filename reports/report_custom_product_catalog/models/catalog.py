@@ -5,6 +5,7 @@ import odoo.addons.decimal_precision as dp
 
 class InventoryValuationPopUp(models.TransientModel):
     _name = 'popup.product.catalog'
+    _description =  'Inventory Valuation PopUp'
 
     sku_code = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
@@ -31,6 +32,7 @@ class InventoryValuationPopUp(models.TransientModel):
 
 class InventoryCustomProductPopUp(models.TransientModel):
     _name = 'popup.custom.product.catalog'
+    _description = "Inventory Custom Product PopUp"
 
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
@@ -58,7 +60,7 @@ class InventoryCustomProductPopUp(models.TransientModel):
                          " FROM " \
                          " (" \
                          "      SELECT   min(l.use_date), max(l.use_date), sum(s.quantity), l.product_id " \
-                         "      FROM public.stock_production_lot as l inner join  stock_quant  as s  " \
+                         "      FROM public.stock_lot as l inner join  stock_quant  as s  " \
                          "      on l.id = s.lot_id where l.use_date > '" + str(today_date) + "'  and  " + \
                 (" l.product_id = " + str(self.sku_code.id) if self.sku_code else " 1=1 ") + \
                 (" and l.use_date >  to_date('" + str(self.start_date) + "','YYYY-MM-DD')" if self.start_date
@@ -91,13 +93,16 @@ class ProductCatalogReport(models.Model):
     _inherit = 'product.product'
 
     product_qty = fields.Float("Product Qty", compute='_compare_qty', store=False,
-                               digits=dp.get_precision('Product Unit of Measure'))
+                               digits='Product Unit of Measure')
     exp_min_date = fields.Date("Exp Min Date", store=False)
     exp_max_date = fields.Date("Exp Max Date", store=False)
 
     #@api.multi
     def _compare_qty(self):
         for product in self:
+            # Initialize product_qty with a default value of 0.0
+            product.product_qty = 0.0
+
             product.env.cr.execute(
                 "SELECT sum(quantity) as qut FROM public.stock_quant where company_id != 0.0 and  product_id = " + str(
                     product.id))
@@ -107,7 +112,7 @@ class ProductCatalogReport(models.Model):
                 product.product_qty = query_result['qut']
 
                 product.env.cr.execute(
-                    "SELECT min(use_date), max (use_date) FROM public.stock_production_lot where product_id = " + str(('production_lot_ids' in self._context and self._context['production_lot_ids'][str(product.id)]) or product.id))
+                    "SELECT min(use_date), max (use_date) FROM public.stock_lot where product_id = " + str(('production_lot_ids' in self._context and self._context['production_lot_ids'][str(product.id)]) or product.id))
                 query_result = product.env.cr.dictfetchone()
                 if query_result['min']:
                     product.exp_min_date = fields.Datetime.from_string(str(query_result['min'])).date()
@@ -116,6 +121,8 @@ class ProductCatalogReport(models.Model):
 
 class customeproductcata(models.Model):
     _name = 'cust.pro.catalog'
+    _description = "Custome Product Cata"
+
     _rec_name = 'product_tmpl_id'
 
 

@@ -5,6 +5,7 @@ from odoo.tools import DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMA
 
 class SaleQuotationExport(models.TransientModel):
     _name = 'sale.quotation.history'
+    _description = "Sale Quotation Export"
 
     start_date = fields.Date('Start Date', required=True)
     end_date = fields.Date(string="End Date", required=True)

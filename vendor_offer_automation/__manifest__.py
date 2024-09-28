@@ -12,27 +12,26 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctlyd
-    'depends': ['base', 'vendor_offer'],
-
+    'depends': ['web', 'vendor_offer'],
     # always loaded
     'data': [
-        'views/views.xml',
-        'views/templates.xml',
         'security/ir.model.access.csv',
-    ],
+        'views/views.xml',
 
-    'qweb': [
-         'static/src/xml/offer_template_widget.xml'
     ],
-
-    'js': [
-         'static/src/js/offer_template_widget.js'
-    ],
+    'assets':{
+        'web.assets_backend': [
+            'vendor_offer_automation/static/src/js/offer_template_widget.js',
+            'vendor_offer_automation/static/src/xml/offer_template_widget.xml',
+        ],
+    },
 
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
     ],
     'application': True,
-    'auto_install': True
+    'auto_install': True,
+    'license': 'AGPL-3'
+
 }

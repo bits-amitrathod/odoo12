@@ -2,7 +2,7 @@
 import datetime
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from dateutil.relativedelta import relativedelta
 import datetime
 from odoo.exceptions import UserError
@@ -80,7 +80,6 @@ class ExportNewAccountByMonthByNa(http.Controller):
     @http.route('/web/export/new_account_by_month_by_na_export/<string:start_date>/<string:end_date>/<string:national_account_id>',
                 type='http',
                 auth="public")
-    @serialize_exception
     def download_document_xl(self, start_date, end_date, national_account_id, token=1, debug=1, **kw):
         s_date = self.string_to_date(start_date)
         today = s_date if s_date else fields.date.today()

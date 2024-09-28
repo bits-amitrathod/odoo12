@@ -36,14 +36,14 @@ class mail_message(models.Model):
             values['changed'] = True
         return super(mail_message, self).write(values)
 
-    def message_format(self):
+    def message_format(self, format_reply=True):
         """
         Overwrite to pass 'changed' and whether message is activity
 
         Returns:
          * list of dicts per each message in the format for web client
         """
-        message_values = super(mail_message, self).message_format()
+        message_values = super(mail_message, self).message_format(format_reply=format_reply)
         guaranteed_subtypes = self.env.ref("mail.mt_activities") + self.env.ref("mail.mt_comment")
         for mes_value in message_values:
             message = self.browse(mes_value.get("id"))

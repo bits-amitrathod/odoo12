@@ -1,24 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_on_hand_by_date"
-                string="On Hand By Date"
-                model="report.on.hand.by.date"
-                report_type="qweb-html"
-                file="on_hand_by_date.on_hand_by_date_temp"
-                name="on_hand_by_date.on_hand_by_date_temp"
-                menu="False"
-                />
+        <record id="action_report_on_hand_by_date" model="ir.actions.report">
+            <field name="name">On Hand By Date</field>
+            <field name="model">report.on.hand.by.date</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">on_hand_by_date.on_hand_by_date_temp</field>
+            <field name="report_file">on_hand_by_date.on_hand_by_date_temp</field>
+        </record>
 
-        <report
-                id="action_report_on_hand_by_date_cost"
-                string="On Hand By Date"
-                model="report.on.hand.by.date.cost"
-                report_type="qweb-html"
-                file="on_hand_by_date.on_hand_by_date_temp"
-                name="on_hand_by_date.on_hand_by_date_temp"
-                menu="False"
-                />
+        <record id="action_report_on_hand_by_date_cost" model="ir.actions.report">
+            <field name="name">On Hand By Date</field>
+            <field name="model">report.on.hand.by.date.cost</field>
+            <field name="report_type">qweb-html</field>
+            <field name="report_name">on_hand_by_date.on_hand_by_date_temp</field>
+            <field name="report_file">on_hand_by_date.on_hand_by_date_temp</field>
+        </record>
+
     </data>
 </odoo>

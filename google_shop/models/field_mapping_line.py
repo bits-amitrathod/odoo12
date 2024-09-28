@@ -11,6 +11,7 @@ from odoo.addons.http_routing.models.ir_http import slug
 
 class FieldMapping(models.Model):
     _name = 'field.mappning.line'
+    _description = "Fields Mapping Line"
 
     google_field_id = fields.Many2one(comodel_name='google.fields', string="Google Fields",help="Select the google field name that you want to map with Odoo field")
     fixed = fields.Boolean(string="Fixed",default=False,help="Select wether you want to send the fixed data or the field data")

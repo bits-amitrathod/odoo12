@@ -13,7 +13,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base','account','prioritization_engine'],
+    'depends': ['base','account','prioritization_engine', 'account'],
 
     # always loaded
     'data': [
@@ -21,9 +21,16 @@
         'views/views.xml',
         'views/templates.xml',
     ],
+    'assets':{
+        'web.assets_backend':[
+            'customer_credit_note/static/src/js/thread.js',
+        ],
+    },
     # only loaded in demonstration mode
 
     'application': True,
     'auto-install': True,
     'installable': True,
+    'license': 'LGPL-3',
+
 }

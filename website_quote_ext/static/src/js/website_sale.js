@@ -13,19 +13,19 @@ odoo.define('website_quote_ext._ex', function (require) {
 
     inputClientOrderRef.on("keyup", function(event) {
         ajax.jsonRpc("/notifymeclientorderref", 'call', {
-                'client_order_ref': inputClientOrderRef.val(),
-                'orderId': orderId.val()
-            }).then(function(data) {
-                var output_data = data['client_order_ref_error']
-                if (output_data != '') {
-                    $("#client_order_ref_error").text(output_data);
-                    $("#client_order_ref_accept").attr('disabled', true);
-                }
-                else {
-                    $("#client_order_ref_error").text('');
-                    $("#client_order_ref_accept").attr('disabled', false);
-                }
-            });
+            'client_order_ref': inputClientOrderRef.val(),
+            'orderId': orderId.val()
+        }).then(function(data) {
+            var output_data = data['client_order_ref_error']
+            if (output_data != '') {
+                $("#client_order_ref_error").text(output_data);
+                $("#client_order_ref_accept").attr('disabled', true);
+            }
+            else {
+                $("#client_order_ref_error").text('');
+                $("#client_order_ref_accept").attr('disabled', false);
+            }
+        });
     });
 
     $('.engine').each(function () {
@@ -37,22 +37,20 @@ odoo.define('website_quote_ext._ex', function (require) {
             var product_id = $input[0]['attributes']['data-product-id']['value'];
             var quote_id = $input[0]['attributes']['data-quote-id']['value'];
             var line_id = $input[0]['attributes']['data-line-id']['value']
-             var r = confirm("Are You Sure, You want to remove line item ?");
-              if (r == true) {
-                     ajax.jsonRpc("/shop/engine/update_json", 'call', {
-                        'quote_id':quote_id,
-                        'line_id': line_id,
-                        'product_id': product_id,
-                        'set_qty': 0
-                    }).then(function (data) {
-                         window.location.reload();
-                    });
-              } else {
-                    console.log("inside false block")
-                    return false;
-              }
-
-
+            var r = confirm("Are You Sure, You want to remove line item ?");
+            if (r == true) {
+                 ajax.jsonRpc("/shop/engine/update_json", 'call', {
+                    'quote_id':quote_id,
+                    'line_id': line_id,
+                    'product_id': product_id,
+                    'set_qty': 0
+                }).then(function (data) {
+                     window.location.reload();
+                });
+            } else {
+                console.log("inside false block")
+                return false;
+            }
          });
 
          // hack to add and remove from cart with json

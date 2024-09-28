@@ -25,7 +25,6 @@
         <record id="open_tps_sales_action" model="ir.actions.act_window">
             <field name="name">Total Products Sale</field>
             <field name="res_model">product.detail</field>
-            <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
             <field name="target">new</field>
             <field name="view_id" ref="view_tps_sales_form"/>

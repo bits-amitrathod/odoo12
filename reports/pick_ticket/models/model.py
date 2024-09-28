@@ -3,13 +3,14 @@ import odoo.addons.decimal_precision as dp
 
 class PickTicketReport(models.Model):
     _name = "report.pick.ticket"
-    _auto = False
+    _description = "PickTicketReport"
+    # _auto = False
 
     _inherits = {'stock.picking': 'picking_id'}
 
     carrier_info = fields.Char(string="Sale Order#")
     move_id = fields.Many2one('stock.move', string="Customer Name")
-    qty_done = fields.Float(string="Quantity",digits=dp.get_precision('Product Unit of Measure'))
+    qty_done = fields.Float(string="Quantity",digits='Product Unit of Measure')
     location_id = fields.Many2one('stock.location', string="Location")
     location_dest_id = fields.Many2one('stock.location', string='Destionation', )
     state = fields.Char(string='state', )
@@ -17,14 +18,15 @@ class PickTicketReport(models.Model):
     partner_id = fields.Many2one('res.partner', string="Partner Id")
     carrier_id = fields.Many2one('delivery.carrier', string="Carrier Id")
     product_id = fields.Many2one('product.product', string="Carrier Id")
-    picking_id = fields.Many2one('stock.picking', string='Pick Number')
+    picking_id = fields.Many2one('stock.picking', string='Pick Number', required=True, ondelete='cascade')
     product_uom_id = fields.Many2one('uom.uom', 'UOM ')
     warehouse_id = fields.Many2one('stock.warehouse', 'Warehouse')
-    scheduled_date = fields.Datetime(stirng='Scheduled Date')
+    scheduled_date = fields.Datetime(string='Scheduled Date')
     picking_type = fields.Char(string='Type', )
 
     def init(self):
-        self.init_table()
+        # self.init_table()
+        pass
 
     def init_table(self):
         tools.drop_view_if_exists(self._cr, self._name.replace(".", "_"))

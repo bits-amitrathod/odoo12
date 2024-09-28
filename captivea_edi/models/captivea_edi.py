@@ -118,6 +118,7 @@ class CaptiveaEdiDocumentLog(models.Model):
     has_exceptions = fields.Boolean("Has Exceptions?")
     customer_number = fields.Char()
 
+    #  ODOO16 -> Checked -> Working
     def _get_shipping_partner(self, new_record, partner):
         verify = False
         state = False
@@ -175,6 +176,7 @@ class CaptiveaEdiDocumentLog(models.Model):
         })
         return shipping_partner, verify
 
+    #  ODOO16 -> Checked -> Working
     def _get_ship_date(self, new_record, dt):
         """
         Will return ship_date and po_date from string got from 850 PO.
@@ -225,17 +227,19 @@ class CaptiveaEdiDocumentLog(models.Model):
                               po_date.second)
             return datetime.strptime(p_date.strftime('%Y-%m-%d %H:%M:%S'), '%Y-%m-%d %H:%M:%S')
 
+    #  ODOO16 -> Checked -> Working
     def _check_price(self, line):
         """
         Will sent boolean if price is mismatching or not.
         @param line:
         @return:
         """
-        price = line._get_display_price(line.product_id)
+        price = line._get_display_price()
         if price == line.price_unit:
             return False
         return True
 
+    #  ODOO16 -> Checked -> Working
     def _create_sale_order_line(self, log_line, order, product):
         if not order.order_line.filtered(
                 lambda line: line.x_edi_po_line_number == log_line.line_num and line.product_id.default_code == log_line.vendor_part_num):
@@ -305,6 +309,7 @@ class CaptiveaEdiDocumentLog(models.Model):
                 price_mismatch = self._check_price(line)
                 line.x_edi_mismatch = price_mismatch
 
+    #  ODOO16 -> Checked -> Working
     def _create_sale_order(self, log_id, file_ref):
         """
         Will create sale order from imported 850 Customer PO.

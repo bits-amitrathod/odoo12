@@ -25,6 +25,7 @@ log = logging.getLogger(__name__)
 
 class apprisal_tracker_vendor_report(models.AbstractModel):
     _name = 'report.appraisal_tracker.appraisal_tracker_report'
+    _description = 'Appraisal Tracker Report'
 
     @api.model
     def _get_report_values(self, docids, data=None):

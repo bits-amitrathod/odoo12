@@ -7,6 +7,7 @@ log = logging.getLogger(__name__)
 
 class ReportCompareSaleByMonthWise(models.AbstractModel):
     _name = 'report.report_compare_sale_by_month.compsalebymonth_template'
+    _description = "Report Compare Sale By Month Wise"
 
     def _get_report_values(self, docids, data=None):
 

@@ -5,6 +5,7 @@ odoo.define('odoo_new_tab.ListRenderer', function (require) {
     "use strict";
 
     var ListRenderer = require('web.ListRenderer');
+    ListRenderer.rowsTemplate = "web.ListRenderer.Rows"
 
     ListRenderer.include({
         _onRowClicked: function (event) {
@@ -15,6 +16,7 @@ odoo.define('odoo_new_tab.ListRenderer', function (require) {
                 return this._super(event);
             }
         },
+
 
         _renderHeader: function () {
             var $thead = this._super();

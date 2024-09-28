@@ -13,6 +13,7 @@ from odoo.exceptions import ValidationError
 
 class Detail_oauth2(models.Model):
     _name = 'oauth2.detail'
+    _description = "Detail_oauth2"
 
     sequence_no = fields.Integer(string="Sequence No",required = True,help="Enter sequence no you want to add in your callback url")
     name = fields.Char(string="Token Name",required = True,help="Enter name to your OAuth 2.0")

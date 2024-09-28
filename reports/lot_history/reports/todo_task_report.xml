@@ -1,5 +1,5 @@
 <odoo>
-
+    <!-- Report Action -->
     <report id="action_todo_model_report"
             string="Lot History"
             model="lot.history.report"

@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 
 class ProcessHighPriorityRequests(models.Model):
     _name = 'process.high.priority.requests'
+    _description = "Process High Priority Requests"
 
     documents = set()
 

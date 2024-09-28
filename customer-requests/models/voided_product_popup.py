@@ -31,13 +31,18 @@ class VoidedProductPopup(models.TransientModel):
     customer_id = fields.Many2one('res.partner', string='Customer', required=False,)
 
     def open_table(self):
+        """
+        Opens a window with a tree and form view of 'sps.customer.requests' model.
+        The window is filtered based on the user's selections in the popup window.
+
+        Returns:
+            dict: A dictionary containing the action parameters for opening the window.
+        """
+        # Get the IDs of the tree and form views for 'ps.customer.requests' model
         tree_view_id = self.env.ref('customer-requests.view_tree_voided_products').id
         form_view_id = self.env.ref('customer-requests.view_form_voided_product').id
 
-        if self.compute_at_product_selection == '1':
-            domain = [('status', '=', 'Unprocessed')]
-        else:
-            domain = [('status', '=', 'Voided')]
+        domain = [('status', '=', 'Unprocessed')] if self.compute_at_product_selection == '1' else [('status', '=', 'Voided')]
 
         if self.compute_at_date == '1':
             s_date = self.string_to_date(str(self.start_date))
@@ -48,6 +53,7 @@ class VoidedProductPopup(models.TransientModel):
         if self.customer_id.id:
             domain.append(('customer_id', '=', self.customer_id.id))
 
+        # Define the action parameters for opening the window
         return {
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],

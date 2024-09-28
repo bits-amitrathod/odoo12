@@ -23,12 +23,13 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/views.xml',
-        'report/revenue_by_ka_report.xml',
-        'report/revenue_by_ka_temp.xml',
+        # 'views/views.xml',
+        # 'report/revenue_by_ka_report.xml',
+        # 'report/revenue_by_ka_temp.xml',
     ],
 
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
 }

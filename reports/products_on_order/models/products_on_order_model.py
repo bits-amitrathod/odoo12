@@ -9,16 +9,18 @@ _logger = logging.getLogger(__name__)
 
 class ProductsOnOrder(models.Model):
     _name = "report.products.on.order"
+    _description = "Report Products On Order"
+
     _auto = False
 
     name = fields.Char("Sales Order")
     order_id = fields.Many2one('sale.order', string='Order', )
     date_ordered = fields.Datetime('Order Date')
     date_due = fields.Datetime('Due Date')
-    qty_ordered = fields.Float("Qty Ordered",digits=dp.get_precision('Product Unit of Measure'))
+    qty_ordered = fields.Float("Qty Ordered",digits='Product Unit of Measure')
     product_uom = fields.Many2one('uom.uom', 'UOM')
     sku_code = fields.Char('Product SKU')
-    qty_remaining = fields.Float("Qty Remaining",digits=dp.get_precision('Product Unit of Measure'))
+    qty_remaining = fields.Float("Qty Remaining",digits='Product Unit of Measure')
     partner_id = fields.Many2one('res.partner', string='Customer Name', )
     product_id = fields.Many2one('product.product', string='Product Name', )
 

@@ -24,11 +24,12 @@
     # always loaded
     'data': [
         'security/ir.model.access.csv',
-        'views/tps_report_view.xml',
-        'report/selected_product_report.xml',
-        'report/selected_product_template.xml',
+        # 'views/tps_report_view.xml',
+        # 'report/selected_product_report.xml',
+        # 'report/selected_product_template.xml',
     ],
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
 }

@@ -41,7 +41,7 @@ class CustomerCreditNote(models.TransientModel):
                             'debit': acc_move_line.debit,
                             'amount_residual': acc_move_line.amount_residual,
                             'amount_residual_currency': acc_move_line.amount_residual_currency,
-                            'exclude_from_invoice_tab':True,
+                            # 'display_type':"line_note",
                             'tax_base_amount':0
                         }))
 
@@ -60,7 +60,7 @@ class CustomerCreditNote(models.TransientModel):
                             'credit': acc_move_line.debit,
                             'amount_residual': abs(acc_move_line.amount_residual),
                             'amount_residual_currency': abs(acc_move_line.amount_residual_currency),
-                            'exclude_from_invoice_tab': False,
+                            # 'display_type': 'product',
                             'tax_base_amount': 0
                         }))
 
@@ -90,16 +90,16 @@ class CustomerCreditNote(models.TransientModel):
                         invoice_created.action_post()
 
                 else:
-                    raise Warning(_(
-                        'Payment Warning!\nCannot proceed with Payment Journal =" Credit Note " '
-                        'as the selected vendor is not a customer'))
+                    raise UserError('Payment Warning!\nCannot proceed with Payment Journal =" Credit Note " '
+                                   'as the selected vendor is not a customer')
             else:
-                raise Warning(_(
-                    'Payment Warning!\n This Payment Journal option is available for Vendor Bill only'))
+                raise UserError(
+                    'Payment Warning!\n This Payment Journal option is available for Vendor Bill only')
         else:
             print('not CRN')
             super(CustomerCreditNote, self).action_create_payments()
 
+    # TODO: UPD ODOO16 Note this Method is Not Used anywhere else in this module
     def _get_counterpart_move_line_vals(self, invoice=False):
         if self.payment_type == 'transfer':
             name = self.name
@@ -132,6 +132,18 @@ class CustomerCreditNote(models.TransientModel):
 class AccountInvoiceVendorCredit(models.Model):
     _inherit = "account.move"
     vendor_credit_flag = fields.Boolean('Credit Note Flag', default=False)
-    user_id = fields.Many2one('res.users', string='Business Development', track_visibility='onchange',
+    # user_id = fields.Many2one('res.users', string='Business Development', tracking=True,
+    #                           readonly=True, states={'draft': [('readonly', False)]},
+    #                           default=lambda self: self.env.user, copy=False)
+
+    user_id = fields.Many2one('res.users', string='Business Development', tracking=True,
                               readonly=True, states={'draft': [('readonly', False)]},
-                              default=lambda self: self.env.user, copy=False)
+                              copy=False)  # Remove the default here
+
+    @api.model
+    def create(self, vals):
+        # setting user_id explicitly here by overriding create method if user id not found then set as current users id as default
+        if 'user_id' not in vals:
+            vals['user_id'] = self.env.user.id
+        return super(AccountInvoiceVendorCredit, self).create(vals)
+

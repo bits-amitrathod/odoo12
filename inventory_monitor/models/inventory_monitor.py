@@ -92,6 +92,7 @@ class ResConfigSettings(models.TransientModel):
 
 class maxinventorydurationpopup(models.TransientModel):
     _name = 'max.inventory.popup'
+    _description = 'm.inventory.popup'
     # _inherit = 'res.config.settings'
 
     @api.model
@@ -115,6 +116,8 @@ class maxinventorydurationpopup(models.TransientModel):
 
 class ReportInventoryMonitor(models.AbstractModel):
     _name = 'report.inventory_monitor.inventory_monitor_print'
+    _description = "Inventory Monitor Report"
+
     @api.model
     def _get_report_values(self, docids, data=None):
          _logger.info("print report called...")
@@ -123,13 +126,14 @@ class ReportInventoryMonitor(models.AbstractModel):
 
 class ProductTemplate(models.Model):
     _name = 'inventory.monitor'
+    _description = "Inventory Monitor Model"
 
     max_inventory_level = fields.Integer("Max Inv Level", default="0")
-    max_inventory_percent= fields.Integer("Current % of Max Inv Level", default="0")
+    max_inventory_percent= fields.Float("Current % of Max Inv Level", default="0")
     qty_in_stock = fields.Integer("Qty In Stock")
     type = fields.Selection( [('product', 'Stockable Product'),('consu', 'Consumable'), ('service', 'Service')] , string="Type")
     sku_code = fields.Char("SKU / Catalog No")
-    max_inventory_future_percent = fields.Integer("Future % of Max Inv Level", default="0")
+    max_inventory_future_percent = fields.Float("Future % of Max Inv Level", default="0")
     inventory_percent_color=fields.Integer("Inv Percent Color", default="0")
     future_percent_color = fields.Integer("Inv Percent Color", default="0")
     qty_on_order = fields.Integer("Qty On Order")
@@ -154,23 +158,23 @@ class ProductTemplate(models.Model):
             sale_quant = sale_quant + int(quant)
             avg_sale_quant = float(sale_quant/3)
             max_inventory = int((avg_sale_quant) * float(max_inventory_level_duration/30))
-            ml.max_inventory_level =  int(max_inventory)
+            ml.max_inventory_level = int(max_inventory)
         if  product_id.incoming_qty:
             purchase_qty=purchase_qty+int(product_id.incoming_qty)
 
         quantity = int(product_id.qty_available) + int(quantity)
-        ml.qty_on_order= int(purchase_qty)
-        ml.qty_in_stock =  int(quantity)
+        ml.qty_on_order = int(purchase_qty)
+        ml.qty_in_stock = int(quantity)
         ml.type = ml.product_tmpl_id.type
         ml.sku_code = ml.product_tmpl_id.sku_code
 
         if max_inventory>0:
             max_inventory_percent = (quantity/int(max_inventory))*100
-            inventory_future_percent =((purchase_qty + ml.qty_in_stock)/int(max_inventory))*100
+            inventory_future_percent = ((purchase_qty + ml.qty_in_stock)/int(max_inventory))*100
 
-            ml.max_inventory_percent =  int(max_inventory_percent)
-            ml.max_inventory_future_percent= int(inventory_future_percent)
-            ml.max_inventory_level =  int(max_inventory)
+            ml.max_inventory_percent = int(max_inventory_percent)/100
+            ml.max_inventory_future_percent = int(inventory_future_percent)/100
+            ml.max_inventory_level = int(max_inventory)
             ml.inventory_percent_color = int(max_inventory_percent)
             ml.future_percent_color = int(inventory_future_percent)
 

@@ -8,7 +8,7 @@
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Sale',
-    'version': '1.0',
+    'version': '16.25',
 
     # any module necessary for this one to work correctly
 
@@ -23,14 +23,19 @@
         'views/saleorder_views.xml',
         'views/report_invoice.xml',
         'views/prioritization_views.xml',
-        'views/web_assets.xml',
-        'views/templates.xml',
+        # 'views/web_assets.xml',  Added using assets
+        # 'views/templates.xml',
         'views/prioritization_schedular_views.xml',
         'views/release_product_quantity_scheduler_views.xml',
         'views/process_high_priority_requests.xml',
         'data/sales_team_data_prioritization.xml',
     ],
 
+    # 'assets': {
+    #     'web.assets_backend': [
+    #         'prioritization_engine/static/src/js/prioritization_engine.js',
+    #     ],
+    # },
     # only loaded in demonstration mode
     'demo': [
         'demo/demo.xml',
@@ -38,4 +43,5 @@
     'application': True,
     'auto-install': True,
     'installable': True,
+    'license': 'LGPL-3',
 }

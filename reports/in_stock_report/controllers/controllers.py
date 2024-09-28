@@ -3,7 +3,7 @@ import datetime
 
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt
@@ -67,6 +67,9 @@ class ReportPrintInStockExport(http.Controller):
                         cell_style = datetime_style
                     elif isinstance(cell_value, datetime.date):
                         cell_style = date_style
+                    elif isinstance(cell_value, dict) and 'en_US' in cell_value:
+                        cell_value = cell_value.get('en_US') or cell_value.get(list(cell_value.keys())[0]) or ''
+
                     worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
 
         fp = io.BytesIO()
@@ -77,8 +80,7 @@ class ReportPrintInStockExport(http.Controller):
         return data
 
     @http.route('/web/export/in_stock_report', type='http', auth="public")
-    @serialize_exception
-    def download_document_xl(self, token, **kwargs):
+    def download_document_xl(self, token=1, **kwargs):
 
         """
           DROP VIEW DATA;
@@ -363,18 +365,18 @@ class ReportPrintInStockExport(http.Controller):
         SELECT
           min(use_date) as min_expiration_date,
           max(use_date) as max_expiration_date,
-          stock_production_lot.product_id 
+          stock_lot.product_id 
         FROM
           stock_quant 
           INNER JOIN
-            stock_production_lot 
-            ON ( stock_quant.lot_id = stock_production_lot.id) 
+            stock_lot 
+            ON ( stock_quant.lot_id = stock_lot.id) 
           INNER JOIN
             stock_location 
             ON ( stock_quant.location_id = stock_location.id) 
         WHERE stock_location.usage in ( 'internal', 'transit')
         group by
-          stock_production_lot.product_id;
+          stock_lot.product_id;
 
         select
           * 
@@ -384,8 +386,8 @@ class ReportPrintInStockExport(http.Controller):
             data2 
             ON ( data.product_id = data2.product_id )
         """
-
-        request.env.cr.execute(str_functions + str_query0 + str_query2 + str_query4)
+        final_query = (str_functions + str_query0 + str_query2 + str_query4)
+        request.env.cr.execute(final_query)
         order_lines = request.env.cr.dictfetchall()
         request.env.cr.execute(str_query1 + str_query3 + str_query4 + "where formula = 1")
         order_lines_formula = request.env.cr.dictfetchall()
@@ -410,9 +412,7 @@ class ReportPrintInStockExport(http.Controller):
             product_id = request.env['product.product'].browse(line['product_id'])
             if product_id:
                 if partner_id.property_product_pricelist.id:
-                    line['list_price'] = partner_id.property_product_pricelist.get_product_price(product_id, line[
-                        'actual_quantity'],
-                                                                                                 partner_id)
+                    line['list_price'] = partner_id.property_product_pricelist._get_product_price(product_id, line['actual_quantity'])
             data[line['id']] = line
 
         for line in data.values():
@@ -421,20 +421,20 @@ class ReportPrintInStockExport(http.Controller):
             #     product_id = request.env['product.product'].browse(line['product_id'])
             #     if product_id:
             #         if partner_id.property_product_pricelist.id:
-            #             line['list_price'] = partner_id.property_product_pricelist.get_product_price(product_id, line[
-            #                 'actual_quantity'],
-            #                                                                                          partner_id)
+            #             line['list_price'] = partner_id.property_product_pricelist._get_product_price(product_id, line['actual_quantity'])
             records.append([line['res_partner'], line['product_brand'], line['sku_code'], line['product_template'],
                             "$" + " {0:.2f}".format(line['list_price']), line['actual_quantity'], line['product_uom'],
                             line['min_expiration_date'], line['max_expiration_date']])
 
-        res = request.make_response(
-            self.from_data(["partner_name", "brand_name", "sku_code", "product_name", "price_list"
+
+        xl_data = self.from_data(["partner_name", "brand_name", "sku_code", "product_name", "price_list"
                                , "actual_quantity", "product_uom", "min_expiration_date", "max_expiration_date"],
-                           records),
+                           records)
+
+        res = request.make_response(xl_data,
             headers=[('Content-Disposition', content_disposition('in_stock_report' + '.xls')),
                      ('Content-Type', 'application/vnd.ms-excel')],
         )
-        res.set_cookie('fileToken', token)
+        # res.set_cookie('fileToken', token)
 
         return res

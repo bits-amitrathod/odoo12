@@ -8,6 +8,7 @@ _logger = logging.getLogger(__name__)
 class mtd_sales(models.Model):
 
     _name = 'mtd_sales'
+    _description = "mtd_sales"
     _auto = False
 
     day_of_month = fields.Integer('Day')

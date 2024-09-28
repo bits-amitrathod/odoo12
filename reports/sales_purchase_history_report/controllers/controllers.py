@@ -3,7 +3,7 @@ import datetime
 
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt
@@ -77,7 +77,6 @@ class ReportPrintSalesPurchaseHistory(http.Controller):
         return data
 
     @http.route('/web/export/sale_purchase_history_export/<string:start_date>/<string:end_date>', type='http', auth="public")
-    @serialize_exception
     def download_document_xl(self, start_date, end_date, token=1, debug=1, **kw):
 
         str_functions_old = """	 

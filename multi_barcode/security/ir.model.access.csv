@@ -1,2 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_multi_barcode_multi_barcode,multi_barcode.multi_barcode,model_multi_barcode_multi_barcode,,1,0,0,0

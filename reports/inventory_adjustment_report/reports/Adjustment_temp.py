@@ -5,6 +5,7 @@ from datetime import datetime
 
 class ReportPurchaseSalespersonWise(models.AbstractModel):
     _name = 'report.inventory_adjustment_report.adjustment_report1'
+    _description = "Report Purchase Salesperson Wise"
 
     @api.model
     def _get_report_values(self, docids, data=None):
@@ -12,9 +13,8 @@ class ReportPurchaseSalespersonWise(models.AbstractModel):
 
         popup = self.env['adj_popup.view.model'].search([('create_uid', '=', self._uid)], limit=1, order="id desc")
 
-        if popup.compute_at_date:
-            date = datetime.strptime(str(popup.start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(str
-            (popup.end_date), '%Y-%m-%d').strftime('%m/%d/%Y')
+        if popup.compute_at_date == '1':
+            date = datetime.strptime(str(popup.start_date), '%Y-%m-%d').strftime('%m/%d/%Y') + " - " + datetime.strptime(str(popup.end_date), '%Y-%m-%d').strftime('%m/%d/%Y')
         else:
             date = False
 

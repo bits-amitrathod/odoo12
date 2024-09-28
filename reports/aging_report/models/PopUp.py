@@ -12,11 +12,13 @@ _logger = logging.getLogger(__name__)
 
 class PopUp(models.TransientModel):
     _name = 'aging_popup.view.model'
+    _description = "Aging popup View Model"
+
     current_date = date.today()
     sku_code = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
     warehouse_id = fields.Many2one('stock.warehouse', 'Group Location',required=True,default=1)
-    location_id=fields.Selection(selection=[('Receving', 'Receving'),('Shipping', 'Shipping'), ('Stock', 'Stock'), ], String='Location')
+    location_id=fields.Selection(selection=[('Receving', 'Receving'),('Shipping', 'Shipping'), ('Stock', 'Stock'), ], string='Location')
 
 
 

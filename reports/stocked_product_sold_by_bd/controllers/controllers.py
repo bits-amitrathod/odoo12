@@ -2,7 +2,7 @@
 import datetime
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt, DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
@@ -79,7 +79,6 @@ class StockedProductSoldByBd(http.Controller):
     @http.route('/web/export/product_sold_by_bd_export/<string:start_date>/<string:end_date>/<string:business_development_id>',
                 type='http',
                 auth="public")
-    @serialize_exception
     def download_document_xl(self, start_date, end_date, business_development_id, token=1, debug=1, **kw):
 
         select_query = """
@@ -102,13 +101,13 @@ class StockedProductSoldByBd(http.Controller):
                         FROM public.stock_picking SPS
                         INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
                         INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
-                        INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                        INNER JOIN public.stock_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
                         WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7) is null THEN SUM(SML.qty_done) ELSE
                         (SUM(SML.qty_done) - (SELECT SUM(SMLS.qty_done)
                         FROM public.stock_picking SPS
                         INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
                         INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
-                        INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                        INNER JOIN public.stock_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
                         WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7)) END AS qty_done,
 
 
@@ -116,13 +115,13 @@ class StockedProductSoldByBd(http.Controller):
                         FROM public.stock_picking SPS
                         INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
                         INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
-                        INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                        INNER JOIN public.stock_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
                         WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7) is null THEN SUM(SML.qty_done) ELSE
                         (SUM(SML.qty_done) - (SELECT SUM(SMLS.qty_done)
                         FROM public.stock_picking SPS
                         INNER JOIN public.stock_move SMS ON SPS.id = SMS.picking_id
                         INNER JOIN public.stock_move_line SMLS ON SMS.id = SMLS.move_id AND SMS.product_id = SM.product_id
-                        INNER JOIN public.stock_production_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
+                        INNER JOIN public.stock_lot SPLS ON SMLS.lot_id = SPLS.id AND SPLS.use_date <= SP.date_done + INTERVAL '6 MONTH'
                         WHERE SPS.sale_id = SO.id AND SPS.state = 'done' AND SPS.picking_type_id = 7)) END * SOL.price_reduce AS total_amount
 
 
@@ -165,7 +164,7 @@ class StockedProductSoldByBd(http.Controller):
                         (
                             SM.id = SML.move_id)
                     INNER JOIN 
-                        public.stock_production_lot SPL 
+                        public.stock_lot SPL 
                     ON 
                         (
                             SML.lot_id = SPL.id AND SPL.use_date <= SP.date_done + INTERVAL '6 MONTH')

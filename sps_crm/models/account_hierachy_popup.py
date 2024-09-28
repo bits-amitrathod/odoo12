@@ -10,6 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class AccountHierarchyReport(models.TransientModel):
     _name = 'popup.account.hierarchy.report'
+    _description = "Account Hierarchy Report"
 
     start_date = fields.Date('Start Date', default=fields.date.today(), required=True,
                              help="Choose a date to get the New Account Bonus Report at that Start date")
@@ -100,9 +101,6 @@ class AccountHierarchyReport(models.TransientModel):
         final_data, final_data_name = self.set_data(grand_parent, list_all, level, final_data,
                                                     final_data_name)
 
-
-        #_logger.info('--------- _compute_account_hierarchy_html  url ')
-        #_logger.info('--------- _compute_account_hierarchy_html %s', url)
         data_val = "<table class='o_list_table table table-sm table-hover table-striped o_list_table_ungrouped' " \
                    "style='table-layout: fixed;'><tbody>"
         for x, list_data in enumerate(final_data):
@@ -124,28 +122,18 @@ class AccountHierarchyReport(models.TransientModel):
                     elif a.name =="ACQ Account":
                         l.append("<span style='color: #f8f9fa;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>")
 
-            # l = ["<span style='color: #C4262E;font-size: smaller;background-color:blue;border-radius: 10px;;padding-left: 6px;padding-right: 6px;'>"+a.name+"</span>" for a in customer.category_id if a.name in ['Sales Account', 'ACQ Account']]
             s1 =(str('' if not l else (*l,))).replace('"', ' ').replace('(', ' ').replace(')', ' ').replace(',', ' ')
+            list_data = list_data or '""'
 
             if customer.id == current_partner_record.id and flag:
-                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-                                      "<b><a style='color:blue !important;' target='_blank' href=' " + url + '/web#id=' + str(
-                    final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + "</a> </b>"+ s1 + " | " + facility_name + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
+                data_val += f"<tr><td class='o_data_cell o_field_cell o_list_char o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'><b><a style='color:blue !important;' target='_blank' href='{url}/web#id={final_data_name[x].id}&model=res.partner&view_type=form&menu_id=519'>{list_data}</a></b> {s1} | {facility_name} | {purchase_mngr} | {sale_mngr} | {state}</td></tr>"
                 flag = False
             else:
-                data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-                                      " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-                                      "<a style='color:black !important;' target='_blank' href=' " + url + '/web#id=' + str(
-                    final_data_name[x].id) + "&model=res.partner&view_type=form&menu_id=519'>   " \
-                                                             " " + list_data + " </a>"+ s1 + " | " + facility_name + " | " + purchase_mngr + " | " + sale_mngr + " | " + state + "</td></tr>"
-            # data_val = data_val + "<tr><td class='o_data_cell o_field_cell o_list_char" \
-            #                       " o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'>" \
-            #                       "" + list_data + "</td></tr>"
+                data_val += f"<tr><td class='o_data_cell o_field_cell o_list_char o_readonly_modifier o_required_modifier' style='border-top:1px solid #dee2e6'><a style='color:black !important;' target='_blank' href='{url}/web#id={final_data_name[x].id}&model=res.partner&view_type=form&menu_id=519'>{list_data}</a> {s1} | {facility_name} | {purchase_mngr} | {sale_mngr} | {state}</td></tr>"
+
+
 
         data_val = data_val + '</tbody></table>'
-        # self.account_hierarchy_html = data_val
         return data_val
 
     def get_facility_name(self, facility_code):
@@ -215,64 +203,70 @@ class AccountHierarchyReport(models.TransientModel):
                 self.recursive_hir(prt, list_all, level, final_data, final_data_name)
 
 
+
+
+
+#
 class SalePaymentLink(models.TransientModel):
     _inherit = "payment.link.wizard"
     _description = "Generate Sales Payment Link"
 
-    def get_base_url_custom(self):
-        """
-        Returns Custom URL as per client requirement
-        Ticket 659, Added through code , so that even record is deleted it will recreate
-        """
-        web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        self.env['ir.config_parameter'].sudo().set_param('web.shopsps_com', 'https://www.shopsps.com')
-        matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
+    pass
 
-        if any([x in web_base_url for x in matches]):
-            url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
-        else:
-            url = self.env['ir.config_parameter'].sudo().get_param('web.shopsps_com')
-
-        return url
-
-    def _generate_link(self):
-        """ Override of the base method to add the order_id in the link. """
-        for payment_link in self:
-            # only add order_id for SOs,
-            # otherwise the controller might try to link it with an unrelated record
-            # NOTE: company_id is not necessary here, we have it in order_id
-            # however, should parsing of the id fail in the controller, let's include
-            # it anyway
-            if payment_link.res_model == 'sale.order':
-                record = self.env[payment_link.res_model].browse(payment_link.res_id)
-                payment_link.link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
-                                    '&partner_id=%s&order_id=%s&company_id=%s&access_token=%s') % (
-                                        self.get_base_url_custom(),
-                                        urls.url_quote_plus(payment_link.description),
-                                        payment_link.amount,
-                                        payment_link.currency_id.id,
-                                        payment_link.partner_id.id,
-                                        payment_link.res_id,
-                                        payment_link.company_id.id,
-                                        payment_link.access_token
-                                    )
-            else:
-                self._generate_link_invoice_custom()
-
-    def _generate_link_invoice_custom(self):
-        for payment_link in self:
-            record = self.env[payment_link.res_model].browse(payment_link.res_id)
-            link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
-                    '&partner_id=%s&access_token=%s') % (
-                        self.get_base_url_custom(),
-                        urls.url_quote_plus(payment_link.description),
-                        payment_link.amount,
-                        payment_link.currency_id.id,
-                        payment_link.partner_id.id,
-                        payment_link.access_token
-                    )
-            if payment_link.company_id:
-                link += '&company_id=%s' % payment_link.company_id.id
-            if payment_link.res_model == 'account.move':
-                link += '&invoice_id=%s' % payment_link.res_id
-            payment_link.link = link
+    # def get_base_url_custom(self):
+    #     """
+    #     Returns Custom URL as per client requirement
+    #     Ticket 659, Added through code , so that even record is deleted it will recreate
+    #     """
+    #     web_base_url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    #     self.env['ir.config_parameter'].sudo().set_param('web.shopsps_com', 'https://www.shopsps.com')
+    #     matches = ["local", "localhost", "staging", "test", "tes", "bits", "127.0.0.1", "stag"]
+    #
+    #     if any([x in web_base_url for x in matches]):
+    #         url = self.env['ir.config_parameter'].sudo().get_param('web.base.url')
+    #     else:
+    #         url = self.env['ir.config_parameter'].sudo().get_param('web.shopsps_com')
+    #
+    #     return url
+    #
+    # def _generate_link(self):
+    #     """ Override of the base method to add the order_id in the link. """
+    #     for payment_link in self:
+    #         # only add order_id for SOs,
+    #         # otherwise the controller might try to link it with an unrelated record
+    #         # NOTE: company_id is not necessary here, we have it in order_id
+    #         # however, should parsing of the id fail in the controller, let's include
+    #         # it anyway
+    #         if payment_link.res_model == 'sale.order':
+    #             record = self.env[payment_link.res_model].browse(payment_link.res_id)
+    #             payment_link.link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
+    #                                 '&partner_id=%s&order_id=%s&company_id=%s&access_token=%s') % (
+    #                                     self.get_base_url_custom(),
+    #                                     urls.url_quote_plus(payment_link.description),
+    #                                     payment_link.amount,
+    #                                     payment_link.currency_id.id,
+    #                                     payment_link.partner_id.id,
+    #                                     payment_link.res_id,
+    #                                     payment_link.company_id.id,
+    #                                     payment_link.access_token
+    #                                 )
+    #         else:
+    #             self._generate_link_invoice_custom()
+    #
+    # def _generate_link_invoice_custom(self):
+    #     for payment_link in self:
+    #         record = self.env[payment_link.res_model].browse(payment_link.res_id)
+    #         link = ('%s/website_payment/pay?reference=%s&amount=%s&currency_id=%s'
+    #                 '&partner_id=%s&access_token=%s') % (
+    #                     self.get_base_url_custom(),
+    #                     urls.url_quote_plus(payment_link.description),
+    #                     payment_link.amount,
+    #                     payment_link.currency_id.id,
+    #                     payment_link.partner_id.id,
+    #                     payment_link.access_token
+    #                 )
+    #         if payment_link.company_id:
+    #             link += '&company_id=%s' % payment_link.company_id.id
+    #         if payment_link.res_model == 'account.move':
+    #             link += '&invoice_id=%s' % payment_link.res_id
+    #         payment_link.link = link

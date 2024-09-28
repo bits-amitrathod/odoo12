@@ -1,21 +1,39 @@
 <odoo>
-	<template id="popular_post" name="Popular Post" inherit_id="website_blog.blog_post_complete" active="True" customize_show="True">
-		<!--<xpath expr="//h1[@id='blog_post_name']" position="replace"></xpath>
-		<xpath expr="//h2" position="replace"/>
-		<xpath expr="//div[hasclass('o_sharing_links')]" position="replace"/>-->
-		<!--<xpath expr="//div[@id='title']//div[hasclass('blog_title')]" position="attributes">
-			<attribute name="class" add="none" separator=" "/>
-		</xpath>-->
-		<xpath expr="//section[@id='o_wblog_post_top']" position="replace">
+
+	<template id="blog_post_complete_inherit" inherit_id="website_blog.blog_post_complete">
+<!--		<xpath expr="//section[@id='o_wblog_post_top']" position="replace"/>-->
+		<xpath expr="//section[@id='o_wblog_post_main']" position="replace">
+			<section id="o_wblog_post_main" t-attf-class=" pt-4 pb-5 #{'anim' in request.params and 'o_wblog_post_main_transition'}">
+				<!-- Sidebar-enabled Layout -->
+				<div t-if="opt_blog_post_sidebar" t-attf-class="mx-auto container #{opt_blog_post_readable and 'o_wblog_read_with_sidebar'}">
+					<div t-attf-class="d-flex flex-column flex-lg-row #{opt_blog_post_readable and 'justify-content-between'}">
+						<div id="o_wblog_post_content" t-attf-class="#{opt_blog_post_readable and 'mx-0 w-100 flex-shrink-0' or 'w-lg-75'}">
+							<t t-call="website_blog.blog_post_content"/>
+						</div>
+						<div id="o_wblog_post_sidebar_col" t-attf-class="ps-lg-5 #{not opt_blog_post_readable and 'flex-grow-1 w-lg-25'}">
+							<t t-call="website_blog.blog_post_sidebar"/>
+						</div>
+					</div>
+				</div>
+				<!-- No-Sidebar Layout -->
+				<div t-if="not opt_blog_post_sidebar" t-attf-class="#{opt_blog_post_readable and 'container'}">
+					<div class="d-flex flex-column flex-lg-row">
+						<div id="o_wblog_post_content" t-attf-class=" #{opt_blog_post_readable and 'container w-100 flex-shrink-0'}">
+							<t t-call="website_blog.blog_post_content"/>
+						</div>
+					</div>
+				</div>
+			</section>
 		</xpath>
 	</template>
+
 	<template id="blog_post_content" inherit_id="website_blog.blog_post_content" >
 		<xpath expr="//div" position="replace">
 			<div id="blog_content_pop"  class="blog_content mt32">
 				<section class="blog pt-3 pb-5">
 					<div class="container">
 						<div class="row">
-							<div class="col-md-9">
+							<div class="col-md-8">
 								<div id="blog_content" class="blog_content">
 									<div t-field="blog_post.title_img" class=" banner-wrapper py-3 section-description mt-4"/>
 									<div class="text-left py-3">
@@ -24,7 +42,7 @@
 									<div class="blog-detail">
 										<div class="d-flex">
 											<div class="profile-img-wrapper align-self-center">
-												<div class="profile-img">
+												<div class="profile-img d-flex justify-content-center">
 													<img t-attf-src="/web/image/res.partner/#{author_info.id}/image" class="img-fluid"/>
 												</div>
 											</div>
@@ -35,16 +53,13 @@
 													</span>
 													<span class="post-meta text-muted text-center regular-font" t-if="len(blog_post.tag_ids)">
                                                         in
-
-														<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
+														<i class="fa fa-tags ml2" role="img" aria-label="Tags" title="Tags"/>
 														<t t-foreach="blog_post.tag_ids" t-as="one_tag">
 															<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
 														</t>
 													</span>
 												</p>
-												<!-- <span class="lh-25" t-field="blog_post.post_date" t-options='{"format": "MMM d, yyyy"}'/>  •-->
 												<span >
-
 													<t t-esc="blog_post.visits"/>
 													<span>Views</span>
 												</span>
@@ -54,7 +69,7 @@
 									<div t-field="blog_post.content" class="section-description mt-4"/>
                                 </div>
 							</div>
-							<div class="col-md-3">
+							<div class="col-md-4">
 								<t t-call="blog_cstm.blog_post_complete"/>
 							</div>
 						</div>
@@ -70,15 +85,15 @@
 		<t t-set="count" t-value='1'/>
 		<t t-foreach="popular_post" t-as="post">
 			<div class="section-description">
-				<div class="story-list">
-					<div class="bulleted-list">
+				<div class="story-list d-flex">
+					<div class="bulleted-list mr8">
 						<span>
 							<t t-esc="count" />
 						</span>
 						<t t-set="count" t-value="count+1"/>
 					</div>
 					<div class="list-description">
-						<p class="mb-2 lh-25">
+						<p class="mb-0 lh-25">
 							<a t-att-href="post.website_url">
 								<span class="medium-font">
 									<t t-esc="post.sudo().display_name"/>
@@ -86,31 +101,24 @@
 							</a>
 						</p>
 						<div class="user-info">
-							<p class="f14 mb-0 ">
+							<p class="f14  ">
 								<span class="medium-font">
 									<t t-esc="post.author_id.sudo().name"/>
 								</span>
 								<span class="post-meta text-muted text-center regular-font" t-if="len(post.tag_ids)">
                                     in
-									<i class="fa fa-tags ml-2" role="img" aria-label="Tags" title="Tags"/>
+									<i class="fa fa-tags ml2" role="img" aria-label="Tags" title="Tags"/>
 									<t t-foreach="post.tag_ids" t-as="one_tag">
 										<a class="badge badge-primary mr8" t-attf-href="#{blog_url(tag=slug(one_tag))}" t-esc="one_tag.name"/>
 									</t>
 								</span>
 								<br/>
-								<!--<span class="regular-font" t-field="post.post_date" t-options='{"format": "MMM d, yyyy"}'/>-->
 								<span class="regular-font" ><t t-esc="post.visits"/></span>
 								Views
 							</p>
-							<!--                                                   <p  class="f14 mb-0">Jun 14 • 3 min read</p>-->
 						</div>
 					</div>
 				</div>
-				<!--                                       <div class="see-all">-->
-				<!--                                            <a class="btn btn-link">-->
-				<!--                                               SEE ALL POPULAR  <i class="fa fa-angle-right"></i>-->
-				<!--                                            </a>-->
-				<!--                                        </div>-->
 			</div>
 		</t>
 		<div class="see-all">
@@ -122,156 +130,5 @@
 		</div>
 	</template>
 
-	<!--<template id="blog_post_list" name="Post list UI update" inherit_id="website_blog.latest_blogs">
-		<xpath expr="//div[@id='wrap']" position="replace">
-			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_1"/>
-			<section class="resource-page content-lib video-block padding-60-y">
-				<div class="alert alert-warning alert-dismissable mt16" groups="website.group_website_publisher" role="status">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">&amp;times;</button>
-					<p>
-                   This page is great to improve your
 
-						<strong>Search Engine Optimization</strong>;
-                   You can review titles, keywords and descriptions of all blogs at once.
-
-
-					</p>
-					<p>
-                   You should
-
-						<strong>add a banner on the top</strong> as it is a frequent landing page for new visitors.
-
-
-						<span class="text-muted">This box will not be visible to your visitors.</span>
-					</p>
-				</div>
-				<div class="container">
-					<div class="text-center">
-						<h1  class="resource-section-title">
-							<span>Latest</span> Posts
-
-						</h1>
-					</div>
-					<div class="row mt-5">
-						<t t-foreach="posts" t-as="post">
-							<div class="col-md-4 mb-3 px-3 px-md-4">
-								<div class="resource-box h-100">
-									<div class="images-wrapper m-0 border-0 no-shadow">
-										<img t-attf-src="/web/image/blog.post/#{post.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
-									</div>
-									<div class="resource-detail p-3">
-										<div class="section-description">
-											<p class="mb-0"><span t-field="post.name"></span></p>
-											<p class="mb-0"><t t-esc="post.description_content()"/></p>
-										</div>
-										<div class="link-wrapper mb-3 mt-2">
-											<a t-att-href="post.website_url"  class="link-btn">READ MORE ></a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</t>
-					</div>
-				</div>
-				<div class="js_sale">
-							<div class="oe_website_sale">
-								<div class="products_pager form-inline justify-content-center">
-									<t t-call="website.pager" >
-										<t t-set="classname">float-right</t>
-									</t>
-								</div>
-							</div>
-						</div>
-			</section>
-			<div class="oe_structure" id="oe_structure_website_blog_latest_blogs_2"/>
-		</xpath>
-	</template>-->
-<!--
-	<template id="blog_post_short1" name="Blog Posts" customize_show="True" active="True" inherit_id="website_blog.blog_post_short">
-		<xpath expr="//div[hasclass('container')][1]" position="replace">
-			<div class="container"></div>
-		</xpath>
-		<xpath expr="//div[hasclass('container')][2]" position="replace">
-			<section class="resource-page video-block">
-				&lt;!&ndash;<div class="alert alert-warning alert-dismissable " groups="website.group_website_publisher" role="status">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close">&amp;times;</button>
-					<p>
-                   This page is great to improve your
-
-						<strong>Search Engine Optimization</strong>;
-                   You can review titles, keywords and descriptions of all blogs at once.
-
-
-					</p>
-					<p>
-                   You should
-
-						<strong>add a banner on the top</strong> as it is a frequent landing page for new visitors.
-
-
-						<span class="text-muted">This box will not be visible to your visitors.</span>
-					</p>
-				</div>&ndash;&gt;
-				<div class="container">
-					<div t-if="not blog_posts" class="container mb64">
-                    <p class="css_editable_hidden">
-                        <h1>No blog post yet.</h1>
-
-
-                    </p>
-                  <p groups="website.group_website_designer">
-                        Click on "New Page" in the top-right corner to write your first blog post.
-                    </p>
-                </div>
-					<div class="row">
-						<t t-foreach="blog_posts" t-as="post">
-							<div class="col-md-4 mb-3 px-3 px-md-4">
-								<div class="resource-box content-lib h-100">
-									<div class="images-wrapper m-0 border-0 no-shadow">
-										<img t-attf-src="/web/image/blog.post/#{post.id}/image" class="img-fluid img-thumbnail oe_slides_grid_thumbnail"/>
-									</div>
-									<div class="resource-detail p-3">
-										<div class="section-description">
-											<p class="mb-0"><span t-field="post.name"/></p>
-											<p class="mb-0"><t t-esc="post.description_content()"/></p>
-										</div>
-										<div class="link-wrapper mb-3 mt-2">
-											<a t-att-href="post.website_url"  class="link-btn">READ MORE ></a>
-										</div>
-									</div>
-								</div>
-							</div>
-						</t>
-					</div>
-				</div>
-				<div class="js_sale">
-							<div class="oe_website_sale">
-								<div class="products_pager form-inline justify-content-center">
-									<t t-call="website.pager" >
-										<t t-set="classname">float-right</t>
-									</t>
-								</div>
-							</div>
-						</div>
-
-			</section>
-
-		</xpath>
-		<xpath expr="//h1" position="replace">
-			<t t-if="tag_name">
-			<h1><t t-esc="tag_name.name"/></h1>
-			</t>
-		</xpath>
-		<xpath expr="//h3[hasclass('text-muted')]" position="replace"></xpath>
-	</template>
--->
-
-	<!-- custom options Hide not need to mig-->
-	<!--<template id="opt_blog_rc_tags1" name="Tags" inherit_id="website_blog.opt_blog_rc_tags" active="False" customize_show="True"></template>
-	<template id="opt_blog_rc_history" name="Archives" inherit_id="website_blog.opt_blog_rc_history" active="False" customize_show="True"></template>
-	<template id="opt_blog_rc_about_us" name="About Us" priority="2" inherit_id="website_blog.opt_blog_rc_about_us" active="False" customize_show="True"></template>
-	<template id="opt_blog_rc_follow_us" name="Subscription" priority="4" inherit_id="website_blog.opt_blog_rc_follow_us" active="False" customize_show="True"></template>
-	<template id="opt_blog_rc_status" name="Status" priority="5" inherit_id="website_blog.opt_blog_rc_status" active="False" customize_show="True"></template>
-	<template id="opt_blog_rc_blogs" name="Our Blogs" priority="6" inherit_id="website_blog.opt_blog_rc_blogs" active="False" customize_show="True"></template>
-	<template id="opt_blog_post_complete_read_next" name="Read next article" inherit_id="website_blog.opt_blog_post_complete_read_next" active="False" customize_show="True"></template>-->
 </odoo>

@@ -9,6 +9,7 @@ _logger = logging.getLogger(__name__)
 
 class ReportInStockReportPopup(models.TransientModel):
     _name = 'popup.report.in.stock.report'
+    _description = "Report In Stock Report Popup"
 
     start_date = fields.Date('Start Date')
     end_date = fields.Date('End Date')
@@ -66,9 +67,11 @@ class ReportInStockReportPopup(models.TransientModel):
 
 class ReportInStockReport(models.Model):
     _name = 'report.in.stock.report'
+    _description = "Report InStock Report"
+
     _auto = False
 
-    _inherits = {'product.template': 'product_tmpl_id'}
+    # _inherits = {'product.template': 'product_tmpl_id'}
 
 
     partner_id = fields.Many2one('res.partner', string='Customer', )
@@ -79,21 +82,23 @@ class ReportInStockReport(models.Model):
         string='Manufacture',
         help='Select a Manufacture for this product'
     )
+
     product_id = fields.Many2one('product.product', string='Product', )
-    product_tmpl_id = fields.Many2one('product.template', 'Product Template')
+    product_tmpl_id = fields.Many2one('product.template', 'Product Template', required=True)
+    sku_code = fields.Char(related="product_tmpl_id.sku_code")
+    uom_id = fields.Many2one(related="product_tmpl_id.uom_id")
+    currency_id = fields.Many2one(related="product_tmpl_id.currency_id")
 
     min_expiration_date = fields.Date("Min Expiration Date", compute='_calculate_max_min_lot_expiration')
     max_expiration_date = fields.Date("Max Expiration Date", store=False)
     price_list=fields.Float("Sales Price",  compute='_calculate_max_min_lot_expiration')
-    # actual_quantity = fields.Float(string='Qty Available For Sale', compute='_calculate_max_min_lot_expiration', digits=dp.get_precision('Product Unit of Measure'))
+    actual_quantity = fields.Float(related="product_tmpl_id.actual_quantity")
     partn_name=fields.Char()
 
-    #@api.multi
     def _calculate_max_min_lot_expiration(self):
         for record in self:
-            record.actual_quantity = record.product_tmpl_id.actual_quantity
             if record.partner_id.property_product_pricelist.id:
-                a = record.partner_id.property_product_pricelist.get_product_price(record.product_id, record.actual_quantity, record.partner_id)
+                a = record.partner_id.property_product_pricelist._get_product_price(record.product_id, record.actual_quantity)
                 if a:
                     record.price_list =a
                 else:
@@ -108,17 +113,17 @@ class ReportInStockReport(models.Model):
             FROM
                 stock_quant
             INNER JOIN
-                stock_production_lot
+                stock_lot
             ON
                 (
-                    stock_quant.lot_id = stock_production_lot.id)
+                    stock_quant.lot_id = stock_lot.id)
             INNER JOIN
                 stock_location
             ON
                 (
                     stock_quant.location_id = stock_location.id)
             WHERE
-                stock_location.usage in('internal', 'transit') and stock_production_lot.product_id  = %s
+                stock_location.usage in('internal', 'transit') and stock_lot.product_id  = %s
                 """,
                 (record.product_id.id,))
             query_result = self.env.cr.dictfetchone()
@@ -188,9 +193,9 @@ class ReportInStockReport(models.Model):
     def delete_and_create(self):
         self.init_table()
 
-
 class ReportPrintInStockReport(models.AbstractModel):
     _name = 'report.in_stock_report.in_stock_report_print'
+    _description = "Report Print InStock Report"
 
     @api.model
     def _get_report_values(self, docids, data=None):

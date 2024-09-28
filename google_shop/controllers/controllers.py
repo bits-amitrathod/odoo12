@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 import werkzeug
 
 class Google(http.Controller):
-    @http.route('/google/<int:sequence_no>/OAuth2',type="http",method="post",auth="public",csrf=False,website=True)
+    @http.route('/google/<int:sequence_no>/OAuth2',type="http",method=["POST"],auth="public",csrf=False,website=True)
     def oauth2_verify(self,sequence_no, **kw):
         b=""
         try:
@@ -31,7 +31,7 @@ class Google(http.Controller):
             _logger.info("________Other Error____________%r",b)
             return http.request.render('google_shop.error_view_1',{'message':"Something went Wrong, Please Try Again"})
 
-    @http.route('/r/<string:html_file>',type="http",method="post",auth="public",csrf=False,website=True)
+    @http.route('/r/<string:html_file>',type="http",method=["POST"],auth="public",csrf=False,website=True)
     def website_verify(self,html_file,**kw):
         rec = http.request.env["oauth2.detail"].sudo().search([('verify_account_url','=',html_file)],limit=1)
         if rec:

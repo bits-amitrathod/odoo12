@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!--<record id="view_compate_sale_by_month_summary" model="ir.ui.view">-->
-            <!--<field name="name">compare sale by month</field>-->
-            <!--<field name="model">product.product</field>-->
-            <!--<field name="arch" type="xml">-->
-                <!--<search string="Product">-->
-                    <!--<filter string="Location" name="group_by_location" domain="[]"-->
-                            <!--context="{'group_by': 'location'}"/>-->
-                    <!--<separator/>-->
-                <!--</search>-->
-            <!--</field>-->
-        <!--</record>-->
-
         <record id="view_popup_view" model="ir.ui.view">
             <field name="name">Compare Sales By Month</field>
             <field name="model">compbysale.popup</field>

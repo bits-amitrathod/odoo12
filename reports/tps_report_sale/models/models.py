@@ -11,6 +11,8 @@ _logger = logging.getLogger(__name__)
 
 class tps_report_sale(models.Model):
     _name = "total_product_sale"
+    _description = "Total Product Sale"
+
     _auto = False
 
     total_sales = fields.Monetary(string='Sales', currency_field='currency_id')

@@ -98,7 +98,7 @@ class SaleOrder(models.Model):
     def _compute_sale_edi_values(self):
         for record in self:
             record.x_edi_accounting_id = record.partner_id and record.partner_id.x_edi_accounting_id or ''
-            record.x_edi_store_number = record.partner_shipping_id and record.partner_shipping_id.x_edi_store_number or ''
+            # record.x_edi_store_number = record.partner_shipping_id and record.partner_shipping_id.x_edi_store_number or ''
 
     @api.model
     def create(self, vals):
@@ -110,6 +110,8 @@ class SaleOrder(models.Model):
     def create_poack_export_log_id(self):
         """
         Will create 855 type of log.
+        setu.edi.log -> store SO information.
+        setu.poack.export.log.line -> store SO Line information.
 
         @return: log_id: log_id of sale_id.
         """
@@ -169,6 +171,9 @@ class SaleOrder(models.Model):
     def poack_export(self, sftp):
         """
         Will upload 855 .csv file on sftp server.
+        - if instance_of  type is 'TrueCommerce'  then .csv file will be uploaded
+            else .txt file will be uploaded
+        - first create file on local and then upload it to sftp server
         @param sftp: sftp instance
         @return: True or False
         """
@@ -186,17 +191,25 @@ class SaleOrder(models.Model):
         # current_date_with_cc = now.strftime('CCYYMMDD')
         current_time = now.strftime('%H%M')
         file_current_date = now.strftime("%Y%m%d%H%S")
+
+        #  Create the file name with extension according to the instance type
+        #  output :- tmp/filename.(csv or txt)
         if instance_of == 'TrueCommerce':
             file_name = '/tmp/' + str(DOC_PREFIX_POA) + '_' + str(self.client_order_ref) + str(self.partner_id.name) + \
                         '_' + '.csv'  # TO DO COMPLETE FILE NAME WITH CUSTOMER NAME
         else:
             actual_file_name = '855' + '_' + '%s' % self.name + '_' + '%s' % file_current_date + '.txt'
             file_name = '/tmp/' + actual_file_name  # TO DO COMPLETE FILE NAME WITH CUSTOMER NAME
+
+        # Open the file for writing
         with open(file_name, 'w+') as file_pointer:
             if instance_of == 'TrueCommerce':
                 cvs_rows = []
+                # get Fields list and write header
                 writer = csv.DictWriter(file_pointer, fieldnames=POA_FIELDS)
                 writer.writeheader()
+                # Read the setu.edi.log logs that is assigned for this SO
+                # and Create rows for csv file
                 for row in log_id.edi_855_log_lines:
                     cvs_rows.append({
                         'TRANSACTION ID': DOC_PREFIX_POA,
@@ -243,6 +256,7 @@ class SaleOrder(models.Model):
                         'STATUS QTY': row.product_uom_qty,
                         'STATUS UOM': row.product_uom
                     })
+                # Write the row into csv
                 writer.writerows(cvs_rows)
             elif instance_of == 'GHX':
                 sale_order = log_id.sale_id
@@ -380,6 +394,8 @@ N1^VN^{str(vendor_ref)}^92^{str(vendor_id)}~"""
                 file_pointer.write(file_content)
 
             file_pointer.close()
+
+            # Open the sftp connection and upload above file
             if sftp:
                 sftp.cwd(ftpdpath)
                 try:
@@ -396,7 +412,7 @@ N1^VN^{str(vendor_ref)}^92^{str(vendor_id)}~"""
                 return True
             return False
 
-    def get_edi_status(self):
+    def set_edi_status(self):
         """
         This method will set edi status to order_lines.
         'accept' or 'reject'.
@@ -411,13 +427,13 @@ N1^VN^{str(vendor_ref)}^92^{str(vendor_id)}~"""
 
     def action_confirm(self):
         """
-        Will create 855 POACK when sale order is confirmed.
-        It will assign edi values to pickings that are created.
+        -- Will create 855 POACK when sale order is confirmed.
+        -- It will assign edi values to pickings that are created.
         @return:
         """
         for record in self:
             if record.x_edi_accounting_id and record.partner_shipping_id.edi_855:
-                record.get_edi_status()
+                record.set_edi_status()
         pop_error = False
         for rec in self:
             if not rec.x_edi_accounting_id and rec.partner_id.x_edi_flag and rec.partner_shipping_id.edi_855:
@@ -448,10 +464,13 @@ N1^VN^{str(vendor_ref)}^92^{str(vendor_id)}~"""
         @return: log_ids:
         """
         log_ids = self.env['setu.edi.log']
+        #  self[0].company_id.id if self else self.company_id.id
+        #  above condition added because of some time self contains the multiple records of sale order.
+        #  or sometime it contains nothing
         sftp_conf = self.env['setu.sftp'].search(
-            [('company_id', '=', self.company_id.id),
+            [('company_id', '=', self[0].company_id.id if self else self.company_id.id),
              ('instance_active', '=', True),
-             ('instance_of', '=', self.order_of)])
+             ('instance_of', '=', self[0].order_of if self else self.order_of)])
         if sftp_conf:
             sftp, status = sftp_conf.test_connection()
             for sale in self:

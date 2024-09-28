@@ -10,6 +10,14 @@
     "license": "LGPL-3",
     "installable": True,
     "depends": ["website_sale"],
-    "data": ["views/website_sale.xml", "views/assets.xml"],
-    "post_init_hook": "post_init_hook",
+
+    "assets":{
+        'web.assets_frontend': [
+            'website_sale_suggest_create_account/static/tests/tours/checkout.js',
+        ],
+    },
+    "data": [
+        "views/website_sale.xml",
+    ],
+
 }

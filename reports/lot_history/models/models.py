@@ -26,8 +26,8 @@ class LotHistory(models.Model):
 
 
     def init(self):
-        self.init_table()
-
+        # self.init_table()
+        pass
     def init_table(self):
         sql_query = """ 
                 TRUNCATE TABLE "lot_history_report"
@@ -43,7 +43,7 @@ class LotHistory(models.Model):
 
         where_clause = ""
         if lot_id and lot_id is not None:
-            where_clause = " AND stock_production_lot.id=" + str(lot_id)
+            where_clause = " AND stock_lot.id=" + str(lot_id)
 
 
         if description and description is not None:
@@ -60,7 +60,7 @@ class LotHistory(models.Model):
                     purchase_order.date_order        AS event_date,
                     CASE  WHEN stock_picking.name LIKE 'WH/OUT%' THEN (stock_move_line.qty_done * -1) 
                     WHEN stock_picking.name LIKE 'WH/IN%' THEN (stock_move_line.qty_done )  END AS change,
-                    stock_production_lot.name        AS lot_no,
+                    stock_lot.name        AS lot_no,
                     stock_move_line.product_id       AS product_id,
                     res_partner.name                 AS vendor,
                     res_partner.phone,
@@ -94,10 +94,10 @@ class LotHistory(models.Model):
                     (
                         stock_move.id = stock_move_line.move_id)
                 LEFT JOIN
-                    stock_production_lot
+                    stock_lot
                 ON
                     (
-                        stock_move_line.lot_id = stock_production_lot.id)
+                        stock_move_line.lot_id = stock_lot.id)
                 LEFT JOIN
                     res_partner
                 ON
@@ -130,7 +130,7 @@ class LotHistory(models.Model):
                     WHEN stock_picking.name LIKE 'WH/PICK%' THEN (stock_move_line.qty_done * -1)
                     WHEN stock_picking.name LIKE 'WH/IN%' THEN (stock_move_line.qty_done )
                     END AS change,
-                    stock_production_lot.name     AS lot_no,
+                    stock_lot.name     AS lot_no,
                     stock_move_line.product_id    AS product_id,
                     res_partner.name              AS vendor,
                     res_partner.phone,
@@ -148,8 +148,8 @@ class LotHistory(models.Model):
                 ON ( stock_picking.id = stock_move.picking_id)
                INNER JOIN stock_move_line
                 ON ( stock_move.id = stock_move_line.move_id)
-               INNER JOIN stock_production_lot
-                ON ( stock_move_line.lot_id = stock_production_lot.id)
+               INNER JOIN stock_lot
+                ON ( stock_move_line.lot_id = stock_lot.id)
                 INNER JOIN res_partner
                 ON (  sale_order.partner_id = res_partner.id)
                 WHERE 1 = 1""" + where_clause
@@ -165,7 +165,7 @@ class LotHistory(models.Model):
                 stock_inventory.name as event,
                 stock_inventory.date as event_date,
                 stock_inventory_line.product_qty as change,
-                stock_production_lot.name as lot_no,
+                stock_lot.name as lot_no,
                 stock_inventory_line.product_id as product_id
             FROM
                 stock_inventory_line
@@ -185,10 +185,10 @@ class LotHistory(models.Model):
                 (
                     product_product.product_tmpl_id = product_template.id)
             INNER JOIN
-                stock_production_lot
+                stock_lot
             ON
                 (
-                    stock_inventory_line.prod_lot_id = stock_production_lot.id)
+                    stock_inventory_line.prod_lot_id = stock_lot.id)
             WHERE stock_inventory.state = 'done'
                             """ + where_clause
 
@@ -203,7 +203,7 @@ class LotHistory(models.Model):
                 stock_scrap.name as event,
                 stock_scrap.date_done as event_date,
                 stock_scrap.scrap_qty * -1 as change,
-                stock_production_lot.name as lot_no,
+                stock_lot.name as lot_no,
                 stock_scrap.product_id as product_id
             FROM
                 product_product
@@ -228,10 +228,10 @@ class LotHistory(models.Model):
                 (
                     res_users.partner_id = res_partner.id)
             INNER JOIN
-                stock_production_lot
+                stock_lot
             ON
                 (
-                    stock_scrap.lot_id = stock_production_lot.id)
+                    stock_scrap.lot_id = stock_lot.id)
             WHERE stock_scrap.state = 'done'
                                     """ + where_clause
 

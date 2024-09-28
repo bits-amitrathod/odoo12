@@ -394,6 +394,8 @@ class NotificationSetting(models.Model):
 # Customer product level setting
 class Prioritization(models.Model):
     _name = 'prioritization_engine.prioritization'
+    _description = "Prioritization Engine"
+
     _inherits = {'product.product': 'product_id'}
     min_threshold = fields.Integer("Min Threshold", readonly=False)
     max_threshold = fields.Integer("Max Threshold", readonly=False)
@@ -474,6 +476,8 @@ class Prioritization(models.Model):
 
 class PrioritizationTransient(models.TransientModel):
     _name = 'prioritization.transient'
+    _description = "Prioritization Transient"
+
     min_threshold = fields.Integer("Min Threshold", readonly=False)
     max_threshold = fields.Integer("Max Threshold", readonly=False)
     priority = fields.Integer("Priority")
@@ -577,7 +581,7 @@ class StockMove(models.Model):
                 if available_production_lot_dict.get(int(move.product_id.id)) is not None:
                     for product_lot in available_production_lot_dict.get(int(move.product_id.id)):
                         lot_id = int(product_lot.get(list(product_lot.keys()).pop(0), {}).get('lot_id'))
-                        lot_object = self.env['stock.production.lot'].search([('id', '=', lot_id)])
+                        lot_object = self.env['stock.lot'].search([('id', '=', lot_id)])
                         available_quantity = product_lot.get(list(product_lot.keys()).pop(0), {}).get('available_quantity')
 
                         # Reserve new quants and create move lines accordingly.
@@ -675,7 +679,7 @@ class StockMove(models.Model):
                                 qty_done += ml.product_uom_id._compute_quantity(ml.qty_done, ml.product_id.uom_id)
                             grouped_move_lines_out[k] = qty_done
                         for k, g in groupby(sorted(move_lines_out_reserved, key=_keys_out_sorted), key=itemgetter(*keys_out_groupby)):
-                            grouped_move_lines_out[k] = sum(self.env['stock.move.line'].concat(*list(g)).mapped('product_qty'))
+                            grouped_move_lines_out[k] = sum(self.env['stock.move.line'].concat(*list(g)).mapped('reserved_qty'))
                         available_move_lines = {key: grouped_move_lines_in[key] - grouped_move_lines_out.get(key, 0) for key in grouped_move_lines_in.keys()}
                         # pop key if the quantity available amount to 0
                         available_move_lines = dict((k, v) for k, v in available_move_lines.items() if v)
@@ -686,7 +690,7 @@ class StockMove(models.Model):
                             if available_move_lines.get((move_line.location_id, move_line.lot_id, move_line.result_package_id, move_line.owner_id)):
                                 available_move_lines[(move_line.location_id, move_line.lot_id, move_line.result_package_id, move_line.owner_id)] -= move_line.product_qty
                         for (location_id, lot_id, package_id, owner_id), quantity in available_move_lines.items():
-                            need = move.product_qty - sum(move.move_line_ids.mapped('product_qty'))
+                            need = move.product_qty - sum(move.move_line_ids.mapped('reserved_qty'))
                             # `quantity` is what is brought by chained done move lines. We double check
                             # here this quantity is available on the quants themselves. If not, this
                             # could be the result of an inventory adjustment that removed totally of
@@ -720,10 +724,10 @@ class StockMove(models.Model):
                     if move_line.lot_id.use_date:
                         msgs += "<b>Expiration Date :</b> " + str(move_line.lot_id.use_date.date()) + \
                                 " <b>Lot# :</b> " + str(move_line.lot_id.name) + \
-                                " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+                                " <b>Quantity :</b> " + str(move_line.reserved_uom_qty)
                     else:
                         msgs += "<b>Expiration Date :</b> <b>Lot# :</b> " + str(move_line.lot_id.name) + \
-                                " <b>Quantity :</b> " + str(move_line.product_uom_qty)
+                                " <b>Quantity :</b> " + str(move_line.reserved_uom_qty)
             picking_id.message_post(body=msgs)
 
         if picking_id and picking_id is not None:
@@ -733,6 +737,7 @@ class StockMove(models.Model):
 
 class GLAccount(models.Model):
     _name = "gl.account"
+    _description = "GL Account"
 
     _sql_constraints = [
         ('name', 'unique(name)', 'GL Account already exists'),

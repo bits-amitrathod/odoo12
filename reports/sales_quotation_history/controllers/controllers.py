@@ -3,7 +3,7 @@ import datetime
 
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt
@@ -67,6 +67,9 @@ class ReportQuotationExport(http.Controller):
                         cell_style = datetime_style
                     elif isinstance(cell_value, datetime.date):
                         cell_style = date_style
+                    elif isinstance(cell_value, dict) and 'en_US' in cell_value:
+                        cell_value = cell_value.get('en_US') or cell_value.get(list(cell_value.keys())[0]) or ''
+
                     worksheet.write(row_index + 1, cell_index, cell_value, cell_style)
 
         fp = io.BytesIO()
@@ -77,7 +80,6 @@ class ReportQuotationExport(http.Controller):
         return data
 
     @http.route('/web/export/sale_quotation_export_xl', type='http', auth="public")
-    @serialize_exception
     def download_document_xl(self, token=1, debug=1):
 
         str_functions = """	

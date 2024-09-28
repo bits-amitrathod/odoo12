@@ -7,17 +7,19 @@
             <field name="model">bonusreport.popup</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
-                    <group>
+                    <sheet>
                         <group>
-                            <field name="compute_at_date" widget="radio" default="0"/>
-                            <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
-                            <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            <group>
+                                <field name="compute_at_date" widget="radio" default="0"/>
+                                <field name="start_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                                <field name="end_date" attrs="{'invisible': [('compute_at_date', '=', '0')], 'required' : [('compute_at_date', '=', 1)]}"/>
+                            </group>
                         </group>
-                    </group>
-                    <footer>
-                        <button name="open_table" string="View Report" type="object" class="btn-primary"/>
-                        <button string="Cancel" class="btn-default" special="cancel" />
-                    </footer>
+                        <footer>
+                            <button name="open_table" string="View Report" type="object" class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel" />
+                        </footer>
+                    </sheet>
                 </form>
             </field>
         </record>
@@ -56,7 +58,6 @@
                       <field name="status_ven" optional="show" />
 <!--                      <field name="color" invisible="1" />-->
                       <field name="currency_id" invisible="1"/>
-                      <field name="message_unread" invisible="1"/>
                 </tree>
               </field>
         </record>

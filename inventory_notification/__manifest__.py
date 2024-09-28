@@ -17,10 +17,10 @@
     # always loaded
     'data': [
          'security/ir.model.access.csv',
-         'views/inventory_notification_views.xml',
-         'views/inventory_notification_print.xml',
+         'views/inventory_notification_cron.xml',
          'views/inventory_notification_print_report.xml',
          'views/inventory_packing_list_notification.xml',
+         'data/notification_mail_template.xml',
          'views/templates.xml',
     ],
     # only loaded in demonstration mode
@@ -28,4 +28,6 @@
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
+
 }

@@ -9,7 +9,8 @@ _logger = logging.getLogger(__name__)
 class ResConfigSettings(models.TransientModel):
     _inherit = 'res.config.settings'
 
-    website_expiration_date = fields.Boolean(string='Lot expiration dates', default_model = 'res.config.settings')
+    # website_expiration_date = fields.Boolean(string='Lot expiration dates', default_model='res.config.settings')
+    website_expiration_date = fields.Boolean(string='Lot expiration dates')
 
     def get_values(self):
         res = super(ResConfigSettings, self).get_values()
@@ -28,8 +29,8 @@ class ResConfigSettings(models.TransientModel):
 class Website(models.Model):
     _inherit = "website"
 
-    def _prepare_sale_order_values(self, partner, pricelist):
-        values = super(Website, self)._prepare_sale_order_values(partner, pricelist)
+    def _prepare_sale_order_values(self, partner):
+        values = super(Website, self)._prepare_sale_order_values(partner)
         address = partner.address_get(['invoice'])
         if address['invoice']:
             values['partner_invoice_id'] = address['invoice']
@@ -79,24 +80,7 @@ class Website(models.Model):
 
         _logger.info('------- start -----------')
         _logger.info('template_record :')
-        _logger.info(template_record.id)
-        _logger.info('-----------------')
-        _logger.info('name :')
-        _logger.info(name)
-        _logger.info('-----------------')
-        _logger.info('key :')
-        _logger.info(key)
-        _logger.info('-----------------')
-        _logger.info('website_id :')
-        _logger.info(website_id)
-        _logger.info('-----------------')
-        _logger.info('view :')
-        _logger.info(view.id)
-        _logger.info('-----------------')
-        _logger.info('result :')
-        _logger.info(result)
 
-        print('------- end  -----------')
         if add_menu:
             self.env['website.menu'].create({
                 'name': name,
@@ -106,3 +90,10 @@ class Website(models.Model):
                 'website_id': website.id,
             })
         return result
+
+# class ResPartnerWebsite(models.Model):
+#     _inherit = "res.partner"
+#
+#     def _compute_quantity(self, qty, to_unit, round=True, rounding_method='UP', raise_if_failure=True):
+#         for record in self:
+#             record.name = record.name

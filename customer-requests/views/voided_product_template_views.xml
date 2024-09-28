@@ -64,7 +64,7 @@
         </field>
     </record>
 
-
+    <!-- wizard -->
     <record id="view_voided_product_popup" model="ir.ui.view">
             <field name="name">Voided Product Filter</field>
             <field name="model">voided.product.popup</field>
@@ -92,7 +92,6 @@
                 </form>
             </field>
         </record>
-
 
     <record id="action_voided_product_popup" model="ir.actions.act_window">
         <field name="name">Voided Product Filter</field>

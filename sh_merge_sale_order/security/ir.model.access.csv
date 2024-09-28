@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_sh_mso_merge_sale_order_wizard,sh.mso.merge.sale.order.wizard,model_sh_mso_merge_sale_order_wizard,,1,1,1,1

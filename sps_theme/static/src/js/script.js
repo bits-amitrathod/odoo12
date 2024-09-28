@@ -9,7 +9,6 @@ document.addEventListener('scroll', function(e) {
     if(div !== null){
      div.classList.remove('fixed-top')
     }
-
 }
 });
 
@@ -25,12 +24,6 @@ document.addEventListener('scroll', function(e) {
             scrollTop: $("#requestform").offset().top - 250
         }, 1500);
     });
-    /* $(".scrolltoform2").click(function() {
-        $('html, body').animate({
-            scrollTop: $("#requestform").offset().top + 250
-        }, 1500);
-    });*/
-
 });
 
    function getFileNameWithExt(event) {
@@ -50,10 +43,10 @@ document.addEventListener('scroll', function(e) {
     }
 
      function scrolldiv() {
-                var elem = document.getElementById("requestform");
-                var div = document.getElementById("oe_main_menu_navbar");
-                if(div !== null){
-                 div.classList.add('fixed-top')
-                }
-                elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+        var elem = document.getElementById("requestform");
+        var div = document.getElementById("oe_main_menu_navbar");
+        if(div !== null){
+         div.classList.add('fixed-top')
+        }
+        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }

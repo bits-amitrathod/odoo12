@@ -2,7 +2,7 @@
 import datetime
 import math
 from odoo import http, _, fields
-from odoo.addons.web.controllers.main import serialize_exception, content_disposition
+from odoo.addons.web.controllers.main import content_disposition
 from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.tools import pycompat, io, re, xlwt, DEFAULT_SERVER_DATE_FORMAT, DEFAULT_SERVER_DATETIME_FORMAT
@@ -78,7 +78,6 @@ class ExportNewAccountBonusReport(http.Controller):
     @http.route('/web/export/new_account_bonus_report_export/<string:start_date>/<string:end_date>/<string:end_date_13>/<string:end_date_13_12months>/<string:business_development_id>/<string:key_account_id>',
                 type='http',
                 auth="public")
-    @serialize_exception
     def download_document_xl(self, start_date, end_date,end_date_13,end_date_13_12months,
                              business_development_id, key_account_id, token=1, debug=1, **kw):
 

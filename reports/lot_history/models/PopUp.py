@@ -11,7 +11,9 @@ _logger = logging.getLogger(__name__)
 
 class PopUp(models.TransientModel):
     _name = 'popup.lot.history'
-    lot_id = fields.Many2one('stock.production.lot', string="lot")
+    _description = "Popup Lot History"
+
+    lot_id = fields.Many2one('stock.lot', string="lot")
     description = fields.Many2one('product.product', string='Product SKU',
                                domain="[('active','=',True),('product_tmpl_id.type','=','product')]")
 

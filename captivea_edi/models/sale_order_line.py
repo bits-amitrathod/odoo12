@@ -28,6 +28,11 @@ class SaleOrderLine(models.Model):
     product_850_qty = fields.Float(string='Reject QTY')
 
     def set_ack_code_to_edi_sales(self):
+        """
+        this method called from Cron(Set ACK Code in Sale Order Line)
+        This method is used to set ack code to edi sales
+        :return:
+        """
         query = """
                 update sale_order_line
                 set ack_code = 'IP'

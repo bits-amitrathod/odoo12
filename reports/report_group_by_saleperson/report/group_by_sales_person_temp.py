@@ -3,6 +3,7 @@ from odoo import api, fields, models
 
 class SaleSalespersonReport(models.TransientModel):
     _name = 'report.report_group_by_saleperson.saleperson_temp'
+    _description = "Report Sale Salesperson Report"
 
     @api.model
     def check(self, data):

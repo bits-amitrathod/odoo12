@@ -45,7 +45,7 @@
                                         <span t-esc="order.partner_id.name"/>
                                     </td>
                                     <td align="center" style="border: 1px solid black;">
-                                        <span t-esc="order.confirmation_date" t-options='{"widget": "date"}'/>
+                                        <span t-esc="order.date_order" t-options='{"widget": "date"}'/>
                                     </td>
                                     <td align="right" style="border: 1px solid black;white-space:nowrap;">
                                         <span t-esc="order.r_discount"

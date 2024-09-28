@@ -5,16 +5,13 @@
             <t t-call="web.external_layout">
                 <page>
                     <style>
-
                         .page-break {
-                        page-break-after: always !important;
+                            page-break-after: always !important;
                         }
-                        table{
-                        font-size: 14px !important;
+                        table {
+                            font-size: 14px !important;
                         }
-                        <!--.table-bordered > tbody > tr > td,.table-bordered > tbody > tr > th {-->
-                        <!--border: 1px solid #000;-->
-                        <!--}-->
+
                     </style>
                     <div class="oe_structure"/>
                     <div>
@@ -24,21 +21,19 @@
                                 <h4>Packing List</h4>
                             </b>
                         </center>
-
                     </div>
                     <br/>
                     <t class="row" t-foreach="packing_list_result" t-as="packing_list">
                         <t t-set="i" t-value="0"/>
                         <t t-set='trackin_info' t-value="False"/>
-                        <t t-if="packing_list.carrier_tracking_ref"> <!-- This means, if there are some value at this call -->
+                        <t t-if="packing_list.carrier_tracking_ref">
                             <t t-if="',' in packing_list.carrier_tracking_ref">
                                 <t t-set='trackin_info' t-value="packing_list.carrier_tracking_ref.split(',')"/>
                             </t>
                         </t>
 
-                        <table class="table  table-condensed table-bordered ">
+                        <table class="table table-condensed table-bordered">
                             <thead>
-
                             </thead>
                             <tbody class="invoice_tbody">
                                 <tr style="border: 1px solid #ddd;">
@@ -55,14 +50,12 @@
                                                     <span t-esc="packing_list.sale_id.partner_shipping_id.street2"></span>
                                                     <br/>
                                                 </t>
-
                                                 <span t-esc="packing_list.sale_id.partner_shipping_id.city"></span>
                                                 <span t-esc="packing_list.sale_id.partner_shipping_id.state_id.name"></span>
                                                 <span t-esc="packing_list.sale_id.partner_shipping_id.zip"></span>
                                                 <br/>
                                                 <span t-esc="packing_list.sale_id.partner_shipping_id.country_id.name"></span>
                                                 <br/>
-
                                             </p>
                                             <t t-if="packing_list.sale_id.client_order_ref">
                                                 <p style="margin-top:10px;font-weight: lighter">
@@ -85,29 +78,27 @@
                                                     <span t-esc="packing_list.sale_id.partner_invoice_id.street2"></span>
                                                     <br/>
                                                 </t>
-
                                                 <span t-esc="packing_list.sale_id.partner_invoice_id.city"></span>
                                                 <span t-esc="packing_list.sale_id.partner_invoice_id.state_id.name"></span>
                                                 <span t-esc="packing_list.sale_id.partner_invoice_id.zip"></span>
                                                 <br/>
                                                 <span t-esc="packing_list.sale_id.partner_invoice_id.country_id.name"></span>
                                                 <br/>
-
                                             </p>
                                         </div>
                                     </th>
                                 </tr>
                                 <tr>
                                     <td colspan="2">
-                                        <table class="table  table-condensed table-bordered ">
+                                        <table class="table table-condensed table-bordered">
                                             <thead>
                                                 <tr>
                                                     <th>
                                                         Package Count
                                                     </th>
-                                                    <th>
+                                                   <!-- <th>
                                                         Req. Ship Date
-                                                    </th>
+                                                    </th>-->
                                                     <th>
                                                         Date Shipped
                                                     </th>
@@ -125,59 +116,39 @@
                                             <tbody class="invoice_tbody">
                                                 <tr>
                                                     <td>
-
                                                         <p style="font-weight: 400">
                                                             <span t-esc="len(packing_list.package_ids)"></span>
                                                         </p>
-
-                                                    </td>
-                                                    <!-- Below line is commented because requested_date has been remove in odoo12-->
-                                                    <td>
-
-<!--                                                        <p style="font-weight: lighter">-->
-<!--                                                            <span t-esc="packing_list.sale_id.requested_date" t-options='{"widget": "datetime"}'></span>-->
-<!--                                                        </p>-->
-
                                                     </td>
                                                     <td>
                                                         <p style="font-weight: 400">
-
-                                                                <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
-
+                                                            <span t-esc="packing_list.date_done" t-options='{"widget": "datetime"}'></span>
                                                         </p>
                                                     </td>
                                                     <td>
-
                                                         <p style="font-weight: 400">
                                                             <span t-esc="packing_list.shipping_terms"></span>
                                                         </p>
-
                                                     </td>
                                                     <td>
-
                                                         <p style="font-weight: 400">
                                                             <span t-esc="packing_list.delivery_method_name"></span>
                                                         </p>
-
                                                     </td>
                                                     <td>
-
                                                         <p style="font-weight: 400">
                                                             <span t-esc="packing_list.origin"></span>
                                                         </p>
-
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </td>
-
                                 </tr>
                                 <tr>
                                     <td colspan="2">
                                         <div class="col-md-12" style="margin-top:10px;width:50%">
                                             <p style="height:10px;font-size: larger;font-weight: bold;">
-
                                                 Package Information:
                                             </p>
                                             <p>
@@ -193,22 +164,14 @@
                                                         )
                                                     </t>
                                                 </t>
-                                                <!--<a style="float:right" t-att-href="packing_list.carrier_tracking_url"
-                                                   target="_blank">
-                                                    <t t-if="packing_list.carrier_id.name !='Normal Delivery Charges' ">
-                                                        <span t-esc="packing_list.carrier_id.name"></span>
-                                                    </t>
-                                                </a>-->
                                                 <hr style="margin:0px;padding:0px"></hr>
                                             </p>
                                         </div>
                                     </td>
-
                                 </tr>
-
                             </tbody>
                         </table>
-                        <table class="table table-condensed table-bordered ">
+                        <table class="table table-condensed table-bordered">
                             <thead>
                                 <tr>
                                     <th>
@@ -229,8 +192,7 @@
                                 </tr>
                             </thead>
                             <tbody class="invoice_tbody">
-
-                                <t t-foreach="packing_list.move_lines.sorted(key=lambda i: i.product_id.product_brand_id.name)" t-as="move_line">
+                                <t t-foreach="packing_list.move_ids_without_package.sorted(key=lambda i: i.product_id.product_brand_id.name)" t-as="move_line">
                                     <t t-set="rowSpan" t-value="len(move_line.move_line_ids)+1"/>
                                     <tr>
                                         <td t-att-rowspan="rowSpan">
@@ -258,13 +220,12 @@
                                         </td>
                                         <td t-att-rowspan="rowSpan">
                                             <span style="font-weight: 400">
-                                                <span t-esc="round(move_line.product_uom_qty-move_line.quantity_done)"/>
+                                                <span t-esc="round(move_line.product_uom_qty - move_line.quantity_done)"/>
                                                 <span t-esc="move_line.product_uom.name"/>
                                             </span>
                                         </td>
                                     </tr>
-                                    <tr style="font-weight: 400" t-foreach="move_line.move_line_ids"
-                                        t-as="move_line_id">
+                                    <tr style="font-weight: 400" t-foreach="move_line.move_line_ids" t-as="move_line_id">
                                         <td>
                                             <span t-esc="move_line_id.qty_done"/>
                                             <span t-esc="move_line.product_uom.name"/>

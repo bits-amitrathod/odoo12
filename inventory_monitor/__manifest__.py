@@ -12,10 +12,11 @@
     # always loaded
 
     'data': [
+        'security/ir.model.access.csv',
         'views/inventory_monitor.xml',
         'views/inventory_monitor_print.xml',
         'views/inventory_monitor_print_report.xml',
-        'security/ir.model.access.csv',
+
 
     ],
     # only loaded in demonstration mode
@@ -25,4 +26,6 @@
     'installable': True,
     'application': True,
     'auto_install': False,
+    'license': 'LGPL-3',
+
 }

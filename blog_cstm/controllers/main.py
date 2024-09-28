@@ -2,12 +2,11 @@
 import odoo
 from odoo import fields, http
 from odoo.http import request
-from odoo.addons.http_routing.models.ir_http import slug, unslug
+from odoo.addons.website_blog.controllers.main import WebsiteBlog
+# from odoo.addons.http_routing.models.ir_http import slug, unslug
 
-class WebsiteBlog(odoo.addons.website_blog.controllers.main.WebsiteBlog):
-    @http.route([
-        '''/blog/<model("blog.blog"):blog>/<model("blog.post", "[('blog_id','=',blog.id)]"):blog_post>''',
-    ], type='http', auth="public", website=True, sitemap=True)
+class WebsiteBlog(WebsiteBlog):
+
     def blog_post(self, blog, blog_post, tag_id=None, page=1, enable_editor=None, **post):
         response = super(WebsiteBlog, self).blog_post(blog, blog_post, tag_id, page, enable_editor, **post)
         payload = response.qcontext
@@ -17,16 +16,7 @@ class WebsiteBlog(odoo.addons.website_blog.controllers.main.WebsiteBlog):
         response = request.render("website_blog.blog_post_complete", payload)
         return response
 
-    @http.route([
-        '/blog',
-        '/blog/page/<int:page>',
-        '/blog/tag/<string:tag>',
-        '/blog/tag/<string:tag>/page/<int:page>',
-        '''/blog/<model("blog.blog"):blog>''',
-        '''/blog/<model("blog.blog"):blog>/page/<int:page>''',
-        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>''',
-        '''/blog/<model("blog.blog"):blog>/tag/<string:tag>/page/<int:page>''',
-    ], type='http', auth="public", website=True, sitemap=True)
+
     def blog(self, blog=None, tag=None, page=1, search=None, **opt):
         response = super(WebsiteBlog, self).blog(blog, tag, page, search, **opt)
         payload = response.qcontext

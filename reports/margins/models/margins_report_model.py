@@ -11,10 +11,11 @@ _logger = logging.getLogger(__name__)
 
 class MarginsReport(models.Model):
     _name = "margins"
+    _description = "Margins Report"
     _auto = False
 
     name = fields.Char(string="Name")
-    qty = fields.Float(string="Qty",digits=dp.get_precision('Product Unit of Measure'))
+    qty = fields.Float(string="Qty",digits='Product Unit of Measure')
     product_id = fields.Many2one('product.product', string='Product',)
     partner_id = fields.Many2one('res.partner', string='Customer',)
     order_id = fields.Many2one('sale.order', string='Order #', )
