@@ -82,7 +82,7 @@ class VendorPricingList(models.Model):
             last_3_months = fields.Date.to_string(today_date - datetime.timedelta(days=90))
             last_month = fields.Date.to_string(today_date - datetime.timedelta(days=30))
             last_yr = fields.Date.to_string(today_date - datetime.timedelta(days=365))
-            cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
+            # cust_location_id = self.env['stock.location'].search([('name', '=', 'Customers')]).id
             sale_order_line = self.env['sale.order.line'].search(
                 [('product_id', '=', line.id), ('state', 'in', ('draft', 'sent'))])
             line.quotations_per_code = len(sale_order_line)
@@ -92,11 +92,12 @@ class VendorPricingList(models.Model):
                            " LEFT JOIN stock_move_line AS sml ON sml.picking_id=sp.id WHERE sml.state='done' AND " \
                            "sml.location_dest_id =%s AND" \
                            " sml.product_id =%s"
-            str_query_cm_new = """
-                    select sum(sol.qty_delivered) from sale_order AS so JOIN sale_order_line AS sol ON
-                    so.id = sol.order_id where 
-                    sol.product_id = %s and sol.state in ('sale','done')
 
+            str_query_total_del_qty = """
+                select sum(sol.qty_delivered * CAST(coalesce((1.0 / factor), '0') AS integer)) 
+                as total_del_qty   from sale_order AS so JOIN sale_order_line AS sol 
+                ON so.id = sol.order_id left join uom_uom AS uom on sol.product_uom=uom.id 
+                where sol.product_id = %s and sol.state in ('sale','done') 
             """
 
             ''' state = sale condition added in all sales amount to match the value of sales amount to 
@@ -121,7 +122,7 @@ from  product_product pp
 
             # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
             #                                                              line.id, last_3_months))
-            self.env.cr.execute(str_query_cm_new + " AND so.date_order>=%s", (line.id, last_3_months))
+            self.env.cr.execute(str_query_total_del_qty + " AND so.date_order>=%s", (line.id, last_3_months))
 
             quant_90 = self.env.cr.fetchone()
             if quant_90[0] is not None:
@@ -131,7 +132,7 @@ from  product_product pp
             # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
             #                                                              line.id, last_month))
 
-            self.env.cr.execute(str_query_cm_new + " AND so.date_order>=%s", (line.id, last_month))
+            self.env.cr.execute(str_query_total_del_qty + " AND so.date_order>=%s", (line.id, last_month))
 
             quant_m = self.env.cr.fetchone()
             if quant_m[0] is not None:
@@ -141,7 +142,7 @@ from  product_product pp
             # self.env.cr.execute(str_query_cm + " AND sp.date_done>=%s", (cust_location_id,
             #                                                              line.id, last_yr))
 
-            self.env.cr.execute(str_query_cm_new + " AND so.date_order>=%s", (line.id, last_yr))
+            self.env.cr.execute(str_query_total_del_qty + " AND so.date_order>=%s", (line.id, last_yr))
 
             quant_yr = self.env.cr.fetchone()
             if quant_yr[0] is not None:
@@ -149,7 +150,7 @@ from  product_product pp
             line.product_sales_count_yrs = total_yr
 
             # self.env.cr.execute(str_query_cm, (cust_location_id, line.id))
-            self.env.cr.execute(str_query_cm_new, [line.id])
+            self.env.cr.execute(str_query_total_del_qty, [line.id])
 
             quant_all = self.env.cr.fetchone()
             if quant_all[0] is not None:
@@ -320,9 +321,11 @@ class VendorPricingExport(models.TransientModel):
                                   ON pt.tier = tt.id 
                            left join product_brand pb 
                                   ON pt.product_brand_id = pb.id 
-                           left join (select sum(sol.qty_delivered) AS qty_done,sol.product_id
+                          left join (select sum(sol.qty_delivered * CAST(coalesce((1.0 / factor), '0') AS integer)) AS qty_done,sol.product_id
                                    from sale_order AS so JOIN sale_order_line AS sol ON
-                                   so.id = sol.order_id where 
+                                   so.id = sol.order_id 
+                                   left join uom_uom AS uom on sol.product_uom=uom.id
+                                   where  
                                    sol.state in ('sale','done') 
                                   GROUP BY  sol.product_id) AS all_sales 
                                   ON pp.id = all_sales.product_id 
@@ -344,9 +347,11 @@ class VendorPricingExport(models.TransientModel):
                                              AND sp.state IN ('done') 
                                       GROUP  BY ppi.id) AS all_sales_amount 
                                   ON all_sales_amount.id = pp.id 
-                           left join (select sum(sol.qty_delivered) AS qty_done,sol.product_id
+                            left join (select sum(sol.qty_delivered * CAST(coalesce((1.0 / factor), '0') AS integer)) AS qty_done,sol.product_id
                                    from sale_order AS so JOIN sale_order_line AS sol ON
-                                   so.id = sol.order_id where 
+                                   so.id = sol.order_id  
+                                   left join uom_uom AS uom on sol.product_uom=uom.id
+                                   where  
                                    sol.state in ('sale','done')
                                    and so.date_order >= %s 
                                   GROUP BY  sol.product_id ) AS yr_sales 
@@ -399,9 +404,11 @@ class VendorPricingExport(models.TransientModel):
 
                                 LEFT JOIN 
                         ( 
-                                   select sum(sol.qty_delivered) AS qty_done,sol.product_id
+                                  select sum(sol.qty_delivered * CAST(coalesce((1.0 / factor), '0') AS integer)) AS qty_done,sol.product_id
                                    from sale_order AS so JOIN sale_order_line AS sol ON
-                                   so.id = sol.order_id where 
+                                   so.id = sol.order_id 
+                                   left join uom_uom AS uom on sol.product_uom=uom.id
+                                   where
                                    sol.state in ('sale','done')
                                    and so.date_order >= %s 
                                   GROUP BY  sol.product_id
