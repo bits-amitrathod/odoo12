@@ -57,7 +57,10 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                     console.log('In else ***');
                     $("#shipping_options").children().hide();
                     $("#my_shipper_account").prop('checked', false);
-                    $("#fedex_ground").prop('checked', true);
+                    if ($("#fedex_ground").length==1){
+                        $("#fedex_ground").prop('checked', true);
+                        $("#fedex_ground").trigger('change');
+                    }
                     $("#expedited_shipping_div").parent().hide();
                     $("#my_shipper_account").parent().hide();
                     console.log('Error message');
@@ -295,6 +298,42 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 });
                 ajax.jsonRpc("/shop/get_carrier", 'call', {
                     'delivery_carrier_code': 'fedex_express_saver_u_s_by_4_30_p_m_third_business_day_'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
+            }
+        });
+
+        $("#fedex_international").change(function() {
+            if ( $(this).is(':checked') ) {
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_international'
+                }).then(function(data) {
+                    var carrier_id = parseInt(data['carrier_id'])
+                    var values = {'carrier_id': carrier_id};
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+                    .then(_handleCarrierUpdateResults);
+
+               });
+            }
+        });
+
+        $("#fedex_economy").change(function() {
+            if ( $(this).is(':checked') ) {
+                $("#expedited_shipping_div").parent().hide();
+                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+                    'expedited_shipping': ""
+                });
+                ajax.jsonRpc("/shop/get_carrier", 'call', {
+                    'delivery_carrier_code': 'fedex_economy'
                 }).then(function(data) {
                     var carrier_id = parseInt(data['carrier_id'])
                     var values = {'carrier_id': carrier_id};
