@@ -16,7 +16,7 @@
                 <p style="margin: 0px; padding: 0px; font-size: 12px;">
                     Hello,
                     <br/><br/>
-                    Your order <span style="font-weight:bold;" t-out="object.name or ''">S00049</span> amounting in <span style="font-weight:bold;" t-out="format_amount(object.amount_total, object.currency_id) or ''">$ 10.00</span>
+                    Your order <span style="font-weight:bold;" t-out="object.name or ''" /> amounting in <span style="font-weight:bold;" t-out="format_amount(object.amount_total, object.currency_id) or ''"/>
                     <t t-if="object.state == 'sale' and (transaction and transaction.state in ('done', 'authorized'))">
                         has been confirmed.<br/>
                         Thank you for your trust!
@@ -32,7 +32,7 @@
         Do not hesitate to contact us if you have any questions.
         <t t-if="not is_html_empty(object.user_id.signature)">
             <br/><br/>
-            <t t-out="object.user_id.signature or ''">--<br/>Mitchell Admin</t>
+            <t t-out="object.user_id.signature or ''">--<br/></t>
         </t>
         <br/><br/>
     </p>
@@ -82,10 +82,10 @@
                         <td width="15%" align="center" t-out="line.product_uom_qty or ''">1</td>
                         <td width="20%" align="right"><span style="font-weight:bold;">
                         <t t-if="object.user_id.has_group('account.group_show_line_subtotals_tax_excluded')">
-                            <t t-out="format_amount(line.price_reduce_taxexcl, object.currency_id) or ''">$ 10.00</t>
+                            <t t-out="format_amount(line.price_reduce_taxexcl, object.currency_id) or ''"></t>
                         </t>
                         <t t-else="">
-                            <t t-out="format_amount(line.price_reduce_taxinc, object.currency_id) or ''">$ 10.00</t>
+                            <t t-out="format_amount(line.price_reduce_taxinc, object.currency_id) or ''"></t>
                         </t>
                         </span></td>
                     </tr>
@@ -98,12 +98,12 @@
             <tr>
                 <td style="width: 60%"/>
                 <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><span style="font-weight:bold;">Delivery:</span></td>
-                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right" t-out="format_amount(object.amount_delivery, object.currency_id) or ''">$ 0.00</td>
+                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right" t-out="format_amount(object.amount_delivery, object.currency_id) or ''"></td>
             </tr>
             <tr>
                 <td style="width: 60%"/>
                 <td style="width: 30%;" align="right"><span style="font-weight:bold;">SubTotal:</span></td>
-                <td style="width: 10%;" align="right" t-out="format_amount(object.amount_untaxed, object.currency_id) or ''">$ 10.00</td>
+                <td style="width: 10%;" align="right" t-out="format_amount(object.amount_untaxed, object.currency_id) or ''"></td>
             </tr>
         </table>
     </div>
@@ -112,7 +112,7 @@
             <tr>
                 <td style="width: 60%"/>
                 <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><span style="font-weight:bold;">SubTotal:</span></td>
-                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right" t-out="format_amount(object.amount_untaxed, object.currency_id) or ''">$ 10.00</td>
+                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right" t-out="format_amount(object.amount_untaxed, object.currency_id) or ''"></td>
             </tr>
         </table>
     </div>
@@ -121,12 +121,12 @@
             <tr>
                 <td style="width: 60%"/>
                 <td style="width: 30%;" align="right"><span style="font-weight:bold;">Taxes:</span></td>
-                <td style="width: 10%;" align="right" t-out="format_amount(object.amount_tax, object.currency_id) or ''">$ 0.00</td>
+                <td style="width: 10%;" align="right" t-out="format_amount(object.amount_tax, object.currency_id) or ''"></td>
             </tr>
             <tr>
                 <td style="width: 60%"/>
                 <td style="width: 30%; border-top: 1px solid #dee2e6;" align="right"><span style="font-weight:bold;">Total:</span></td>
-                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right" t-out="format_amount(object.amount_total, object.currency_id) or ''">$ 10.00</td>
+                <td style="width: 10%; border-top: 1px solid #dee2e6;" align="right" t-out="format_amount(object.amount_total, object.currency_id) or ''"></td>
             </tr>
         </table>
     </div>
@@ -135,11 +135,11 @@
             <tr>
                 <td style="padding-top: 10px;">
                     <span style="font-weight:bold;">Bill to:</span>
-                    <t t-out="object.partner_invoice_id.street or ''">1201 S Figueroa St</t>
-                    <t t-out="object.partner_invoice_id.city or ''">Los Angeles</t>
-                    <t t-out="object.partner_invoice_id.state_id.name or ''">California</t>
-                    <t t-out="object.partner_invoice_id.zip or ''">90015</t>
-                    <t t-out="object.partner_invoice_id.country_id.name or ''">United States</t>
+                    <t t-out="object.partner_invoice_id.street or ''"></t>
+                    <t t-out="object.partner_invoice_id.city or ''"></t>
+                    <t t-out="object.partner_invoice_id.state_id.name or ''"></t>
+                    <t t-out="object.partner_invoice_id.zip or ''"></t>
+                    <t t-out="object.partner_invoice_id.country_id.name or ''"></t>
                 </td>
             </tr>
             <tr>
@@ -151,7 +151,7 @@
                     <t t-else="">
                         <t t-out="transaction.provider_id.sudo().name or ''"></t>
                     </t>
-                    (<t t-out="format_amount(transaction.amount, object.currency_id) or ''">$ 10.00</t>)
+                    (<t t-out="format_amount(transaction.amount, object.currency_id) or ''"></t>)
                 </td>
             </tr>
         </table>
@@ -162,11 +162,11 @@
                 <td>
                     <br/>
                     <span style="font-weight:bold;">Ship to:</span>
-                    <t t-out="object.partner_shipping_id.street or ''">1201 S Figueroa St</t>
-                    <t t-out="object.partner_shipping_id.city or ''">Los Angeles</t>
-                    <t t-out="object.partner_shipping_id.state_id.name or ''">California</t>
-                    <t t-out="object.partner_shipping_id.zip or ''">90015</t>
-                    <t t-out="object.partner_shipping_id.country_id.name or ''">United States</t>
+                    <t t-out="object.partner_shipping_id.street or ''"></t>
+                    <t t-out="object.partner_shipping_id.city or ''"></t>
+                    <t t-out="object.partner_shipping_id.state_id.name or ''"></t>
+                    <t t-out="object.partner_shipping_id.zip or ''"></t>
+                    <t t-out="object.partner_shipping_id.country_id.name or ''"></t>
                 </td>
             </tr>
         </table>
@@ -179,7 +179,7 @@
                         (Free)
                     </t>
                     <t t-else="">
-                        (<t t-out="format_amount(object.amount_delivery, object.currency_id) or ''">$ 10.00</t>)
+                        (<t t-out="format_amount(object.amount_delivery, object.currency_id) or ''"></t>)
                     </t>
                 </td>
             </tr>
