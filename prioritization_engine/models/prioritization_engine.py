@@ -473,6 +473,10 @@ class PrioritizationEngine(models.TransientModel):
             try:
                 self.env.cr.savepoint()
                 sale_order = self.env['sale.order'].create(dict(sale_order_dict))
+                if crm_team.team_type in ('engine', 'rapid_quote'):
+                    super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID)])
+                    user = sale_order.partner_id.user_id if sale_order.partner_id.user_id else super_user
+                    sale_order.update({'user_id':user.id,'team_id': crm_team})
                 _logger.debug('sale order : %r ', sale_order['id'])
                 for allocated_product in allocated_products_dict.get(partner_id_key, {}):
                     _logger.info('customer_request_id  :  %r  ', allocated_product['customer_request_id'])
