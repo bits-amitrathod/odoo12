@@ -165,14 +165,14 @@ class SaleOrder(models.Model):
     def action_confirm(self):
         res = super(SaleOrder, self).action_confirm()
         self.add_note_in_delivery()
-        if self.team_id.team_type in ('engine', 'rapid_quote'):
-            user = None
-            current_user = self.env['res.users'].browse(self._context.get('uid'))
-            sale_order_customer = self.partner_id
-            super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID)])
-            user_sale_person = current_user.user_id
-            user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
-            self.update({'user_id': user.id})
+        # if self.team_id.team_type in ('engine', 'rapid_quote'):
+        #     user = None
+        #     current_user = self.env['res.users'].browse(self._context.get('uid'))
+        #     sale_order_customer = self.partner_id
+        #     super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID)])
+        #     user_sale_person = current_user.user_id
+        #     user = sale_order_customer.user_id if sale_order_customer.user_id else super_user
+        #     self.update({'user_id': user.id})
 
             # Send email to Salesperson and Admin when sales order accepted(Confirm)
             # upload_type = None
