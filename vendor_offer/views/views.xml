@@ -456,33 +456,39 @@
                     <field name="vendor_offer_data" invisible="1"/>
                 </xpath>
 
-
+<!--                <xpath expr="//group[hasclass('oe_subtotal_footer')]/field[name='tax_totals']" position="replace"/>-->
                 <xpath expr="//notebook/page" position="inside">
-
+                    <group class="oe_subtotal_footer" style="margin-left: 15px;">
+                        <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <field name="amount_tax" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                        <label for="amount_total"/>
+                        <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator fw-bolder" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                    </group>
                     <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}">
                         <field name="rt_price_subtotal_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Untaxed Retail Price"/>
                         <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                            <label for="rt_price_total_amt"/>
-                        <field name="rt_price_total_amt" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Total Retail Price"/>
+                        <label for="rt_price_total_amt"/>
+                        <field name="rt_price_total_amt" nolabel="1" class="oe_subtotal_footer_separator fw-bolder" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Total"/>
                     </group>
 
                     <group class="oe_subtotal_footer" attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
                         <field name="billed_offer_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Offer Price"/>
                         <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                            <label for="billed_offer_total"/>
-                        <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                            <label for="final_billed_offer_total"/>
-                        <field name="final_billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Offer Price"/>
+                        <label for="billed_offer_total"/>
+                        <field name="billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator fw-bolder" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Offer Total"/>
+                        <label for="final_billed_offer_total"/>
+                        <field name="final_billed_offer_total" nolabel="1" class="oe_subtotal_footer_separator fw-bolder" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Offer Total"/>
                     </group>
 
                     <group class="oe_subtotal_footer " attrs="{'invisible':[('vendor_offer_data', '=',  False)]}" style="margin-right: 15px;">
                         <field name="billed_retail_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}" string="Billed Untaxed Retail Price"/>
                         <field name="rt_price_tax_amt" widget="monetary" options="{'currency_field': 'currency_id'}" string="Taxes"/>
-                            <label for="billed_retail_total"/>
-                        <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Total Retail Price"/>
-                            <label for="final_billed_retail_total"/>
-                        <field name="final_billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Total Retail Price"/>
+                        <label for="billed_retail_total"/>
+                        <field name="billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator fw-bolder" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Billed Retail Total"/>
+                        <label for="final_billed_retail_total"/>
+                        <field name="final_billed_retail_total" nolabel="1" class="oe_subtotal_footer_separator fw-bolder" widget="monetary" options="{'currency_field': 'currency_id'}"  string="Final Billed Retail Total"/>
                     </group>
+
 
                 </xpath>
 
