@@ -18,6 +18,9 @@ from odoo import api, fields, models
 from odoo.tools.float_utils import float_repr
 from odoo.addons.payment.controllers.post_processing import PaymentPostProcessing
 from odoo.addons.payment_paypal.controllers.main import PaypalController
+# from odoo.addons.website_sale_delivery.controllers.main import website_sale_delivery
+from odoo.addons.website_sale_delivery.controllers.main import WebsiteSaleDelivery
+
 from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -87,7 +90,9 @@ class PaymentAquirerCstm(http.Controller):
 
     @http.route(['/shop/get_carrier'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def get_carrier(self, delivery_carrier_code):
-        delivery_carrier = request.env['delivery.carrier'].sudo().search([('code', '=', delivery_carrier_code)])
+        order = request.website.sale_get_order()
+        delivery_carriers = order._get_delivery_methods()
+        delivery_carrier = delivery_carriers.filtered(lambda x: x.code == delivery_carrier_code)
         if delivery_carrier:
             return {'carrier_id': delivery_carrier.id}
 
@@ -492,3 +497,30 @@ class PaypalController(PaypalController):
                     product_process.remove_recored_by_product_and_so(line.product_id.id, order.name)
 
         return super(PaypalController, self).paypal_cancel(**post)
+
+
+class website_sale_delivery_inherit(WebsiteSaleDelivery):
+    def _get_shop_payment_values(self, order, **kwargs):
+        values = super(WebsiteSaleDelivery, self)._get_shop_payment_values(order, **kwargs)
+        has_storable_products = any(line.product_id.type in ['consu', 'product'] for line in order.order_line)
+        delivery_carriers = order._get_delivery_methods()
+
+        if has_storable_products:
+            if order.carrier_id and not order.delivery_rating_success:
+                order._remove_delivery_line()
+
+            curr_partner_id = request.env.user.partner_id
+            if curr_partner_id and not (curr_partner_id.having_carrier and curr_partner_id.carrier_acc_no):
+                delivery_carriers = delivery_carriers.filtered(lambda x: x.code != 'my_shipper_account')
+
+            values['deliveries'] = delivery_carriers.sudo()
+
+        if not delivery_carriers and has_storable_products:
+            values['errors'].append(
+                (_('Sorry, we are unable to ship your order'),
+                 _('No shipping method is available for your current order and shipping address. '
+                   'Please contact us for more information.')))
+
+        values['delivery_has_storable'] = has_storable_products
+        values['delivery_action_id'] = request.env.ref('delivery.action_delivery_carrier_form').id
+        return values
