@@ -365,5 +365,4 @@
                   parent="purchase.menu_procurement_management" action="vendor_offer.action_window_app" sequence="1"/>
 
     </data>
-	
 </odoo>
