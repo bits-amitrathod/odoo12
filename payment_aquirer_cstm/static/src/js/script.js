@@ -132,32 +132,27 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
                 $("#choose_a_delivery_method_label").parent().show();
                 $("#delivery_method_custom").parent().show();
                 $("#my_shipper_account").prop('checked', false);
-                $("#fedex_ground").prop('checked', true);
                 $("#expedited_shipping_div").parent().hide();
                 $("#my_shipper_account").parent().hide();
+//                DISABLE THE PAY BUTTON
+                $payButton.prop('disabled', true);
+//                var disabledReasons = $payButton.data('disabled_reasons') || {};
+//                disabledReasons.carrier_selection = false;
+//                $payButton.data('disabled_reasons', disabledReasons);
+
                 ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
                     'expedited_shipping': ""
                 });
-                $payButton.prop('disabled', true);
-                var disabledReasons = $payButton.data('disabled_reasons') || {};
-                disabledReasons.carrier_selection = true;
-                $payButton.data('disabled_reasons', disabledReasons);
-
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_ground'
-                }).then(function(data) {
-                    if (data == undefined){
-                        alert("Not any Carrier found with code 'fedex_ground'")
-                    }
-                    else{
-                        var carrier_id = parseInt(data['carrier_id'])
-                        var values = {'carrier_id': carrier_id};
-                        dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                        .then(_handleCarrierUpdateResults);
-                    }
-
-
-               });
+//                ENABLE THE FEDEX_GROUND IF FOUND
+               if ($("#fedex_ground").length==1){
+                    $("#fedex_ground").prop('checked', true);
+                    $("#fedex_ground").trigger('change');
+                     $payButton.prop('disabled', false);
+                     $payButton.data('disabled_reasons', false);
+               }
+               else{
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', {'carrier_id': 0}))
+               }
            }
         });
 
