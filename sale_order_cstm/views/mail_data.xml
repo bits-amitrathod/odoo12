@@ -17,7 +17,7 @@
                     Hello,
                     <br/><br/>
                     Your order <span style="font-weight:bold;" t-out="object.name or ''" /> amounting in <span style="font-weight:bold;" t-out="format_amount(object.amount_total, object.currency_id) or ''"/>
-                    <t t-if="object.state == 'sale' and (transaction and transaction.state in ('done', 'authorized'))">
+                    <t t-if="object.state == 'sale' or (transaction and transaction.state in ('done', 'authorized'))">
                         has been confirmed.<br/>
                         Thank you for your trust!
                     </t>
