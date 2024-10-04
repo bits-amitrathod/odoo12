@@ -104,27 +104,36 @@ class PaymentAquirerCstm(http.Controller):
             order_id = request.session.get('sale_order_id',0)
             order = request.env['sale.order'].sudo().browse(order_id)
 
+        values = {}
         if request.env.user.partner_id.having_carrier and request.env.user.partner_id.carrier_acc_no:
-            return {'carrier_acc_no': True}
+            values["carrier_acc_no"] = True
         else:
+            values["carrier_acc_no"] = False
+            values["error_message"] = order.delivery_message
             if order.currency_id:
                 currency = order.currency_id
             else:
                 res_currency = request.env.user.company_id.currency_id
                 if res_currency:
                     currency = res_currency
+            values["status"] = order.delivery_rating_success
+            values['new_amount_delivery'] = Monetary.value_to_html(order.amount_delivery, {'display_currency': currency})
 
-            gen_pay = False
-            if order.id:
-                pay_link = request.env['sale.pay.link.cust'].search([('sale_order_id', '=', order.id)])
-                if pay_link and pay_link.allow_pay_gen_payment_link:
-                    gen_pay = True
 
-            invoice_id = request.session.get('payment_link_invoice_id')
-            if invoice_id:
+        # checking for payment link
+        gen_pay = False
+        if order.id:
+            pay_link = request.env['sale.pay.link.cust'].search([('sale_order_id', '=', order.id)])
+            if pay_link and pay_link.allow_pay_gen_payment_link:
                 gen_pay = True
 
-            return {'carrier_acc_no': False, 'error_message': order.delivery_message, 'new_amount_delivery': Monetary.value_to_html(order.amount_delivery, {'display_currency': currency}), 'status': order.delivery_rating_success, 'gen_pay_link': gen_pay}
+        invoice_id = request.session.get('payment_link_invoice_id')
+        if invoice_id:
+            gen_pay = True
+
+        values['gen_pay_link'] = gen_pay
+
+        return values
 
 class WebsiteSalesPaymentAquirerCstm(odoo.addons.website_sale.controllers.main.WebsiteSale):
     def shop_payment(self, **post):

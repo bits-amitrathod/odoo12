@@ -59,7 +59,6 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
         disabledReasons.carrier_selection = true;
         $payButton.data('disabled_reasons', disabledReasons);
         $payButton.prop('disabled', true);
-
     }
     $(document).ready(function() {
         disabledPayButton()
@@ -68,6 +67,17 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
         }).then(function(data) {
             var carrier_acc_no = data['carrier_acc_no']
             console.log(carrier_acc_no);
+            console.log(data['gen_pay_link_new_condition']);
+            if (data['gen_pay_link'] == true) {
+                console.log('in gen pay true');
+                $payButton.prop('disabled', false);
+                $payButton.data('disabled_reasons', false);
+//                setTimeout(function(){
+//                    $payButton.prop('disabled', false);
+//                    $payButton.data('disabled_reasons', false);
+//                    $('#loader_in_stock').hide();
+//                },5000);
+            }
             if (carrier_acc_no) {
                 console.log('In if ***');
                 $("#my_shipper_account_radio").prop('checked', true);
