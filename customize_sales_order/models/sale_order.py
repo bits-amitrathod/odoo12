@@ -151,11 +151,12 @@ class sale_order(models.Model):
                 if pick.note == False:
                     pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
 
-        if self.carrier_id and self.state and self.state in 'sale':
-            stock_pickings = self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)])
-            for stock_picking in stock_pickings:
-                if stock_picking and stock_picking.state != 'done' and stock_picking.state != 'cancel' :
-                    stock_picking.write({'carrier_id': self.carrier_id.id})
+        # The newly selected shipping method is now being saved
+        # if self.carrier_id and self.state and self.state in 'sale':
+        #     stock_pickings = self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)])
+        #     for stock_picking in stock_pickings:
+        #         if stock_picking and stock_picking.state != 'done' and stock_picking.state != 'cancel' :
+        #             stock_picking.write({'carrier_id': self.carrier_id.id})
 
         # if 'sale_note' in val or self.sale_note:
         # if self.sale_note and self.team_id.team_type != 'engine':
