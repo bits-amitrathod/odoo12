@@ -103,6 +103,7 @@ class Website(models.Model):
             sale_order.write({'partner_id': partner.id})
             sale_order.with_context(not_self_saleperson=True).onchange_partner_id()
             sale_order.write({'partner_invoice_id': partner.id})
+            sale_order.write({'team_id': sale_order.original_team_id.id})
             sale_order._compute_fiscal_position_id() # fiscal position
             sale_order['payment_term_id'] = self.sale_get_payment_term(partner)
 
