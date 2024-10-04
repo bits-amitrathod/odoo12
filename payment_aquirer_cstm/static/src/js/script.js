@@ -44,8 +44,8 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
             $("#fedex_ground").trigger('change');
         }
         else{
-            var $input_field = $("#delivery_method_custom").find("input[name='delivery_type']")
-            if ($input_field.length > 1){
+            var $input_field = $("#delivery_carrier").find("input[name='delivery_type']");
+            if ($input_field.length > 0){
                 $input_field.first().prop('checked', true);
                 $input_field.first().trigger('change');
             }
