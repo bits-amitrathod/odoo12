@@ -128,7 +128,7 @@ class ThemeController(http.Controller):
             ('status', '=', 'pending'),
         ], limit=1)
         if not isSubcribed:
-            StockNotifcation.create({'status': 'pending', 'email': email.lower(), 'product_tmpl_id': product_id})
+            StockNotifcation.create({'status': 'pending', 'email': email.lower(), 'product_tmpl_id': product_id ,'is_new': True})
             return True
         else:
             return False
