@@ -146,7 +146,7 @@
                 </field>
 
                 <field name="state_id" position="attributes">
-                    <attribute name="attrs">{'required': [('is_company', '=', True)]}</attribute>
+                    <attribute name="attrs">{'required': ['&amp;',('is_company', '=', True),('country_id', '=', 233)]}</attribute>
                 </field>
 
                 <field name="zip" position="attributes">
