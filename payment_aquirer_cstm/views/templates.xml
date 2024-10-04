@@ -123,9 +123,11 @@
             <div id="delivery_method_custom" t-if="delivery_nb &gt; 1" class="card border-0">
                 <ul class="list-group">
                     <t t-foreach="deliveries" t-as="delivery">
-                        <li class="list-group-item">
-                            <t t-call="website_sale_delivery.payment_delivery_methods"/>
-                        </li>
+                        <t t-if="delivery.code !='my_shipper_account'">
+                            <li class="list-group-item" >
+                                <t t-call="website_sale_delivery.payment_delivery_methods"/>
+                            </li>
+                        </t>
                     </t>
                 </ul>
             </div>
@@ -133,6 +135,12 @@
     </template>
 
     <template id="payment_cstm" inherit_id="website_sale.payment">
+        <xpath expr="//div[hasclass('oe_website_sale')]" position="before">
+            <t t-call="website_sales.loader_in_stock"/>
+        </xpath>
+        <xpath expr="//div[@id='wrap']" position="attributes">
+            <attribute name="style"> position:relative; </attribute>
+        </xpath>
         <xpath expr="//div[@id='payment_method']/h3[@class='mb24']" position="replace">
             <h3 class="mb24" style="font-size: 20px;">Pay with</h3>
         </xpath>
