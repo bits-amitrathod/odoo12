@@ -238,41 +238,41 @@
                                     </tree>
 
                                 </field>
-
-                                 <group class="oe_subtotal_footer" style=" margin-left: 20px;">
-                                     <label for="credit_amount_untaxed" class="fw-bolder"></label>
-                                    <field name="credit_amount_untaxed" widget="monetary"
-                                           string="Untaxed Credit Offer Price" nolabel="1"/>
-                                    <label for="amount_tax" class="fw-bolder"></label>
-                                     <field name="amount_tax" string="Tax" nolabel="1"/>
-                                    <label for="credit_amount_total" class="fw-bolder"></label>
-                                     <field name="credit_amount_total"  widget="monetary" nolabel="1" string="Total Credit Offer Price"/>
-                                </group>
-                                <group class="oe_subtotal_footer" style=" margin-left: 20px;">
-                                     <label for="cash_amount_untaxed" class="fw-bolder"></label>
-                                    <field name="cash_amount_untaxed"  widget="monetary"
-                                           string="Untaxed Cash Offer Price" nolabel="1"/>
-                                     <label for="amount_tax" class="fw-bolder"></label>
-                                    <field name="amount_tax"  string="Tax" nolabel="1"/>
-                                     <label for="cash_amount_total" class="fw-bolder"></label>
-                                    <field name="cash_amount_total" nolabel="1" widget="monetary" string="Total Cash Offer Price"/>
-                                </group>
-                                <group class="oe_subtotal_footer">
-                                     <label for="rt_price_subtotal_amt" class="fw-bolder"></label>
-                                    <field name="rt_price_subtotal_amt"  widget="monetary"
-                                           string="Untaxed Retail Price" nolabel="1" />
-                                     <label for="rt_price_tax_amt" class="fw-bolder"></label>
-                                    <field name="rt_price_tax_amt"  string="Tax" nolabel="1" />
-                                     <label for="rt_price_total_amt" class="fw-bolder"></label>
-                                    <field name="rt_price_total_amt"  widget="monetary"
-                                           string="Total Retail Price" nolabel="1" />
-                                </group>
-                              <group>
-                                 <field name="notes" class="oe_inline"
-                                   placeholder="Define your terms and conditions ..."/>
-                                    <div class="oe_clear"/>
-                             </group>
-
+                                <group class="justify-content-end col-lg-12 ">
+                                     <group class="oe_subtotal_footer" style=" margin-left: 20px;">
+                                         <label for="credit_amount_untaxed" class="fw-bolder"></label>
+                                        <field name="credit_amount_untaxed" widget="monetary"
+                                               string="Untaxed Credit Offer Price" nolabel="1"/>
+                                        <label for="amount_tax" class="fw-bolder"></label>
+                                         <field name="amount_tax" string="Tax" nolabel="1"/>
+                                        <label for="credit_amount_total" class="fw-bolder"></label>
+                                         <field name="credit_amount_total"  widget="monetary" nolabel="1" string="Total Credit Offer Price"/>
+                                    </group>
+                                    <group class="oe_subtotal_footer" style=" margin-left: 20px;">
+                                         <label for="cash_amount_untaxed" class="fw-bolder"></label>
+                                        <field name="cash_amount_untaxed"  widget="monetary"
+                                               string="Untaxed Cash Offer Price" nolabel="1"/>
+                                         <label for="amount_tax" class="fw-bolder"></label>
+                                        <field name="amount_tax"  string="Tax" nolabel="1"/>
+                                         <label for="cash_amount_total" class="fw-bolder"></label>
+                                        <field name="cash_amount_total" nolabel="1" widget="monetary" string="Total Cash Offer Price"/>
+                                    </group>
+                                    <group class="oe_subtotal_footer"  style=" margin-left: 20px;">
+                                         <label for="rt_price_subtotal_amt" class="fw-bolder"></label>
+                                        <field name="rt_price_subtotal_amt"  widget="monetary"
+                                               string="Untaxed Retail Price" nolabel="1" />
+                                         <label for="rt_price_tax_amt" class="fw-bolder"></label>
+                                        <field name="rt_price_tax_amt"  string="Tax" nolabel="1" />
+                                         <label for="rt_price_total_amt" class="fw-bolder"></label>
+                                        <field name="rt_price_total_amt"  widget="monetary"
+                                               string="Total Retail Price" nolabel="1" />
+                                    </group>
+                                 </group>
+                                 <group>
+                                   <group>
+                                      <field colspan="2" name="notes" nolabel="1" placeholder="Define your terms and conditions ..."/>
+                                    </group>
+                                 </group>
                             </page>
                             <page string="Deliveries">
                                 <group>
