@@ -4,6 +4,8 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
     require('web.dom_ready');
     var ajax = require('web.ajax');
     var core = require('web.core');
+    var publicWidget = require('web.public.widget');
+    var websiteSaleDelivery =  publicWidget.registry.websiteSaleDelivery
     var _t = core._t;
     //var $carrier_badge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .badge:not(.o_delivery_compute)');
     var $carrierBadge = $('#delivery_carrier input[name="delivery_type"][value=3] ~ .o_wsale_delivery_badge_price');
@@ -12,6 +14,17 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
     var $payButton = $('button[name="o_payment_submit_button"]');
     var concurrency = require('web.concurrency');
     var dp = new concurrency.DropPrevious();
+
+    publicWidget.registry.websiteSaleDelivery.include({
+        _onCarrierClick: function (ev) {
+            $('#loader_in_stock').show();
+            return this._super(...arguments);
+        },
+        _handleCarrierUpdateResult: function (result) {
+            $('#loader_in_stock').hide();
+            return this._super(...arguments);
+        }
+    })
 
     var _handleCarrierUpdateResults = function(result) {
 //        _handleCarrierUpdateResultBadge(result);
@@ -41,13 +54,13 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
     function selectDefaultDeliveryMethod(){
         if ($("#fedex_ground").length==1){
             $("#fedex_ground").prop('checked', true);
-            $("#fedex_ground").trigger('change');
+            $("#fedex_ground").parent().trigger('click');
         }
         else{
             var $input_field = $("#delivery_carrier").find("input[name='delivery_type']");
             if ($input_field.length > 0){
                 $input_field.first().prop('checked', true);
-                $input_field.first().trigger('change');
+                $input_field.first().parent().trigger('click');
             }
             else{
                 dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', {'carrier_id': 0}))
@@ -172,205 +185,205 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
         });
 
 
-        $("#my_shipper_account").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().show();
-                var e = document.getElementById("selectDeliveryMethod");
-                var value = e.options[e.selectedIndex].value;
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': value
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'my_shipper_account'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
-
-        $("#fedex_ground").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_ground'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-               });
-            }
-        });
-
-        $("#fedex_first_overnight_u_s_by_8_30_a_m_next_business_day_").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_first_overnight_u_s_by_8_30_a_m_next_business_day_'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
-
-        $("#fedex_priority_overnight_u_s_by_10_30_a_m_next_business_day_").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_priority_overnight_u_s_by_10_30_a_m_next_business_day_'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
-
-        $("#fedex_standard_overnight_u_s_by_3_p_m_next_business_day_").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_standard_overnight_u_s_by_3_p_m_next_business_day_'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
-
-        $("#fedex_2nd_day_a_m_u_s_by_10_30_a_m_or_noon_second_business_day_").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_2nd_day_a_m_u_s_by_10_30_a_m_or_noon_second_business_day_'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
-
-        $("#fedex_2nd_day_u_s_by_4_30_p_m_second_business_day_").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_2nd_day_u_s_by_4_30_p_m_second_business_day_'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
-
-        $("#fedex_express_saver_u_s_by_4_30_p_m_third_business_day_").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_express_saver_u_s_by_4_30_p_m_third_business_day_'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
-
-        $("#fedex_international").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_international'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
-
-        $("#fedex_economy").change(function() {
-            if ( $(this).is(':checked') ) {
-                $('#loader_in_stock').show();
-                $("#expedited_shipping_div").parent().hide();
-                disabledPayButton()
-                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
-                    'expedited_shipping': ""
-                });
-                ajax.jsonRpc("/shop/get_carrier", 'call', {
-                    'delivery_carrier_code': 'fedex_economy'
-                }).then(function(data) {
-                    var carrier_id = parseInt(data['carrier_id'])
-                    var values = {'carrier_id': carrier_id};
-                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
-                    .then(_handleCarrierUpdateResults);
-
-               });
-            }
-        });
+//        $("#my_shipper_account").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().show();
+//                var e = document.getElementById("selectDeliveryMethod");
+//                var value = e.options[e.selectedIndex].value;
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': value
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'my_shipper_account'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
+//
+//        $("#fedex_ground").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_ground'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//               });
+//            }
+//        });
+//
+//        $("#fedex_first_overnight_u_s_by_8_30_a_m_next_business_day_").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_first_overnight_u_s_by_8_30_a_m_next_business_day_'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
+//
+//        $("#fedex_priority_overnight_u_s_by_10_30_a_m_next_business_day_").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_priority_overnight_u_s_by_10_30_a_m_next_business_day_'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
+//
+//        $("#fedex_standard_overnight_u_s_by_3_p_m_next_business_day_").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_standard_overnight_u_s_by_3_p_m_next_business_day_'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
+//
+//        $("#fedex_2nd_day_a_m_u_s_by_10_30_a_m_or_noon_second_business_day_").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_2nd_day_a_m_u_s_by_10_30_a_m_or_noon_second_business_day_'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
+//
+//        $("#fedex_2nd_day_u_s_by_4_30_p_m_second_business_day_").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_2nd_day_u_s_by_4_30_p_m_second_business_day_'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
+//
+//        $("#fedex_express_saver_u_s_by_4_30_p_m_third_business_day_").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_express_saver_u_s_by_4_30_p_m_third_business_day_'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
+//
+//        $("#fedex_international").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_international'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
+//
+//        $("#fedex_economy").change(function() {
+//            if ( $(this).is(':checked') ) {
+//                $('#loader_in_stock').show();
+//                $("#expedited_shipping_div").parent().hide();
+//                disabledPayButton()
+//                ajax.jsonRpc("/shop/cart/expeditedShipping", 'call', {
+//                    'expedited_shipping': ""
+//                });
+//                ajax.jsonRpc("/shop/get_carrier", 'call', {
+//                    'delivery_carrier_code': 'fedex_economy'
+//                }).then(function(data) {
+//                    var carrier_id = parseInt(data['carrier_id'])
+//                    var values = {'carrier_id': carrier_id};
+//                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', values))
+//                    .then(_handleCarrierUpdateResults);
+//
+//               });
+//            }
+//        });
 
         $("#selectDeliveryMethod").unbind().change(function() {
             var e = document.getElementById("selectDeliveryMethod");
