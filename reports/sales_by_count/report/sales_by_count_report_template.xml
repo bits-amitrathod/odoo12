@@ -50,7 +50,7 @@
                                         <span t-esc="sale.quantity"/>
                                     </td>
                                     <td style="border: 1px solid black;text-align: center;">
-                                        <span t-esc="sale.product_uom"/>
+                                        <span t-esc="sale.product_uom.get('en_US')"/>
                                     </td>
                                 </tr>
                             </tbody>
