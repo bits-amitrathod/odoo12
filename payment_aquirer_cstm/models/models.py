@@ -47,7 +47,7 @@ class SalesOrder(models.Model):
         self.ensure_one()
         DeliveryCarrier = self.env['delivery.carrier']
 
-        if self.only_services:
+        if self.only_services or force_carrier_id==0:
             self.write({'carrier_id': None})
             self._remove_delivery_line()
             return True
@@ -72,6 +72,8 @@ class SalesOrder(models.Model):
                     if delivery.code == "my_shipper_account" and  self.partner_id.having_carrier and self.partner_id.carrier_acc_no:
                         if self.partner_id.having_carrier and self.partner_id.carrier_acc_no:
                             verified_carrier = delivery._match_address(self.partner_shipping_id)
+                        else:
+                            verified_carrier = False
                     else:
                         verified_carrier = delivery._match_address(self.partner_shipping_id)
                     if verified_carrier:

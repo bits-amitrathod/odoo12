@@ -59,6 +59,22 @@
     </template>
 
 
+    <template id="payment_delivery_shipping_method_inherit" name="SPS Delivery Shipping method Inherit" inherit_id="website_sale_delivery.payment_delivery_shipping_method">
+        <xpath expr="//div[@id='delivery_carrier']" position="replace">
+            <div t-if="delivery_nb == 1 and deliveries[0].code != 'my_shipper_account'"  id="delivery_carrier"  class="mt4">
+                <b>Shipping Method: </b>
+                <t t-foreach="deliveries" t-as="delivery">
+                    <div class="o_delivery_carrier_select d-inline">
+                        <t t-call="website_sale_delivery.payment_delivery_methods"/>
+                    </div>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+
+
+
     <template id="payment_sale_note" inherit_id="website_sale.payment" name="Payment Sale Note Purchase Order">
         <xpath expr="//div[@id='address_on_payment']" position="after">
 <!--            <script type="text/javascript" src="/payment_aquirer_cstm/static/src/js/script.js"></script>-->
@@ -66,8 +82,8 @@
                 <textarea style="margin-bottom: 0px;margin-top: 10px;" rows="3" name="sales_team_message"
                           placeholder="Please specify additional comments or specific instructions for this order." class="form-control"/>
             </div>
-            <div id="shipping_options" class="d-flex mt-3 ml-2">
-                <div class="radio-inline mr-5">
+            <div id="shipping_options" class="d-flex mt-3 ml-2" t-if="deliveries">
+                <div class="radio-inline mr16">
                     <input type="radio" id="my_shipper_account_radio" name="shipping_method_selection" value="my_shipper_account"/>
                     <label for="my_shipper_account_radio" class="regular-font" style="font-size: 21px;">My Shipper Account</label>
                 </div>
@@ -107,9 +123,11 @@
             <div id="delivery_method_custom" t-if="delivery_nb &gt; 1" class="card border-0">
                 <ul class="list-group">
                     <t t-foreach="deliveries" t-as="delivery">
-                        <li class="list-group-item">
-                            <t t-call="website_sale_delivery.payment_delivery_methods"/>
-                        </li>
+                        <t t-if="delivery.code !='my_shipper_account'">
+                            <li class="list-group-item o_delivery_carrier_select" >
+                                <t t-call="website_sale_delivery.payment_delivery_methods"/>
+                            </li>
+                        </t>
                     </t>
                 </ul>
             </div>
@@ -117,6 +135,12 @@
     </template>
 
     <template id="payment_cstm" inherit_id="website_sale.payment">
+        <xpath expr="//div[hasclass('oe_website_sale')]" position="before">
+            <t t-call="website_sales.loader_in_stock"/>
+        </xpath>
+        <xpath expr="//div[@id='wrap']" position="attributes">
+            <attribute name="style"> position:relative; </attribute>
+        </xpath>
         <xpath expr="//div[@id='payment_method']/h3[@class='mb24']" position="replace">
             <h3 class="mb24" style="font-size: 20px;">Pay with</h3>
         </xpath>
