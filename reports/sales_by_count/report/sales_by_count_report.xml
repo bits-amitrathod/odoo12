@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <report
-                id="action_report_sales_by_count"
-                string="Sales By Count"
-                model="report.sales.by.count"
-                report_type="qweb-html"
-                file="sales_by_count.sales_by_count_template"
-                name="sales_by_count.sales_by_count_template"
-                />
+        <record id="action_report_sales_by_count" model="ir.actions.report">
+            <field name="name">Sales By Count</field>
+            <field name="model">report.sales.by.count</field>
+            <field name="report_name">sales_by_count.sales_by_count_template</field>
+            <field name="report_type">qweb-html</field>
+            <field name="binding_model_id" ref="model_report_sales_by_count"/>
+            <field name="report_file">sales_by_count.sales_by_count_template</field>
+        </record>
     </data>
 </odoo>
