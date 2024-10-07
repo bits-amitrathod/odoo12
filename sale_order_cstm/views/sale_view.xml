@@ -15,6 +15,7 @@
                     <filter name="account_manager" string="Key Account" domain="[]" context="{'group_by':'account_manager'}"/>
                     <filter name="national_account" string="National Account" domain="[]" context="{'group_by':'national_account'}"/>
                     <filter name="sales_level" string="Sales Level" domain="[]" context="{'group_by':'sale_margine'}"/>
+                    <filter name="customer_success" string="Customer Success" domain="[]" context="{'group_by':'customer_success'}"/>
                     <filter name="is_shared" string="Is Shared" domain="[]" context="{'group_by':'is_share'}"/>
                 </xpath>
                 <xpath expr="//filter[@name='my_quotation']" position="after">

@@ -9,6 +9,7 @@
             <field name="subject">{{object.company_id.name}} {{(object.get_portal_last_transaction().state == 'pending') and 'Pending Order' or 'Order'}} (Ref {{object.name or 'n/a' }})</field>
             <field name="email_from">{{(object.get_email_so_sendByEmail().email)}}</field>
             <field name="partner_to">{{object.partner_id.id}}</field>
+            <field name="email_cc">{{(object.get_email_to_sendByEmail())}}</field>
             <field name="body_html" type="html">
 
                <div style="margin: 0px; padding: 0px;">
@@ -19,7 +20,7 @@
                     Your order <span style="font-weight:bold;" t-out="object.name or ''" /> amounting in <span style="font-weight:bold;" t-out="format_amount(object.amount_total, object.currency_id) or ''"/>
                     <t t-if="object.state == 'sale' or (transaction and transaction.state in ('done', 'authorized'))">
                         has been confirmed.<br/>
-                        Thank you for your trust!
+                        Thank you!
                     </t>
                     <t t-elif="transaction and (transaction.state in ('pending'))">
                         is pending. It will be confirmed when the payment is received.
@@ -203,7 +204,7 @@
         <!-- Duplicate template in Prioritization  -->
         <record id="email_template_sale_custom_dub" model="mail.template">
             <field name="name">Sales Order - Send by Email</field>
-            <field name="email_from">{{(object.get_email_so_sendByEmail().email)}}</field>
+            <field name="email_from">{{(object.get_from_email().email)}}</field>
             <field name="subject">{{object.company_id.name}} {{object.state in ('draft', 'sent') and 'Quotation' or 'Order'}} (Ref {{object.name or 'n/a' }})</field>
             <field name="partner_to">{{object.partner_id.id}}</field>
             <field name="email_cc">{{ctx.get('email_from')}}</field>
