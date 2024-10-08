@@ -124,7 +124,7 @@
             <field name="model">purchase.order</field>
             <!--<field name="context">{state: 'ven_draft'}</field>-->
             <field name="arch" type="xml">
-                <form string="Vendor Offer" class="o_sale_order vendor_offer_class" duplicate="false"   attrs="{'delete': [('state', 'in', ('draft', 'ven_draft','ven_sent'))],
+                <form string="Vendor Offer" class="o_sale_order vendor_offer_class vendoroffer_forms" duplicate="false"   attrs="{'delete': [('state', 'in', ('draft', 'ven_draft','ven_sent'))],
                 'edit': [('state', 'in', ('draft', 'ven_draft','ven_sent'))]}" >
                     <header>
                         <button name="action_send_offer_email" string="Send" type="object" context="{'send_rfq':True}"
@@ -339,7 +339,7 @@
                         </notebook>
                     </sheet>
 
-                    <div class="oe_chatter">
+                    <div class="oe_chatter chatter_class">
                         <field name="message_follower_ids" widget="mail_followers"/>
                         <field name="activity_ids" widget="mail_activity"/>
                         <field name="message_ids" widget="mail_thread"/>
