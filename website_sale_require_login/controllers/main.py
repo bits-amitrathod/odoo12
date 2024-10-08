@@ -12,5 +12,6 @@ class RequireLoginToCheckout(WebsiteSale):
     def checkout(self, **post):
         response = super().checkout(**post)
         order = request.website.sale_get_order()
-        order.team_id = order.original_team_id if order else order.team_id
+        if order is not None and order.original_team_id is not None:
+            order.team_id = order.original_team_id
         return response
