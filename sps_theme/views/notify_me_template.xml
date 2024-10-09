@@ -56,7 +56,7 @@
             </field>
 
         </record>
->>>>>>> 64c2319497531db6a219c8c94dafdaebee612966
+
 
         <!-- Email template -->
         <record id="mail_template_product_instock_notification_email" model="mail.template">
