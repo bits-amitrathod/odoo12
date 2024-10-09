@@ -33,6 +33,7 @@ class CustomerCreditNote(models.TransientModel):
                             'price_subtotal': acc_move_line.price_subtotal,
                             'price_unit': acc_move_line.price_unit,
                             'price_total': acc_move_line.price_total,
+                            'balance': acc_move_line.balance,
                             'partner_id': acc_move_line.partner_id.id,
                             'account_id': account_receivable_obj.id,  # 7 is 	1200 Account Receivable
                             'quantity': acc_move_line.quantity,
@@ -41,26 +42,24 @@ class CustomerCreditNote(models.TransientModel):
                             'debit': acc_move_line.debit,
                             'amount_residual': acc_move_line.amount_residual,
                             'amount_residual_currency': acc_move_line.amount_residual_currency,
-                            # 'display_type':"line_note",
+                            'display_type': 'payment_term',
                             'tax_base_amount':0
                         }))
-
                         # debit move line entry 1310
-
                         line_string_all.append((0, 0, {
                             'name': name,
-                            'price_subtotal': abs(acc_move_line.price_subtotal),
-                            'price_unit': abs(acc_move_line.price_unit),
-                            'price_total': abs(acc_move_line.price_total),
+                            'price_subtotal': abs(acc_move_line.balance),
+                            'price_unit': abs(acc_move_line.balance),
+                            'price_total': abs(acc_move_line.balance),
                             'partner_id': acc_move_line.partner_id.id,
                             'account_id': account_obj.id,
-                            'quantity': acc_move_line.quantity,
+                            'quantity': 1,
                             'currency_id': acc_move_line.currency_id.id,
                             'debit': acc_move_line.credit,
                             'credit': acc_move_line.debit,
                             'amount_residual': abs(acc_move_line.amount_residual),
                             'amount_residual_currency': abs(acc_move_line.amount_residual_currency),
-                            # 'display_type': 'product',
+                            'display_type': 'product',
                             'tax_base_amount': 0
                         }))
 
