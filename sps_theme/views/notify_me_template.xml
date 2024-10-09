@@ -2,6 +2,31 @@
 <odoo>
     <data>
 
+                        <!-- FORM VIEW -->
+        <record model="ir.ui.view" id="sps_theme.noti_form">
+            <field name="name">websiteCSTM form</field>
+            <field name="model">sps_theme.product_instock_notify</field>
+            <field name="arch" type="xml">
+                <form string="Website Notification">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="email"/>
+                                <field name="product_tmpl_id" string="Product"/>
+                            </group>
+                            <group>
+                                <field name="x_studio_reoccuring" ></field>
+                                <field name="is_new" invisible="1"/>
+                                <field name="status" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+
+        </record>
+
+
         <!-- Menu -->
 
         <record id="action_product_instock_notification" model="ir.actions.act_window">
@@ -31,30 +56,6 @@
                     <field name="is_new" invisible="1" />
                 </tree>
             </field>
-        </record>
-
-                       <!-- FORM VIEW -->
-        <record model="ir.ui.view" id="sps_theme.noti_form">
-            <field name="name">websiteCSTM form</field>
-            <field name="model">sps_theme.product_instock_notify</field>
-            <field name="arch" type="xml">
-                <form string="Website Notification">
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="email"/>
-                                <field name="product_tmpl_id" string="Product"/>
-                            </group>
-                            <group>
-                                <field name="x_studio_reoccuring" ></field>
-                                <field name="is_new" invisible="1"/>
-                                <field name="status" readonly="1"/>
-                            </group>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-
         </record>
 
 
