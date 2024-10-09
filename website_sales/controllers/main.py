@@ -256,7 +256,8 @@ class WebsiteSales(WebsiteSale):
         if order.workflow_process_id:
             _logger.info('- workflow_name : %s', order.workflow_process_id.name)
 
-        template = request.env.ref('website_sales.website_order_placed').sudo()
+        # template = request.env.ref('website_sales.website_order_placed').sudo()
+        template = request.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm').sudo()
 
         if request.env.user.user_id.id and not request.env.user.user_id.id == order.user_id.id:
             order.user_id = request.env.user.user_id
