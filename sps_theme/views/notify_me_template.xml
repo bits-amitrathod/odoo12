@@ -8,6 +8,11 @@
             <field name="name">Product In-stock Notification</field>
             <field name="res_model">sps_theme.product_instock_notify</field>
             <field name="view_mode">tree,form</field>
+             <field name="view_ids" eval="[(5, 0, 0),
+        (0, 0, {'view_mode': 'tree', 'view_id': ref('sps_theme.list')},),
+        (0, 0, {'view_mode': 'form', 'view_id': ref('sps_theme.noti_form')})
+        ]"/>
+            <field name="context">{'default_is_new': True}</field>
         </record>
 
         <menuitem id="menu_product_instock_notification" name="Website Product Notification"
@@ -23,11 +28,35 @@
                     <field name="email"/>
                     <field name="product_tmpl_id" string="Product"/>
                     <field name="status"/>
-                    <field name="is_new" invisible="1"/>
+                    <field name="is_new" invisible="1" />
                 </tree>
             </field>
         </record>
 
+                       <!-- FORM VIEW -->
+        <record model="ir.ui.view" id="sps_theme.noti_form">
+            <field name="name">websiteCSTM form</field>
+            <field name="model">sps_theme.product_instock_notify</field>
+            <field name="arch" type="xml">
+                <form string="Website Notification">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="email"/>
+                                <field name="product_tmpl_id" string="Product"/>
+                            </group>
+                            <group>
+                                <field name="x_studio_reoccuring" ></field>
+                                <field name="is_new" invisible="1"/>
+                                <field name="status" readonly="1"/>
+                            </group>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+
+        </record>
+>>>>>>> 64c2319497531db6a219c8c94dafdaebee612966
 
         <!-- Email template -->
         <record id="mail_template_product_instock_notification_email" model="mail.template">
@@ -149,5 +178,8 @@
             <field name='interval_type'>minutes</field>
             <field name="numbercall">-1</field>
         </record>
+
+
+
     </data>
 </odoo>
