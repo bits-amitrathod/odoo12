@@ -3,8 +3,8 @@
 <template id="report_vendorofferdraft_document">
     <t t-call="web.external_layout">
         <t t-set="o" t-value="o.with_context({'lang':o.partner_id.lang})"/>
-         <h2 style="font-size:18px;" align="center"><strong>SURGICAL SURPLUS PURCHASE OFFER</strong></h2>
-        <div class="page" style="margin-top:8px">
+         <h2 style="font-size:18px;margin-top:-50px;" align="center"><strong>SURGICAL SURPLUS PURCHASE OFFER</strong></h2>
+        <div class="page" style="margin-top:8px;">
             <div class="oe_structure"/>
              <h2 style="font-size:14px;color:red" align="center"><strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</strong></h2>
             <div class="row ">
