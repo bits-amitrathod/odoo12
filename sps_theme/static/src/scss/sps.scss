@@ -140,18 +140,6 @@ td{
     border-bottom: 1px solid;
 }
 
-//modify td css for vendor offer form
-.o_list_table{
-        table-layout:auto !important;
-    }
-
-.custom_column_width_vendor_offer {
-    display:inline-flex !important;
-    min-width: 90px !important;
-    max-width:170px !important;
-    white-space:normal !important;
-}
-
 //inventory product column draggable issue
 .column_white_space{
      white-space: normal !important;
@@ -163,3 +151,21 @@ td{
     font-size: 1.2rem;
     box-sizing: border-box;
 }
+
+.vendoroffer_forms{
+        // unique empty class for vendor offer to target parent class
+    }
+
+.o_form_view.o_xxl_form_view:has(.vendoroffer_forms){
+  flex-flow:column nowrap !important;
+}
+
+.o_form_view_container:has(.vendoroffer_forms){
+  width:100% !important;
+  height:auto!important;
+}
+
+.chatter_class{
+    width:100%!important;
+    --Chatter-max-width:98.5%!important;
+    }
