@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from email.policy import default
 from typing import Dict, Any
 from odoo import models, fields, api
 from odoo.tools.translate import _
@@ -19,9 +20,8 @@ class website_cstm(models.Model):
     def send_email_product_instock(self):
         StockNotifcation = self.env['sps_theme.product_instock_notify'].sudo()
         subcribers = StockNotifcation.search([
-            '|',
-            '&', ('status', '=', 'pending'), ('x_studio_reoccuring', '=', 'True'),
-            '&', ('status', '=', 'pending'), ('is_new', '=', 'True')
+            '|', '&' , ('status', '=', 'pending'),('x_studio_reoccuring', '=', 'True'),
+            '&',('status', '=', 'pending'),('is_new','=','True')
         ])
         notificationList = {}
         template = self.env.ref('sps_theme.mail_template_product_instock_notification_email')
