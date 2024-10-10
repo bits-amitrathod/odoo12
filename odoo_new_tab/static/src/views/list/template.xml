@@ -13,7 +13,7 @@
     <t t-name='odoo_new_tab.ListRenderer.RecordRow' t-inherit='web.ListRenderer.RecordRow' t-inherit-mode="extension" owl="1">
         <xpath expr='//tr/td[1]' position="after">
             <td class='new_tab'>
-                <t t-if="isX2Many == false">
+               <t t-if="isX2Many == false and env.config.actionId">
                     <a t-attf-href='web#id={{record.resId}}&amp;action={{env.config.actionId}}&amp;model={{record.resModel}}&amp;view_type=form' target='_blank'>
                         <i class='fa fa-external-link'/>
                     </a>
