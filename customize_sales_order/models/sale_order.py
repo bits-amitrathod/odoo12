@@ -145,11 +145,12 @@ class sale_order(models.Model):
 
     def write(self, val):
         super(sale_order, self).write(val)
-        # Add note in pick delivery
-        if self.state and self.state in 'sale':
+        # Add Sale note in pick,pull,out
+        # Need to optimize the Code
+        #TODO : We can also Move to onChange (sale_note) ,
+        if self.state and self.state in 'sale' and 'sale_note' in val:
             for pick in self.picking_ids:
-                if pick.note == False:
-                    pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
+                pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
 
         # The newly selected shipping method is now being saved
         if self.carrier_id and self.state and self.state in 'sale':
@@ -170,8 +171,8 @@ class sale_order(models.Model):
                     'body': body,
                     'model': 'stock.picking',
                     'message_type': 'notification',
-                    'reply_to_force_new': False,
-                    'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
+                    'no_auto_thread': False,
+                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
                     'res_id': stk_picking.id,
                     'author_id': self.env.user.partner_id.id,
                 }
