@@ -171,8 +171,8 @@ class sale_order(models.Model):
                     'body': body,
                     'model': 'stock.picking',
                     'message_type': 'notification',
-                    'no_auto_thread': False,
-                    'subtype_id': self.env['ir.model.data'].xmlid_to_res_id('mail.mt_note'),
+                    'reply_to_force_new': False,
+                    'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note', raise_if_not_found=True),
                     'res_id': stk_picking.id,
                     'author_id': self.env.user.partner_id.id,
                 }
