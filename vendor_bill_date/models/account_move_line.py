@@ -60,7 +60,7 @@ class AccountMoveLine(models.Model):
             res = {k: currency.round(v) for k, v in res.items()}
         return res
 
-
+    @api.model_create_multi
     def create(self, vals_list):
         # OVERRIDE
         lines = super(AccountMoveLine, self).create(vals_list)
