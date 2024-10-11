@@ -259,7 +259,10 @@ class WebsiteSales(WebsiteSale):
         template = request.env.ref('website_sales.website_order_placed').sudo()
 
         if request.env.user.user_id.id and not request.env.user.user_id.id == order.user_id.id:
+            original_team_id = order.original_team_id
             order.user_id = request.env.user.user_id
+            order.team_id = original_team_id and original_team_id.id
+
         template.email_from = 'info@surgicalproductsolutions.com'
         template.send_mail(order.id, force_send=False)
         msg = "Quotation Email Sent to: " + order.user_id.login
