@@ -265,6 +265,8 @@ class WebsiteSales(WebsiteSale):
 
         template.email_from = 'info@surgicalproductsolutions.com'
         template.send_mail(order.id, force_send=False)
+        (request.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm')
+         .sudo().send_mail(order.id, force_send=False))
         msg = "Quotation Email Sent to: " + order.user_id.login
         order.message_post(body=msg)
         _logger.info('End In payment_confirmation')
