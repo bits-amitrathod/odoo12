@@ -145,11 +145,12 @@ class sale_order(models.Model):
 
     def write(self, val):
         super(sale_order, self).write(val)
-        # Add note in pick delivery
-        if self.state and self.state in 'sale':
+        # Add Sale note in pick,pull,out
+        # Need to optimize the Code
+        #TODO : We can also Move to onChange (sale_note) ,
+        if self.state and self.state in 'sale' and 'sale_note' in val:
             for pick in self.picking_ids:
-                if pick.note == False:
-                    pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
+                pick.note = val['sale_note'] if ('sale_note' in val.keys()) else self.sale_note
 
         # The newly selected shipping method is now being saved
         if self.carrier_id and self.state and self.state in 'sale':
