@@ -498,41 +498,75 @@
 <!--                         <td class="text-right">-->
 <!--                              <span t-field="o.cash_amount_total" />-->
 
-<!--                         </td>-->
-<!--                    </tr>-->
-                     <tr t-if="o.offer_type=='cash'">
-                        <td/> <td/> <td/> <td/>
-                        <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
-                         <td class="text-right">
-                              <span t-field="o.cash_amount_total"/>
+                        <!--                         </td>-->
+                        <!--                    </tr>-->
+                        <tr t-if="o.offer_type=='cash'">
+                            <td/> <td/> <td/> <td/>
+                            <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
+                            <td class="text-right">
+                                <span t-field="o.cash_amount_total"/>
+                            </td>
+                        </tr>
+                        <tr  t-if="o.offer_type=='credit' and o.credit_amount_qpq_flag == True " >
+                            <td></td> <td></td> <td></td> <td></td>
+                            <td>
+                                Credit Amount
+                            </td> <!--<td></td>    <td></td>-->
+                            <td class="text-right">
+                                <span t-field="o.credit_amount_untaxed_before_qpa" />
+                            </td>
+                        </tr>
+                        <tr  t-if="o.offer_type=='credit' and o.credit_amount_qpq_flag == True " >
+                            <td></td> <td></td> <td></td> <td></td>
+                            <td>
+                                Additional 3 %
+                            </td> <!--<td></td>    <td></td>-->
+                            <td class="text-right">
+                                <span t-field="o.credit_amount_qpq" />
+                            </td>
+                        </tr>
+                        <tr t-if="o.offer_type=='credit'">
+                            <td/> <td/> <td/> <td/>
+                            <td>
+                                Credit Amount Total
+                            </td> <!--<td></td>    <td></td>-->
+                            <td class="text-right">
+                                <span t-field="o.credit_amount_total"/>
 
-                         </td>
-                    </tr>
-                     <tr t-if="o.offer_type=='credit'">
-                        <td/> <td/> <td/> <td/>
-                        <td>
-                            Credit Amount Total
-                        </td> <!--<td></td>    <td></td>-->
-                         <td class="text-right">
-                              <span t-field="o.credit_amount_total"/>
-
-                         </td>
-                    </tr>
-                    <tr t-if="o.offer_type=='cashcredit' or not o.offer_type">
-                        <td/> <td/> <td/> <td/>
-                        <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
-                         <td class="text-right">
-                              <span t-field="o.cash_amount_total"/>
-
-                         </td>
-                    </tr>
-                    <tr t-if="o.offer_type=='cashcredit' or not o.offer_type">
-                        <td/> <td/> <td/> <td/>
-                        <td>
-                            Credit Amount Total
-                        </td> <!--<td></td>    <td></td>-->
-                         <td class="text-right">
-                              <span t-field="o.credit_amount_total"/>
+                            </td>
+                        </tr>
+                        <tr t-if="o.offer_type=='cashcredit' or not o.offer_type">
+                            <td/> <td/> <td/> <td/>
+                            <td>Cash Amount Total</td> <!--<td></td>    <td></td>-->
+                            <td class="text-right">
+                                <span t-field="o.cash_amount_total"/>
+                            </td>
+                        </tr>
+                        <tr  t-if="(o.offer_type=='cashcredit' or not o.offer_type ) and o.credit_amount_qpq_flag == True">
+                            <td></td> <td></td> <td></td> <td></td>
+                            <td >
+                                Credit Amount
+                            </td> <!--<td></td>    <td></td>-->
+                            <td class="text-right" >
+                                <span t-field="o.credit_amount_untaxed_before_qpa" />
+                            </td>
+                        </tr>
+                        <tr  t-if="(o.offer_type=='cashcredit' or not o.offer_type) and o.credit_amount_qpq_flag == True">
+                            <td></td> <td></td> <td></td> <td></td>
+                            <td>
+                                Additional 3 %
+                            </td> <!--<td></td>    <td></td>-->
+                            <td class="text-right">
+                                <span t-field="o.credit_amount_qpq" />
+                            </td>
+                        </tr>
+                        <tr t-if="o.offer_type=='cashcredit' or not o.offer_type">
+                            <td/> <td/> <td/> <td/>
+                            <td>
+                                Credit Amount Total
+                            </td> <!--<td></td>    <td></td>-->
+                            <td class="text-right">
+                                <span t-field="o.credit_amount_total"/>
 
                          </td>
                     </tr>
