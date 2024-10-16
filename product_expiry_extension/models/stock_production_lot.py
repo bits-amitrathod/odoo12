@@ -109,6 +109,8 @@ class ProductionLot(models.Model):
                 raise UserError(_('Alert date should be less than expiration date.'))
             _logger.info("check_barcode_date stock prod lot  write 1")
         if 'use_date' not in vals and 'alert_date' in vals:
+            _logger.info("use date not specified %s ,  %s",vals['use_date'], vals['alert_date'])
+            vals['use_date'] = vals['alert_date']
             if vals['alert_date'] is not False:
                 if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(self.use_date):
                     raise UserError(_('Alert date should be less than expiration date.'))
