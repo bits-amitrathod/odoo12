@@ -106,14 +106,21 @@ class ProductionLot(models.Model):
         _logger.info("check_barcode_date stock prod lot  write")
         if 'use_date' in vals and 'alert_date' in vals:
             if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']):
-                raise UserError(_('Alert date should be less than expiration date.'))
+                _logger.info("stock lot::write()::-> alert date is greater than use date")
+                alter_date = fields.Datetime.from_string(vals['use_date']) - datetime.timedelta(days=3)
+                vals['alert_date'] = alter_date.strftime('%Y-%m-%d %H:%M:%S')
+                # raise UserError(_('Alert date should be less than expiration date.'))
+                _logger.info("stock lot::write()::-> alert date assigned less than use date")
             _logger.info("check_barcode_date stock prod lot  write 1")
         if 'use_date' not in vals and 'alert_date' in vals:
-            _logger.info("use date not specified %s ,  %s",vals['use_date'], vals['alert_date'])
-            vals['use_date'] = vals['alert_date']
+            _logger.info("stock lot::write()::-> use date not specified but alert date specified  %s ,  %s",vals['use_date'], vals['alert_date'])
             if vals['alert_date'] is not False:
                 if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(self.use_date):
-                    raise UserError(_('Alert date should be less than expiration date.'))
+                    use_date = fields.Datetime.from_string(vals['alert_date']) + datetime.timedelta(days=3)
+                    vals['use_date'] = use_date.strftime('%Y-%m-%d %H:%M:%S')
+                    _logger.info("stock lot::write()::-> use date not specified but alert date specified "
+                                 "and alert date is greater than used date")
+                    # raise UserError(_('Alert date should be less than expiration date.'))
                 _logger.info("check_barcode_date stock prod lot  write 2")
             _logger.info("check_barcode_date stock prod lot  write 3")
         if 'product_id' in vals:
