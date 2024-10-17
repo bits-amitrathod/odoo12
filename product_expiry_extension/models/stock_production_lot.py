@@ -72,7 +72,10 @@ class ProductionLot(models.Model):
             # raise UserError(_('Lot expiration date is required.'))
         elif ( ('use_date' in vals and 'alert_date' in vals and vals['alert_date']!=False) and
                (fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(vals['use_date']))):
-            raise UserError(_('Alert date should be less than expiration date.'))
+            temp_date = fields.Datetime.from_string(vals['use_date']) - datetime.timedelta(days=3)
+            alert_date = temp_date.strftime('%Y-%m-%d %H:%M:%S')
+            vals['alert_date'] = alert_date
+            # raise UserError(_('Alert date should be less than expiration date.'))
         dates = self._get_dates(vals.get('product_id') or self.env.context.get('default_product_id'))
         for d in dates:
             if not vals.get(d):
