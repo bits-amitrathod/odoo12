@@ -8,26 +8,24 @@
                         <a href="#">Contact Our Sales Team Today: <span>412.564.1280</span></a>
                     </li>
                 </ul>
-               <t t-call="website.website_search_box_input">
-                    <t t-set="_form_classes" t-valuef="o_wsale_products_searchbar_form me-auto flex-grow-1 {{_form_classes}}"/>
-                    <t t-set="_submit_classes" t-valuef="btn btn-{{navClass}}"/>
-                    <t t-set="_input_classes" t-valuef="border-0 text-bg-{{navClass}}"/>
-                    <t t-set="search_type" t-valuef="products"/>
-                    <t t-set="placeholder" t-valuef="SEARCH..."/>
-                   <t t-if="keep">
-                        <t t-set="action" t-value="keep('/shop'+ ('/category/'+slug(category)) if category else None, search=0) or '/shop'"/>
-                   </t>
-                   <t t-else="">
-                        <t t-set="action" t-value="'/shop'"/>
-                   </t>
-                    <t t-set="display_image" t-valuef="false"/>
-                    <t t-set="display_description" t-valuef="false"/>
-                    <t t-set="display_extra_link" t-valuef="false"/>
-                    <t t-set="display_detail" t-valuef="false"/>
-                    <t t-if="attrib_values">
-                        <t t-foreach="attrib_values" t-as="a">
-                            <input type="hidden" name="attrib" t-att-value="'%s-%s' % (a[0], a[1])" />
-                        </t>
+                <t t-nocache="header_search">
+                    <t t-call="website.website_search_box_input">
+                        <t t-set="_form_classes" t-valuef="o_wsale_products_searchbar_form flex-grow-1 {{_form_classes}}"/>
+                        <t t-set="_submit_classes" t-valuef="btn btn-{{navClass}}"/>
+                        <t t-set="_input_classes" t-valuef="border-0 text-bg-{{navClass}}"/>
+                        <t t-set="search_type" t-valuef="products"/>
+                        <t t-set="placeholder" t-valuef="SEARCH..."/>
+                       <t t-if="keep">
+                            <t t-set="action" t-value="keep('/shop'+ ('/category/'+slug(category)) if category else None, search=0) or '/shop'"/>
+                       </t>
+                       <t t-else="">
+                            <t t-set="action" t-value="'/shop'"/>
+                       </t>
+                        <t t-set="display_image" t-valuef="false"/>
+                        <t t-set="display_description" t-valuef="false"/>
+                        <t t-set="display_extra_link" t-valuef="false"/>
+                        <t t-set="display_detail" t-valuef="false"/>
+                        <t t-set="search" t-value="original_search or search or '' "/>
                     </t>
                 </t>
             </div>
