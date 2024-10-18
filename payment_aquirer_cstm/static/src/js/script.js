@@ -52,20 +52,23 @@ odoo.define('payment_aquirer_cstm/static/src/js/script.js', function (require) {
         $('#loader_in_stock').hide();
     };
     function selectDefaultDeliveryMethod(){
-        if ($("#fedex_ground").length==1){
-            $("#fedex_ground").prop('checked', true);
-            $("#fedex_ground").parent().trigger('click');
-        }
-        else{
-            var $input_field = $("#delivery_carrier").find("input[name='delivery_type']");
-            if ($input_field.length > 0){
-                $input_field.first().prop('checked', true);
-                $input_field.first().parent().trigger('click');
+        if ($("#delivery_carrier").length == 1){
+            if ($("#fedex_ground").length==1){
+                $("#fedex_ground").prop('checked', true);
+                $("#fedex_ground").parent().trigger('click');
             }
             else{
-                dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', {'carrier_id': 0}))
+                var $input_field = $("#delivery_carrier").find("input[name='delivery_type']");
+                if ($input_field.length > 0){
+                    $input_field.first().prop('checked', true);
+                    $input_field.first().parent().trigger('click');
+                }
+                else{
+                    dp.add(ajax.jsonRpc('/shop/update_carrier', 'call', {'carrier_id': 0}))
+                }
             }
         }
+
     }
     function disabledPayButton(){
         var disabledReasons = $payButton.data('disabled_reasons') || {};
