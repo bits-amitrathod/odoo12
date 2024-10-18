@@ -62,10 +62,13 @@ class WebsiteSales(WebsiteSale):
         if not 'order' in post:
             post.update({'order': 'actual_quantity desc'})
 
-        if brand and not category:
-            parent_category = request.env['product.public.category'].sudo().search([('name', '=', 'Manufacturer')])
-            category = request.env['product.public.category'].sudo().search([('name', '=', brand.name),('parent_id', '=', parent_category.id)])
-
+        # if brand and not category:
+        #     if isinstance(brand, str):
+        #         brand_id = int(brand)
+        #         brand = request.env['product.brand'].search([('id', '=', brand_id)])
+        #     brand_name = brand.name
+        #     parent_category = request.env['product.public.category'].sudo().search([('name', '=', 'Manufacturer')])
+        #     category = request.env['product.public.category'].sudo().search([('name', 'ilike', brand_name),('parent_id', '=', parent_category.id)])
         response = super(WebsiteSales,self).shop(page=page, category=category, search=search, min_price=min_price, max_price=max_price, ppg=ppg, **post)
 
         payload = response.qcontext

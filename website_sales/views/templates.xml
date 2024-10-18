@@ -253,7 +253,7 @@
 <!--            </ul>-->
 <!--        </li>-->
 <!--    </template>-->
-
+    <!-- Not used any where -->
     <template id="brand_recursive" name="brand list">
         <li>
             <a t-att-href="keep('/shop/brand/')" t-field="c.name" class="linkCstm"></a>

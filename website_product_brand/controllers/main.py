@@ -24,14 +24,21 @@ class WebsiteSale(WebsiteSale):
         })
         return vals
 
-    @http.route(['/page/<int:page>', '/shop/brands'], type='http', auth='public', website=True)
+    @http.route([
+        '/shop/brands/',
+        '/shop/brands/page/<int:page>'
+        ], type='http', auth='public', website=True, sitemap=WebsiteSale.sitemap_shop)
     def shopBrand(self, page=0, category=None, search='', brand=None, min_price=0.0, max_price=0.0, ppg=False, **post):
-        post.update({'brand': brand and int(brand) or 0})
-        return super(WebsiteSale,self).shop(page=page, category=category, search=search, min_price=min_price, max_price=max_price, ppg=ppg, **post)
+        if brand:
+            if isinstance(brand, str):
+                brand_id = int(brand)
+                brand = request.env['product.brand'].search([('id', '=', brand_id)])
+            brand_name = brand and brand.name or False
+            parent_category = request.env['product.public.category'].sudo().search([('name', '=', 'Manufacturer')])
+            category = request.env['product.public.category'].sudo().search([('name', 'ilike', brand_name),('parent_id', '=', parent_category.id)])
 
-    # def currency_compute(self, from_currency, to_currency):
-    #     return lambda price: from_currency.compute(price,
-    #                                                to_currency)
+        return super(WebsiteSale,self).shop(page=page, category=category,search=search, min_price=min_price, max_price=max_price,  ppg=ppg, brand=brand, **post)
+
 
     # Method to get the brands.
     @http.route(['/page/product_brands'], type='http', auth='public',
