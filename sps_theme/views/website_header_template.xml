@@ -15,12 +15,7 @@
                         <t t-set="_input_classes" t-valuef="border-0 text-bg-{{navClass}}"/>
                         <t t-set="search_type" t-valuef="products"/>
                         <t t-set="placeholder" t-valuef="SEARCH..."/>
-                       <t t-if="keep">
-                            <t t-set="action" t-value="keep('/shop'+ ('/category/'+slug(category)) if category else None, search=0) or '/shop'"/>
-                       </t>
-                       <t t-else="">
-                            <t t-set="action" t-value="'/shop'"/>
-                       </t>
+                        <t t-set="action" t-value="'/shop'"/>
                         <t t-set="display_image" t-valuef="false"/>
                         <t t-set="display_description" t-valuef="false"/>
                         <t t-set="display_extra_link" t-valuef="false"/>

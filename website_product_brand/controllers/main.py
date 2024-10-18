@@ -35,7 +35,9 @@ class WebsiteSale(WebsiteSale):
                 brand = request.env['product.brand'].search([('id', '=', brand_id)])
             brand_name = brand and brand.name or False
             parent_category = request.env['product.public.category'].sudo().search([('name', '=', 'Manufacturer')])
-            category = request.env['product.public.category'].sudo().search([('name', 'ilike', brand_name),('parent_id', '=', parent_category.id)])
+            category = request.env['product.public.category'].sudo().search([('name', '=', brand_name),('parent_id', '=', parent_category.id)])
+            if not category:
+                category = request.env['product.public.category'].sudo().search([('name', 'ilike', brand_name), ('parent_id', '=', parent_category.id)], limit=1)
 
         return super(WebsiteSale,self).shop(page=page, category=category,search=search, min_price=min_price, max_price=max_price,  ppg=ppg, brand=brand, **post)
 
