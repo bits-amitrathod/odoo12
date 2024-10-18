@@ -196,7 +196,7 @@ header{
                 }
             }
             .o_searchbar_form{
-                margin: 0 !important;
+                margin: 5px 5px !important;
                 flex-grow: unset !important;
                 .input-group{
                     .form-control{
@@ -1319,7 +1319,11 @@ li > * > li > ol {
 
 @media screen and (max-width: 767px){
    .o_wsale_products_searchbar_form{
-        display:none !important;
+//         display:none !important;
+
+        display: block;
+        width: 100%;
+        margin: 0 auto;
    }
    .products_pager{
        margin-left: -16px;
