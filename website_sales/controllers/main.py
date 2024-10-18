@@ -53,8 +53,6 @@ class WebsiteSales(WebsiteSale):
         '/shop/page/<int:page>',
         '/shop/category/<model("product.public.category"):category>',
         '/shop/category/<model("product.public.category"):category>/page/<int:page>',
-        '/shop/brand/<model("product.brand"):brand>',
-        '/shop/brand/<model("product.brand"):brand>/page/<int:page>'
         ], type='http', auth="public", website=True, sitemap=WebsiteSale.sitemap_shop)
     def shop(self, page=0, category=None, search='', min_price=0.0, max_price=0.0, ppg=False, brand=None, **post):
         title = "Shop Surgical Surplus"
@@ -70,7 +68,6 @@ class WebsiteSales(WebsiteSale):
         #     parent_category = request.env['product.public.category'].sudo().search([('name', '=', 'Manufacturer')])
         #     category = request.env['product.public.category'].sudo().search([('name', 'ilike', brand_name),('parent_id', '=', parent_category.id)])
         response = super(WebsiteSales,self).shop(page=page, category=category, search=search, min_price=min_price, max_price=max_price, ppg=ppg, **post)
-
         payload = response.qcontext
 
         # c_all_id = request.env['product.public.category'].search([('name', 'ilike', 'All')], limit=1)
