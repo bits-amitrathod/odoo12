@@ -38,7 +38,7 @@
                     amounting in <strong> <t t-out="format_amount(object.amount_total, object.currency_id)"></t></strong>
                     from <t t-out="object.company_id.name"></t>.
 
-                    <t t-if="object.payment_state in ('paid', 'in_payment')">
+                    <t t-if="object.payment_state in ('paid', 'in_payment', 'reversed')">
                         This invoice is already paid.
                     </t>
                     <t t-else="">
