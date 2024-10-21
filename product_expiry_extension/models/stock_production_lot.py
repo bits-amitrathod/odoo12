@@ -146,8 +146,7 @@ class ProductionLot(models.Model):
                 product_ids = self._search_qty_available_new(
                     operator, value )
             return [('id', 'in', product_ids)]
-        else:
-            pass
+        return []
 
     def _search_qty_available_new(self, operator, value):
         # lot_list = self.env['stock.production.lot'].search([('product_id','=',self._context['default_product_id']),('product_qty','>', value)]).ids
