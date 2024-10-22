@@ -22,7 +22,7 @@ class website_product_download_catelog_cstm(models.Model):
         return super(website_product_download_catelog_cstm, self).write(vals)
 
     def setActive(self,vals):
-        if vals['status'] == 'active':
+        if vals.get('status') == 'active':
             self.env.cr.execute(
                 "UPDATE sps_theme_product_download_catelog SET  status='inactive' WHERE status ='active'")
 
