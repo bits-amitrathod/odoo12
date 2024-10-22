@@ -95,28 +95,36 @@ class ThemeController(http.Controller):
 
     @http.route('/downloadCatalog', type='http', auth="public", website=True)
     def downloadCatalog(self):
+        # Search for the active product download catalog
         result = request.env['sps_theme.product_download_catelog'].search([('status', '=', 'active')], limit=1)
+
         if result:
-            id = result.id
+            catalog_id = result.id
+            # Fetch the binary content directly from the binary field
+            file_content = result.file  # 'file' is the binary field in the model
+            filename = result.filename  # 'filename' field stores the file name
 
-            status, headers, content = request.env['ir.http'].binary_content(model='sps_theme.product_download_catelog',
-                                                                             id=id,
-                                                                             field='file',
-                                                                             filename_field='filename',
-                                                                             download=True)
-
-            if not content:
+            if not file_content:
+                # If the file content is empty, use a placeholder image
                 img_path = modules.get_module_resource('web', 'static/src/img', 'placeholder.png')
                 with open(img_path, 'rb') as f:
-                    image = f.read()
-                content = base64.b64encode(image)
-            if status == 304:
-                return werkzeug.wrappers.Response(status=304)
-            image_base64 = base64.b64decode(content)
-            headers.append(('Content-Length', len(image_base64)))
-            response = request.make_response(image_base64, headers)
-            response.status = str(status)
+                    file_content = base64.b64encode(f.read())
+
+            # Decode the file content from base64 for serving
+            file_data = base64.b64decode(file_content)
+
+            # Set the headers to serve the file as a download
+            headers = [
+                ('Content-Type', 'application/octet-stream'),
+                ('Content-Disposition', f'attachment; filename="{filename}"'),
+                ('Content-Length', str(len(file_data))),
+            ]
+
+            # Create and return the response
+            response = request.make_response(file_data, headers)
             return response
+
+        # If no catalog is found, raise a 404 error
         raise werkzeug.exceptions.NotFound()
 
     @http.route('/notifyme', type='json', auth="public", methods=['POST'], website=True, csrf=False)
