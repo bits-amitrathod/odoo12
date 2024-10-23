@@ -49,12 +49,12 @@
         <!--tier data start-->
 
           <record id="object7" model="tier.tier">
-             <field name="name">I</field>
+             <field name="name">1</field>
              <field name="code">1</field>
            </record>
 
          <record id="object8" model="tier.tier">
-             <field name="name">II</field>
+             <field name="name">2</field>
              <field name="code">2</field>
            </record>
 
