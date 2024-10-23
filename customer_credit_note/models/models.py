@@ -139,6 +139,21 @@ class AccountInvoiceVendorCredit(models.Model):
                               readonly=True, states={'draft': [('readonly', False)]},
                               copy=False)  # Remove the default here
 
+    def _compute_payment_state(self):
+        """
+        Overrided the odoo account.move compute method to update the invoice status from
+        reversed --> paid, as per client requirement, no invoice should be in reversed state after settle
+        with vendor credit note.
+        :return none:
+        """
+        res = super(AccountInvoiceVendorCredit,self)._compute_payment_state()
+        for invoice in self:
+            if invoice.payment_state == 'reversed':
+                invoice.payment_state = 'paid'
+        return res
+
+
+
     @api.model
     def create(self, vals):
         # setting user_id explicitly here by overriding create method if user id not found then set as current users id as default
