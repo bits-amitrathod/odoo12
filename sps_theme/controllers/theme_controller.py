@@ -116,7 +116,7 @@ class ThemeController(http.Controller):
             # Set the headers to serve the file as a download
             headers = [
                 ('Content-Type', 'application/octet-stream'),
-                ('Content-Disposition', f'attachment; filename="{filename}"'),
+                ('Content-Disposition', f'filename="{filename}"'),
                 ('Content-Length', str(len(file_data))),
             ]
 
