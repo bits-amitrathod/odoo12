@@ -17,7 +17,9 @@ class OnHandByDate(models.Model):
     _auto = False
 
     sku_code = fields.Char('Product SKU')
-    product_name = fields.Char("Product Name")
+    # To resolve json issue for product_name field inserted new attribute translate=True
+    # Other way to resolve this issue by changing field type to json
+    product_name = fields.Char("Product Name" ,translate=True)
     qty_done = fields.Float("Product Qty", digits='Product Unit of Measure')
     vendor_name = fields.Char("Vendor Name")
     price_unit = fields.Float("Unit Price")
