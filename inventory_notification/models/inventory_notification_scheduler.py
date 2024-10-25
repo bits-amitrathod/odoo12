@@ -454,7 +454,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                             products[line.product_id.id] = line.product_id
 
                 subject = "Your Updated SPS Ordering List"
-
+                # href="https://www.shopsps.com/downloadCatalog"
                 descrption =  Markup("""  
 
                  <strong>Good morning """ + customr.name + """,</strong>

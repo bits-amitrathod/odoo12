@@ -67,8 +67,8 @@ class ProductionLot(models.Model):
     @api.model
     def create(self, vals):
         _logger.info("check_barcode_date stock prod lot create")
-        _logger.info("stock lot::create()::-> use date: %s , Alert date: %s",
-                     vals['use_date'], vals['alert_date'])
+        # _logger.info("stock lot::create()::-> use date: %s , Alert date: %s",
+        #              vals['use_date'], vals['alert_date'])
         if 'use_date' not in vals:
             vals = self._set_required_vals_to_create_lot(vals)
             # raise UserError(_('Lot expiration date is required.'))
@@ -119,7 +119,7 @@ class ProductionLot(models.Model):
                 # _logger.info("stock lot::write()::-> alert date assigned less than use date")
             _logger.info("check_barcode_date stock prod lot  write 1")
         if 'use_date' not in vals and 'alert_date' in vals:
-            _logger.info("stock lot::write()::-> use date not specified but alert date specified  %s ,  %s",vals['use_date'], vals['alert_date'])
+            # _logger.info("stock lot::write()::-> use date not specified but alert date specified  %s ,  %s",vals['use_date'], vals['alert_date'])
             if vals['alert_date'] is not False:
                 if fields.Datetime.from_string(vals['alert_date']) >= fields.Datetime.from_string(self.use_date):
                     # use_date = fields.Datetime.from_string(vals['alert_date']) + datetime.timedelta(days=3)
