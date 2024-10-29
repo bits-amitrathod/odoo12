@@ -55,7 +55,7 @@ class InventoryCustomProductPopUp(models.TransientModel):
 
         insert = "INSERT INTO cust_pro_catalog (product_tmpl_id,sku,manufacture,name,qty,list_price," \
                  "min_date,max_date,user_id )"
-        part1 = insert + " SELECT  product_tmpl_id , sku, Manufacture, name, actual_quantity, list_price, min, max," \
+        part1 = insert + " SELECT  product_tmpl_id , sku, Manufacture, name ->> 'en_US', actual_quantity, list_price, min, max," \
                          " user_id " \
                          " FROM " \
                          " (" \
