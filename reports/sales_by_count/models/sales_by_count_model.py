@@ -30,7 +30,7 @@ class ProductSaleByCountReport(models.Model):
                 ROW_NUMBER () OVER (ORDER BY product_template.name) as id, 
                 public.product_template.sku_code     AS sku_code,
                 public.product_template.id         AS product_tmpl_id,
-                public.uom_uom.name              AS product_uom,
+                public.uom_uom.name ->> 'en_US'    AS product_uom,
                 SUM(sale_order_line.qty_delivered) AS quantity
             FROM
                 public.sale_order
