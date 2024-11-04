@@ -27,7 +27,7 @@ class ThemeController(http.Controller):
 
     @http.route('/contact-us', type='http', auth="public", website=True)
     def contact(self):
-        return http.request.render('sps_theme.contact_page_template1')
+        return http.request.render('sps_theme.contact_page_template')
 
     @http.route('/stockhawk', type='http', auth="public", website=True)
     def stockhawk(self):
