@@ -29,6 +29,12 @@
                 <xpath expr="//group[@id='header_right_group']/field[@name='payment_reference']" position="replace"/>
                 <xpath expr="//group[@id='header_right_group']/field[@name='partner_bank_id']" position="replace"/>
 
+
+                <xpath expr="//widget[@name='web_ribbon'][1]" position="replace">
+                    <widget name="web_ribbon" title="Paid" attrs="{'invisible': ['|', ('payment_state', 'not in', ('paid', 'reversed')), ('move_type', 'not in', ('out_invoice', 'out_refund', 'in_invoice', 'in_refund', 'out_receipt', 'in_receipt'))]}"/>
+                </xpath>
+                <xpath expr="//widget[@name='web_ribbon'][4]" position="replace"/>
+
                 <group id="header_left_group" position="replace">
                     <group id="header_left_group">
                         <label for="partner_id" string="Customer" style="font-weight:bold;" attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund', 'out_receipt'))]}"/>
@@ -196,6 +202,11 @@
                             domain="[('state', '=', 'posted'), ('payment_state', '=', 'partial')]"
                     />
                 </xpath>
+                <xpath expr="//search/filter[@name='closed']" position="replace">
+                    <!-- in_payment & paid or reversed-->
+                    <filter name="closed" string="Paid" domain="[('state', '=', 'posted'), ('payment_state', 'in', ('in_payment', 'paid', 'reversed'))]"/>
+                </xpath>
+
             </field>
          </record>
 
