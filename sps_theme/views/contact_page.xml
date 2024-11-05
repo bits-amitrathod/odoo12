@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-	<template id="contact_page_template1" name="Contact Form" inherit_id="website.contactus" customize_show="True">
+	<template id="contact_page_template" name="Contact Form" inherit_id="website.contactus" customize_show="True">
 		<xpath expr="//div[@id='wrap']" position="replace">
 			<div id="wrap" class="oe_structure oe_empty">
 				<section class="contact-us-section  mb0">
@@ -90,7 +90,7 @@
 								<div class="get-in-touch">
 									<h3 class="title">GET IN TOUCH</h3>
 									<span class="sub-title">Use the form below to get in touch with us, and we’ll respond as soon as possible. </span>
-									<form action="/website_form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
+									<form action="/website/form/" method="post" data-model_name="crm.lead" data-success_page="/thank-you" class="mt-5 s_website_form form-horizontal container-fluid" enctype="multipart/form-data" data-editable-form="false">
 										<div class="col-md-8">
 
 											<div class="input-group has-float-label form-field o_website_form_required_custom">
