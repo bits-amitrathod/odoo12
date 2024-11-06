@@ -6,6 +6,9 @@
         <field name="inherit_id" ref="crm.crm_lead_view_form"/>
         <field name="arch" type="xml">
 
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">false</attribute>
+            </xpath>
             <xpath expr="//page[@name='lead']//group//field[@name='partner_name']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
