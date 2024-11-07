@@ -510,7 +510,12 @@ class InventoryNotificationScheduler(models.TransientModel):
                                         <td style="width: 157px; height: 78px;">
                                         <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
                                         <p style="text-align: left;">412-745-0317</p>
-                                    </td>
+                                        </td>
+                                        
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Hannah Kostyak</strong></p>
+                                        <p style="text-align: left;">412-643-3207</p>
+                                        </td>
                                     
                                     </tr>
                                     <tr style="height: 76px;">
@@ -628,10 +633,15 @@ class InventoryNotificationScheduler(models.TransientModel):
         #         _logger.exception(e)
 
         try:
-            query = """ update res_partner set todays_notification = true where customer_rank >= 1 and is_parent = true
-                and email is not null and active = true and todays_notification = false  and  """ + weekday + """ = true  
-                and ( (start_date is null and end_date is null )     or  (end_date is not null and  end_date > CURRENT_DATE)   
-                or  (start_date is not null and  start_date < CURRENT_DATE)    ) 	    """
+            query = """ update res_partner set todays_notification = true 
+            where customer_rank >= 1 and is_parent = true
+                and email is not null and active = true 
+                and ((todays_notification = false) or (todays_notification is Null))  
+                and  """ + weekday + """ = true  
+                and ( (start_date is null and end_date is null ) 
+                        or  (end_date is not null and  end_date >= CURRENT_DATE)   
+                        or  (start_date is not null and  start_date <= CURRENT_DATE)    
+                    ) 	    """
 
             self.env.cr.execute(query)
         except Exception as e:
