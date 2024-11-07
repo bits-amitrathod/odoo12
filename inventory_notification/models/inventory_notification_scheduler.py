@@ -513,7 +513,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                         </td>
                                         
                                         <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Hannah kostyak</strong></p>
+                                        <p style="text-align: left;"><strong>Hannah Kostyak</strong></p>
                                         <p style="text-align: left;">412-643-3207</p>
                                         </td>
                                     
