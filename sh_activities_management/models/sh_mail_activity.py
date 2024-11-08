@@ -164,13 +164,15 @@ class MailActivity(models.Model):
     @api.depends('date_deadline')
     def _compute_state(self):
         super(MailActivity, self)._compute_state()
-        for record in self.filtered(lambda activity: not activity.active):
-            if record.activity_cancel:
-                record.state = 'cancel'
-            if record.activity_done:
-                record.state = 'done'
-        for activity_record in self.filtered(lambda activity: activity.active):
-            activity_record.sh_state = activity_record.state
+        for record in self:
+            if record.active:
+                if  record.sh_state != record.state:
+                    record.sh_state = record.state
+            else:
+                if record.activity_cancel:
+                    record.state = 'cancel'
+                if record.activity_done:
+                    record.state = 'done'
 
     def write(self, vals):
         if self:
