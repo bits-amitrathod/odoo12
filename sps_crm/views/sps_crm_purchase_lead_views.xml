@@ -234,7 +234,7 @@
             <field name="name">crm.lead.form</field>
             <field name="model">crm.lead</field>
             <field name="arch" type="xml">
-                <form class="o_lead_opportunity_form" js_class="crm_form">
+                <form class="o_lead_opportunity_form" js_class="crm_form" create="False">
                     <header>
                         <!--client want to hide-->
                         <!--<button name="action_purchase_set_won_rainbowman" string="Mark Won"
