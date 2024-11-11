@@ -1,7 +1,6 @@
 from odoo import models, fields, api, modules, exceptions, _
 from odoo.tools.misc import clean_context
 
-
 class MailActivityNotesCustom(models.Model):
     """ Inherited Mail Acitvity to add custom field"""
     _inherit = 'mail.activity'
@@ -442,7 +441,7 @@ class MailThreadExtendCRM(models.AbstractModel):
             # fetch "parent" subscription data (aka: subtypes on project to propagate on task)
             doc_data = [(model, [updated_values[fname] for fname in fnames]) for model, fnames in updated_relation.items()]
             res = self.env['mail.followers']._get_subscription_data(doc_data, None, include_pshare=True, include_active=True)
-            for fid, rid, pid, cid, subtype_ids, pshare, active in res:
+            for fid, rid, pid, subtype_ids, pshare, active in res:
                 # use project.task_new -> task.new link
                 sids = [parent[sid] for sid in subtype_ids if parent.get(sid)]
                 # add checked subtypes matching model_name
@@ -452,8 +451,6 @@ class MailThreadExtendCRM(models.AbstractModel):
                         new_partners[pid] = set(sids) - set(all_int_ids)
                     else:
                         new_partners[pid] = set(sids)
-                if cid:  # never subscribe channels to internal subtypes
-                    new_channels[cid] = set(sids) - set(all_int_ids)
 
         notify_data = dict()
         res = self._message_auto_subscribe_followers(updated_values, def_ids)
