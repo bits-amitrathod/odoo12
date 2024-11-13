@@ -429,7 +429,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                             _logger.info(contact.email)
                             # Add this condition to include sales of all contact ticket 668
                             if contact.email != customr.email:
-                                if contact.type not in ['other','invoice']:
+                                if contact.type not in ['other', 'invoice', 'delivery', 'private', 'followup']:
                                     email_list_cc.append(contact.email)
                         # email_queue.append(contact.email)
                 if (customr.historic_months > 0):
