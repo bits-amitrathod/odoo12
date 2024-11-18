@@ -429,7 +429,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                             _logger.info(contact.email)
                             # Add this condition to include sales of all contact ticket 668
                             if contact.email != customr.email:
-                                if contact.type not in ['other','invoice']:
+                                if contact.type not in ['other','invoice','delivery','private','followup']:
                                     email_list_cc.append(contact.email)
                         # email_queue.append(contact.email)
                 if (customr.historic_months > 0):
@@ -1623,3 +1623,241 @@ class InventoryNotificationScheduler(models.TransientModel):
             (cust_location_id, product_id.id, last_3_months))
         quant = self.env.cr.fetchone()
         return quant[0]
+
+
+    # *************************** Testing Purpose : if customer id provided ********************************
+
+    def process_notification_scheduler_test(self, customer_ids=None):
+        if customer_ids is None:
+            param_value = self.env['ir.config_parameter'].sudo().get_param('notification_scheduler_customer_ids')
+            customer_ids = [int(id) for id in param_value.split(',')] if param_value else []
+
+
+        self.process_in_stock_scheduler_test(customer_ids)
+
+    def process_in_stock_scheduler_test(self, customer_ids):
+        # email_queue = []
+        today_date = date.today()
+        today_start = today_date
+
+        # Ensure customer_ids is a list
+        if isinstance(customer_ids, int):
+            customer_ids = [customer_ids]
+
+        if customer_ids:
+            # Get the specific customer if a customer ID is provided using customer id
+            customers = self.env['res.partner'].search(
+                [('id', 'in', customer_ids), ('customer_rank', '>=', 1), ('is_parent', '=', True),
+                 ('email', '!=', ''), ('active', '=', True), ('todays_notification', '=', True)]
+            )
+        else:
+            # Otherwise, skip
+            pass
+
+        super_user = self.env['res.users'].search([('id', '=', SUPERUSER_ID_INFO), ])
+        start = time.time()
+        count = 0
+        for customr in customers:
+            count = count + 1
+            _logger.info("@Processing Count Of Customer = >")
+            _logger.info(str(count) + " / " + str(len(customers)))
+            # if (customr.email not in email_queue):
+            _logger.info(customr.email)
+            _logger.info("customr.start_date")
+            _logger.info(customr.start_date)
+            _logger.info("customr.end_date")
+            _logger.info(customr.end_date)
+            if (customr.start_date == False and customr.end_date == False) \
+                    or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.end_date) >= today_start) \
+                    or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.start_date) <= today_start) \
+                    or (
+                    customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+                customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                customr.end_date) >= today_start) \
+                    or (customr.end_date is None):
+                to_customer = customr
+                contacts = self.env['res.partner'].search(
+                    [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+                _logger.info("contacts")
+                _logger.info(contacts)
+                product_list = []
+                cust_ids = []
+                cust_ids.append(customr.id)
+                email_list_cc = []
+                for contact in contacts:
+                    # if (contact.email not in email_queue):
+                    if (contact.email not in email_list_cc):
+                        if (contact.start_date == False and contact.end_date == False) \
+                                or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) >= today_start) \
+                                or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) <= today_start) \
+                                or (InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                            contact.end_date) >= today_start):
+                            cust_ids.extend(contact.ids)
+                            _logger.info("cc Customer =")
+                            _logger.info(contact.email)
+                            # Add this condition to include sales of all contact ticket 668
+                            if contact.email != customr.email:
+                                if contact.type not in ['other', 'invoice', 'delivery', 'private', 'followup']:
+                                    email_list_cc.append(contact.email)
+                        # email_queue.append(contact.email)
+                if (customr.historic_months > 0):
+                    historic_day = customr.historic_months * 30
+                    # _logger.info("historic_day :%r", historic_day)
+                    last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                    # _logger.info("date order  :%r", last_day)
+                    sales = self.env['sale.order'].search(
+                        [('partner_id', 'in', cust_ids), ('date_order', '>', last_day)])
+                else:
+                    # historic_day = 36 * 30
+                    # _logger.info("historic_day :%r", historic_day)
+                    # last_day = fields.Date.to_string(datetime.now() - timedelta(days=historic_day))
+                    sales = self.env['sale.order'].search([('partner_id', 'in', cust_ids)])
+                # _logger.info("sales  :%r", sales)
+                products = {}
+                for sale in sales:
+                    sale_order_lines = self.env['sale.order.line'].search([('order_id.id', '=', sale.id)])
+                    for line in sale_order_lines:
+                        # _logger.info(" product_id qty_available %r", line.product_id.actual_quantity)
+                        if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
+                            products[line.product_id.id] = line.product_id
+
+                subject = "Your Updated SPS Ordering List"
+                # href="https://www.shopsps.com/downloadCatalog"
+                descrption = Markup("""  
+
+                 <strong>Good morning """ + customr.name + """,</strong>
+                  <br/> <br/> Listed below are items you have previously requested or purchased with us that are 
+                  currently in stock. You will also see two links to either download our
+                  <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'> full catalog (Excel) </a> 
+                  or go directly to our <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E;"> 
+                  online portal </a> to place an order.
+                  Please reach out to your rep directly if there are any products they can add or remove from this report.
+                  <br/> 
+                  <br/><center>
+                  <br/><br/>
+                  <div class="text-center" style="text-align: center;">
+                  <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; 
+                  border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px;
+                  font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" 
+                  class="o_default_snippet_text">Order Online Here</a>
+                                  </div>
+                                  </center><br/><br/>
+
+
+
+
+                """)
+                header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
+                          'Min Exp. Date', 'Max Exp. Date', 'Unit Of Measure']
+                columnProps = ['product_brand_id.name', 'sku_code', 'name', 'customer_price_list', 'actual_quantity',
+                               'str_min', 'str_max', 'uom_id.name']
+                closing_content = Markup("""
+                                    Please reply to this email or contact your Account Manager to hold product or place an order. If you would like to place an order on your own please click on the link "Order Online Here".
+                                    <br/> Thank you <br/>
+
+                                    <br/>
+                                    <table style="height: 96px; width: 601px;" border="0">
+                                    <tbody>
+                                    <tr style="height: 78px;">
+
+                                        <td style="width: 154px; height: 78px;">
+                                        <p><strong>Maddie Cotter</strong></p>
+                                        <p>412-240-4049&nbsp;</p>
+                                        </td>
+
+                                        <td style="width: 154px; height: 78px;">
+                                        <p><strong>Shannon Parker</strong></p>
+                                        <p>412-564-9011&nbsp;</p>
+                                        </td>
+
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Phil Kemp</strong></p>
+                                        <p style="text-align: left;">412-745-1327</p>
+                                        </td>
+
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
+                                        <p style="text-align: left;">412-745-0317</p>
+                                        </td>
+
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Hannah Kostyak</strong></p>
+                                        <p style="text-align: left;">412-643-3207</p>
+                                        </td>
+
+                                    </tr>
+                                    <tr style="height: 76px;">
+
+                                        <td style="width: 156px; height: 76px;">
+                                        <p><strong>Carley Fritsch</strong></p>
+                                        <p>412-643-4597</p>
+                                        </td>
+
+                                        <td style="width: 172px; height: 76px;">
+                                        <p><strong>Sasha Khripkova</strong></p>
+                                        <p>412-643-3816</p>
+                                        </td>
+
+                                        <td style="width: 156px; height: 76px;">
+                                        <p><strong>Theresa Carmody</strong></p>
+                                        <p>412-286-2212</p>
+                                        </td>
+
+                                        <td style="width: 157px; height: 76px;">
+                                        <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
+                                        <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
+                                        </td>
+
+                                        <td style="width: 172px; height: 76px;">
+                                        <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
+                                        <p style="text-align: left;">412-248-1284</p>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                    </table>
+                                    <br/>
+                                    <div class="text-center" style="text-align: center;">
+                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
+                                    </div>
+
+                                    """)
+                if products:
+                    product_list.extend(list(products.values()))
+                    # Remove excluded product from list
+                    excluded_products = self.env['exclude.product.in.stock'].search([('partner_id', '=', customr.id)])
+                    if excluded_products:
+                        for excluded_product in excluded_products:
+                            if excluded_product.product_id in product_list:
+                                product_list.remove(excluded_product.product_id)
+
+                    if customr.user_id.email:
+                        if customr.user_id.name == "National Accounts" and customr.national_account_rep and not customr.account_manager_cust:
+                            email_list_cc.append(customr.national_account_rep.email)
+                        else:
+                            email_list_cc.append(customr.user_id.email)
+                    if customr.account_manager_cust.email:
+                        email_list_cc.append(customr.account_manager_cust.email)
+                        if customr.customer_success and customr.customer_success.email:
+                            email_list_cc.append(customr.customer_success.email)
+                    sort_col = True
+                    self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
+                                                                   product_list,
+                                                                   header, columnProps, closing_content,
+                                                                   customr.email,
+                                                                   email_list_cc, sort_col, is_employee=False,
+                                                                   partner_id=customr)
+            else:
+                pass
+            customr.todays_notification = False
+        end = time.time()
+        _logger.info("Time for Execution")
+        _logger.info(end - start)
