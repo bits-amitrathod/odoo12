@@ -10,7 +10,7 @@ class CustomerContract(models.Model):
     _inherit = "res.partner"
 
     exclude_in_stock_product_ids = fields.One2many('exclude.product.in.stock', 'partner_id')
-    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", tracking=True)
+    customer_success = fields.Many2one('res.users',  string="Customer Success", tracking=True)
 
     def _get_default_user_id(self):
         res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
