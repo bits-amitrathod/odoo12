@@ -468,7 +468,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                   <br/><center>
                   <br/><br/>
                   <div class="text-center" style="text-align: center;">
-                  <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; 
+                  <a target="_blank" href="/shop/quote_my_report/" style="background-color:#C4262E; 
                   border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px;
                   font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" 
                   class="o_default_snippet_text">Order Online Here</a>
@@ -549,7 +549,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </table>
                                     <br/>
                                     <div class="text-center" style="text-align: center;">
-                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
+                                        <a target="_blank" href="/shop/quote_my_report/" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
                                     </div>
 
                                     """)
@@ -1745,7 +1745,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                   <br/><center>
                   <br/><br/>
                   <div class="text-center" style="text-align: center;">
-                  <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; 
+                  <a target="_blank" href="/shop/quote_my_report/" style="background-color:#C4262E; 
                   border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px;
                   font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" 
                   class="o_default_snippet_text">Order Online Here</a>
@@ -1826,7 +1826,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                     </table>
                                     <br/>
                                     <div class="text-center" style="text-align: center;">
-                                        <a target="_blank" href="/shop/quote_my_report/""" + str(customr.id) + """" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
+                                        <a target="_blank" href="/shop/quote_my_report/" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
                                     </div>
 
                                     """)
