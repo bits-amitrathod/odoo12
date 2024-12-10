@@ -237,16 +237,42 @@ class SPSCustomerPortal(CustomerPortal):
             _logger.error("getting error while sending email of sales order : %r", exc)
             response = {'message': 'Unable to connect to SMTP Server'}
 
+    # modified this method to allow to reject qouatation without message
+    # there was a mistake in form post method url they were using /decline core method not customized method so the core method was calling
+    # the code snippet causing error for decline messge is empty so modified that in following code
+
     @http.route(['/my/orders/<int:order_id>/declines'], type='http', auth="public", methods=['POST'], website=True)
-    def decline(self, order_id, access_token=None, **post):
+    def decline(self, order_id, access_token=None, decline_message= None,**post):
+
         try:
             order_sudo = self._document_check_access('sale.order', order_id, access_token=access_token)
         except (AccessError, MissingError):
             return request.redirect('/my')
 
-        order_sudo.action_cancel()
-        message = post.get('decline_message')
 
+        # Assign default message
+        if not decline_message:
+            decline_message = 'Rejected'
+
+
+        # by pass decline message required condition by sending default message
+        # include_draft set true to avoid edit order reject button not working issue.
+        if order_sudo._has_to_be_signed(include_draft = True) and decline_message:
+            order_sudo._action_cancel()
+
+            _message_post_helper(
+                'sale.order',
+                order_sudo.id,
+                decline_message,
+                token=access_token,
+            )
+
+            redirect_url = order_sudo.get_portal_url()
+        else:
+            redirect_url = order_sudo.get_portal_url(query_string="&message=cant_reject")
+
+
+        message = post.get('decline_message','')
         if message:
             order_sudo.write({'sale_note': message})
             body = _(message)
@@ -270,9 +296,8 @@ class SPSCustomerPortal(CustomerPortal):
                 }
                 request.env['mail.message'].sudo().create(values)
 
-        query_string = False
 
-        return request.redirect(order_sudo.get_portal_url(query_string=query_string))
+        return request.redirect(redirect_url)
 
 
 class CustomerPortal(CustomerPortal):
