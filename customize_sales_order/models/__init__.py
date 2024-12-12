@@ -5,3 +5,5 @@ from . import stock_picking
 from . import res_partner
 from . import res_user
 from . import sale_pay_link
+from . import stock_valuation_layer_export
+

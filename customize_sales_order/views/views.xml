@@ -406,6 +406,34 @@
             </field>
         </record>
 
+        <record id="view_stock_valuation_layer_export_form" model="ir.ui.view">
+            <field name="name">stock.valuation.layer.export</field>
+            <field name="model">stock.valuation.layer</field>
+            <field name="arch" type="xml">
+                <form string="Export Stock Valuation">
+                    <sheet>
+                        <div>
+                            Click On 'Export Report' button to export the Stock Valuation Report.
+                        </div>
+                        <footer>
+                            <button name="download_excel_stock_valuation" string="Export To File" type="object"
+                                    class="btn-primary"/>
+                            <button string="Cancel" class="btn-default" special="cancel"/>
+                        </footer>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="stock_valuation_layer_action_export" model="ir.actions.act_window">
+            <field name="name">Export Stock Valuation</field>
+            <field name="res_model">stock.valuation.layer</field>
+            <field name="binding_model_id" ref="stock_account.model_stock_valuation_layer"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_stock_valuation_layer_export_form"/>
+            <field name="target">new</field>
+        </record>
+
     </data>
 </odoo>
 
