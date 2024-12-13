@@ -136,12 +136,18 @@ class ExportStockValuationXL(http.Controller):
             # Write the header
             for i, fieldname in enumerate(field):
                 worksheet.write(0, i, fieldname, base_format)
-                if fieldname.lower() == 'product name':
-                    worksheet.set_column(i, i, 140)  # Set column width for the product name to 50 characters
-                elif i == 1:  # Example for other specific columns
+
+                if i == 1:
                     worksheet.set_column(i, i, 20)  # Set column width for column `i` to 20 characters
                 else:
-                    worksheet.set_column(i, i, 20)  # Default width for other columns
+                    worksheet.set_column(i, i, 40)  # Default width for other columns
+
+                # if fieldname.lower() == 'product name':
+                #     worksheet.set_column(i, i, 140)  # Set column width for the product name to 50 characters
+                # elif i == 1:  # Example for other specific columns
+                #     worksheet.set_column(i, i, 20)  # Set column width for column `i` to 20 characters
+                # else:
+                #     worksheet.set_column(i, i, 20)  # Default width for other columns
             # Write the data rows
             for row_index, row in enumerate(rows):
                 for cell_index, cell_value in enumerate(row):
