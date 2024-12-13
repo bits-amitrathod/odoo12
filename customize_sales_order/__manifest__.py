@@ -12,7 +12,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['base', 'stock', 'delivery', 'prioritization_engine', 'purchase','account_reports', 'stock_account'],
+    'depends': ['base', 'stock', 'delivery', 'prioritization_engine', 'purchase','account_reports','stock_account'],
 
     # always loaded
     'data': [

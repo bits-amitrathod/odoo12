@@ -47,57 +47,64 @@ class StockValuationReport(models.Model):
         default=lambda self: self.env['product.product'].search([], limit=1)
     )
 
-    def get_excel_data_stock_valuation(self):
+    report_date = fields.Date(string="Report Date", required=True)
+
+    def generate_excel_stock_valuation(self):
+        if not self.report_date:
+            raise UserError(_("Please select a date for the report."))
+        return self.env['stock.valuation.layer'].download_excel_stock_valuation(self.report_date)
+
+    def get_excel_data_stock_valuation(self, report_date):
+        try:
+            formatted_report_date = report_date.strftime("%Y-%m-%d")
+        except ValueError:
+            raise UserError(_("Invalid date format. Please enter the date in mm/dd/yy format."))
+
         product_lines_lines_export_stock = [
-           ['Company', 'Created On', 'Product', 'Quantity', 'Total Value', 'Reference', 'Unit Value', 'Unit Of Measure']
-        ]
+                ['Product SKU','Product Name','Total Quantity On Hand', 'Total Value']
+            ]
 
         company = self.env.company
         logging.info("Execution time before query:")
         query = """
                 SELECT 
-                    svl.company_id as company_id,
-                    rc.name as company_name,
-                    svl.create_date as create_date,
-                    svl.product_id as product_id,
-                    pt.name -> 'en_US' as product_name,
-                    svl.quantity as quantity,
-                    svl.value as value,
-                    sm.reference as reference,
-                    unit_cost as unit_cost,
-                    uu.name -> 'en_US' as uom_name
-                 FROM  stock_valuation_layer as svl
-                 LEFT JOIN stock_move sm on stock_move_id = sm.id 
-                 LEFT JOIN product_product pp on svl.product_id =pp.id
-                 LEFT JOIN product_template pt on pp.product_tmpl_id = pt.id
-                 LEFT JOIN uom_uom uu on uu.id = pt.uom_id
-                 LEFT JOIN res_company rc on rc.id = svl.company_id  """
-
-        self.env.cr.execute(query, (company.id,))
+                    pt.sku_code as product_sku,
+	 				pt.name -> 'en_US' as product_name,
+                    SUM(svl.quantity) AS quantity,
+                    SUM(svl.value) AS value
+                FROM 
+                    stock_valuation_layer svl
+                LEFT JOIN 
+                    product_product pp ON svl.product_id = pp.id
+	            LEFT JOIN     
+                    product_template pt on pp.product_tmpl_id = pt.id
+                WHERE 
+                    svl.create_date <= %s
+                GROUP BY 
+                    svl.product_id,pt.name,pt.sku_code
+        """
+        params = [formatted_report_date]
+        self.env.cr.execute(query, params)
         results = self.env.cr.dictfetchall()
         logging.info("Execution time after query:")
         logging.info("Execution time before for loop:")
         for line in results:
             product_lines_lines_export_stock.append([
-                line['company_name'],
-                line['create_date'],
+                line['product_sku'],
                 line['product_name'],
                 line['quantity'],
                 line['value'],
-                line['reference'],
-                line['unit_cost'],
-                line['uom_name'],
             ])
         logging.info("Execution time after for loop:")
         return product_lines_lines_export_stock
 
 
     def download_excel_stock_valuation(self):
-        list_val = self.get_excel_data_stock_valuation()
+        list_val = self.get_excel_data_stock_valuation(self.report_date)
         if list_val and len(list_val) > 0:
             return {
                 'type': 'ir.actions.act_url',
-                'url': '/web/StockValuation/download_document_xl',
+                'url': '/web/StockValuation/download_document_xl?report_date=%s' % self.report_date,
                 'target': 'new'
             }
         else:
@@ -110,8 +117,8 @@ class ExportStockValuationXL(http.Controller):
     def content_type(self):
         return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
-    def filename(self):
-        return 'Stock Valuation Layer.xlsx'
+    def filename(self, report_date):
+        return f"Stock_Valuation_Layer_{report_date}.xlsx"
 
     # Function to generate the Excel file
     def from_data(self, field, rows):
@@ -174,17 +181,24 @@ class ExportStockValuationXL(http.Controller):
     def download_document_xl(self, **kwargs):
         try:
             stock_valuation = request.env['stock.valuation.layer'].sudo()
-            data = stock_valuation.get_excel_data_stock_valuation()
+            report_date = kwargs.get('report_date')
+            if not report_date:
+                return request.not_found()
+
+            report_date = fields.Date.from_string(report_date)
+            data = stock_valuation.get_excel_data_stock_valuation(report_date)
 
             response = request.make_response(
                 self.from_data(data[0], data[1:]),
                 headers=[
-                    ('Content-Disposition', content_disposition(self.filename())),
+                    ('Content-Disposition', content_disposition(self.filename(kwargs.get('report_date')))),
                     ('Content-Type', self.content_type)
                 ]
             )
             return response
         except Exception as e:
             return request.not_found()
+
+
 
 

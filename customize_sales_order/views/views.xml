@@ -412,9 +412,9 @@
             <field name="arch" type="xml">
                 <form string="Export Stock Valuation">
                     <sheet>
-                        <div>
-                            Click On 'Export Report' button to export the Stock Valuation Report.
-                        </div>
+                          <group>
+                                <field name="report_date"/>
+                          </group>
                         <footer>
                             <button name="download_excel_stock_valuation" string="Export To File" type="object"
                                     class="btn-primary"/>
