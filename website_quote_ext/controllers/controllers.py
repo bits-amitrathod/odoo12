@@ -172,7 +172,7 @@ class SPSCustomerPortal(CustomerPortal):
             return request.redirect(order_sudo.get_portal_url(query_string=query_string))
 
         if flag:
-            Order.action_cancel()
+            Order.with_context(disable_cancel_warning=True).action_cancel()
             Order.action_draft()
             Order.action_confirm()
             # picking = request.env['stock.picking'].sudo().search([('sale_id', '=', Order.id), ('picking_type_id', '=', 1), ('state', 'not in', ['draft', 'cancel'])])
