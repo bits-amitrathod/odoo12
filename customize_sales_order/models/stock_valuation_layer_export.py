@@ -67,9 +67,9 @@ class StockValuationReport(models.Model):
         company = self.env.company
         logging.info("Execution time before query:")
         query = """
-                SELECT 
-                    pt.sku_code as product_sku,
-	 				pt.name -> 'en_US' as product_name,
+                SELECT
+                    pt.sku_code AS product_sku,
+	 				pt.name -> 'en_US' AS product_name,
                     SUM(svl.quantity) AS quantity,
                     SUM(svl.value) AS value
                 FROM 
@@ -77,9 +77,9 @@ class StockValuationReport(models.Model):
                 LEFT JOIN 
                     product_product pp ON svl.product_id = pp.id
 	            LEFT JOIN     
-                    product_template pt on pp.product_tmpl_id = pt.id
+                    product_template pt ON pp.product_tmpl_id = pt.id
                 WHERE 
-                    svl.create_date <= %s
+                    svl.create_date <= %s OR svl.create_date IS NULL
                 GROUP BY 
                     svl.product_id,pt.name,pt.sku_code
         """
@@ -136,18 +136,12 @@ class ExportStockValuationXL(http.Controller):
             # Write the header
             for i, fieldname in enumerate(field):
                 worksheet.write(0, i, fieldname, base_format)
-
-                if i == 1:
+                if fieldname.lower() == 'product name':
+                    worksheet.set_column(i, i, 140)  # Set column width for the product name to 50 characters
+                elif i == 1:  # Example for other specific columns
                     worksheet.set_column(i, i, 20)  # Set column width for column `i` to 20 characters
                 else:
-                    worksheet.set_column(i, i, 40)  # Default width for other columns
-
-                # if fieldname.lower() == 'product name':
-                #     worksheet.set_column(i, i, 140)  # Set column width for the product name to 50 characters
-                # elif i == 1:  # Example for other specific columns
-                #     worksheet.set_column(i, i, 20)  # Set column width for column `i` to 20 characters
-                # else:
-                #     worksheet.set_column(i, i, 20)  # Default width for other columns
+                    worksheet.set_column(i, i, 20)  # Default width for other columns
             # Write the data rows
             for row_index, row in enumerate(rows):
                 for cell_index, cell_value in enumerate(row):
