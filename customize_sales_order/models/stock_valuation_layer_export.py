@@ -80,8 +80,10 @@ class StockValuationReport(models.Model):
                     product_template pt ON pp.product_tmpl_id = pt.id
                 WHERE 
                      svl.create_date <= %s OR 
-                    (svl.create_date IS NULL AND svl.description LIKE '%%upgrade: adjust valuation inconsistency%%')
-                GROUP BY  
+                     (svl.create_date IS NULL AND svl.description LIKE '%%upgrade: adjust valuation inconsistency%%')
+                    OR 
+				    (svl.description LIKE '%%SPS : fix stock valuation layer%%')
+                GROUP BY
                     svl.product_id,pt.name,pt.sku_code
         """
         params = [formatted_report_date]
