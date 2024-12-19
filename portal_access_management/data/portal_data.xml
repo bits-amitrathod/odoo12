@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-         <record id="mail_template_data_portal_welcome_cstm" model="mail.template">
+         <record id="mail_template_data_portal_welcome_cstm1" model="mail.template">
             <field name="name">Portal: New User Custom Invite</field>
             <field name="model_id" ref="portal.model_portal_wizard_user"/>
             <field name="email_from">"Surgical Product Solutions" &lt;{{ ctx['emailFrom'] }}&gt;</field>
