@@ -105,10 +105,12 @@ class AuthSignupHome(Home):
                         user_sudo = request.env['res.users'].sudo().search([('login', '=', qcontext.get('login'))])
                         template = request.env.ref('auth_signup.mail_template_user_signup_account_created', raise_if_not_found=False)
                         if user_sudo and template:
-                            template.sudo().with_context(
-                                lang=user_sudo.lang,
-                                auth_login=werkzeug.url_encode({'auth_login': user_sudo.email}),
-                            ).send_mail(user_sudo.id, force_send=False)
+                            # template.sudo().with_context(
+                            #     lang=user_sudo.lang,
+                            #     auth_login=werkzeug.url_encode({'auth_login': user_sudo.email}),
+                            # ).send_mail(user_sudo.id, force_send=False)
+
+                            template.sudo().send_mail(user_sudo.id, force_send=False)
                     else:
                         raise ValidationError("Email address should contain small letters only.")
 
