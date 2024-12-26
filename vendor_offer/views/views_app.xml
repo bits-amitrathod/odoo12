@@ -111,7 +111,8 @@
                                 <field name="offer_approved" invisible="1"/>
                                 <field name="is_change_tier1_to_premium"/>
                                 <field name="is_dynamic_tier_adjustment"/>
-
+                                <field name="stryker_customer_po_number" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
+                                <field name="related_stryker_account_number" readonly="False" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
                                 <field name="state" invisible="1"/>
                                 <field name="import_type_ven" invisible="1"/>
                             </group>
@@ -128,15 +129,11 @@
                                 <field name="shipping_number"/>
                                 <field name="offer_contain_equipment" invisible="1"/>
                                 <field name="stryker_rep_id"/>
-                            </group>
-                            <group attrs="{'invisible': [('stryker_rep_id', '=', False)]}">
-
-                                <field name="division_id" readonly="False"/>
-                                <field name="stryker_region_id" readonly="False"/>
-                                <field name="payment_option"/>
-                                <field name="stryker_order_number"/>
-                                <field name="stryker_customer_po_number"/>
-                                <field name="related_stryker_account_number" readonly="False"/>
+                                <field name="division_id" readonly="False" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
+                                <field name="stryker_region_id" readonly="False" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
+                                <field name="payment_option" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
+                                <field name="stryker_order_number" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
+<!--                                <field name="stryker_customer_po_number" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>-->
                             </group>
                         </group>
                         <span style="color:green;" attrs="{'invisible': [('offer_contain_equipment', '!=', True)]}">
