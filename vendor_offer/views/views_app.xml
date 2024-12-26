@@ -127,7 +127,16 @@
                                 <field name="carrier_id"/>
                                 <field name="shipping_number"/>
                                 <field name="offer_contain_equipment" invisible="1"/>
+                                <field name="stryker_rep_id"/>
+                            </group>
+                            <group attrs="{'invisible': [('stryker_rep_id', '=', False)]}">
 
+                                <field name="division_id" readonly="False"/>
+                                <field name="stryker_region_id" readonly="False"/>
+                                <field name="payment_option"/>
+                                <field name="stryker_order_number"/>
+                                <field name="stryker_customer_po_number"/>
+                                <field name="related_stryker_account_number" readonly="False"/>
                             </group>
                         </group>
                         <span style="color:green;" attrs="{'invisible': [('offer_contain_equipment', '!=', True)]}">
@@ -364,6 +373,26 @@
                     Most propositions of purchase orders are created automatically
                     by Odoo based on inventory needs.
                 </p>
+            </field>
+        </record>
+        <record id="view_purchase_order_select_filter_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.select.filter.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_view_search"/>
+            <field name="arch" type="xml">
+                <!-- Adding filters after an existing filter -->
+                <xpath expr="//filter[@name='starred']" position="after">
+                    <separator/>
+                    <filter name="stryker_rep" string="Stryker Rep" domain="[('stryker_rep_id', '!=', False)]"/>
+                    <filter name="division" string="Division" domain="[('division_id', '!=', False)]"/>
+                    <filter name="stryker_region" string="Stryker Region" domain="[('stryker_region_id', '!=', False)]"/>
+                    <filter name="payment_hospital" string="Payment: Hospital/Facility" domain="[('payment_option', '=', 'pay_hospital')]"/>
+                    <filter name="payment_stryker" string="Payment: Stryker" domain="[('payment_option', '=', 'pay_stryker')]"/>
+                    <filter name="stryker_order_number" string="Stryker Order Number" domain="[('stryker_order_number', '!=', False)]"/>
+                    <filter name="stryker_customer_po_number" string="Customer PO Number" domain="[('stryker_customer_po_number', '!=', False)]"/>
+                    <filter name="related_stryker_account" string="Stryker Account" domain="[('related_stryker_account_number', '!=', False)]"/>
+                    <separator/>
+                </xpath>
             </field>
         </record>
 

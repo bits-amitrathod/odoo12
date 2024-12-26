@@ -12,6 +12,7 @@ class CustomerContract(models.Model):
     exclude_in_stock_product_ids = fields.One2many('exclude.product.in.stock', 'partner_id')
     customer_success = fields.Many2one('res.users',  string="Customer Success", tracking=True)
 
+    stryker_account_number = fields.Char(string="Stryker Account")
     def _get_default_user_id(self):
         res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
         if res_users:
@@ -34,6 +35,7 @@ class CustomerContract(models.Model):
                                                 ('no_surgery', 'No Surgery'),
                                                 ('plastic_center', 'Plastic Center'),
                                                 ('eye_center', 'Eye Center'),
+                                                ('stryker_rep', 'Stryker Rep'),
                                                 ],
                                      tracking=True)
 

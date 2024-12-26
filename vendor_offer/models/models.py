@@ -130,6 +130,44 @@ class VendorOffer(models.Model):
     offer_expired = fields.Boolean(string='Offer Expired ?')
     offer_approved = fields.Boolean(string='Offer is Approved', track_visibility='onchange')
 
+    stryker_rep_id = fields.Many2one('res.partner', string="Stryker Rep" )
+    division_id = fields.Many2one('res.partner', string="Division", compute="_compute_division", store=True)
+    stryker_region_id = fields.Many2one('res.partner', string="Stryker Region", compute="_compute_region", store=True)
+    payment_option = fields.Selection([
+        ('pay_hospital', 'Pay Hospital/Facility'),
+        ('pay_stryker', 'Pay Stryker'),
+    ], string="Payment Option")
+    stryker_order_number = fields.Char(string="Stryker Order")
+    stryker_customer_po_number = fields.Char(string="Stryker Customer PO")
+    related_stryker_account_number = fields.Char(
+        string="Stryker Account",
+        compute="_compute_related_account_number",
+        store=True
+    )
+
+    @api.depends('stryker_rep_id')
+    def _compute_region(self):
+        for record in self:
+            # If there is a Stryker Rep, try to fetch the parent account (if exists)
+            if record.stryker_rep_id:
+                record.stryker_region_id = record.stryker_rep_id.parent_id
+            else:
+                record.stryker_region_id = False  # or set None if no parent exists
+
+    @api.depends('stryker_region_id')
+    def _compute_division(self):
+        for record in self:
+            # If there is a Stryker Region, try to fetch its parent account (if exists)
+            if record.stryker_region_id:
+                record.division_id = record.stryker_region_id.parent_id
+            else:
+                record.division_id = False  # or set None if no parent exists
+
+    @api.depends('stryker_rep_id')
+    def _compute_related_account_number(self):
+        for record in self:
+            record.related_stryker_account_number = record.stryker_rep_id.stryker_account_number
+
     def set_expiration_flag_old_offer(self):
         date_expired = fields.Datetime.today() - datetime.timedelta(days=21)
 
