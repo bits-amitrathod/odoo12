@@ -155,7 +155,8 @@ class AccountHierarchyReport(models.TransientModel):
             'other': 'Other',
             'closed1':'Closed',
             'no_surgery':'No Surgery',
-            'lab/_research_center': 'Lab/ Research Center'
+            'lab/_research_center': 'Lab/ Research Center',
+            'stryker': 'Stryker'
         }
 
         return switcher.get(facility_code, "nothing")
@@ -190,17 +191,29 @@ class AccountHierarchyReport(models.TransientModel):
         return final_data, final_data_name
 
     def recursive_hir(self, partner, list_all, level, final_data, final_data_name):
+        # Check if partner is a valid record
+        if not partner:
+            return final_data, final_data_name
+
+        # Create indentation for levels
         data_dash = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' * level + '&nbsp;'
-        # final_data.append(data_dash + '&nbsp;' + partner.name + '*' + str(partner.id) + '*')
-        final_data.append(data_dash + '&nbsp;' + partner.name)
-        # data_dash = '------ ' * level + '>'
-        # final_data.append(data_dash + ' ' + child)
+
+        # Ensure partner.name exists before trying to access it
+        if partner.name:
+            final_data.append(data_dash + '&nbsp;' + partner.name)
+        else:
+            final_data.append(data_dash + '&nbsp;' + 'No Name Available')
+
         final_data_name.append(partner)
         level = level + 1
+
+        # Continue to recurse through child partners if they exist
         if partner.id in list_all and level <= 9:
             partner_child_list = list_all[partner.id]
             for prt in partner_child_list:
                 self.recursive_hir(prt, list_all, level, final_data, final_data_name)
+
+        return final_data, final_data_name
 
 
 

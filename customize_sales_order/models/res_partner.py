@@ -12,7 +12,28 @@ class CustomerContract(models.Model):
     exclude_in_stock_product_ids = fields.One2many('exclude.product.in.stock', 'partner_id')
     customer_success = fields.Many2one('res.users',  string="Customer Success", tracking=True)
 
-    stryker_account_number = fields.Char(string="Stryker Account")
+    stryker_account_number = fields.Char(
+        string="Stryker Account #",
+        compute="_compute_stryker_account_number",
+        store=True,  # Store the computed value
+        readonly=True,  # Make the field read-only
+    )
+
+    @api.depends('parent_id.stryker_account_number')
+    def _compute_stryker_account_number(self):
+        """Compute method to safely inherit the Stryker Account Number from the parent"""
+        for record in self:
+            if record.parent_id:
+                record.stryker_account_number = record.parent_id.stryker_account_number
+            else:
+                record.stryker_account_number = False
+
+    @api.constrains('parent_id')
+    def _check_parent_id(self):
+        """Ensure there is no self-referencing or circular hierarchy"""
+        for record in self:
+            if record.parent_id and record.parent_id == record:
+                raise ValidationError("A contact cannot be its own parent.")
     def _get_default_user_id(self):
         res_users = self.env['res.users'].search([('partner_id.name', '=', 'Surgical Product Solutions')])
         if res_users:
@@ -35,7 +56,7 @@ class CustomerContract(models.Model):
                                                 ('no_surgery', 'No Surgery'),
                                                 ('plastic_center', 'Plastic Center'),
                                                 ('eye_center', 'Eye Center'),
-                                                ('stryker_rep', 'Stryker Rep'),
+                                                ('stryker', 'Stryker'),
                                                 ],
                                      tracking=True)
 

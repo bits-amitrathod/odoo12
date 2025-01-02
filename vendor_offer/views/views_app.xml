@@ -111,8 +111,6 @@
                                 <field name="offer_approved" invisible="1"/>
                                 <field name="is_change_tier1_to_premium"/>
                                 <field name="is_dynamic_tier_adjustment"/>
-                                <field name="stryker_customer_po_number" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
-                                <field name="related_stryker_account_number" readonly="False" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
                                 <field name="state" invisible="1"/>
                                 <field name="import_type_ven" invisible="1"/>
                             </group>
@@ -128,12 +126,14 @@
                                 <field name="carrier_id"/>
                                 <field name="shipping_number"/>
                                 <field name="offer_contain_equipment" invisible="1"/>
-                                <field name="stryker_rep_id"/>
-                                <field name="division_id" readonly="False" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
-                                <field name="stryker_region_id" readonly="False" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
-                                <field name="payment_option" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
-                                <field name="stryker_order_number" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>
-<!--                                <field name="stryker_customer_po_number" attrs="{'invisible': [('stryker_rep_id', '=', False)]}"/>-->
+                                <field name="stryker_customer_po_number" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="related_stryker_account_number" readonly="True" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_rep_id" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="division_id" readonly="True" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_region_id" readonly="True" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="payment_option" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_order_number" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+
                             </group>
                         </group>
                         <span style="color:green;" attrs="{'invisible': [('offer_contain_equipment', '!=', True)]}">
@@ -387,7 +387,7 @@
                     <filter name="payment_stryker" string="Payment: Stryker" domain="[('payment_option', '=', 'pay_stryker')]"/>
                     <filter name="stryker_order_number" string="Stryker Order Number" domain="[('stryker_order_number', '!=', False)]"/>
                     <filter name="stryker_customer_po_number" string="Customer PO Number" domain="[('stryker_customer_po_number', '!=', False)]"/>
-                    <filter name="related_stryker_account" string="Stryker Account" domain="[('related_stryker_account_number', '!=', False)]"/>
+                    <filter name="related_stryker_account_number" string="Stryker Account #" domain="[('related_stryker_account_number', '!=', False)]"/>
                     <separator/>
                 </xpath>
             </field>
