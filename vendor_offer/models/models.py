@@ -141,7 +141,7 @@ class VendorOffer(models.Model):
     stryker_customer_po_number = fields.Char(string="Stryker Customer PO")
     related_stryker_account_number = fields.Char(
         string="Stryker Account #",
-        related="stryker_rep_id.stryker_account_number",
+        related="partner_id.stryker_account_number",
         store=True
     )
 
