@@ -30,9 +30,11 @@ class AccountFollowupReport(models.AbstractModel):
 
                 # Set the responsible person as the sender
                 responsible = partner._get_followup_responsible()
-                email_from = responsible.partner_id.email or self.env.user.email
+                # email_from = responsible.partner_id.email or self.env.user.email
                 author_id = responsible.partner_id.id
 
+                # Define fixed email address
+                fixed_email = "accounting@shopsps.com"
 
                 # Create a temporary 'mail.message' object for rendering
                 message = self.env['mail.message'].sudo().create({
@@ -68,7 +70,8 @@ class AccountFollowupReport(models.AbstractModel):
                     'author_id': author_id,
                     'subject': self._get_email_subject(options),
                     'body_html': rendered_body,
-                    'email_from': email_from,
+                    'email_from': fixed_email,
+                    'reply_to': fixed_email,
                     'attachment_ids': [(6, 0, attachment_ids)],
                     'recipient_ids': [(6, 0, [partner.id for partner in followup_recipients])],
 
