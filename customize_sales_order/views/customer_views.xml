@@ -82,6 +82,16 @@
             </field>
         </record>
 
+        <record id="view_order_line_form_inherit_remove_o_row" model="ir.ui.view">
+            <field name="name">sale.order.line.form.inherit.remove.o.row</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="sale.view_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='ordered_qty']" position="attributes">
+                    <attribute name="class">o_field_widget</attribute>
+                </xpath>
+            </field>
+        </record>
     </data>
 </odoo>
 
