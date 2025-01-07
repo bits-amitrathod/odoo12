@@ -156,7 +156,7 @@ class AccountHierarchyReport(models.TransientModel):
             'closed1':'Closed',
             'no_surgery':'No Surgery',
             'lab/_research_center': 'Lab/ Research Center',
-            'stryker': 'Stryker'
+            'stryker_rep': 'Stryker Rep'
         }
 
         return switcher.get(facility_code, "nothing")

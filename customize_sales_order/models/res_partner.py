@@ -56,7 +56,7 @@ class CustomerContract(models.Model):
                                                 ('no_surgery', 'No Surgery'),
                                                 ('plastic_center', 'Plastic Center'),
                                                 ('eye_center', 'Eye Center'),
-                                                ('stryker', 'Stryker'),
+                                                ('stryker_rep', 'Stryker Rep'),
                                                 ],
                                      tracking=True)
 

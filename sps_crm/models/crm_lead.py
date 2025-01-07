@@ -94,7 +94,7 @@ class Lead(models.Model):
                                                 ('no_surgery', 'No Surgery'),
                                                 ('plastic_center', 'Plastic Center'),
                                                 ('eye_center', 'Eye Center'),
-                                                ('stryker', 'Stryker'),
+                                                ('stryker_rep', 'Stryker Rep'),
                                                 ])
 
     opportunity_type = fields.Selection(string='Opportunity Type Acq',
