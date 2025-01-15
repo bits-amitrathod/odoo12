@@ -111,7 +111,6 @@
                                 <field name="offer_approved" invisible="1"/>
                                 <field name="is_change_tier1_to_premium"/>
                                 <field name="is_dynamic_tier_adjustment"/>
-
                                 <field name="state" invisible="1"/>
                                 <field name="import_type_ven" invisible="1"/>
                             </group>
@@ -127,6 +126,13 @@
                                 <field name="carrier_id"/>
                                 <field name="shipping_number"/>
                                 <field name="offer_contain_equipment" invisible="1"/>
+                                <field name="stryker_customer_po_number" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="related_stryker_account_number" readonly="True" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_rep_id" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="division_id" readonly="True" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_region_id" readonly="True" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="payment_option" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_order_number" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
 
                             </group>
                         </group>
@@ -366,7 +372,22 @@
                 </p>
             </field>
         </record>
-
+        <record id="view_purchase_order_form_inherit" model="ir.ui.view">
+            <field name="name">purchase.order.form.inherit</field>
+            <field name="model">purchase.order</field>
+            <field name="inherit_id" ref="purchase.purchase_order_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='currency_id']" position="after">
+                                <field name="stryker_customer_po_number" readonly="1" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="related_stryker_account_number" readonly="1" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_rep_id" readonly="1" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="division_id" readonly="1" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_region_id" readonly="1" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="payment_option" readonly="1" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                                <field name="stryker_order_number" readonly="1" attrs="{'invisible': [('related_stryker_account_number', '=', False)]}"/>
+                </xpath>
+            </field>
+        </record>
         <menuitem id="menu_procurement_management_supplier_offer_app" name="Vendor Offers"
                   parent="purchase.menu_procurement_management" action="vendor_offer.action_window_app" sequence="1"/>
 
