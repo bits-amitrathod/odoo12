@@ -49,6 +49,25 @@ class StockValuationReport(models.Model):
 
     report_date = fields.Date(string="Report Date", required=True)
 
+    def open_table(self):
+        tree_view_id = self.env.ref(
+            'stock_account.stock_valuation_layer_tree').id
+        form_view_id = self.env.ref(
+            'stock_account.stock_valuation_layer_form').id
+
+        domain = [('create_date', '<=', self.report_date)] if self.report_date else []
+
+        action = {
+            'type': 'ir.actions.act_window',
+            'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
+            'view_mode': 'tree,form',
+            'name': _('Stock Valuation Report'),
+            'res_model': 'stock.valuation.layer',
+            'domain': domain,
+            'target': 'main',
+        }
+
+        return action
     def generate_excel_stock_valuation(self):
         if not self.report_date:
             raise UserError(_("Please select a date for the report."))
@@ -68,23 +87,31 @@ class StockValuationReport(models.Model):
         logging.info("Execution time before query:")
         query = """
                 SELECT
-                    pt.sku_code AS product_sku,
-	 				pt.name -> 'en_US' AS product_name,
-                    SUM(svl.quantity) AS quantity,
-                    SUM(svl.value) AS value
-                FROM 
-                    stock_valuation_layer svl
-                LEFT JOIN 
-                    product_product pp ON svl.product_id = pp.id
-	            LEFT JOIN     
-                    product_template pt ON pp.product_tmpl_id = pt.id
-                WHERE 
-                     svl.create_date <= %s OR 
-                     (svl.create_date IS NULL AND svl.description LIKE '%%upgrade: adjust valuation inconsistency%%')
-                    OR 
-				    (svl.description LIKE '%%SPS : fix stock valuation layer%%')
-                GROUP BY
-                    svl.product_id,pt.name,pt.sku_code
+                   pt.sku_code AS product_sku,
+                   pt.name->>'en_US' AS product_name,
+                   SUM(svl.quantity) AS quantity,
+                   SUM(svl.value) AS value,
+                   CASE
+                       WHEN SUM(svl.quantity) < 0 THEN 0
+                       ELSE SUM(svl.quantity)
+                   END AS adjusted_quantity,
+                   CASE
+                       WHEN SUM(svl.value) < 0 THEN 0
+                       ELSE SUM(svl.value)
+                   END AS adjusted_value
+               FROM
+                   stock_valuation_layer svl
+               LEFT JOIN
+                   product_product pp ON svl.product_id = pp.id
+               LEFT JOIN    
+                   product_template pt ON pp.product_tmpl_id = pt.id
+               WHERE
+                   svl.create_date <= %s
+                   OR (svl.create_date IS NULL AND svl.description LIKE '%%upgrade: adjust valuation inconsistency%%')
+                   OR (svl.description LIKE '%%SPS : fix stock valuation layer%%')
+               GROUP BY
+                   svl.product_id, pt.name, pt.sku_code
+
         """
         params = [formatted_report_date]
         self.env.cr.execute(query, params)
@@ -95,8 +122,8 @@ class StockValuationReport(models.Model):
             product_lines_lines_export_stock.append([
                 line['product_sku'],
                 line['product_name'],
-                line['quantity'],
-                line['value'],
+                line['adjusted_quantity'],
+                line['adjusted_value'],
             ])
         logging.info("Execution time after for loop:")
         return product_lines_lines_export_stock
