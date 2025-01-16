@@ -220,6 +220,11 @@ class Customer(models.Model):
                         child_id.write({'user_id': vals['user_id']})
                     if 'property_product_pricelist' in vals:
                         child_id.write({'property_product_pricelist': vals['property_product_pricelist']})
+                    if 'acq_manager' in vals:
+                        child_id.write({'acq_manager': vals['acq_manager']})
+                    if 'acq_customer_success' in vals:
+                        child_id.write({'acq_customer_success':vals['acq_customer_success']})
+
 
 
     def action_view_notification(self):
