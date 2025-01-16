@@ -130,6 +130,37 @@ class VendorOffer(models.Model):
     offer_expired = fields.Boolean(string='Offer Expired ?')
     offer_approved = fields.Boolean(string='Offer is Approved', track_visibility='onchange')
 
+    stryker_rep_id = fields.Many2one('res.partner', string="Stryker Rep")
+    division_id = fields.Many2one('res.partner', string="Stryker Division", compute="_compute_division", store=True)
+    stryker_region_id = fields.Many2one('res.partner', string="Stryker Region", compute="_compute_region", store=True)
+    payment_option = fields.Selection([
+        ('pay_hospital', 'Pay Hospital/Facility'),
+        ('pay_stryker', 'Pay Stryker'),
+    ], string="Payment Option")
+    stryker_order_number = fields.Char(string="Stryker Order #")
+    stryker_customer_po_number = fields.Char(string="Stryker Customer PO")
+    related_stryker_account_number = fields.Char(
+        string="Stryker Account #",
+        related="partner_id.stryker_account_number",
+        store=True
+    )
+
+    @api.depends('stryker_rep_id')
+    def _compute_region(self):
+        for record in self:
+            if record.stryker_rep_id:
+                record.stryker_region_id = record.stryker_rep_id.parent_id
+            else:
+                record.stryker_region_id = False
+
+    @api.depends('stryker_region_id')
+    def _compute_division(self):
+        for record in self:
+            if record.stryker_region_id:
+                record.division_id = record.stryker_region_id.acc_cust_parent
+            else:
+                record.division_id = False
+
     def set_expiration_flag_old_offer(self):
         date_expired = fields.Datetime.today() - datetime.timedelta(days=21)
 

@@ -399,7 +399,7 @@ TXI^2^{tax_per_line}~"""
 SAC^C^G830^AX^FC^{shipment_amount_str}^^^^^^^06^^^FREIGHT~"""
                     segments += 1
                 foot = FOOT.format(
-                    amount_total=int(self.amount_total * 100) or '',
+                    amount_total= (int(round(round(self.amount_total, 2) * 100))) or '',
                     tax_total=self.amount_tax or '',
                     invoice_lines_num=seq or '',
                     number_of_segments=segments or '',
