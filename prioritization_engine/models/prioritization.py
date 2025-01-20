@@ -148,6 +148,8 @@ class Customer(models.Model):
                                     'contract': ml.contract,
                                     'reinstated_date': ml.reinstated_date,
                                     'customer_success': ml.customer_success,
+                                    'acq_manager': ml.acq_manager,
+                                    'acq_customer_success': ml.acq_customer_success,
                                     })
 
                     if 'is_broker' in vals:
