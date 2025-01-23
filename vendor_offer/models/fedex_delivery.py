@@ -285,7 +285,9 @@ class FedexDelivery(models.Model):
             package_count = len(picking.package_ids) or 1
 
             # For india picking courier is not accepted without this details in label.
-            po_number = order.display_name or False
+
+            # can directly set PO number if provided in sales order form without calling any method.
+            po_number = order.client_order_ref or False
             dept_number = False
             """........BITS......No need of dept_number in the label that's why commenting the below code..........."""
             # if picking.partner_id.country_id.code == 'IN' and picking.picking_type_id.warehouse_id.partner_id.country_id.code == 'IN':
