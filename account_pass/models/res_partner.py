@@ -63,6 +63,90 @@ class Partner(models.Model):
             ('parent_state', '=', 'posted'),
             ('partner_id', 'in', self.ids),
             ('company_id', '=', self.env.company.id),
+            ('move_type', 'not in', ('entry', 'out_refund'))
 
         ]
+
+
+    '''Query Modifications-
+    Dynamically calculate the maximum follow-up delay
+    Dynamically determine the follow-up level based on overdue days
+    Map the dynamic follow-up delay to the follow-up line '''
+
+    def _get_followup_data_query(self, partner_ids=None):
+        return f"""
+           SELECT partner.id as partner_id,
+                  ful.id as followup_line_id,
+                  CASE
+                       WHEN in_need_of_action_aml.id IS NOT NULL AND (prop_date.value_datetime IS NULL OR prop_date.value_datetime::date <= %(current_date)s) THEN 'in_need_of_action'
+                       WHEN exceeded_unreconciled_aml.id IS NOT NULL THEN 'with_overdue_invoices'
+                       WHEN partner.balance = 0 THEN 'no_action_needed'
+                       ELSE 'no_action_needed' END as followup_status
+           FROM (
+         SELECT partner.id,
+         
+               --  Dynamically calculate the maximum follow-up delay
+                MAX(ful.delay) as followup_delay,
+                SUM(aml.balance) as balance
+           FROM res_partner partner
+           JOIN account_move_line aml ON aml.partner_id = partner.id
+           JOIN account_account account ON account.id = aml.account_id
+           
+           -- Dynamically determine the follow-up level based on overdue days
+      LEFT JOIN account_followup_followup_line ful ON ful.delay <= (CURRENT_DATE - COALESCE(aml.date_maturity, aml.date))::int
+                AND ful.company_id = %(company_id)s
+          WHERE account.deprecated IS NOT TRUE
+            AND account.account_type = 'asset_receivable'
+            AND aml.parent_state = 'posted'
+            AND aml.reconciled IS NOT TRUE
+            AND aml.blocked IS FALSE
+            AND aml.company_id = %(company_id)s
+            {"" if partner_ids is None else "AND aml.partner_id IN %(partner_ids)s"}
+       GROUP BY partner.id
+           ) partner
+                      
+           --Map the dynamic follow-up delay to the follow-up line
+           LEFT JOIN account_followup_followup_line ful ON ful.delay = partner.followup_delay AND ful.company_id = %(company_id)s
+           
+           -- Get the followup status data
+           LEFT OUTER JOIN LATERAL (
+               SELECT line.id
+                 FROM account_move_line line
+                 JOIN account_account account ON line.account_id = account.id
+                WHERE line.partner_id = partner.id
+                  AND account.account_type = 'asset_receivable'
+                  AND account.deprecated IS NOT TRUE
+                  AND line.parent_state = 'posted'
+                  AND line.reconciled IS NOT TRUE
+                  AND line.balance > 0
+                  AND line.blocked IS FALSE
+                  AND line.company_id = %(company_id)s
+                  AND (CURRENT_DATE - COALESCE(line.date_maturity, line.date))::int >= ful.delay
+                LIMIT 1
+           ) in_need_of_action_aml ON true
+           LEFT OUTER JOIN LATERAL (
+               SELECT line.id
+                 FROM account_move_line line
+                 JOIN account_account account ON line.account_id = account.id
+                WHERE line.partner_id = partner.id
+                  AND account.account_type = 'asset_receivable'
+                  AND account.deprecated IS NOT TRUE
+                  AND line.parent_state = 'posted'
+                  AND line.reconciled IS NOT TRUE
+                  AND line.balance > 0
+                  AND line.blocked IS FALSE
+                  AND line.company_id = %(company_id)s
+                  AND COALESCE(line.date_maturity, line.date) < %(current_date)s
+                LIMIT 1
+           ) exceeded_unreconciled_aml ON true
+           LEFT OUTER JOIN ir_property prop_date ON prop_date.res_id = CONCAT('res.partner,', partner.id)
+                                                AND prop_date.name = 'followup_next_action_date'
+                                                AND prop_date.company_id = %(company_id)s
+       """, {
+            'company_id': self.env.company.id,
+            'partner_ids': tuple(partner_ids or []),
+            'current_date': fields.Date.context_today(self),
+        }
+
+
 
