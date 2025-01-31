@@ -50,6 +50,19 @@ class Partner(models.Model):
             return self.env['account.pass'].create({'partner_id': partner_id}).id
 
     def _get_unreconciled_aml_domain(self):
+
+        today = fields.Date.context_today(self)
+
+        # Added this search to filter the data and set exclude from followup toggle on if the invoice is not overdue
+        # Set 'blocked' to True for invoices that are not overdue yet (future maturity date)
+        # This ensures they are excluded from follow-up actions
+        self.env['account.move.line'].search([('blocked','=', False),('move_type', 'not in', ('entry', 'out_refund')),('date_maturity','>',today)]).write({'blocked':True})
+
+        # Added this search to filter the data and set exclude from followup toggle off if the invoice will get overdue on current date
+        # Set 'blocked' to False for invoices that become due today or are already overdue
+        # This re-enables follow-up actions for such invoices
+        self.env['account.move.line'].search([('blocked','=', True),('move_type', 'not in', ('entry', 'out_refund')),('date_maturity', '<=', today)]).write({'blocked': False})
+
         self.env['account.move.line'].search([('reconciled', '=', False), ('account_id.deprecated', '=', False),
                                               ('account_id.account_type', '=', 'asset_receivable'),
                                               ('parent_state', '=', 'posted'), ('partner_id', 'in', self.ids),
