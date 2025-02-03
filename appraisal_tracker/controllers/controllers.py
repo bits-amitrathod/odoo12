@@ -122,6 +122,7 @@ class ApprisalTracker(http.Controller):
 					end as status ,
 					case when po.tier1_extra_retail > 0 THEN retail_val.tier1_retail_temp + po.tier1_extra_retail else retail_val.tier1_retail_temp end as tier1_retail_temp,
 					case when po.tier2_extra_retail > 0 THEN retail_val.tier2_retail + po.tier2_extra_retail else retail_val.tier2_retail end as tier2_retail,
+					case when po.tier3_extra_retail > 0 THEN retail_val.tier3_retail + po.tier3_extra_retail else retail_val.tier3_retail end as tier3_retail,
 					case when po.less_than_40_extra_retail > 0 THEN retail_val.less_than_40_retail + po.less_than_40_extra_retail else retail_val.less_than_40_retail end as less_than_40_retail
 
                     from purchase_order as po 
@@ -162,7 +163,11 @@ class ApprisalTracker(http.Controller):
                         and (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric)) < 0.48 )) 
                         or (ttf1.code='2' and polf1.product_unit_price!=0 and (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric))  >= 0.4) )))
                     then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as tier2_retail ,
-
+                    
+                      sum(case when rpf1.is_wholesaler = TRUE and polf1.product_unit_price != 0 and
+                      ABS(CAST((polf1.product_offer_price / polf1.product_unit_price) - 1 AS NUMERIC)) < 0.4 
+                      then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end) AS tier3_retail,
+                      
                     sum(case when  (rpf1.is_wholesaler = true) and ( polf1.product_unit_price!=0 and 
                     (ABS(cast((polf1.product_offer_price/polf1.product_unit_price) -1 as numeric)) < 0.4 )) 
                     then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as less_than_40_retail 
@@ -197,7 +202,7 @@ class ApprisalTracker(http.Controller):
                             line['create_date'],
 
                             line['shipping_label_issued'], line['shipping_date'], line['delivered_date'],
-                            line['arrival_date_grp'], line['tier1_retail_temp'], line['tier2_retail'],
+                            line['arrival_date_grp'], line['tier1_retail_temp'], line['tier2_retail'],line['tier3_retail'],
                             line['less_than_40_retail'],
                             line['new_customer'], line['status']])
 
@@ -206,7 +211,7 @@ class ApprisalTracker(http.Controller):
                             "Total Offer", "Total Retail", "Billed Total Offer", "Final Billed Total Offer",
                             "Billed Total Retail", "Final Billed Total Retail", "Created On",
                             "Shipping label Issued", "Shipping Date",
-                            "Delivered Date", "Arrival Date", "Tier 1 Retail", "Tier 2 Retail", "< 40% Retail",
+                            "Delivered Date", "Arrival Date", "Tier 1 Retail", "Tier 2 Retail","Tier 3 Retail", "< 40% Retail",
                             "New Customer", "Status"],
                            records),
             headers=[('Content-Disposition', content_disposition('appraisal_tracker' + '.xls')),
