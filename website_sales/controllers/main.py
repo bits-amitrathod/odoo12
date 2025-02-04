@@ -34,7 +34,7 @@ class WebsiteSales(WebsiteSale):
             (product_id,))
         return request.env.cr.dictfetchone()
 
-    @http.route(['/shop/capital-equipment','/shop/featured'], type='http', auth="public", website=True, sitemap=WebsiteSale.sitemap_shop)
+    @http.route(['/shop/capital-equipment','/shop/featured'], type='http', auth="public", website=True)
     def shop_capital_equipment(self,**post):
         result = request.env['product.public.category']
         if request.httprequest.path == "/shop/capital-equipment":
