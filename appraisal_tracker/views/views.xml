@@ -40,7 +40,6 @@
                      <field name="arrival_date_grp" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
                     <field name="tier1_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
                     <field name="tier2_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
-                    <field name="tier3_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
                     <field name="less_than_40_retail" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"   widget="monetary" />
                     <field name="new_customer" attrs="{'invisible':[('status', 'not in', ('done','purchase','cancel','ven_draft','ven_sent'))]}"/>
 
@@ -121,7 +120,6 @@
                                 <field name="shipping_number" readonly="1"/>
                                 <field name="tier1_extra_retail"/>
                                 <field name="tier2_extra_retail"/>
-                                <field name="tier3_extra_retail"/>
                                 <field name="less_than_40_extra_retail"/>
                             </group>
                         </group>
