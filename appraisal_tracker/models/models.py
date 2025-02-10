@@ -31,7 +31,7 @@ class apprisal_tracker_vendor(models.Model):
 
     tier1_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="Tier 1 Retail")
     tier2_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="Tier 2 Retail")
-    # tier3_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="Tier 3 Retail")
+    tier3_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="Tier 3 Retail")
     less_than_40_retail = fields.Monetary(compute="_value_broker_margin", store=False, string="< 40% Retail")
     broker_margin = fields.Char(compute="_value_broker_margin", store=False)
     cust_type_appraisal = fields.Char(compute="_value_broker_margin", store=False,string="Type")
@@ -81,6 +81,7 @@ class apprisal_tracker_vendor(models.Model):
 
                 tier1_retail_temp = 0
                 tier2_retail_temp = 0
+                tier3_retail_temp = 0
                 less_than_40_retail = 0
 
                 if order.partner_id.is_wholesaler:
@@ -103,14 +104,18 @@ class apprisal_tracker_vendor(models.Model):
                             if abs(float(amt - 1)) < 0.4:
                                 less_than_40_retail = less_than_40_retail + line.billed_product_retail_price
 
+                            if line.product_id.tier.code == '3':
+                                tier3_retail_temp = tier3_retail_temp + line.billed_product_retail_price
 
                     tier1_retail_temp = tier1_retail_temp + order.tier1_extra_retail
                     tier2_retail_temp = tier2_retail_temp + order.tier2_extra_retail
+                    tier3_retail_temp = tier3_retail_temp + order.tier3_extra_retail
                     less_than_40_retail = less_than_40_retail + order.less_than_40_extra_retail
 
                     order.update({
                         'tier1_retail': tier1_retail_temp,
                         'tier2_retail': tier2_retail_temp,
+                        'tier3_retail': tier3_retail_temp,
                         'less_than_40_retail': less_than_40_retail
                     })
 
@@ -123,15 +128,18 @@ class apprisal_tracker_vendor(models.Model):
                             tier1_retail_temp = tier1_retail_temp + line.billed_product_retail_price
                         if line.product_id.tier.code == '2':
                             tier2_retail_temp = tier2_retail_temp + line.billed_product_retail_price
-
+                        if line.product_id.tier.code == '3':
+                            tier3_retail_temp = tier3_retail_temp + line.billed_product_retail_price
 
                     tier1_retail_temp = tier1_retail_temp + order.tier1_extra_retail
                     tier2_retail_temp = tier2_retail_temp + order.tier2_extra_retail
+                    tier3_retail_temp = tier3_retail_temp + order.tier3_extra_retail
                     less_than_40_retail = less_than_40_retail + order.less_than_40_extra_retail
 
                     order.update({
                         'tier1_retail': tier1_retail_temp,
                         'tier2_retail': tier2_retail_temp,
+                        'tier3_retail': tier3_retail_temp,
                         'less_than_40_retail': less_than_40_retail
                     })
 
@@ -143,14 +151,18 @@ class apprisal_tracker_vendor(models.Model):
                             tier1_retail_temp = tier1_retail_temp + line.billed_product_retail_price
                         if line.product_id.tier.code == '2':
                             tier2_retail_temp = tier2_retail_temp + line.billed_product_retail_price
+                        if line.product_id.tier.code == '3':
+                            tier3_retail_temp = tier3_retail_temp + line.billed_product_retail_price
 
                     tier1_retail_temp = tier1_retail_temp + order.tier1_extra_retail
                     tier2_retail_temp = tier2_retail_temp + order.tier2_extra_retail
+                    tier3_retail_temp = tier3_retail_temp + order.tier3_extra_retail
                     less_than_40_retail = less_than_40_retail + order.less_than_40_extra_retail
 
                     order.update({
                         'tier1_retail': tier1_retail_temp,
                         'tier2_retail': tier2_retail_temp,
+                        'tier3_retail': tier3_retail_temp,
                         'less_than_40_retail': less_than_40_retail
                     })
 
@@ -161,15 +173,18 @@ class apprisal_tracker_vendor(models.Model):
                             tier1_retail_temp = tier1_retail_temp + line.billed_product_retail_price
                         if line.product_id.tier.code == '2':
                             tier2_retail_temp = tier2_retail_temp + line.billed_product_retail_price
-
+                        if line.product_id.tier.code == '3':
+                            tier3_retail_temp = tier3_retail_temp + line.billed_product_retail_price
 
                     tier1_retail_temp = tier1_retail_temp + order.tier1_extra_retail
                     tier2_retail_temp = tier2_retail_temp + order.tier2_extra_retail
+                    tier3_retail_temp = tier3_retail_temp + order.tier3_extra_retail
                     less_than_40_retail = less_than_40_retail + order.less_than_40_extra_retail
 
                     order.update({
                         'tier1_retail': tier1_retail_temp,
                         'tier2_retail': tier2_retail_temp,
+                         'tier3_retail': tier3_retail_temp,
                         'less_than_40_retail': less_than_40_retail
                     })
 
