@@ -64,6 +64,11 @@
                             <strong>Customer:</strong> <span t-field="sale_order.partner_id.name"/>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="mb-3 col-6">
+                            <strong>Purchase Order #:</strong> <span t-field="sale_order.client_order_ref"/>
+                        </div>
+                    </div>
                     <div class="row" id="so_date">
                         <div class="mb-3 col-6">
                           <t t-if="sale_order.state in ['sale', 'done', 'cancel']">
