@@ -427,8 +427,8 @@
                  </xpath>
             </field>
         </record>
-
-        <record id="view_stock_valuation_layer_export_form" model="ir.ui.view">
+        <!-- Code revert -->
+        <!--<record id="view_stock_valuation_layer_export_form" model="ir.ui.view">
             <field name="name">stock.valuation.layer.export</field>
             <field name="model">stock.valuation.layer</field>
             <field name="arch" type="xml">
@@ -466,7 +466,7 @@
 
 
 
-        <!-- Popup Form for Stock Valuation Report -->
+        &lt;!&ndash; Popup Form for Stock Valuation Report &ndash;&gt;
           <record id="view_stock_valuation_report" model="ir.ui.view">
               <field name="name">stock.valuation.report.form</field>
               <field name="model">stock.valuation.layer</field>
@@ -491,7 +491,7 @@
             <field name="res_model">stock.valuation.layer</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_stock_valuation_report"/>
-            <field name="target">new</field>  <!-- This will open as a popup -->
+            <field name="target">new</field>  &lt;!&ndash; This will open as a popup &ndash;&gt;
             <field name="context">{'default_report_date': False}</field>
         </record>
 
@@ -508,7 +508,7 @@
             action="action_stock_valuation_report_popup"
             name="Custom Stock Valuation Report"
             parent="stock.menu_warehouse_report"
-            sequence="257"/>
+            sequence="257"/>-->
 
     </data>
 </odoo>
