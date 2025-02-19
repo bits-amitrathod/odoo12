@@ -18,4 +18,20 @@
                 </data>
             </field>
         </record>
+
+    <record id="view_customer_statements_followup_inherited" model="ir.ui.view">
+        <field name="name">customer.statements.followup.inherited</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account_followup.customer_statements_form_view"/>
+        <field name="arch" type="xml">
+            <!-- Insert manual_exclusion after blocked -->
+            <xpath expr="//field[@name='unreconciled_aml_ids']/tree/field[@name='blocked']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='unreconciled_aml_ids']/tree/field[@name='blocked']" position="after">
+                <field name="is_user_changed" string="Exclude from Follow-ups" widget="boolean_toggle"/>
+            </xpath>
+        </field>
+    </record>
+
 </odoo>

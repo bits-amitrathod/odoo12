@@ -5,19 +5,6 @@ class AccountMoveLine(models.Model):
 
     price_reduce = fields.Float(string='Final Price', digits='Product Price',
                                 readonly=True)
-    is_user_changed = fields.Boolean(
-        string='Flag',
-        default=False,
-        help=" whether the user has changed the Value of blocked Field",
-    )
-
-    @api.onchange('blocked')
-    def blocked_update(self):
-        for rec in self:
-            rec.is_user_changed = False if rec.is_user_changed else True
-            rec.blocked = rec.blocked
-            rec.flush()
-
 
     def _get_price_total_and_subtotal_model(self, price_unit, quantity, discount, currency, product, partner, taxes,
                                             move_type):
