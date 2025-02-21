@@ -30,7 +30,7 @@
                 <attribute name="loading">true</attribute>
             </xpath>
             <xpath expr="//field[@name='unreconciled_aml_ids']/tree/field[@name='blocked']" position="after">
-                <field name="is_user_changed" string="Exclude from Follow-ups" widget="boolean_toggle"/>
+                <field name="is_user_changed" string="Exclude from Follow-ups" widget="boolean_toggle" readonly="1"/>
             </xpath>
         </field>
     </record>
