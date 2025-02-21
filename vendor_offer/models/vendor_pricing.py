@@ -461,7 +461,7 @@ class VendorPricingExport(models.TransientModel):
                                  WHERE    sts.state ='done' 
                                  AND      sts.date_done < %s 
                                  AND      sts.date_done > %s 
-                                 GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true  """
+                                 GROUP BY sts.product_id ) AS inventory_scrapped ON pp.id=inventory_scrapped.product_id WHERE pp.active=true and pt.active=true  """
 
         start_time = time.time()
         self.env.cr.execute(str_query + str_query_join,
