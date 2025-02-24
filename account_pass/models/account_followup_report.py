@@ -1,5 +1,6 @@
 from odoo import models, api, _
 from odoo.exceptions import UserError
+from odoo import models, api, _ ,fields
 
 import logging
 
@@ -87,4 +88,46 @@ class AccountFollowupReport(models.AbstractModel):
             raise UserError(
                 _("No follow-up contact has an email address set for customer '%s'") % partner.name
             )
+
+class AccountMoveLine(models.Model):
+    _inherit = "account.move.line"
+
+
+    is_user_changed = fields.Boolean(string="Manual Exclusion", store=True)
+
+    @api.onchange('blocked')
+    def on_change_blocked(self):
+        for rec in self:
+            rec.write({
+                'is_user_changed': False if rec.is_user_changed else True,
+                 'blocked': rec.blocked
+                       })
+            self.flush()
+
+
+    # def _set_manual_exclusion(self):
+    #     for record in self:
+    #         record.blocked = record.is_user_changed
+    #
+    # @api.depends('blocked', 'date_maturity')
+    # def _compute_manual_exclusion(self):
+    #     today = fields.Date.context_today(self)
+    #     for record in self:
+    #         previous_due = record._origin.date_maturity
+    #         current_due = record.date_maturity  # Current due date
+    #         # Ensure `blocked` follows `manual_exclusion`, but allow manual changes
+    #         if record.is_user_changed != record.blocked:
+    #             record.blocked = record.is_user_changed
+    #
+    #         if record.date_maturity and record.date_maturity <= today:
+    #             record.is_user_changed = False
+    #
+    #         else:
+    #             # If the invoice was never manually modified, set exclusion based on blocked status
+    #             if record._origin.is_user_changed is False or record.is_user_changed is False:
+    #                 record.blocked = record.is_user_changed
+    #
+    #             # Detect if an invoice was previously overdue and is now non-overdue
+    #             if previous_due and previous_due <= today < current_due:
+    #                 record.is_user_changed = True  # Reset to exclude non-overdue invoices
 
