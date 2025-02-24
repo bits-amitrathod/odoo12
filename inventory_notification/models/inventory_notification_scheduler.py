@@ -453,7 +453,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
                             products[line.product_id.id] = line.product_id
 
-                subject = "Your Updated SPS Ordering List"
+                subject = "Your Custom In-Stock Products"
                 # href="https://www.shopsps.com/downloadCatalog"
                 descrption =  Markup("""  
 
@@ -1730,7 +1730,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
                             products[line.product_id.id] = line.product_id
 
-                subject = "Your Updated SPS Ordering List"
+                subject = "Your Custom In-Stock Products"
                 # href="https://www.shopsps.com/downloadCatalog"
                 descrption = Markup("""  
 
