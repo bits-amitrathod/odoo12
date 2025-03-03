@@ -28,7 +28,8 @@ class StockPicking(models.Model):
                 if picking.sale_id:
                     _logger.info("***********Pick type and State ****************************")
                     _logger.info(self.picking_type_id.name + "  *********** " + self.state)
-                    if self.picking_type_id.name == 'Pick' and self.state == 'done':
+                    if (self.picking_type_id.name == 'Pick' and self.state == 'done'
+                            and picking.origin and 'Return' not in picking.origin):
                         # inv_notification.pick_notification_for_customer(self)
                         inv_notification.pick_notification_for_user(self)
                         self.email_after_pick_validate()
