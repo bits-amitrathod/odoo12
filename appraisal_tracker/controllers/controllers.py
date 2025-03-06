@@ -164,8 +164,7 @@ class ApprisalTracker(http.Controller):
                         or (ttf1.code='2' and polf1.product_unit_price!=0 and (ABS(cast((polf1.product_offer_price/polf1.product_unit_price)-1 as numeric))  >= 0.4) )))
                     then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end ) as tier2_retail ,
                     
-                      sum(case when rpf1.is_wholesaler = TRUE and polf1.product_unit_price != 0 and
-                      ABS(CAST((polf1.product_offer_price / polf1.product_unit_price) - 1 AS NUMERIC)) < 0.4 
+                      sum(case when ttf1.code = '3'  
                       then (polf1.product_unit_price * polf1.qty_invoiced) else 0 end) AS tier3_retail,
                       
                     sum(case when  (rpf1.is_wholesaler = true) and ( polf1.product_unit_price!=0 and 
