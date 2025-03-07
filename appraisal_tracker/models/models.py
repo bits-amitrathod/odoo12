@@ -217,10 +217,15 @@ class apprisal_tracker_vendor(models.Model):
                         invoice_vals['invoice_line_ids'].append((0, 0, pending_section._prepare_account_move_line()))
                         pending_section = None
                     invoice_vals['invoice_line_ids'].append((0, 0, line._prepare_account_move_line()))
-            if line_item_present and self.offer_type and self.offer_type in ('credit','cash'):
+            if line_item_present and self.offer_type and self.offer_type == 'credit':
                 credit_amount = self.amount_total-price_subtotal_all
-                invoice_vals['invoice_line_ids'].append((0, 0,
-                                        self.add_credit_line_item_in_PO(credit_amount, credit_type=self.offer_type)))
+                invoice_vals['invoice_line_ids'].append((0, 0, self.add_credit_line_item_in_PO(credit_amount)))
+            elif line_item_present and self.offer_type and self.offer_type == 'cash':
+                final_billed_offer_total = self.final_billed_offer_total
+                amount_total = self.amount_total
+                if final_billed_offer_total and final_billed_offer_total != amount_total:
+                    cash_amount = final_billed_offer_total - amount_total
+                    invoice_vals['invoice_line_ids'].append((0, 0, self.add_cash_adjustment_line(cash_amount)))
 
             invoice_vals_list.append(invoice_vals)
 
@@ -265,21 +270,15 @@ class apprisal_tracker_vendor(models.Model):
 
         return self.action_view_invoice(moves)
 
-    def add_credit_line_item_in_PO(self, credit_amount, credit_type, move=False):
+    def add_credit_line_item_in_PO(self, credit_amount, move=False):
         self.ensure_one()
         aml_currency = move and move.currency_id or self.currency_id
         date = move and move.date or fields.Date.today()
         account_id = self.env['account.account'].search([('code', '=', '50007'),
-                                                      ('company_id', '=', self.company_id.id)], limit=1)
-        label = ''
-        if credit_type == 'credit':
-            label = 'CREDIT (%s - %s)' % (self.name, self.appraisal_no)
-        elif credit_type == 'cash':
-            label = 'PO Adjustment per Bid (%s - %s)' % (self.name, self.appraisal_no)
-
+                                                         ('company_id', '=', self.company_id.id)], limit=1)
         res = {
             'sequence': 1,
-            'name': label,
+            'name': 'CREDIT (%s - %s)' % (self.name, self.appraisal_no),
             'quantity': 1,
             'price_unit': credit_amount,
             'account_id': account_id.id
@@ -299,6 +298,25 @@ class apprisal_tracker_vendor(models.Model):
             'partner_id': move.partner_id.id
         })
         return res
+
+    def add_cash_adjustment_line(self, cash_amount):
+        """Create the 50007 Bill Adjustments Expense line for Cash Purchase Orders."""
+        self.ensure_one()
+
+        account_id = self.env['account.account'].search(
+            [('code', '=', '50007'), ('company_id', '=', self.company_id.id)],
+            limit=1
+        )
+
+        label = 'PO Adjustment per Bid (%s - %s)' % (self.name, self.appraisal_no)
+
+        return {
+            'sequence': 1,
+            'name': label,
+            'quantity': 1,
+            'price_unit': cash_amount,
+            'account_id': account_id.id if account_id else False
+        }
 
 
 class CustomerAsWholesaler(models.Model):
