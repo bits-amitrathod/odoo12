@@ -61,7 +61,7 @@ class StockValuationReport(models.Model):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
-            'name': _('Stock Valuation Report'),
+            'name': _('Optimized Inventory Valuation'),
             'res_model': 'stock.valuation.layer',
             'domain': domain,
             'target': 'main',
