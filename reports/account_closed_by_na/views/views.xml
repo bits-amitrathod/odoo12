@@ -83,7 +83,7 @@
 
         <!-- Action code -->
         <record id="action_account_closed_by_na" model="ir.actions.act_window">
-            <field name="name">Revenue From Accounts Closed In 18 Months By NA</field>
+            <field name="name">Revenue From Accounts Closed In 24 Months By NA</field>
             <field name="res_model">popup.na.account.closed</field>
             <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
@@ -103,7 +103,7 @@
                         <group>
                             <group>
                                 <field name="start_date"/>
-                                <field name="national_account"/>
+                                <field name="national_account" required="True"/>
                             </group>
                             <group>
                                 <!--<b>Filter By Revenue</b>-->
@@ -111,7 +111,7 @@
                                 <field name="delivery_end_date"/>
                             </group>
                         </group>
-                        <div>Click On ' Export To File ' button to export Revenue From Accounts Closed In 18 Months By NA report file</div>
+                        <div>Click On ' Export To File ' button to export Revenue From Accounts Closed In 24 Months By NA report file</div>
                         <footer>
                             <button name="download_excel_na_account_closed" string="Export To File" type="object"
                                     class="btn-primary"/>
@@ -154,7 +154,7 @@
                     key2="client_action_multi"
                     id="account_closed_by_na_export_act_window"/>-->
         <record id="account_closed_by_na_export_act_window" model="ir.actions.act_window">
-            <field name="name">Export Revenue From Accounts Closed In 18 Months By NA Report</field>
+            <field name="name">Export Revenue From Accounts Closed In 24 Months By NA Report</field>
             <field name="res_model">report.na.account.closed.export</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
@@ -167,7 +167,7 @@
         <!-- Menus declaration -->
         <!--<menuitem id="national_account_reports" name="National Account Reports" parent="sale.menu_sale_report" sequence="1"/>-->
         <menuitem id="sale.account_closed_by_na_menu"
-                  name="Revenue From Accounts Closed In 18 Months By NA"
+                  name="Revenue From Accounts Closed In 24 Months By NA"
                   action="action_account_closed_by_na"
                   parent="revenue_by_na_per_account.national_account_reports"
                   sequence="3"/>

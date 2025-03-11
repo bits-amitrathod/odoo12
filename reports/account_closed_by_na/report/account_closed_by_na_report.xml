@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="action_report_account_closed_by_na" model="ir.actions.report">
-            <field name="name">Revenue From Accounts Closed In 18 Months By NA</field>
+            <field name="name">Revenue From Accounts Closed In 24 Months By NA</field>
             <field name="model">report.na.account.closed</field>
             <field name="report_type">qweb-html</field>
             <field name="report_name">account_closed_by_na.na_account_closed_temp_test</field>
