@@ -1,6 +1,7 @@
 from odoo import models, api,_
 import logging
 SUPERUSER_ID_INFO = 2
+DESTINATION_STOCK_MAIN_ID = 14
 
 _logger = logging.getLogger(__name__)
 
@@ -29,7 +30,7 @@ class StockPicking(models.Model):
                     _logger.info("***********Pick type and State ****************************")
                     _logger.info(self.picking_type_id.name + "  *********** " + self.state)
                     if (self.picking_type_id.name == 'Pick' and self.state == 'done'
-                            and picking.origin and 'Return' not in picking.origin):
+                            and picking.location_dest_id.id != DESTINATION_STOCK_MAIN_ID):
                         # inv_notification.pick_notification_for_customer(self)
                         inv_notification.pick_notification_for_user(self)
                         self.email_after_pick_validate()
