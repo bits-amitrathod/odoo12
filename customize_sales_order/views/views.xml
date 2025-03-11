@@ -448,7 +448,7 @@
         </record>
 
         <record id="stock_valuation_layer_action_export" model="ir.actions.act_window">
-            <field name="name">Export Stock Valuation</field>
+            <field name="name">Export Optimized Inventory Valuation</field>
             <field name="res_model">stock.valuation.layer</field>
             <field name="binding_model_id" ref="stock_account.model_stock_valuation_layer"/>
             <field name="view_mode">form</field>
@@ -487,7 +487,7 @@
 
 
         <record id="action_stock_valuation_report_popup" model="ir.actions.act_window">
-            <field name="name">Stock Valuation Report</field>
+            <field name="name">Optimized Inventory Valuation</field>
             <field name="res_model">stock.valuation.layer</field>
             <field name="view_mode">form</field>
             <field name="view_id" ref="view_stock_valuation_report"/>
@@ -497,7 +497,7 @@
 
 
         <record id="action_stock_valuation_report" model="ir.actions.act_window">
-            <field name="name">Custom Stock Valuation Report</field>
+            <field name="name">Optimized Inventory Valuation</field>
             <field name="res_model">stock.valuation.layer</field>
             <field name="view_mode">list,form</field>
             <field name="target">current</field>
@@ -506,7 +506,7 @@
 
        <menuitem id="stock_valuation"
             action="action_stock_valuation_report_popup"
-            name="Custom Stock Valuation Report"
+            name="Optimized Inventory Valuation"
             parent="stock.menu_warehouse_report"
             sequence="257"/>
 

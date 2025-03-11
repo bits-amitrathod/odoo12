@@ -148,7 +148,7 @@ class ExportStockValuationXL(http.Controller):
         return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
     def filename(self, report_date):
-        return f"Stock_Valuation_Layer_{report_date}.xlsx"
+        return f"Optimized_Inventory_Valuation_{report_date}.xlsx"
 
     # Function to generate the Excel file
     def from_data(self, field, rows):
