@@ -61,7 +61,7 @@ class StockValuationReport(models.Model):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree,form',
-            'name': _('Stock Valuation Report'),
+            'name': _('Optimized Inventory Valuation'),
             'res_model': 'stock.valuation.layer',
             'domain': domain,
             'target': 'main',
@@ -148,7 +148,7 @@ class ExportStockValuationXL(http.Controller):
         return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
     def filename(self, report_date):
-        return f"Stock_Valuation_Layer_{report_date}.xlsx"
+        return f"Optimized_Inventory_Valuation_{report_date}.xlsx"
 
     # Function to generate the Excel file
     def from_data(self, field, rows):
