@@ -83,7 +83,7 @@ class ThemeController(http.Controller):
 
     @http.route('/seller-form', type='http', auth="public", website=True)
     def seller_form_method(self):
-        return http.request.render('sps_theme.seller_form_template')
+        return http.request.render('sps_theme.seller_form_template0')
 
     @http.route('/terms_of_product_sale', type='http', auth="public", website=True)
     def terms_of_sale(self):
