@@ -57,6 +57,7 @@ odoo.define('website_quote_ext._ex', function (require) {
         $(engine).on('click', 'a.js_add_cart_json', function (ev) {
             ev.preventDefault();
             var $link = $(ev.currentTarget);
+            if ($link.css("cursor") === "not-allowed") { return false; }
             var $input = $link.parent().find("input");
             var product_id = $input[0]['attributes']['data-product-id']['value'];
             var quote_id = $input[0]['attributes']['data-quote-id']['value'];
