@@ -862,7 +862,7 @@
                                             <t t-if="sale_order.state == 'sent'">
                                                 <td>
                                                     <div class="css_quantity input-group oe_website_spinner d-flex align-items-center">
-                                                        <a title="Decrease Quality" t-attf-href="#" style="background-color: #FFFFFF;border: 0px;color: #3d9cca!important;margin-bottom: 0px!important;"
+                                                        <a title="Decrease Quantity" t-attf-href="#" style="background-color: #FFFFFF;border: 0px;color: #3d9cca!important;margin-bottom: 0px!important;"
                                                            class="mb8 input-group-addon js_add_cart_json btn">
                                                             <i class="fa fa-minus"></i>
                                                         </a>
@@ -872,9 +872,12 @@
                                                                t-att-data-product-id="ol.product_id.id"
                                                                t-att-value="ol.product_uom_qty" readonly="True" style="
                                                                  background-color: white;"/>
-                                                        <a style="cursor: not-allowed;background-color: #FFFFFF;border: 0px;margin-bottom: 0px!important; margin-left: auto;    margin-left: auto;"
-                                                           class="mb8 input-group-addon float_left js_add_cart_json btn">
-                                                            <i class="fa fa-plus" style="readonly:true;color: #cacaca;"></i>
+                                                        <a t-attf-id="allow_qty_plus_{{ol.product_id.id}}"
+                                                           title="Add Quantity"
+                                                           t-attf-href="#"
+                                                           t-att-class="'mb8 input-group-addon float_left js_add_cart_json btn ' + ('disabled' if ol.product_uom_qty >= ol.product_id.qty_available - 1 else '')"
+                                                           t-att-style="'background-color: #FFFFFF; border: 0px; margin-bottom: 0px!important; margin-left: auto; ' + ('cursor: not-allowed; color:#cacaca; pointer-events:none;' if ol.product_uom_qty >= ol.product_id.qty_available - 1 else '')">
+                                                            <i class="fa fa-plus" t-att-style="'color:' + ('#cacaca' if ol.product_uom_qty >= ol.product_id.qty_available - 1 else '#3d9cca')"></i>
                                                         </a>
                                                     </div>
                                                 </td>
