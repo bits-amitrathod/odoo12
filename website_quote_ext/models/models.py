@@ -62,9 +62,12 @@ class Website(models.Model):
     def sale_get_engine_order(self, order_id, line_id, set_qty, product_id):
 
         order = self.env['sale.order'].search([('id', '=', order_id)])[0]
+        state = order.state
+        order.sudo().write({'state': 'sale'})
         values = {'product_uom_qty':set_qty}
         line = self.env['sale.order.line'].sudo().search([('id', '=', line_id)])[0]
         line.write(values)
+        order.sudo().write({'state': 'sent'})
         customer = self.env['res.partner'].sudo().search([('id', '=', order.partner_id.id)])[0]
         cust_id = order.partner_id.id
         if customer.is_parent is False:
