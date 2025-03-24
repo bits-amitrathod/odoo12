@@ -181,6 +181,7 @@ class SPSCustomerPortal(CustomerPortal):
             # stock_move.write({'state': 'assigned'})
 
         else:
+            Order.action_confirm()
             Order.write({'state': 'sale'})  # , 'confirmation_date': datetime.now()
 
         client_order_ref = post.get('client_order_ref')
