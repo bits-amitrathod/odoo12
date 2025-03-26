@@ -70,7 +70,7 @@
                                         <div class="col-md-12"
                                              style="margin-top:10px;border: 1px solid #ddd;width:100%">
                                             <p style="font-weight: lighter">
-                                                <span t-esc="packing_list.partner_id.display_name"></span>
+                                                <span t-esc="packing_list.sale_id.partner_invoice_id.display_name"></span>
                                                 <br/>
                                                 <span t-esc="packing_list.sale_id.partner_invoice_id.street"></span>
                                                 <br/>
