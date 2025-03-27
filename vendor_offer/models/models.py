@@ -145,6 +145,32 @@ class VendorOffer(models.Model):
         store=True
     )
 
+    def _update_expected_date(self):
+        self.env.cr.execute("""SELECT DISTINCT po.id FROM purchase_order po
+                            left join purchase_order_line pol on po.id = pol.order_id
+                            left join stock_move sm on pol.id = sm.purchase_line_id
+                            left join stock_picking sp on sp.id=sm.picking_id 
+                            where 
+                                    po.state IN ('purchase', 'ven_sent', 'ven_draft') 
+                                    AND po.invoice_status in('no')
+                                    AND sp.carrier_tracking_ref is not Null """)
+        orders = self.env.cr.dictfetchall()
+
+
+
+        for order_id in [item['id'] for item in orders] :
+            order = self.browse([order_id])[0]
+            if order and order.shipping_number:
+                tracking_number = order.shipping_number.split(",")
+                result = next((ref.strip("*") for ref in tracking_number if ref.endswith('*')), tracking_number[0])
+                tracking_info = order.carrier_id.fedex_track_request_cron(order, [result])
+                expected_date = tracking_info.get('expected_date')
+                if expected_date:
+                    order.write({'expected_date': expected_date})
+                    _logger.info("Updated expected date: %s for order %s", expected_date, order.name)
+                else:
+                    _logger.warning("No expected date found for order %s", order.name)
+
     @api.depends('stryker_rep_id')
     def _compute_region(self):
         for record in self:

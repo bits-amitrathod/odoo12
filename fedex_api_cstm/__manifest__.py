@@ -19,6 +19,7 @@
         'security/ir.model.access.csv',
         'views/views.xml',
         'views/templates.xml',
+        'views/track_shipment_cron.xml'
     ],
     'application': True,
     'installable': True,
