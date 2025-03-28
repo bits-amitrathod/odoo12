@@ -78,7 +78,7 @@ class FedexRestApi:
             formatted_response['data'] = '<dl class="dl-horizontal"> <dt>Tracking Number</dt><dd>' + \
                                             trackingNumber + "</dd>" \
                                         "<dt>Event Status</dt> <dd>" + event.get('eventDescription','') + "</dd>" \
-                                        "<dt>Event Date</dt> <dd>" + eventDate + " T00:00:00 UTC </dd>"
+                                        "<dt>Event Date</dt> <dd>" + eventDate + "</dd>"
 
             isMaster = True
             isMasterFound = False
@@ -133,7 +133,7 @@ class FedexRestApi:
                         expactedDateBegin = datetime.strptime(str(dateBegins),"%Y-%m-%d").strftime(tools.misc.DEFAULT_SERVER_DATETIME_FORMAT)
                         expactedDateEnd = datetime.strptime(str(dateEnd),"%Y-%m-%d").strftime(tools.misc.DEFAULT_SERVER_DATETIME_FORMAT)
                         formatted_response['expected_date'] = expactedDateEnd or False
-                        formatted_response['data'] += "<dt> Expected / Estimated Delivery Window </dt><dd>" + str(expactedDateBegin) + " T00:00:00 UTC to " + str(expactedDateEnd) +" T00:00:00 UTC </dd>"
+                        formatted_response['data'] += "<dt> Expected / Estimated Delivery Window </dt><dd>" + str(expactedDateBegin) + " UTC to " + str(expactedDateEnd) +" UTC </dd>"
 
                 formatted_response['data'] += "</dl>"
 
