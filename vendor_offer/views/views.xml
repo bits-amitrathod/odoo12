@@ -400,6 +400,7 @@
 
                 </xpath>
                 <xpath expr="//group/group/field[@name='invoice_status']" position="after">
+                    <field name="shipping_number"></field>
                     <field name="delivered_date"></field>
                     <field name="expected_date"></field>
                     <field name="appraisal_no"></field>

@@ -83,7 +83,7 @@ class FedexRestApi:
             isMaster = True
             isMasterFound = False
             additionalTrackingInfo = 'additionalTrackingInfo' in trackResults and trackResults['additionalTrackingInfo']
-            if additionalTrackingInfo:
+            if additionalTrackingInfo and 'packageIdentifiers' in additionalTrackingInfo:
                 packageIdentifiers = additionalTrackingInfo['packageIdentifiers']
                 for identifier in packageIdentifiers:
                     if identifier.get('type') == 'STANDARD_MPS':
@@ -266,45 +266,16 @@ class FedexDelivery(models.Model):
     """ Fedex Track Request Cron Method """
     def fedex_track_request_cron(self, order, tracking_numbers):
         """Fetch tracking details from FedEx API and update order."""
-        message = ""
         fedex = FedexRestApi(prod_environment=True)
         fedex.oauth_token = self.get_fedex_token()
-
-        expected_date = None
-        delivered_date = None
-        shipping_date = None
-
         for tracking_number in tracking_numbers:
             formatted_response = fedex.process_tracking_request(tracking_number)
-
-            _logger.info(" FedEx API Response for tracking %s: %s", tracking_number, formatted_response)
-
-            message += formatted_response.get('data', '')
-
             if 'alerts' not in formatted_response and 'errors_message' not in formatted_response:
-                if order._name == 'purchase.order':
-                    message += '<div class="well well-sm">Note: This status will be saved ' \
-                               'under "Deliveries & Invoices" section of this PO#</div>'
-
-                    # Extract expected_date dynamically
-                    expected_date = formatted_response.get('expected_date')
-                    delivered_date = formatted_response.get('delivered_date')
-                    shipping_date = formatted_response.get('shipping_date')
-
-                    _logger.info("Extracted Dates -> Expected: %s | Delivered: %s | Shipping: %s",
-                                 expected_date, delivered_date, shipping_date)
-
-                    order.write({
-                        'expected_date': expected_date,
-                        'delivered_date': delivered_date,
-                        'shipping_date': shipping_date
-                    })
-
-        return {
-            'expected_date': expected_date,
-            'delivered_date': delivered_date,
-            'shipping_date': shipping_date
-        }
+                order.write({
+                        'expected_date': formatted_response.get('expected_date'),
+                        'delivered_date': formatted_response.get('delivered_date'),
+                        'shipping_date': formatted_response.get('shipping_date')
+                })
 
 
 class cstm_popup_message(models.TransientModel):

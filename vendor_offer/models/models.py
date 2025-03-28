@@ -14,6 +14,8 @@ _logger = logging.getLogger(__name__)
 all_field_import = 'all_field_import'
 
 SUPERUSER_ID_INFO = 2
+
+
 class VendorOffer(models.Model):
     _description = "Vendor Offer"
     _inherit = "purchase.order"
@@ -51,7 +53,8 @@ class VendorOffer(models.Model):
     cash_amount_untaxed = fields.Monetary(string='Untaxed Credit Offer Price', compute='_amount_all', readonly=True)
     cash_amount_total = fields.Monetary(string='Total Credit Offer Price', compute='_amount_all', readonly=True)
 
-    credit_amount_untaxed_before_qpa = fields.Monetary(string='Credit Offer Price', compute='_amount_all', readonly=True)
+    credit_amount_untaxed_before_qpa = fields.Monetary(string='Credit Offer Price', compute='_amount_all',
+                                                       readonly=True)
     credit_amount_qpq = fields.Monetary(string='Additional 3 %', compute='_amount_all', readonly=True)
     credit_amount_untaxed_after_qpa = fields.Monetary(string='After QPA', compute='_amount_all', readonly=True)
     credit_amount_qpq_flag = fields.Boolean(compute='_amount_all', readonly=True)
@@ -63,8 +66,6 @@ class VendorOffer(models.Model):
     billed_offer_total = fields.Monetary(string='Billed Offer Total', compute='_amount_all', readonly=True)
     final_billed_offer_total = fields.Monetary(string='Final Billed Offer Total', default=0, tracking=True)
 
-
-
     '''show_validate = fields.Boolean(
         compute='_compute_show_validate',
         help='Technical field used to compute whether the validate should be shown.')'''
@@ -73,7 +74,7 @@ class VendorOffer(models.Model):
         ('cash', 'Cash'),
         ('credit', 'Credit'),
         ('cashcredit', 'Cash/Credit')
-    ], string='Offer Type',default='cashcredit')
+    ], string='Offer Type', default='cashcredit')
 
     offer_type_popup = fields.Selection([
         ('cash', 'Cash'),
@@ -125,8 +126,8 @@ class VendorOffer(models.Model):
     arrival_date_grp = fields.Datetime(string="Arrival Date")
 
     super_user_email = fields.Char(compute='_email_info_user')
-    vendor_cust_id = fields.Char(string="Customer ID",store=True,readonly=False)
-    cash_text_pdf = fields.Char(string="",compute='_cash_text_pdf_fun')
+    vendor_cust_id = fields.Char(string="Customer ID", store=True, readonly=False)
+    cash_text_pdf = fields.Char(string="", compute='_cash_text_pdf_fun')
     offer_expired = fields.Boolean(string='Offer Expired ?')
     offer_approved = fields.Boolean(string='Offer is Approved', track_visibility='onchange')
 
@@ -146,30 +147,15 @@ class VendorOffer(models.Model):
     )
 
     def _update_expected_date(self):
-        self.env.cr.execute("""SELECT DISTINCT po.id FROM purchase_order po
-                            left join purchase_order_line pol on po.id = pol.order_id
-                            left join stock_move sm on pol.id = sm.purchase_line_id
-                            left join stock_picking sp on sp.id=sm.picking_id 
-                            where 
-                                    po.state IN ('purchase', 'ven_sent', 'ven_draft') 
-                                    AND po.invoice_status in('no')
-                                    AND sp.carrier_tracking_ref is not Null """)
-        orders = self.env.cr.dictfetchall()
-
-
-
-        for order_id in [item['id'] for item in orders] :
-            order = self.browse([order_id])[0]
-            if order and order.shipping_number:
-                tracking_number = order.shipping_number.split(",")
-                result = next((ref.strip("*") for ref in tracking_number if ref.endswith('*')), tracking_number[0])
-                tracking_info = order.carrier_id.fedex_track_request_cron(order, [result])
-                expected_date = tracking_info.get('expected_date')
-                if expected_date:
-                    order.write({'expected_date': expected_date})
-                    _logger.info("Updated expected date: %s for order %s", expected_date, order.name)
-                else:
-                    _logger.warning("No expected date found for order %s", order.name)
+        orders = self.search([
+            ('state', 'in', ['purchase', 'ven_sent', 'ven_draft']),
+            ('invoice_status', 'in', ['no']),
+            ('shipping_number', '!=', False)])
+        for order in orders:
+            tracking_numbers = order.shipping_number.split(",")
+            # Find the first tracking number ending with '*' or use the first one by default
+            result = next((ref.strip("*") for ref in tracking_numbers if ref.endswith('*')), tracking_numbers[0])
+            order.carrier_id.fedex_track_request_cron(order, [result])
 
     @api.depends('stryker_rep_id')
     def _compute_region(self):
@@ -189,7 +175,6 @@ class VendorOffer(models.Model):
 
     def set_expiration_flag_old_offer(self):
         date_expired = fields.Datetime.today() - datetime.timedelta(days=21)
-
 
         expired_offers = self.env['purchase.order'].search([
             ('date_offered', '<', date_expired),
@@ -232,9 +217,8 @@ class VendorOffer(models.Model):
             else:
                 order.cash_text_pdf = None
 
-
     acq_manager_email = fields.Char(readonly=False, compute='acq_manager_detail')
-    acq_manager_phone = fields.Char( readonly=False,compute='acq_manager_detail')
+    acq_manager_phone = fields.Char(readonly=False, compute='acq_manager_detail')
 
     @api.onchange('partner_id')
     @api.depends('partner_id')
@@ -378,7 +362,7 @@ class VendorOffer(models.Model):
                 while True:
                     number_str = 'AP' + str(randint(111111, 999999))
                     query_str = 'SELECT count(*) FROM purchase_order WHERE appraisal_no LIKE %s'
-                    self.env.cr.execute(query_str,[number_str])
+                    self.env.cr.execute(query_str, [number_str])
                     if 0 == self._cr.fetchone()[0]:
                         order.appraisal_no = number_str
                         break
@@ -387,7 +371,6 @@ class VendorOffer(models.Model):
                 self.env.cr.execute(query_str, [order.appraisal_no])
                 if 0 != self._cr.fetchone()[0]:
                     raise ValidationError(_('Appraisal No# Already Exist'))
-
 
     @api.onchange('order_line.taxes_id')
     @api.depends('order_line.price_total', 'order_line.price_total', 'order_line.taxes_id',
@@ -424,7 +407,8 @@ class VendorOffer(models.Model):
 
                     line.for_print_product_offer_price = str(line.product_offer_price)
                     line.for_print_price_subtotal = str(line.price_subtotal)
-                    if ((line.expiration_date_str is False) or (line.expiration_date_str == '')) and line.expiration_date :
+                    if ((line.expiration_date_str is False) or (
+                            line.expiration_date_str == '')) and line.expiration_date:
                         line.expiration_date_str = line.expiration_date
                         line.update({'expiration_date_str': line.expiration_date_str})
 
@@ -602,7 +586,6 @@ class VendorOffer(models.Model):
 
                     credit_amount_total = credit_amount_untaxed + amount_tax
 
-
                 order.update({
                     'max': round(max, 2),
                     'amount_tax': amount_tax,
@@ -638,7 +621,9 @@ class VendorOffer(models.Model):
                                     order.create_date.date() >= datetime.datetime.strptime('2023-11-28',
                                                                                            "%Y-%m-%d").date()):
                                 decimal_value = round(credit_amount_untaxed, 2) - int(round(credit_amount_untaxed, 2))
-                                credit_amount_untaxed_new = float(math.floor(round(credit_amount_untaxed, 2)) if decimal_value <= 0.5 else math.ceil(round(credit_amount_untaxed, 2)))
+                                credit_amount_untaxed_new = float(
+                                    math.floor(round(credit_amount_untaxed, 2)) if decimal_value <= 0.5 else math.ceil(
+                                        round(credit_amount_untaxed, 2)))
                                 order.update({
                                     'amount_untaxed': credit_amount_untaxed_new,
                                     'amount_total': round(credit_amount_total, 2)
@@ -672,14 +657,19 @@ class VendorOffer(models.Model):
         ir_model_data = self.env['ir.model.data']
         try:
             if self.env.context.get('send_rfq', False):
-                template_id = ir_model_data.check_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done', raise_on_access_error=True)[1]
+                template_id = \
+                ir_model_data.check_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done',
+                                                     raise_on_access_error=True)[1]
             else:
-                template_id = ir_model_data.check_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done', raise_on_access_error=True)[1]
+                template_id = \
+                ir_model_data.check_object_reference('vendor_offer', 'email_template_edi_vendor_offer_done',
+                                                     raise_on_access_error=True)[1]
 
         except ValueError:
             template_id = False
         try:
-            compose_form_id = ir_model_data.check_object_reference('mail', 'email_compose_message_wizard_form', raise_on_access_error=True)[1]
+            compose_form_id = ir_model_data.check_object_reference('mail', 'email_compose_message_wizard_form',
+                                                                   raise_on_access_error=True)[1]
 
         except ValueError:
             compose_form_id = False
@@ -698,7 +688,8 @@ class VendorOffer(models.Model):
             'custom_layout': "vendor_offer.mail_notification_vendor_offer",
             'force_email': True,
             'partner_to': self.partner_id.id if not self.partner_id.vendor_email else False,
-            'email_from': self.acq_user_id.partner_id.email if self.acq_user_id.partner_id.email != False else (self.sudo().create_uid.email_formatted or ''),
+            'email_from': self.acq_user_id.partner_id.email if self.acq_user_id.partner_id.email != False else (
+                        self.sudo().create_uid.email_formatted or ''),
             'vendor_email': (self.partner_id.vendor_email or self.partner_id.email) if self.partner_id else False,
             'email_cc': self.acq_user_id.partner_id.email or ''
         })
@@ -786,7 +777,6 @@ class VendorOffer(models.Model):
                 temp = int(self.revision) - 1
                 self.revision = str(temp)
 
-
             self.env['inventory.notification.scheduler'].send_email_after_vendor_offer_conformation(self.id)
 
     #@api.multi
@@ -858,7 +848,6 @@ class VendorOffer(models.Model):
         #         #raise ValidationError(_('Offer Type must be either "Cash" or "Credit" to Accept '))
         #         raise UserError(_('Offer Type must be either "Cash" or "Credit" not both to Accept'))
         if (self.offer_expired is True) and (self.offer_approved is False):
-
             form_view_id = self.env.ref('vendor_offer.vendor_offer_approve_popup').id
             action = {
                 'type': 'ir.actions.act_window',
@@ -911,7 +900,7 @@ class VendorOffer(models.Model):
             self.amount_total = round(self.cash_amount_total, 2)
             self.offer_type = 'cash'
 
-        if self.offer_type == 'credit' :
+        if self.offer_type == 'credit':
             self.amount_untaxed = round(self.credit_amount_untaxed, 2)
             self.amount_total = round(self.credit_amount_total, 2)
             self.offer_type = 'credit'
@@ -990,7 +979,7 @@ class VendorOffer(models.Model):
             access_url_vendor = '/my/vendor/%s' % (order.id)
             return access_url_vendor
 
-    def get_mail_url(self,redirect=False):
+    def get_mail_url(self, redirect=False):
         self.ensure_one()
         params = {}
         if hasattr(self, 'partner_id') and self.partner_id:
@@ -1009,6 +998,3 @@ class VendorOffer(models.Model):
             auth_param = url_encode(self.partner_id.signup_get_auth_param()[self.partner_id.id])
             return self.get_portal_url(query_string='&%s' % auth_param)
         return super(VendorOffer, self)._get_share_url(redirect, signup_partner, pid)
-
-
-
