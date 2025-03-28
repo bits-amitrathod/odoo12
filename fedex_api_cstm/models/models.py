@@ -130,10 +130,10 @@ class FedexRestApi:
                     dateBegins = type and estimatedDeliveryTimeWindow['window']['begins'][0:estimatedDeliveryTimeWindow['window']['begins'].find('T')] or ''
                     dateEnd = type and estimatedDeliveryTimeWindow['window']['ends'][0:estimatedDeliveryTimeWindow['window']['ends'].find('T')] or ''
                     if dateBegins and dateEnd:
-                        expactedDateBegin = datetime.strptime(str(dateBegins),"%Y-%m-%d").strftime(tools.misc.DEFAULT_SERVER_DATETIME_FORMAT)
-                        expactedDateEnd = datetime.strptime(str(dateEnd),"%Y-%m-%d").strftime(tools.misc.DEFAULT_SERVER_DATETIME_FORMAT)
+                        expactedDateBegin = datetime.strptime(str(dateBegins),"%Y-%m-%d").strftime(tools.misc.DEFAULT_SERVER_DATE_FORMAT)
+                        expactedDateEnd = datetime.strptime(str(dateEnd),"%Y-%m-%d").strftime(tools.misc.DEFAULT_SERVER_DATE_FORMAT)
                         formatted_response['expected_date'] = expactedDateEnd or False
-                        formatted_response['data'] += "<dt> Expected / Estimated Delivery Window </dt><dd>" + str(expactedDateBegin) + " UTC to " + str(expactedDateEnd) +" UTC </dd>"
+                        formatted_response['data'] += "<dt> Expected / Estimated Delivery Window </dt><dd>" + str(expactedDateBegin) + " to " + str(expactedDateEnd) +"</dd>"
 
                 formatted_response['data'] += "</dl>"
 
