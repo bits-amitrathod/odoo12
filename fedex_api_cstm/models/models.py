@@ -101,7 +101,7 @@ class FedexRestApi:
                     dateTime = track.get('dateTime', '')[0:track.get('dateTime', '').find('T')]
                     if track.get('type') == 'ESTIMATED_DELIVERY':
                         formatted_response['expected_date'] = dateTime
-                        isExpectedDate = datetime.strptime(str(dateTime),"%Y-%m-%d").strftime(tools.misc.DEFAULT_SERVER_DATETIME_FORMAT)
+                        isExpectedDate = datetime.strptime(str(dateTime),"%Y-%m-%d").strftime(tools.misc.DEFAULT_SERVER_DATE_FORMAT)
 
                     if track.get('type') == 'ACTUAL_DELIVERY':
                         formatted_response['delivered_date'] = dateTime
