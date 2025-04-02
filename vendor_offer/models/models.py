@@ -149,7 +149,6 @@ class VendorOffer(models.Model):
     def _update_expected_date(self):
         orders = self.search([
             ('state', 'in', ['purchase', 'ven_sent', 'ven_draft']),
-            ('invoice_status', 'in', ['no']),
             ('shipping_number', '!=', False)])
         for order in orders:
             tracking_numbers = order.shipping_number.split(",")
