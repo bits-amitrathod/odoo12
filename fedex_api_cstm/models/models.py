@@ -237,8 +237,6 @@ class FedexDelivery(models.Model):
             message += formatted_response.get('data','')
             if 'alerts' not in formatted_response and 'errors_message' not in formatted_response:
                 if order._name == 'purchase.order':
-                    message += '<div class="well well-sm">Note: This status will be saved ' \
-                               'under "Deliveries & Invoices" section of this PO#</div>'
                     if 'expected_date' in formatted_response:
                         order.expected_date = formatted_response['expected_date']
 
