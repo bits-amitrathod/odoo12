@@ -81,9 +81,9 @@ class VendorOffer(models.Model):
         ('credit', 'Credit')
     ], string='Offer Type', default='cash')
 
-    shipping_date = fields.Datetime(string="Shipping Date")
-    delivered_date = fields.Datetime(string="Delivered Date")
-    expected_date = fields.Datetime(string="Expected Date")
+    shipping_date = fields.Char(string="Shipping Date")
+    delivered_date = fields.Char(string="Delivered Date")
+    expected_date = fields.Char(string="Expected Date")
 
     notes_activity = fields.One2many('purchase.notes.activity', 'order_id', string='Notes')
 
