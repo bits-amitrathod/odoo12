@@ -146,15 +146,6 @@ class VendorOffer(models.Model):
         store=True
     )
 
-    def _update_expected_date(self):
-        orders = self.search([
-            ('state', 'in', ['purchase', 'ven_sent', 'ven_draft']),
-            ('shipping_number', '!=', False)])
-        for order in orders:
-            tracking_numbers = order.shipping_number.split(",")
-            # Find the first tracking number ending with '*' or use the first one by default
-            result = next((ref.strip("*") for ref in tracking_numbers if ref.endswith('*')), tracking_numbers[0])
-            order.carrier_id.fedex_track_request_cron(order, [result])
 
     @api.depends('stryker_rep_id')
     def _compute_region(self):

@@ -350,11 +350,30 @@ class tracking_popup(models.TransientModel):
 class VendorOfferTrack(models.Model):
     _inherit = "purchase.order"
 
+    flag = fields.Boolean(default=False, db_index=True,
+                          string="Flag", readonly=True, help="Flag for tracking")
     #@api.multi
     def action_fedex_track_request(self):
         if self.carrier_id:
             return self.carrier_id.get_tracking(self, self.shipping_number.split(","))
 
+    def _update_expected_date(self):
+        orders = self.search([
+            ('state', 'in', ['purchase', 'ven_sent', 'ven_draft']),
+            ('shipping_number', '!=', False),
+            ('flag', '=', True)], limit=100)
+        for order in orders:
+            tracking_numbers = order.shipping_number.split(",")
+            # Find the first tracking number ending with '*' or use the first one by default
+            result = next((ref.strip("*") for ref in tracking_numbers if ref.endswith('*')), tracking_numbers[0])
+            order.carrier_id.fedex_track_request_cron(order, [result])
+            order.flag = False
+
+    def _update_tracking_flag_for_pOs(self):
+        sql_str = """ update purchase_order set flag= True
+                      WHERE state IN ('purchase', 'ven_sent', 'ven_draft')
+                      and shipping_number is not Null """
+        self.env.cr.execute(sql_str)
 
 class sale_order_track(models.Model):
     _inherit = 'sale.order'
