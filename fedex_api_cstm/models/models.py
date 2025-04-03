@@ -357,11 +357,11 @@ class VendorOfferTrack(models.Model):
         if self.carrier_id:
             return self.carrier_id.get_tracking(self, self.shipping_number.split(","))
 
-    def _update_expected_date(self):
+    def _update_expected_date(self, limit=100):
         orders = self.search([
             ('state', 'in', ['purchase', 'ven_sent', 'ven_draft']),
             ('shipping_number', '!=', False),
-            ('flag', '=', True)], limit=100)
+            ('flag', '=', True)], limit=limit)
         for order in orders:
             tracking_numbers = order.shipping_number.split(",")
             # Find the first tracking number ending with '*' or use the first one by default
