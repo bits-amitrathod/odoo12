@@ -2,10 +2,27 @@
 import os
 from datetime import datetime, timedelta
 import requests, json, logging
-from odoo import models, api, fields,tools
-from odoo.exceptions import Warning, UserError,ValidationError
+from odoo import models, api, fields, tools
+from odoo.exceptions import Warning, UserError, ValidationError
 import logging
+
 _logger = logging.getLogger(__name__)
+
+import re
+
+
+def _get_date_parameter(date_string):
+    from datetime import date
+    # Regular expression pattern to match the year, month, and day
+    pattern = r'(\d{4})-(\d{1,2})-(\d{1,2})'
+    # Use re.match to apply the pattern
+    match = re.match(pattern, date_string)
+    if match:
+        # Extract year, month, and day
+        year = int(match.group(1))
+        month = int(match.group(2))
+        day = int(match.group(3))
+        return date(year, month, day)
 
 
 class FedexRestApi:
@@ -109,7 +126,7 @@ class FedexRestApi:
                     if track.get('type') == 'SHIP':
                         formatted_response['shipping_date'] = dateTime
 
-                scanLocation = event.get('scanLocation',False)
+                scanLocation = event.get('scanLocation', False)
                 if scanLocation:
                     address = ""
                     address += scanLocation.get('residential',False) + "<br/>" if scanLocation.get('residential',False) else ""
@@ -238,13 +255,13 @@ class FedexDelivery(models.Model):
             if 'alerts' not in formatted_response and 'errors_message' not in formatted_response:
                 if order._name == 'purchase.order':
                     if 'expected_date' in formatted_response:
-                        order.expected_date = formatted_response['expected_date']
+                        order.expected_date = _get_date_parameter(formatted_response['expected_date'])
 
                     if 'delivered_date' in formatted_response:
-                        order.delivered_date = formatted_response['delivered_date']
+                        order.delivered_date = _get_date_parameter(formatted_response['delivered_date'])
 
                     if 'shipping_date' in formatted_response:
-                        order.shipping_date = formatted_response['shipping_date']
+                        order.shipping_date = _get_date_parameter(formatted_response['shipping_date'])
 
         if message:
             view = self.env.ref('fedex_api_cstm.cstm_popup_message')
@@ -262,6 +279,7 @@ class FedexDelivery(models.Model):
             }
 
     """ Fedex Track Request Cron Method """
+
     def fedex_track_request_cron(self, order, tracking_numbers):
         """Fetch tracking details from FedEx API and update order."""
         fedex = FedexRestApi(prod_environment=True)
@@ -270,16 +288,15 @@ class FedexDelivery(models.Model):
             formatted_response = fedex.process_tracking_request(tracking_number)
             if 'alerts' not in formatted_response and 'errors_message' not in formatted_response:
                 order.write({
-                        'expected_date': formatted_response.get('expected_date'),
-                        'delivered_date': formatted_response.get('delivered_date'),
-                        'shipping_date': formatted_response.get('shipping_date')
+                    'expected_date': formatted_response.get('expected_date'),
+                    'delivered_date': formatted_response.get('delivered_date'),
+                    'shipping_date': formatted_response.get('shipping_date')
                 })
 
 
 class cstm_popup_message(models.TransientModel):
     _name = "cstm.popup.message"
     _description = "CSTM Popup Message Model"
-
 
     def get_default(self):
         if self.env.context.get("message", False):
@@ -291,8 +308,7 @@ class cstm_popup_message(models.TransientModel):
 
 class tracking_popup(models.TransientModel):
     _name = "tracking.popup"
-    _description ='Tracking Popup model'
-
+    _description = 'Tracking Popup model'
 
     def get_default(self):
         if self.env.context.get("tracking_numbers", False):
@@ -357,6 +373,6 @@ class StockPicking(models.Model):
     @api.depends('carrier_id', 'carrier_tracking_ref')
     def _compute_carrier_tracking_url(self):
         for picking in self:
-            result = picking.carrier_id.get_tracking_link(picking) if picking.carrier_id and picking.carrier_tracking_ref else False
+            result = picking.carrier_id.get_tracking_link(
+                picking) if picking.carrier_id and picking.carrier_tracking_ref else False
             picking.carrier_tracking_url = result if result else ""
-
