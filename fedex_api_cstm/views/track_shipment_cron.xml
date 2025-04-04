@@ -7,7 +7,7 @@
             <field name="interval_type">minutes</field>
             <field name="model_id" ref="model_purchase_order"/>
             <field name="state">code</field>
-            <field name="code">model._update_expected_date(limit=100)</field>
+            <field name="code">model._update_expected_date(limit=1000)</field>
             <field name="numbercall">-1</field>
             <field name="priority">0</field>
             <field name="doall" eval="False"/>

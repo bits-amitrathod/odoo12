@@ -357,11 +357,18 @@ class VendorOfferTrack(models.Model):
         if self.carrier_id:
             return self.carrier_id.get_tracking(self, self.shipping_number.split(","))
 
-    def _update_expected_date(self, limit=100):
+    def _update_expected_date(self, limit=1000):
         orders = self.search([
             ('state', 'in', ['purchase', 'ven_sent', 'ven_draft']),
             ('shipping_number', '!=', False),
-            ('flag', '=', True)], limit=limit)
+            ('flag', '=', True),
+            '!',
+            '&',
+                ('invoice_status', '=', 'invoiced'),
+                '&',
+                    ('arrival_date_grp', '!=', False),
+                    ('arrival_date_grp', '<', (fields.Date.today() - timedelta(days=31)))
+        ], limit=limit)
         for order in orders:
             tracking_numbers = order.shipping_number.split(",")
             # Find the first tracking number ending with '*' or use the first one by default
@@ -372,7 +379,12 @@ class VendorOfferTrack(models.Model):
     def _update_tracking_flag_for_pOs(self):
         sql_str = """ update purchase_order set flag= True
                       WHERE state IN ('purchase', 'ven_sent', 'ven_draft')
-                      and shipping_number is not Null """
+                          AND shipping_number IS NOT NULL
+                          AND NOT (
+                              invoice_status = 'invoiced'
+                              AND arrival_date_grp IS NOT NULL
+                              AND arrival_date_grp < CURRENT_DATE - INTERVAL '31 days'
+                          ) """
         self.env.cr.execute(sql_str)
 
 class sale_order_track(models.Model):
