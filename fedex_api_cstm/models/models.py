@@ -226,7 +226,8 @@ class FedexDelivery(models.Model):
         if fedex_token:
             token_time = f"{fedex_token.split()[1]} {fedex_token.split()[2]}"
             token_time = datetime.strptime(token_time, tools.misc.DEFAULT_SERVER_DATETIME_FORMAT)
-            oauth_token = token_time > datetime.now() and fedex_token.split()[0]
+            # Here we Handled buffer time of 1 minute
+            oauth_token = token_time - timedelta(seconds=60) > datetime.now() and fedex_token.split()[0]
 
         if not oauth_token:
             #fedex = FedexRestApi(prod_environment=self.prod_environment)
