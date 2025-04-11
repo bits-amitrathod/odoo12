@@ -257,7 +257,7 @@ class StockMoveLineInh(models.Model):
             # Check if move_id exists and has the correct picking type
             if self.move_id and self.move_id.picking_type_id.id and self.move_id.picking_type_id[0].id == PICKING_TYPE_ID:
                 demanded_qty = self.move_id.product_uom_qty
-                total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm.origin != False)
+                total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm.id.origin != False)
                 # Warn if qty_done exceeds available quantity in the lot
                 if self.lot_id:
                     old_obj = self._origin.lot_id if self._origin and self._origin.lot_id else None
@@ -303,7 +303,7 @@ class StockMoveLineInh(models.Model):
                      owner_id=None, strict=False, allow_negative=False)
                 demanded_qty = self.move_id.product_uom_qty
                 total_done_qty = sum(
-                    lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm.origin != False)
+                    lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm.id.origin != False)
                 if self.qty_done != 0 and self.qty_done > available_qty_for_sale:
                     # message = _('Your Changed Lot %s Doesn\'t have required Qty %s') % (
                     # self.lot_id.name,self.qty_done)
