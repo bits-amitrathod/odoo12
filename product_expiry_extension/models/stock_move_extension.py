@@ -325,3 +325,18 @@ class StockMoveLineInh(models.Model):
                                         0) if remaining_qty + available_qty_for_sale > demanded_qty else available_qty_for_sale
                     return res
             return res
+
+    def create(self, vals_list):
+        for vals in vals_list:
+            picking_id = vals.get('picking_id')
+            product_id = vals.get('product_id')
+
+            if not vals.get('move_id') and picking_id and product_id:
+                obj = self.env["stock.picking"].browse(picking_id)
+                obj = next((x for x in obj.move_ids if x.product_id.id == product_id), None)
+
+                if obj:
+                    vals['move_id'] = obj.id
+
+        mls = super().create(vals_list)
+        return mls
