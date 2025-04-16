@@ -257,7 +257,7 @@ class StockMoveLineInh(models.Model):
             # Check if move_id exists and has the correct picking type
             if self.move_id and self.move_id.picking_type_id.id and self.move_id.picking_type_id[0].id == PICKING_TYPE_ID:
                 demanded_qty = self.move_id.product_uom_qty
-                total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm.id.origin != False)
+                total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm._origin)
                 # Warn if qty_done exceeds available quantity in the lot
                 if self.lot_id:
                     old_obj = self._origin.lot_id if self._origin and self._origin.lot_id else None
