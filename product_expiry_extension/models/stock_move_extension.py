@@ -111,7 +111,7 @@ class StockMoveExtension(models.Model):
             stock_lot = self.env['stock.lot'].sudo()
 
             if 'move_line_ids' in vals:
-                if self.picking_type_id.id == PICKING_TYPE_ID:
+                if self.picking_type_id:
                     result_list = [item for item in vals['move_line_ids'] if '0' in str(item[0])]
                     vals['move_line_ids'] = [item for item in vals['move_line_ids'] if '0' not in str(item[0])]
                     id_list = self.move_line_ids.ids
@@ -255,7 +255,7 @@ class StockMoveLineInh(models.Model):
             res = {}
             total_done_qty = 0
             # Check if move_id exists and has the correct picking type
-            if self.move_id and self.move_id.picking_type_id.id and self.move_id.picking_type_id[0].id == PICKING_TYPE_ID:
+            if self.move_id and self.move_id.picking_type_id:
                 demanded_qty = self.move_id.product_uom_qty
                 total_done_qty = sum(lm.qty_done for lm in self.move_id.move_line_ids if lm.qty_done > 0 and lm._origin)
                 # Warn if qty_done exceeds available quantity in the lot
@@ -297,7 +297,7 @@ class StockMoveLineInh(models.Model):
         else:
             res = {}
             # Warn if qty_done exceeds available quantity in the lot
-            if self.lot_id and self.move_id and self.move_id.picking_type_id[0].id == PICKING_TYPE_ID:
+            if self.lot_id and self.move_id and self.move_id.picking_type_id:
                 available_qty_for_sale = self.env['stock.quant'].sudo()._get_available_quantity \
                     (self.product_id, self.picking_location_id, lot_id=self.lot_id, package_id=None,
                      owner_id=None, strict=False, allow_negative=False)
