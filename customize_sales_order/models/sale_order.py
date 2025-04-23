@@ -298,11 +298,14 @@ class sale_order(models.Model):
         def check_infuse_in_all_order_lines(order):
             """Check if all storeable products in the order lines have 'INFUSE' in their name."""
             # Iterate through all order lines and check product names
+            flag = False
             for line in order.order_line:
                 # Check if 'INFUSE' is in the product name
                 if 'infuse' in line.product_id.name.lower():
-                    return True  # Return True if any product name contain 'INFUSE'
-            return False  # Return False if all products' names does not contain 'INFUSE'
+                    flag = True
+                else:
+                    return False
+            return flag  # Return False if all products' names does not contain 'INFUSE'
 
         def check_pricelist_name_contains_gt(order):
             """Check if the pricelist name does not contain 'GT' (case-insensitive)."""
