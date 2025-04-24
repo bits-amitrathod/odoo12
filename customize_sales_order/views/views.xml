@@ -300,20 +300,6 @@
                     <field name="original_team_id" readonly="1"
                            options="{'no_create': True,'no_edit': True,'no_open' : True}"/>
                 </xpath>
-
-                <field name="partner_id" position="after">
-                    <field name="is_need_approval" invisible="1"/>
-                    <field name="is_approved" invisible="1"/>
-                </field>
-                <!-- Add the Approval Button, visible based on the result of _get_approval_button_visibility -->
-                <xpath expr="//header" position="inside">
-                    <button name="action_approval" string="Approval" type="object"
-                            class="btn-primary"
-                            groups="vendor_offer.offerapproval_user_access"
-                            attrs="{'invisible':['|', '|' , ('is_need_approval', '=', False), ('is_approved', '=', True), ('state','not in',['draft', 'send'])]}"/>
-                    />
-                </xpath>
-
             </field>
         </record>
 

@@ -49,11 +49,7 @@ class StockPicking(models.Model):
                         and not check_tags_contain_offload(stock_picking.sale_id)
                         and not check_infuse_in_all_order_lines(stock_picking.sale_id)
                         and not check_pricelist_name_contains_gt(stock_picking.sale_id)):
-                    if stock_picking.sale_id.is_approved:
-                        stock_picking.is_approved = True
-                        stock_picking.is_need_approval = False
-                    else:
-                        stock_picking.is_need_approval = True
+                    stock_picking.is_need_approval = True
                 else:
                     stock_picking.is_need_approval = False
 
@@ -62,7 +58,7 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         if self.is_need_approval == True and self.is_approved == False and self.picking_type_id.name == "Pick":
-            raise UserError("Please approve the order first")
+            raise UserError("Order requires approval")
 
         action = super(StockPicking, self).button_validate()
 
