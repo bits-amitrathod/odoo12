@@ -37,9 +37,6 @@ class sale_order(models.Model):
     #         else:
     #             obj.allow_pay_gen_payment_link = True
 
-    is_need_approval = fields.Boolean(string='Is Approved ?', default=False)
-    is_approved = fields.Boolean(string='Is Approved ?', default=False)
-
     def _valid_field_parameter(self, field, name):
         return name == 'track_sequence' or super()._valid_field_parameter(field, name)
 
@@ -281,3 +278,9 @@ class sale_order(models.Model):
         list = parent_id.child_ids.ids
         list.append(parent_id.id)
         return list
+
+    is_need_approval = fields.Boolean(string='Is Approved ?', default=False)
+    is_approved = fields.Boolean(string='Is Approved ?', default=False)
+
+    def action_approval(self):
+        pass
