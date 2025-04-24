@@ -164,6 +164,21 @@
                     <xpath expr="//field[@name='origin']" position="replace">
                         <field name="origin" readonly="1"/>
                     </xpath>
+
+                    <field name="partner_id" position="after">
+                        <field name="is_need_approval" invisible="1"/>
+                        <field name="is_approved" invisible="1"/>
+                    </field>
+
+                    <xpath expr="/form/header/button[last()]" position="after">
+                        <button name="action_approval" string="Approval" type="object"
+                                class="btn-primary"
+                                groups="vendor_offer.offerapproval_user_access"
+                                attrs="{'invisible':['|', '|', '|' ,
+                                ('is_need_approval', '=', False),('is_approved', '=', True),
+                                 ('state','not in',['assigned']),('picking_type_id','!=', 1)]}"
+                        />
+                    </xpath>
                 </data>
             </field>
         </record>

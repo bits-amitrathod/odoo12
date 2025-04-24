@@ -314,7 +314,8 @@ class sale_order(models.Model):
 
         for order in self:
             if (order.margin_percent <= 0.35 and not check_tags_contain_offload(order)
-                    and not check_infuse_in_all_order_lines(order) and not check_pricelist_name_contains_gt(order)):
+                    and not check_infuse_in_all_order_lines(order) and not check_pricelist_name_contains_gt(order)) \
+                    and self.team_id.team_type not in ('engine', 'rapid_quote', 'website', 'my_in_stock_report', 'ghx'):
                 order.is_need_approval = True
             else:
                 order.is_need_approval = False
