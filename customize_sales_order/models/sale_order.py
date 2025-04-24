@@ -287,6 +287,7 @@ class sale_order(models.Model):
 
     # The total order margin percentage ('margin_percent' field) is 35% or below
     # The customer on the quotation does not have the "Offload Customer" contact tag applied to it's contact record
+    @api.onchange('pricelist_id', 'partner_id.category_id', 'margin_percent')
     def check_approval_is_require(self):
 
         def check_tags_contain_offload(order):
