@@ -298,22 +298,19 @@ class sale_order(models.Model):
         def check_infuse_in_all_order_lines(order):
             """Check if all storeable products in the order lines have 'INFUSE' in their name."""
             # Iterate through all order lines and check product names
-            flag = False
             for line in order.order_line:
-                # Check if 'INFUSE' is in the product name
-                if 'infuse' in line.product_id.name.lower():
-                    flag = True
-                else:
+                # If 'INFUSE' is not in the product name, return False immediately
+                if 'infuse' not in line.product_id.name.lower():
                     return False
-            return flag  # Return False if all products' names does not contain 'INFUSE'
+            return True  # Return True if all products' names contain 'INFUSE'
 
         def check_pricelist_name_contains_gt(order):
-            """Check if the pricelist name does not contain 'GT' (case-insensitive)."""
+            """Check if the pricelist name contains 'GT/' or 'GT /' (case-sensitive)."""
             if order.pricelist_id:
-                # Check if 'GT' is not in the pricelist's name (case-insensitive)
-                if 'gt' in order.pricelist_id.name.lower():
-                    return True  # Return True if 'GT' is not found in the pricelist name
-            return False  # Return False if 'GT' is found in the pricelist name
+                # Check if 'GT/' or 'GT /' is in the pricelist's name (case-sensitive)
+                if 'GT/' in order.pricelist_id.name or 'GT /' in order.pricelist_id.name:
+                    return True  # Return True if 'GT/' or 'GT /' is found in the pricelist name
+            return False  # Return False if 'GT/' or 'GT /' is not found in the pricelist name
 
         for order in self:
             if (order.margin_percent <= 0.35 and not check_tags_contain_offload(order)
@@ -323,6 +320,7 @@ class sale_order(models.Model):
                 order.is_need_approval = False
 
     def action_confirm(self):
-        if self.is_need_approval == True and self.is_approved == False and self.state in ['draft', 'send']:
+        if self.is_need_approval == True and self.is_approved == False and self.state in ['draft', 'send'] \
+                and self.team_id.team_type not in ('engine', 'rapid_quote', 'website', 'my_in_stock_report', 'ghx'):
             raise UserError("Please approve the order first")
         return super(sale_order, self).action_confirm()
