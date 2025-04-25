@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError, Warning
 import logging
 
@@ -279,8 +279,5 @@ class sale_order(models.Model):
         list.append(parent_id.id)
         return list
 
-    is_need_approval = fields.Boolean(string='Is Approved ?', default=False)
+    is_need_approval = fields.Boolean(string='Needs Approval?', default=False)
     is_approved = fields.Boolean(string='Is Approved ?', default=False)
-
-    def action_approval(self):
-        pass

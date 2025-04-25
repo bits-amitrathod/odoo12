@@ -171,7 +171,7 @@
                     </field>
 
                     <xpath expr="/form/header/button[last()]" position="after">
-                        <button name="action_approval" string="Approval" type="object"
+                        <button name="action_approval" string="Approve" type="object"
                                 class="btn-primary"
                                 groups="vendor_offer.offerapproval_user_access"
                                 attrs="{'invisible':['|', '|', '|' ,
@@ -301,8 +301,8 @@
                            options="{'no_create': True,'no_edit': True,'no_open' : True}"/>
                 </xpath>
 
-                <field name="partner_id" position="after">
-                    <field name="is_need_approval" invisible="1"/>
+                <field name="sale_margine" position="after">
+                    <field name="is_need_approval"/>
                     <field name="is_approved" invisible="1"/>
                 </field>
                 <!-- Add the Approval Button, visible based on the result of _get_approval_button_visibility -->
@@ -522,6 +522,22 @@
             <field name="res_model">stock.valuation.layer</field>
             <field name="view_mode">list,form</field>
             <field name="target">current</field>
+        </record>
+
+
+        <record id="email_template_sales_order_approval" model="mail.template">
+            <field name="name">Sales Order Approval Needed</field>
+            <field name="model_id" ref="sale.model_sale_order"/>
+            <field name="email_from">info@surgicalproductsolutions.com</field>
+            <field name="email_to">appraisal@shopsps.com,gabriella@shopsps.com</field>
+            <field name="email_cc">{{ user.email }}</field>
+            <field name="reply_to">appraisal@shopsps.com,gabriella@shopsps.com,{{ user.email }}</field>
+            <field name="subject">Sales Order Approval Needed for {{ object.name }}</field>
+            <field name="body_html" type="html">
+                <p>Hi Team,</p>
+                <p><strong>{{ object.name }}</strong> requires approval to ship. Please approve at your earliest convenience.</p>
+                <p>Regards,</p>
+            </field>
         </record>
 
 

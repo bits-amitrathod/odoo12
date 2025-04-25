@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
-from odoo.exceptions import UserError, Warning
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError, Warning, AccessError
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -53,12 +53,37 @@ class StockPicking(models.Model):
                 else:
                     stock_picking.is_need_approval = False
 
+    @api.model
+    def _user_has_offer_approval_group(self):
+        return self.env.user.has_group('vendor_offer.offerapproval_user_access')
+
     def action_approval(self):
+        if not self._user_has_offer_approval_group():
+            raise AccessError(_("You do not have the permission to approve this order."))
         self.is_approved = True
+        # after getting approval set flag to false on sale order
+        self.sale_id.is_need_approval = False
+        # Post message in chatter
+        self.message_post(
+            body="Order has been approved",
+            author_id=self.env.user.partner_id.id
+        )
 
     def button_validate(self):
         if self.is_need_approval == True and self.is_approved == False and self.picking_type_id.name == "Pick":
-            raise UserError("Order requires approval")
+
+            # Send the approval email
+            template = self.env.ref('customize_sales_order.email_template_sales_order_approval').sudo()
+            context = {'user': self.env.user}
+            template.with_context(context).send_mail(self.sale_id.id, force_send=False)
+            # Update the sale order to set the approval required flag
+            self.sale_id.is_need_approval = True
+            # Flush changes to the database
+            self.env.cr.flush()
+            # Commit the transaction (ensure changes are saved permanently)
+            self.env.cr.commit()
+            # Raise custom AccessError
+            raise AccessError(_("Order requires approval"))
 
         action = super(StockPicking, self).button_validate()
 
