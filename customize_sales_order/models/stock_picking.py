@@ -31,7 +31,7 @@ class StockPicking(models.Model):
             # Iterate through all order lines and check product names
             for line in order.order_line:
                 # If 'INFUSE' is not in the product name, return False immediately
-                if 'infuse' not in line.product_id.name.lower():
+                if line.product_id.detailed_type == 'product' and 'infuse' not in line.product_id.name.lower() :
                     return False
             return True  # Return True if all products' names contain 'INFUSE'
 

@@ -535,7 +535,7 @@
             <field name="subject">Sales Order Approval Needed for {{ object.name }}</field>
             <field name="body_html" type="html">
                 <p>Hi Team,</p>
-                <p><strong>{{ object.name }}</strong> requires approval to ship. Please approve at your earliest convenience.</p>
+                <p><strong><t t-esc="object.name"/> </strong> requires approval to ship. Please approve at your earliest convenience.</p>
                 <p>Regards,</p>
             </field>
         </record>
