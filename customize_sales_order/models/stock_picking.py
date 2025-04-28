@@ -52,6 +52,8 @@ class StockPicking(models.Model):
                     stock_picking.is_need_approval = True
                 else:
                     stock_picking.is_need_approval = False
+            else:
+                stock_picking.is_need_approval = False
 
     @api.model
     def _user_has_offer_approval_group(self):
