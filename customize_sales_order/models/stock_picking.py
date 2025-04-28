@@ -72,10 +72,11 @@ class StockPicking(models.Model):
     def button_validate(self):
         if self.is_need_approval == True and self.is_approved == False and self.picking_type_id.name == "Pick":
 
-            # Send the approval email
-            template = self.env.ref('customize_sales_order.email_template_sales_order_approval').sudo()
-            context = {'user': self.env.user}
-            template.with_context(context).send_mail(self.sale_id.id, force_send=False)
+            # Send the approval email to the user when SO level field is_need_approval is false
+            if not self.sale_id.is_need_approval:
+                template = self.env.ref('customize_sales_order.email_template_sales_order_approval').sudo()
+                context = {'user': self.env.user}
+                template.with_context(context).send_mail(self.sale_id.id, force_send=False)
             # Update the sale order to set the approval required flag
             self.sale_id.is_need_approval = True
             # Flush changes to the database
