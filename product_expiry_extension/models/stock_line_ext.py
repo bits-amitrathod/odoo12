@@ -319,7 +319,7 @@ class ProductionLotNameAppendDate(models.Model):
                 aval_qty = self.env['stock.quant'].sudo()._get_available_quantity(record.product_id,
                                                                                   stock_move.location_id,
                                                                                   lot_id=record, package_id=None,
-                                                                                  owner_id=None, strict=False,
+                                                                                  owner_id=None, strict=True,
                                                                                   allow_negative=False)
                 if aval_qty > 0:
                     record_list.append(record.id)
@@ -341,7 +341,7 @@ class ProductionLotNameAppendDate(models.Model):
                 stock_move = request.env['stock.move'].search([('picking_id', '=', pick_id)], limit=1)
                 aval_qty = request.env['stock.quant']._get_available_quantity \
                     (record.product_id,stock_move.location_id,lot_id=record,package_id=None,
-                     owner_id=None, strict=False,allow_negative=False)
+                     owner_id=None, strict=True,allow_negative=False)
 
                 if record.use_date:
                     name = f"{record.name}: #Exp Date: {str(record.use_date)[:10]} #Avl Qty: {aval_qty}"
