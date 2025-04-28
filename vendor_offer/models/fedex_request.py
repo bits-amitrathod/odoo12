@@ -139,10 +139,7 @@ class FedexRequest():
 
         Address = self.factory.Address()
 
-        if recipient_partner.street == '3600 Liberty Ave':
-            Address.StreetLines = ['3046 Penn Ave', recipient_partner.street2 or '']
-        else:
-            Address.StreetLines = [recipient_partner.street or '', recipient_partner.street2 or '']
+        Address.StreetLines = [recipient_partner.street or '', recipient_partner.street2 or '']
 
         Address.City = recipient_partner.city or ''
         if recipient_partner.country_id.code in STATECODE_REQUIRED_COUNTRIES:
