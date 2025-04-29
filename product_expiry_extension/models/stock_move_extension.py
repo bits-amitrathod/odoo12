@@ -111,7 +111,7 @@ class StockMoveExtension(models.Model):
             stock_lot = self.env['stock.lot'].sudo()
 
             if 'move_line_ids' in vals:
-                if self.picking_type_id:
+                if self.picking_type_id and self.picking_type_id[0].id in [1, 3, 5]:
                     result_list = [item for item in vals['move_line_ids'] if '0' in str(item[0])]
                     vals['move_line_ids'] = [item for item in vals['move_line_ids'] if '0' not in str(item[0])]
                     id_list = self.move_line_ids.ids
