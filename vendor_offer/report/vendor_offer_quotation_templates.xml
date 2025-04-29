@@ -606,5 +606,41 @@
         </t>
     </t>
 </template>
+<template id="custom_report_purchaseorder_document" inherit_id="purchase.report_purchaseorder_document">
+        <xpath expr="//t[@t-if='o.dest_address_id']" position="replace">
+            <t>
+                <t t-set="information_block">
+                    <strong>Shipping address:</strong><br/>
+                    Surgical Product Solutions<br/>
+                    3046 Penn Ave<br/>
+                    Pittsburgh PA 15201<br/>
+                    United States<br/>
+                    <i class="fa fa-phone"/>
+                    <t t-esc="o.company_id.phone"/>
+                </t>
+           </t>
+        </xpath>
+
+        <xpath expr="//t[@t-else='']" position="replace"/>
+</template>
+
+<template id="custom_report_requestquotation_document" inherit_id="purchase.report_purchasequotation_document">
+        <xpath expr="//t[@t-if='o.dest_address_id']" position="replace">
+            <t>
+                <t t-set="information_block">
+                    <strong>Shipping address:</strong><br/>
+                    Surgical Product Solutions<br/>
+                    3046 Penn Ave<br/>
+                    Pittsburgh PA 15201<br/>
+                    United States<br/>
+                    <i class="fa fa-phone"/>
+                    <t t-esc="o.company_id.phone"/>
+                </t>
+           </t>
+        </xpath>
+
+        <xpath expr="//t[@t-else='']" position="replace"/>
+</template>
+
 
 </odoo>
