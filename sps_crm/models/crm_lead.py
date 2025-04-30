@@ -417,8 +417,6 @@ class Lead(models.Model):
 
         email_from = sales_person
 
-        if self.user_id.name == "Sarah Davidson":
-            sales_person += ',mdietrick@shopsps.com'
         if self.user_id.name == "Megan Dietrick":
             sales_person += ',sarah@shopsps.com'
 

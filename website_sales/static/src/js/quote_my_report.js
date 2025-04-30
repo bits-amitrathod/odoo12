@@ -133,7 +133,7 @@ odoo.define('website_sales.quote_my_report_cart', function (require) {
             var new_qty = parseInt($input.val());
             console.log(partn_name_id);
             var ele1 = $link.parent().find("#allow_qty_plus_"+partn_name_id);
-            if (new_qty>=available_qty) {
+            if (new_qty>available_qty) {
                $('#allow_qty_plus_'+partn_name_id).css({'pointer-events':'none', 'color':'#cacaca'});
                console.log('new Entered Qty is greater than available qty');
 //               alert("New Entered Qty is greater than available qty")
