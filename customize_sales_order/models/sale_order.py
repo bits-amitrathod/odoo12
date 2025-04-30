@@ -188,6 +188,14 @@ class sale_order(models.Model):
         if self.customer_success.id:
             self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
 
+        if self.state == "sale" and 'order_line' in val:
+            if any(line[0] in [0, 1, 2] for line in val['order_line']):
+                self.is_need_approval = False
+                if self.picking_ids:
+                    for picking in self.picking_ids:
+                        picking.write({'is_approved': False, 'is_need_approval': False})
+
+
     def _get_carrier_tracking_ref(self):
         for so in self:
             stock_picking = self.env['stock.picking'].search([('origin', '=', so.name), ('picking_type_id', '=', 5),

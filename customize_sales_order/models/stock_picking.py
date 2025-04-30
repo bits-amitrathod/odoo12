@@ -70,6 +70,10 @@ class StockPicking(models.Model):
             body="Order has been approved",
             author_id=self.env.user.partner_id.id
         )
+        self.sale_id.message_post(
+            body="Order has been approved",
+            author_id=self.env.user.partner_id.id
+        )
 
     def button_validate(self):
         if self.is_need_approval == True and self.is_approved == False and self.picking_type_id.name == "Pick":
