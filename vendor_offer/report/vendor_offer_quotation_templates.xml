@@ -641,6 +641,45 @@
 
         <xpath expr="//t[@t-else='']" position="replace"/>
 </template>
+<template id="custom_report_delivery_slip" inherit_id="stock.report_delivery_document">
+    <xpath expr="//div[@name='div_outgoing_address']" position="replace">
+        <div class="col-6" name="div_outgoing_address">
+            <div t-if="o.should_print_delivery_address()">
+                <span><strong>Delivery Address:</strong></span>
+                <div t-field="o.move_ids[0].partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+            </div>
+            <div t-elif="o.picking_type_id.code != 'internal' and o.picking_type_id.warehouse_id.partner_id">
+                <span><strong>Warehouse Address:</strong></span>
+                    Surgical Product Solutions<br/>
+                    3046 Penn Ave<br/>
+                    Pittsburgh PA 15201<br/>
+                    United States<br/>
+                    <i class="fa fa-phone"/>
+                    <t t-esc="o.company_id.phone"/>
+            </div>
+        </div>
+    </xpath>
+</template>
+<template id="custom_report_picking" inherit_id="stock.report_picking">
+       <xpath expr="//div[@name='div_outgoing_address']" position="replace">
+              <div class="col-6" name="div_outgoing_address">
+                    <div t-if="o.should_print_delivery_address()">
+                        <span><strong>Delivery Address:</strong></span>
+                        <div t-field="o.move_ids[0].partner_id" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;, &quot;phone&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
+                    </div>
+                    <div t-elif="o.picking_type_id.code != 'internal' and o.picking_type_id.warehouse_id.partner_id">
+                        <span><strong>Warehouse Address:</strong></span><br/>
+                            Surgical Product Solutions<br/>
+                            3046 Penn Ave<br/>
+                            Pittsburgh PA 15201<br/>
+                            United States<br/>
+                            <i class="fa fa-phone"/>
+                            <t t-esc="o.company_id.phone"/>
+                    </div>
+              </div>
+        </xpath>
+</template>
+
 
 
 </odoo>
