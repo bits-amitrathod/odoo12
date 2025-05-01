@@ -38,8 +38,8 @@ class StockPicking(models.Model):
         def check_pricelist_name_contains_gt(order):
             """Check if the pricelist name contains 'GT/' or 'GT /' (case-sensitive)."""
             if order.pricelist_id:
-                # Check if 'GT/' or 'GT /' is in the pricelist's name (case-sensitive)
-                if 'GT/' in order.pricelist_id.name or 'GT /' in order.pricelist_id.name:
+                # Check if 'GT/' or 'GT /' or 'USPI is in the pricelist's name (case-sensitive)
+                if 'GT/' in order.pricelist_id.name or 'GT /' in order.pricelist_id.name or 'USPI' in order.pricelist_id.name:
                     return True  # Return True if 'GT/' or 'GT /' is found in the pricelist name
             return False  # Return False if 'GT/' or 'GT /' is not found in the pricelist name
 
