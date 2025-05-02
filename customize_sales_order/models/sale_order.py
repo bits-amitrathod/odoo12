@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import re
-from odoo import models, fields, api
+from odoo import models, fields, api, _
 from odoo.exceptions import UserError, Warning
 import logging
 
@@ -11,8 +11,10 @@ class sale_order(models.Model):
     _inherit = 'sale.order'
 
     sale_note = fields.Text('Sale Notes')
-    carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True, compute='_get_carrier_tracking_ref')
-    delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1, compute='_get_delivery_method_readonly_flag')
+    carrier_track_ref = fields.Char('Tracking Reference', store=True, readonly=True,
+                                    compute='_get_carrier_tracking_ref')
+    delivery_method_readonly_flag = fields.Integer('Delivery method readonly flag', default=1,
+                                                   compute='_get_delivery_method_readonly_flag')
     account_manager = fields.Many2one('res.users', store=True, readonly=True, string="Key Account",
                                       compute="get_account_manager", tracking=True)
     user_id = fields.Many2one('res.users', string='Business Development', index=True, tracking=True,
@@ -20,7 +22,10 @@ class sale_order(models.Model):
     national_account = fields.Many2one('res.users', store=True, readonly=True, string="National Account",
                                        compute="get_national_account", tracking=True)
     field_read_only = fields.Integer(compute="_get_user")
-    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", tracking=True,  domain="['&',['active','=',True],['share','=',False]]", compute="get_customer_success")
+    customer_success = fields.Many2one('res.users', store=True, readonly=True, string="Customer Success", tracking=True,
+                                       domain="['&',['active','=',True],['share','=',False]]",
+                                       compute="get_customer_success")
+
     #allow_pay_gen_payment_link = fields.Boolean("Allow Pay", store=False, compute='get_pay_button_activate')
 
     # @api.onchange('client_order_ref', 'x_studio_allow_duplicate_po')
@@ -51,7 +56,7 @@ class sale_order(models.Model):
 
     def _get_user(self):
         if self.env.user.email in ('jtennant@surgicalproductsolutions.com', 'info@surgicalproductsolutions.com'
-                                   ,'bryon@surgicalproductsolutions.com'):
+                                   , 'bryon@surgicalproductsolutions.com'):
             self.field_read_only = 0
         else:
             self.field_read_only = 1
@@ -87,15 +92,16 @@ class sale_order(models.Model):
     @api.depends('client_order_ref')
     def onchange_client_order_ref(self):
         if self.client_order_ref and self.client_order_ref is not None and self.client_order_ref.strip() != '' and self.name:
-            records = self.env['sale.order'].search([('client_order_ref', '=', self.client_order_ref),('partner_id', '=', self.get_chils_parent())])
+            records = self.env['sale.order'].search(
+                [('client_order_ref', '=', self.client_order_ref), ('partner_id', '=', self.get_chils_parent())])
             if records:
                 for record in records:
                     if self.name != record.name and (self.x_studio_allow_duplicate_po is False or
-                                                 record.x_studio_allow_duplicate_po is False):
+                                                     record.x_studio_allow_duplicate_po is False):
                         raise Warning(("Duplicate PO number is not allowed.\n"
-                                        "The PO number of this Sales Order is already present on Sales Order %s.\n "
-                                        "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
-                                        "setting ON for both Sales Order.") % record.name)
+                                       "The PO number of this Sales Order is already present on Sales Order %s.\n "
+                                       "If you want to add Duplicate PO against Sales Order, Set 'Allow Duplicate PO' "
+                                       "setting ON for both Sales Order.") % record.name)
                     else:
                         _logger.info('This is unique PO')
 
@@ -103,7 +109,7 @@ class sale_order(models.Model):
     def create(self, vals):
         # add account manager
         if 'team_id' in vals:
-            vals['original_team_id']=vals['team_id']
+            vals['original_team_id'] = vals['team_id']
         if 'partner_id' in vals and vals['partner_id'] is not None:
             res_partner = self.env['res.partner'].search([('id', '=', vals['partner_id'])])
             if res_partner and res_partner.user_id and res_partner.user_id.id:
@@ -156,7 +162,7 @@ class sale_order(models.Model):
         if self.carrier_id and self.state and self.state in 'sale':
             stock_pickings = self.env['stock.picking'].search([('sale_id', '=', self.id), ('picking_type_id', '=', 5)])
             for stock_picking in stock_pickings:
-                if stock_picking and stock_picking.state != 'done' and stock_picking.state != 'cancel' :
+                if stock_picking and stock_picking.state != 'done' and stock_picking.state != 'cancel':
                     if not stock_picking.carrier_id:
                         stock_picking.write({'carrier_id': self.carrier_id.id})
 
@@ -181,6 +187,14 @@ class sale_order(models.Model):
         # For Follower Adding
         if self.customer_success.id:
             self.message_subscribe(partner_ids=[self.customer_success.partner_id.id])
+
+        if self.state == "sale" and 'order_line' in val:
+            if any(line[0] in [0, 1, 2] for line in val['order_line']):
+                self.is_need_approval = False
+                if self.picking_ids:
+                    for picking in self.picking_ids:
+                        picking.write({'is_approved': False, 'is_need_approval': False})
+
 
     def _get_carrier_tracking_ref(self):
         for so in self:
@@ -224,7 +238,8 @@ class sale_order(models.Model):
             order.carrier_id = carrier.id
             order._create_delivery_line(carrier, amount)
             if order.carrier_id and order.state in 'sale':
-                self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write({'carrier_id':order.carrier_id.id})
+                self.env['stock.picking'].search([('sale_id', '=', order.id), ('picking_type_id', '=', 5)]).write(
+                    {'carrier_id': order.carrier_id.id})
         return True
 
     def get_delivery_price(self):
@@ -271,3 +286,6 @@ class sale_order(models.Model):
         list = parent_id.child_ids.ids
         list.append(parent_id.id)
         return list
+
+    is_need_approval = fields.Boolean(string='Needs Approval?', default=False)
+    is_approved = fields.Boolean(string='Is Approved ?', default=False)
