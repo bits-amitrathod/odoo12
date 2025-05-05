@@ -10,19 +10,19 @@
              <h2 style="font-size:14px;color:red" align="center"><strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</strong></h2>
             <div class="row ">
                 <div class="col-6 col-lg-6 col-xs-6">
-                     <strong>BUYER NAME / ADDRESS:</strong>
-                    <div t-if="o.dest_address_id" style="font-size:16px!important;">
-                        <div t-field="o.dest_address_id" style="font-size:16px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-                         <span t-field="o.acq_manager_email" style="font-size:16px!important;"/>
-                         <br/>
-                         <span t-field="o.acq_manager_phone" style="font-size:16px!important;"/>
-                    </div>
-                    <div t-if="not o.dest_address_id and o.picking_type_id.warehouse_id" style="font-size:16px!important;">
-                        <span t-field="o.picking_type_id.warehouse_id.name" style="font-size:16px!important;"/>
-                        <div t-field="o.picking_type_id.warehouse_id.partner_id" style="font-size:16px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-                         <span t-field="o.acq_manager_email" style="font-size:16px!important;"/>
-                         <br/>
-                         <span t-field="o.acq_manager_phone" style="font-size:16px!important;"/>
+                    <strong>BUYER NAME / ADDRESS:</strong>
+                    <div style="font-size:16px!important;">
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.name"/>
+                        <br/>
+                        3046 Penn Ave<br/>
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.city"/>,
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.state_id.code"/>,
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.zip"/><br/>
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.country_id.name"/>
+                        <br/>
+                        <span t-field="o.acq_manager_email" style="font-size:16px!important;"/>
+                        <br/>
+                        <span t-field="o.acq_manager_phone" style="font-size:16px!important;"/>
                     </div>
                 </div>
                 <div class="col-6 col-lg-6 col-xs-6 col-xs-offset-1">
@@ -291,21 +291,19 @@
              <h2 style="font-size:12px;color:red" align="center"><strong>TO ENSURE SAFE DELIVERY PLEASE INCLUDE A HARD COPY OF THIS PURCHASE OFFER IN EACH SHIPMENT BOX</strong></h2>
             <div class="row ">
                 <div class="col-6 col-lg-6 col-xs-6">
-                     <strong>BUYER NAME / ADDRESS:</strong>
-                    <div t-if="o.dest_address_id" style="font-size:13px!important;">
-                        <div t-field="o.dest_address_id" style="font-size:13px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;, &quot;name&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-                         <span t-field="o.acq_manager_email" style="font-size:13px!important;"/>
-                         <br/>
-                         <span t-field="o.acq_manager_phone" style="font-size:13px!important;"/>
-                    </div>
-                    <div t-if="not o.dest_address_id and o.picking_type_id.warehouse_id" style="font-size:13px!important;">
-                        <span t-field="o.picking_type_id.warehouse_id.name" style="font-size:13px!important;"/>
-                        <div t-field="o.picking_type_id.warehouse_id.partner_id" style="font-size:13px!important;" t-options="{&quot;widget&quot;: &quot;contact&quot;, &quot;fields&quot;: [&quot;address&quot;], &quot;no_marker&quot;: True, &quot;phone_icons&quot;: True}"/>
-                         <span t-field="o.acq_manager_email" style="font-size:13px!important;"/>
-                         <br/>
-                         <span t-field="o.acq_manager_phone" style="font-size:13px!important;"/>
-                        <!--<div t-field="o.acq_manager_phone"  style="font-size:13px!important;"-->
-                            <!--t-options='{"widget": "contact", "fields": ["acq_manager_phone"], "no_marker": True, "phone_icons": True}'/>-->
+                    <strong>BUYER NAME / ADDRESS:</strong>
+                    <div style="font-size:16px!important;">
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.name"/>
+                        <br/>
+                        3046 Penn Ave<br/>
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.city"/>,
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.state_id.code"/>,
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.zip"/><br/>
+                        <t t-esc="o.picking_type_id.warehouse_id.partner_id.country_id.name"/>
+                        <br/>
+                        <span t-field="o.acq_manager_email" style="font-size:16px!important;"/>
+                        <br/>
+                        <span t-field="o.acq_manager_phone" style="font-size:16px!important;"/>
                     </div>
                 </div>
                 <div class="col-6 col-lg-6 col-xs-6 col-xs-offset-1">

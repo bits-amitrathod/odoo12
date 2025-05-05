@@ -2,7 +2,28 @@
 <odoo>
     <template id="sale_packing_list_template">
         <t t-call="web.html_container">
-            <t t-call="web.external_layout">
+<!--            <t t-call="web.external_layout">-->
+                <t class="row" t-foreach="packing_list_result" t-as="packing_list">
+                        <t t-if="'PO' in packing_list.origin">
+                            <div style="font-size:16px!important;">
+                                Surgical Product Solutions<br/>
+                                3046 Penn Ave<br/>
+                                Pittsburgh, PA 15201<br/>
+                                United States
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div style="font-size:16px!important;">
+                                Surgical Product Solutions<br/>
+                                3600 Liberty Ave<br/>
+                                Pittsburgh, PA 15201<br/>
+                                United States
+                            </div>
+                        </t>
+
+
+
+
                 <page>
                     <style>
                         .page-break {

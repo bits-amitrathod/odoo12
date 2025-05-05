@@ -126,7 +126,7 @@ class FedexRequest():
         self.RequestedShipment.Recipient.Contact = Contact
         self.RequestedShipment.Recipient.Address = Address
 
-    def set_recipient(self, recipient_partner):
+    def set_recipient(self, recipient_partner,order):
         Contact = self.factory.Contact()
 
         if recipient_partner.is_company:
@@ -139,7 +139,10 @@ class FedexRequest():
 
         Address = self.factory.Address()
 
-        Address.StreetLines = [recipient_partner.street or '', recipient_partner.street2 or '']
+        if order._name == "purchase.order":
+            Address.StreetLines = ['3046 Penn Ave', recipient_partner.street2 or '']
+        else:
+            Address.StreetLines = [recipient_partner.street or '', recipient_partner.street2 or '']
 
         Address.City = recipient_partner.city or ''
         if recipient_partner.country_id.code in STATECODE_REQUIRED_COUNTRIES:

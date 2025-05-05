@@ -2,7 +2,13 @@
 <odoo>
     <template id="receiving_list_temp">
         <t t-call="web.html_container">
-            <t t-call="web.external_layout">
+<!--            <t t-call="web.external_layout">-->
+                <div>
+                    Surgical Product Solutions<br/>
+                    3046 Penn Ave<br/>
+                    Pittsburgh, PA 15201<br/>
+                    United States
+                </div>
                 <page>
                     <div class="oe_structure"/>
 <!--                    <div>-->
@@ -107,6 +113,6 @@
 <!--                    </div>-->
                 </page>
             </t>
-        </t>
+<!--        </t>-->
     </template>
 </odoo>
