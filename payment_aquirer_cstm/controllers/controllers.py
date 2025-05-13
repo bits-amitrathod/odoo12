@@ -91,7 +91,10 @@ class PaymentAquirerCstm(http.Controller):
         except Exception as e:
             _logger.info(e)
             if order:
-                order.message_post(body="403 Error Encountered")
+                order.message_post(body="403 Error Encountered",
+                message_type="comment",
+                author_id=request.env.user.partner_id)
+
 
     @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def cart_update(self, purchase_order, **kw):
