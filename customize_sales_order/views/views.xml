@@ -233,6 +233,8 @@
                     <field name="account_manager"/>
                     <field name="national_account"/>
                     <field name="customer_success"/>
+                    <field name="is_need_approval" readonly="1"/>
+                    <field name="is_approved" invisible="1"/>
                 </xpath>
             </field>
         </record>
