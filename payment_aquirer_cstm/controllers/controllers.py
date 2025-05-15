@@ -29,52 +29,72 @@ class PaymentAquirerCstm(http.Controller):
     @http.route('/shop/payment/purchaseorderform', type='http', auth="public", website=True, csrf=False)
     def purchase_order_form_validate(self, **kwargs):
         vals = {}
-        if kwargs:
-            order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
-            if order.client_order_ref:
-                kwargs['purchase_order'] = order.client_order_ref
+        order = request.env['sale.order'].sudo().browse(request.session['sale_order_id']) if kwargs else False
+        try:
+            if kwargs:
+                order = request.env['sale.order'].sudo().browse(request.session['sale_order_id'])
+                if order.client_order_ref:
+                    kwargs['purchase_order'] = order.client_order_ref
 
-            if 'purchase_order' in kwargs and kwargs['purchase_order'] != '':
-                tx_id = request.session.get('__website_sale_last_tx_id')
-                if tx_id:
-                    transaction = request.env['payment.transaction'].sudo().browse(tx_id)
-                    transaction.state = 'pending'
-                    # order.state = 'sent'
-                    if not order.client_order_ref:
-                        if not order.x_studio_allow_duplicate_po:
-                            result = request.env['sale.order'].sudo().search(
-                                [('client_order_ref', '=', kwargs['purchase_order']),
-                                 ('partner_id','in',order.get_chils_parent())])
-                            if result:
-                                result2 = request.env['sale.order'].sudo().search(
+                if 'purchase_order' in kwargs and kwargs['purchase_order'] != '':
+                    tx_id = request.session.get('__website_sale_last_tx_id')
+                    if tx_id:
+                        transaction = request.env['payment.transaction'].sudo().browse(tx_id)
+                        transaction.state = 'pending'
+                        # order.state = 'sent'
+                        if not order.client_order_ref:
+                            if not order.x_studio_allow_duplicate_po:
+                                result = request.env['sale.order'].sudo().search(
                                     [('client_order_ref', '=', kwargs['purchase_order']),
-                                     ('partner_id', 'in', order.get_chils_parent()),
-                                     ('x_studio_allow_duplicate_po', '=', True)
-                                     ])
-                                if result2:
+                                     ('partner_id','in',order.get_chils_parent())])
+                                if result:
+                                    result2 = request.env['sale.order'].sudo().search(
+                                        [('client_order_ref', '=', kwargs['purchase_order']),
+                                         ('partner_id', 'in', order.get_chils_parent()),
+                                         ('x_studio_allow_duplicate_po', '=', True)
+                                         ])
+                                    if result2:
+                                        order.state = 'sent'
+                                        order.client_order_ref = kwargs['purchase_order']
+                                        if order.check_product_qty_before_sale():
+                                            vals = {'error': " Product(s) Out Of Stack."}
+                                            _logger.info('Product(s) Out Of Stock, PO: %s', kwargs['purchase_order'])
+                                            return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
+                                        _logger.info('client_order_ref True, Confirming order for PO: %s', kwargs['purchase_order'])
+                                        order.action_confirm()
+                                    else:
+                                        vals = {'error': "The PO number is already present on another Sales Order."}
+                                        _logger.info('The PO number is already present on another Sales Order, PO: %s', kwargs['purchase_order'])
+                                        return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
+                                else:
                                     order.state = 'sent'
                                     order.client_order_ref = kwargs['purchase_order']
                                     if order.check_product_qty_before_sale():
                                         vals = {'error': " Product(s) Out Of Stack."}
+                                        # Log the error before returning
+                                        _logger.info('Product(s) Out Of Stock, PO: %s', kwargs['purchase_order'])
                                         return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
+                                    _logger.info(' client_order_ref False, Confirming order for PO: %s', kwargs['purchase_order'])
                                     order.action_confirm()
-                                else:
-                                    vals = {'error': "The PO number is already present on another Sales Order."}
-                                    return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
-                            else:
-                                order.state = 'sent'
-                                order.client_order_ref = kwargs['purchase_order']
-                                if order.check_product_qty_before_sale():
-                                    vals = {'error': " Product(s) Out Of Stack."}
-                                    return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
-                                order.action_confirm()
-                    return request.redirect('/shop/payment/validate')
-                else:
-                    request.redirect('/shop')
-            if 'return_url' not in kwargs:
-                vals = {'error': "Please enter Purchase order"}
-        # request.session.set('sale_transaction_id', request.session.get('__website_sale_last_tx_id'))
-        return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
+                        # Log the successful redirect before returning
+                        _logger.info('Transaction validated and ready for redirect, PO: %s', kwargs['purchase_order'])
+                        return request.redirect('/shop/payment/validate')
+                    else:
+                        # Log the missing transaction ID before redirect
+                        _logger.info('Transaction ID is missing, redirecting to /shop, PO: %s', kwargs.get('purchase_order'))
+                        request.redirect('/shop')
+                if 'return_url' not in kwargs:
+                    vals = {'error': "Please enter Purchase order"}
+            # request.session.set('sale_transaction_id', request.session.get('__website_sale_last_tx_id'))
+            _logger.info('Rendering the purchase order page')
+            return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
+        except Exception as e:
+            _logger.info(e)
+            if order:
+                order.message_post(body="403 Error Encountered",
+                message_type="comment",
+                author_id=request.env.user.partner_id)
+
 
     @http.route(['/shop/cart/updatePurchaseOrderNumber'], type='json', auth="public", methods=['POST'], website=True, csrf=False)
     def cart_update(self, purchase_order, **kw):
