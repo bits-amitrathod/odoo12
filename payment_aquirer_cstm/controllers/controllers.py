@@ -42,18 +42,27 @@ class PaymentAquirerCstm(http.Controller):
                         transaction = request.env['payment.transaction'].sudo().browse(tx_id)
                         transaction.state = 'pending'
                         # order.state = 'sent'
+                        _logger.info('Transaction Stat: %s', transaction.state)
+                        _logger.info('order.name: %s', order.name)
+                        _logger.info('order.state: %s', order.state)
+                        _logger.info('order.client_order_ref: %s', order.client_order_ref)
                         if not order.client_order_ref:
+                            _logger.info('order.x_studio_allow_duplicate_po:False -> order.x_studio_allow_duplicate_po: %s', order.x_studio_allow_duplicate_po)
                             if not order.x_studio_allow_duplicate_po:
                                 result = request.env['sale.order'].sudo().search(
                                     [('client_order_ref', '=', kwargs['purchase_order']),
                                      ('partner_id','in',order.get_chils_parent())])
+                                _logger.info('order.x_studio_allow_duplicate_po:False -> order.x_studio_allow_duplicate_po:False -> result: %s', result)
                                 if result:
+                                    _logger.info('order.x_studio_allow_duplicate_po:False -> order.x_studio_allow_duplicate_po:False -> result:Found')
                                     result2 = request.env['sale.order'].sudo().search(
                                         [('client_order_ref', '=', kwargs['purchase_order']),
                                          ('partner_id', 'in', order.get_chils_parent()),
                                          ('x_studio_allow_duplicate_po', '=', True)
                                          ])
+                                    _logger.info('order.x_studio_allow_duplicate_po:False -> order.x_studio_allow_duplicate_po:False -> result:found -> rerult2: %s', result2)
                                     if result2:
+                                        _logger.info('order.x_studio_allow_duplicate_po:False -> order.x_studio_allow_duplicate_po:False -> result:found -> rerult2:Found')
                                         order.state = 'sent'
                                         order.client_order_ref = kwargs['purchase_order']
                                         if order.check_product_qty_before_sale():
@@ -62,11 +71,15 @@ class PaymentAquirerCstm(http.Controller):
                                             return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                                         _logger.info('client_order_ref True, Confirming order for PO: %s', kwargs['purchase_order'])
                                         order.action_confirm()
+                                        _logger.info('order.x_studio_allow_duplicate_po:False -> result:Found -> rerult2:Found -> order.confirmed : %s :: %s', order.name, order.state)
                                     else:
+                                        _logger.info('order.x_studio_allow_duplicate_po:False -> order.x_studio_allow_duplicate_po:False -> result:found -> rerult2:Not_Found')
                                         vals = {'error': "The PO number is already present on another Sales Order."}
-                                        _logger.info('The PO number is already present on another Sales Order, PO: %s', kwargs['purchase_order'])
+                                        _logger.info('The PO number is already present on another Sales Order, PO: %s',kwargs['purchase_order'])
                                         return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                                 else:
+                                    _logger.info('order.x_studio_allow_duplicate_po:False -> order.x_studio_allow_duplicate_po:False -> result:False ')
+                                    _logger.info('Order Name : %s, Order State: %s', order.name, order.state)
                                     order.state = 'sent'
                                     order.client_order_ref = kwargs['purchase_order']
                                     if order.check_product_qty_before_sale():
@@ -76,6 +89,8 @@ class PaymentAquirerCstm(http.Controller):
                                         return http.request.render('payment_aquirer_cstm.purchase_order_page', vals)
                                     _logger.info(' client_order_ref False, Confirming order for PO: %s', kwargs['purchase_order'])
                                     order.action_confirm()
+                                    _logger.info('order.x_studio_allow_duplicate_po:True -> order.confirmed : %s :: %s',order.name, order.state)
+
                         # Log the successful redirect before returning
                         _logger.info('Transaction validated and ready for redirect, PO: %s', kwargs['purchase_order'])
                         return request.redirect('/shop/payment/validate')
