@@ -502,10 +502,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                         <p>412-564-9011&nbsp;</p>
                                         </td>
                                         
-                                        <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Phil Kemp</strong></p>
-                                        <p style="text-align: left;">412-745-1327</p>
-                                        </td>
                                         
                                         <td style="width: 157px; height: 78px;">
                                         <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
@@ -1774,10 +1770,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                         <p>412-564-9011&nbsp;</p>
                                         </td>
 
-                                        <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Phil Kemp</strong></p>
-                                        <p style="text-align: left;">412-745-1327</p>
-                                        </td>
 
                                         <td style="width: 157px; height: 78px;">
                                         <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
