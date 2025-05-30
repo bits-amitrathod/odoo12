@@ -40,7 +40,7 @@
                 </div>
             </xpath>
 
-            <xpath expr="//table[@class='table table-sm table-borderless']/t[2]" position="replace">
+            <xpath expr="//table[@class='table table-sm table-borderless']/t[3]" position="replace">
                 <t t-if="print_with_payments">
                     <t t-if="o.payment_state != 'invoicing_legacy'">
                         <t t-set="payments_vals" t-value="o.sudo().invoice_payments_widget and o.sudo().invoice_payments_widget['content'] or []"/>
