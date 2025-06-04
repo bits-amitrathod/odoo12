@@ -531,7 +531,7 @@
         <record id="email_template_sales_order_approval" model="mail.template">
             <field name="name">Sales Order Approval Needed</field>
             <field name="model_id" ref="sale.model_sale_order"/>
-            <field name="email_from">info@surgicalproductsolutions.com</field>
+            <field name="email_from">"SPS Company" &lt;info@surgicalproductsolutions.com&gt;</field>
             <field name="email_to">appraisal@shopsps.com,gabriella@shopsps.com</field>
             <field name="email_cc">{{ user.email }}</field>
             <field name="reply_to">appraisal@shopsps.com,gabriella@shopsps.com,{{ user.email }}</field>
