@@ -45,7 +45,10 @@
         'views/policy_page.xml',
         'views/terms_of_sale_page.xml',
         'views/terms_of_purchase_page.xml',
-        'views/menu.xml'
+        'views/menu.xml',
+        'views/unsubscribe_template.xml',
+        'views/instock_unsubscribe_success.xml'
+
     ],
 
     # 'auto_install': True,

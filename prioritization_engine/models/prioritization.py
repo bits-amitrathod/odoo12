@@ -397,6 +397,10 @@ class NotificationSetting(models.Model):
     saturday = fields.Boolean("Saturday")
     sunday = fields.Boolean("Sunday")
 
+    # added new field in contact in-stock notification page
+    unsubscribe_feedback = fields.Text(string="Unsubscribe Feedback")
+
+
 
 # Customer product level setting
 class Prioritization(models.Model):

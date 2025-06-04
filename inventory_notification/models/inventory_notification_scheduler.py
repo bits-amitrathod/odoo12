@@ -453,97 +453,35 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
                             products[line.product_id.id] = line.product_id
 
-                subject = "Your Custom In-Stock Products"
+                subject = "SPS – Personalized Items Available for You"
                 # href="https://www.shopsps.com/downloadCatalog"
-                descrption =  Markup("""  
+                descrption = Markup(""" 
 
-                 <strong>Good morning """ + customr.name + """,</strong>
-                  <br/> <br/> Listed below are items you have previously requested or purchased with us that are 
-                  currently in stock. You will also see two links to either download our
-                  <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'> full catalog (Excel) </a> 
-                  or go directly to our <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E;"> 
-                  online portal </a> to place an order.
-                  Please reach out to your rep directly if there are any products they can add or remove from this report.
-                  <br/> 
-                  <br/><center>
-                  <br/><br/>
-                  <div class="text-center" style="text-align: center;">
-                  <a target="_blank" href="/shop/quote_my_report/" style="background-color:#C4262E; 
-                  border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px;
-                  font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" 
-                  class="o_default_snippet_text">Order Online Here</a>
-                                  </div>
-                                  </center><br/><br/>
-                
-                
-                
-                
+                <strong>Good morning , """ + customr.name + """!</strong>
+                 <br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. <br/><br/>
+
+                 <ul style="list-style-type: disc; padding-left: 20px; margin-top: 0; margin-bottom: 20px;">
+                   <li>To reserve product, respond to this email</li>
+                   <li>To place order immediately, <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E;">order online</a> </li>
+                   <li>To compare pricing and view our full product offering, <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'>click here</a> </li>
+                 </ul>
+                 
+                 <br/><br/>
                 """)
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date', 'Max Exp. Date', 'Unit Of Measure']
                 columnProps = ['product_brand_id.name', 'sku_code', 'name', 'customer_price_list', 'actual_quantity',
                                'str_min', 'str_max', 'uom_id.name']
+
                 closing_content = Markup("""
-                                    Please reply to this email or contact your Account Manager to hold product or place an order. If you would like to place an order on your own please click on the link "Order Online Here".
-                                    <br/> Thank you <br/>
+                                   To contact your Account Manager, please call (412) 564-1280 or respond to this email.
+                                   <br/><br/>
+                                   
+                                   <div class="text-center" style="text-align: center;">
+                                        <a target="_blank" href="/unsubscribe-instock" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Unsubscribe</a>
+                                   </div>
+                                    """ )
 
-                                    <br/>
-                                    <table style="height: 96px; width: 601px;" border="0">
-                                    <tbody>
-                                    <tr style="height: 78px;">
-                                    
-                                        <td style="width: 154px; height: 78px;">
-                                        <p><strong>Maddie Cotter</strong></p>
-                                        <p>412-240-4049&nbsp;</p>
-                                        </td>
-                                        
-                                        <td style="width: 154px; height: 78px;">
-                                        <p><strong>Shannon Parker</strong></p>
-                                        <p>412-564-9011&nbsp;</p>
-                                        </td>
-                                        
-                                        
-                                        <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
-                                        <p style="text-align: left;">412-745-0317</p>
-                                        </td>
-                                        
-                                        <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Hannah Kostyak</strong></p>
-                                        <p style="text-align: left;">412-643-3207</p>
-                                        </td>
-                                    
-                                    </tr>
-                                    <tr style="height: 76px;">
-                                                                               
-                                        <td style="width: 172px; height: 76px;">
-                                        <p><strong>Sasha Khripkova</strong></p>
-                                        <p>412-643-3816</p>
-                                        </td>
-                                        
-                                        <td style="width: 156px; height: 76px;">
-                                        <p><strong>Theresa Carmody</strong></p>
-                                        <p>412-286-2212</p>
-                                        </td>
-                                        
-                                        <td style="width: 157px; height: 76px;">
-                                        <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
-                                        <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
-                                        </td>
-                                        
-                                        <td style="width: 172px; height: 76px;">
-                                        <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
-                                        <p style="text-align: left;">412-248-1284</p>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                    </table>
-                                    <br/>
-                                    <div class="text-center" style="text-align: center;">
-                                        <a target="_blank" href="/shop/quote_my_report/" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
-                                    </div>
-
-                                    """)
                 if products:
                     product_list.extend(list(products.values()))
                     # Remove excluded product from list
@@ -1770,6 +1708,10 @@ class InventoryNotificationScheduler(models.TransientModel):
                                         <p>412-564-9011&nbsp;</p>
                                         </td>
 
+                                        <td style="width: 157px; height: 78px;">
+                                        <p style="text-align: left;"><strong>Phil Kemp</strong></p>
+                                        <p style="text-align: left;">412-745-1327</p>
+                                        </td>
 
                                         <td style="width: 157px; height: 78px;">
                                         <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>

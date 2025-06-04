@@ -1,6 +1,6 @@
 <odoo>
-    <data  noupdate="1">
-       <record id="seq_sfnumber" model="ir.sequence">
+    <data noupdate="1">
+        <record id="seq_sfnumber" model="ir.sequence">
             <field name="name">Sale Force</field>
             <field name="code">sale.force.no</field>
             <!--<field name="prefix">SF</field>-->
@@ -32,23 +32,24 @@
                     <field name="preferred_method" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="saleforce_ac" placeholder="Sale Force A/C."/>
                     <field name="sku_preconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
-                           placeholder="****       e.g. A**2" invisible="1" />
+                           placeholder="****       e.g. A**2" invisible="1"/>
                     <field name="sku_postconfig" attrs="{'readonly':[('is_parent', '==', False)]}"
-                           placeholder="****       e.g. *2*B" invisible="1" />
-                    <field name="quickbook_id"  attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                    <field name="parent_saleforce_ac" placeholder="Parent Sale Force A/C." attrs="{'invisible':[('parent_id', '=', False)]}"/>
+                           placeholder="****       e.g. *2*B" invisible="1"/>
+                    <field name="quickbook_id" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="parent_saleforce_ac" placeholder="Parent Sale Force A/C."
+                           attrs="{'invisible':[('parent_id', '=', False)]}"/>
                     <field name="is_share" invisible="1"/>
                     <field name="sale_margine" invisible="1"/>
                     <field name="customer_rank" attrs="{'readonly':[('is_parent', '==', False)]}" invisible="1"/>
-                   <!--<field name="charity"/>-->
+                    <!--<field name="charity"/>-->
                     <field name="is_parent" invisible="1"/>
                 </field>
                 <field name="active_lang_count" position="after">
                     <field name="lang" invisible="1"/>
                     <field name="allow_purchase" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="prioritization" attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                     <field name="on_hold"  attrs="{'readonly':[('is_parent', '==', False)]}"/>
-                      <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="on_hold" attrs="{'readonly':[('is_parent', '==', False)]}"/>
+                    <field name="is_broker" attrs="{'readonly':[('is_parent', '==', False)]}"/>
                     <field name="having_carrier" attrs="{'readonly':[('is_parent', '==', False)]}"/>
 
                     <field name="carrier_info"
@@ -82,7 +83,7 @@
                                 </group>
                             </form>
                             <tree editable="bottom">
-<!--                                <field name="sequence" widget="handle"/>-->
+                                <!--                                <field name="sequence" widget="handle"/>-->
                                 <field name="product_id"/>
                                 <field name="sku_code" readonly="True"/>
                                 <field name="lst_price" readonly="True"/>
@@ -104,7 +105,7 @@
                                 <field name="message_needaction" invisible="1"/>
                                 <field name="name" string="Order Number" attrs="{'readonly':[('state','=','sale')]}"/>
                                 <field name="cust_po"/>
-                                 <field name="company_id" invisible="1"/>
+                                <field name="company_id" invisible="1"/>
                                 <field name="user_id"/>
                                 <field name="amount_total" sum="Total Tax Included" widget="monetary"/>
                                 <field name="currency_id"/>
@@ -124,9 +125,9 @@
                                 <field name="doc_process_count"/>
 
                                 <div class="content-group">
-                                        <div>
-                                          <p style="color: #025325;">Document Processing Count at least 1</p>
-                                        </div>
+                                    <div>
+                                        <p style="color: #025325;">Document Processing Count at least 1</p>
+                                    </div>
                                 </div>
 
                                 <!--<field name="gl_account"/>-->
@@ -148,10 +149,10 @@
             <field name="name">res.partner.product.property.form.inherit</field>
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
-<!--            <field name="groups_id" eval="[(4, ref('product.group_product_pricelist'))]"/>-->
+            <!--            <field name="groups_id" eval="[(4, ref('product.group_product_pricelist'))]"/>-->
             <field name="arch" type="xml">
                 <group name="sale">
-                    <field name="property_product_pricelist"  attrs="{'readonly': [('is_company','=',False),('parent_id','!=',False)]
+                    <field name="property_product_pricelist" attrs="{'readonly': [('is_company','=',False),('parent_id','!=',False)]
                     ,'invisible': [('parent_id','=',False)] }"/>
 
                 </group>
@@ -177,7 +178,7 @@
         </record>
 
         <record id="view_form_prioritization_normal" model="ir.ui.view">
-<!--            <field name="sequence" eval="1"/>-->
+            <!--            <field name="sequence" eval="1"/>-->
             <field name="name">Prioritization normal form</field>
             <field name="model">prioritization.transient</field>
             <field name="mode">primary</field>
@@ -309,8 +310,8 @@
             <field name="inherit_id" ref="product.product_template_form_view"/>
             <field name="arch" type="xml">
                 <xpath expr="//form/sheet/notebook/page/group/group/field[@name='uom_po_id']" position="after">
-                    <field name="manufacturer_uom"  options="{'no_create': True}"/>
-                    <field name="actual_uom"  options="{'no_create': True}"/>
+                    <field name="manufacturer_uom" options="{'no_create': True}"/>
+                    <field name="actual_uom" options="{'no_create': True}"/>
                 </xpath>
             </field>
         </record>
@@ -361,6 +362,21 @@
                 </form>
             </field>
         </record>
+
+        <!-- Add the field in a logical place inside your In-Stock config tab -->
+        <record id="view_partner_form_inherit_unsubscribe" model="ir.ui.view">
+            <field name="name">res.partner.form.unsubscribe.feedback</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="prioritization_engine.view_notification_setting_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//sheet" position="inside">
+                    <group>
+                        <field name="unsubscribe_feedback" placeholder="Enter unsubscribe reason..."/>
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
 
         <record id="view_glaccount_setting_tree" model="ir.ui.view">
             <field name="name">gl.account.tree</field>
@@ -478,7 +494,7 @@
         </record>
 
         <record id="view_stockhawk_sales_order" model="ir.ui.view">
-<!--            <field name="sequence" eval="1"/>-->
+            <!--            <field name="sequence" eval="1"/>-->
             <field name="name">Sales Order</field>
             <field name="model">sale.order.line</field>
             <field name="mode">primary</field>
@@ -493,7 +509,7 @@
                     <field name="qty_delivered" string="Delivered Quantity"/>
                     <field name="price_unit" string="Unit Price"/>
                     <field name="price_subtotal" string="Total"/>
-<!--                    <field name="ex_sale_order_confirm_date" string="Date Sold"/>-->
+                    <!--                    <field name="ex_sale_order_confirm_date" string="Date Sold"/>-->
                 </tree>
             </field>
         </record>
@@ -505,7 +521,8 @@
                 <search string="Order">
                     <field name="order_id" string="Order"/>
                     <group expand="0" string="Group By">
-                        <filter string="Order" name="group_by_order_id" domain="[]" context="{'group_by':'order_id'}" help="Group by Order"/>
+                        <filter string="Order" name="group_by_order_id" domain="[]" context="{'group_by':'order_id'}"
+                                help="Group by Order"/>
                     </group>
                 </search>
             </field>
@@ -517,7 +534,7 @@
             <field name="res_model">sale.order.line</field>
             <field name="view_id" ref="view_stockhawk_sales_order"/>
             <field name="view_mode">tree,form</field>
-<!--            <field name="domain">[('state', '=', 'sale'), ('order_id.team_id.team_type', '=', 'engine')]</field>-->
+            <!--            <field name="domain">[('state', '=', 'sale'), ('order_id.team_id.team_type', '=', 'engine')]</field>-->
             <field name="search_view_id" ref="sale_order_line_filter"/>
             <field name="context">{'search_default_group_by_order_id': 1}</field>
         </record>
@@ -530,30 +547,37 @@
             <field name="email_to">{{object.email}}</field>
             <field name="subject">Prioritization Engine API Credentials</field>
             <field name="body_html" type="html">
-                <p>Hello <small>{{object.name}},</small></p>
+                <p>Hello
+                    <small>{{object.name}},</small>
+                </p>
                 <p>
                     Prioritization Engine API Credential with required fields are as follows.
                 </p>
                 <p style="text-align: left; margin-top: 10px;">
-                    <b>User Name</b> : {{ctx.get('username')}}
+                    <b>User Name</b>
+                    : {{ctx.get('username')}}
                 </p>
                 <p>
-                    <b>Password</b> : {{ctx.get('password')}}
+                    <b>Password</b>
+                    : {{ctx.get('password')}}
                 </p>
                 <p>
-                    <b>Url</b> : {{ctx.get('url')}}
+                    <b>Url</b>
+                    : {{ctx.get('url')}}
                 </p>
                 <p>
-                    <b>Template Type</b> : 'Requirement / Inventory'
+                    <b>Template Type</b>
+                    : 'Requirement / Inventory'
                 </p>
                 <p>
-                    <b>File</b> : 'Customer Requirement file / Customer Inventory file'
+                    <b>File</b>
+                    : 'Customer Requirement file / Customer Inventory file'
                 </p>
                 <p>
                     Thanks.
                 </p>
             </field>
-<!--            <field name="user_signature" eval="False"/>-->
+            <!--            <field name="user_signature" eval="False"/>-->
         </record>
 
         <!-- Stockhawk Sales Order Export -->
@@ -564,7 +588,7 @@
             <field name="res_model">sale.order.line</field>
             <field name="view_id" ref="view_stockhawk_sales_order"/>
             <field name="view_mode">tree,form</field>
-<!--            <field name="domain">[('state', '=', 'sale'), ('order_id.team_id.team_type', '=', 'engine')]</field>-->
+            <!--            <field name="domain">[('state', '=', 'sale'), ('order_id.team_id.team_type', '=', 'engine')]</field>-->
             <field name="search_view_id" ref="sale_order_line_filter"/>
             <field name="context">{'search_default_group_by_order_id': 1}</field>
         </record>
@@ -602,8 +626,9 @@
         <menuitem name="Export" id="prioritization_engine.prioritization_export_menu"
                   parent="prioritization_engine.menu_root"/>
 
-        <menuitem name="Export STOCKHAWK Sales Order" id="stockhawk_export_sales_order_menu" parent="prioritization_export_menu"
-                 action="prioritization_engine.view_stockhawk_sale_order"/>
+        <menuitem name="Export STOCKHAWK Sales Order" id="stockhawk_export_sales_order_menu"
+                  parent="prioritization_export_menu"
+                  action="prioritization_engine.view_stockhawk_sale_order"/>
 
     </data>
 </odoo>
