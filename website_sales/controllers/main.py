@@ -263,7 +263,7 @@ class WebsiteSales(WebsiteSale):
             order.user_id = request.env.user.user_id
             order.team_id = original_team_id and original_team_id.id
 
-        template.email_from = '"SPS Company" &lt;info@surgicalproductsolutions.com&gt;'
+        # template.email_from = '"SPS Company" &lt;info@surgicalproductsolutions.com&gt;'
         template.send_mail(order.id, force_send=False)
         (request.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm')
          .sudo().send_mail(order.id, force_send=False))
