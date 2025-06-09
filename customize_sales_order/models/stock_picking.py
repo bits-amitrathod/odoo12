@@ -44,6 +44,11 @@ class StockPicking(models.Model):
             return False  # Return False if 'GT/' or 'GT /' is not found in the pricelist name
 
         for stock_picking in self:
+
+            if stock_picking.location_id.id == 12 and stock_picking.location_dest_id.id == 14:
+                stock_picking.is_need_approval = False
+                continue
+
             if stock_picking.sale_id:
                 if (stock_picking.sale_id.margin_percent <= 0.35
                         and not check_tags_contain_offload(stock_picking.sale_id)
