@@ -6,12 +6,12 @@
             <t t-call="website.layout">
                 <div class="container mt-5 mb-5">
                     <div class="row justify-content-center">
-                        <div class="col-xl-8 col-md-10">
+                        <div class="col-xl-9 col-md-10">
 
                             <h3 class="title text-center">Manage Your In-Stock Email Subscriptions</h3>
-                            <p class="sub-title text-center">Below are the email addresses currently set to receive
-                                in-stock reports for your company. Uncheck any emails you no longer wish to receive
-                                these reports.
+                            <p class="sub-title text-center">
+                                Unchecked below are the email addresses set to receive in-stock reports for your company.<br/>
+                                Please check any email addresses below that you no longer wish to receive this report to and then click submit at the bottom to unsubscribe them.
                             </p>
 
                             <form action="/unsubscribe-instock/submit" method="post"
@@ -27,7 +27,8 @@
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input" type="checkbox" name="contact_ids"
                                                        t-att-value="contact.id" id="email_[[ contact.id ]]"
-                                                       />
+                                                       style="border: 1px solid red; accent-color: red;"
+                                                />
                                                 <label class="form-check-label" t-att-for="'email_' + str(contact.id)">
                                                     <t t-esc="contact.email"/>
                                                 </label>
