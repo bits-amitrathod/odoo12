@@ -457,13 +457,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                 # href="https://www.shopsps.com/downloadCatalog"
                 descrption = Markup(""" 
 
-                <strong>Good morning , """ + customr.name + """!</strong>
+                <strong>Good morning, """ + customr.name + """!</strong>
                  <br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. <br/><br/>
 
                  <ul style="list-style-type: disc; padding-left: 20px; margin-top: 0; margin-bottom: 20px;">
                    <li>To reserve product, respond to this email</li>
-                   <li>To place order immediately, <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E;">order online</a> </li>
-                   <li>To compare pricing and view our full product offering, <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'>click here</a> </li>
+                   <li>To place order immediately, <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E; font-weight: bold;">order online</a> </li>
+                   <li>To compare pricing and view our full product offering, <a href="https://www.shopsps.com/downloadCatalog" style="color:#C4262E;font-weight: bold;">click here</a> </li>
                  </ul>
                  
                  <br/><br/>
@@ -475,10 +475,10 @@ class InventoryNotificationScheduler(models.TransientModel):
 
                 closing_content = Markup("""
                                    To contact your Account Manager, please call (412) 564-1280 or respond to this email.
-                                   <br/><br/>
+                                   <br/>
                                    
-                                   <div class="text-center" style="text-align: center;">
-                                        <a target="_blank" href="/unsubscribe-instock" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Unsubscribe</a>
+                                   <div style="text-align: left;">
+                                        <a target="_blank" href="/unsubscribe-instock" style="color:#C4262E;font-weight: bold;">Unsubscribe</a>
                                    </div>
                                     """ )
 

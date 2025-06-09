@@ -45,7 +45,8 @@ class InStockUnsubscribe(http.Controller):
         if not contact_ids or not feedback:
             return request.redirect('/unsubscribe-instock?error=missing_data')
 
-        contacts = request.env['res.partner'].browse([int(cid) for cid in contact_ids])
+        # Giving access for field to avoid access right error by using sudo
+        contacts = request.env['res.partner'].sudo().browse([int(cid) for cid in contact_ids])
         today = date.today()
 
         for contact in contacts:

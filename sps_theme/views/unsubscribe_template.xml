@@ -27,7 +27,7 @@
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input" type="checkbox" name="contact_ids"
                                                        t-att-value="contact.id" id="email_[[ contact.id ]]"
-                                                       checked="checked"/>
+                                                       />
                                                 <label class="form-check-label" t-att-for="'email_' + str(contact.id)">
                                                     <t t-esc="contact.email"/>
                                                 </label>
