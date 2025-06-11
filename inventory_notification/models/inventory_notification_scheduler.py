@@ -456,7 +456,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                 subject = "SPS – Personalized Items Available for You"
                 # href="https://www.shopsps.com/downloadCatalog"
                 descrption = Markup(""" 
-
                 <strong>Good morning, """ + customr.name + """!</strong>
                  <br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. <br/><br/>
 
@@ -466,21 +465,19 @@ class InventoryNotificationScheduler(models.TransientModel):
                    <li>To compare pricing and view our full product offering, <a href="https://www.shopsps.com/downloadCatalog" style="color:#C4262E;font-weight: bold;">click here</a> </li>
                  </ul>
                  
-                 <br/><br/>
+                 <br/>
+                 To contact your Account Manager, please call (412) 564-1280 or respond to this email.
+                 <br/><br/>           
+                <div style="text-align: left; margin: 0; padding: 0;">
+                    <a target="_blank" href="/unsubscribe-instock" style="color:#C4262E; font-weight: bold; margin: 0; padding: 0; text-align: left;">Unsubscribe</a>
+                </div>
                 """)
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date', 'Max Exp. Date', 'Unit Of Measure']
                 columnProps = ['product_brand_id.name', 'sku_code', 'name', 'customer_price_list', 'actual_quantity',
                                'str_min', 'str_max', 'uom_id.name']
 
-                closing_content = Markup("""
-                                   To contact your Account Manager, please call (412) 564-1280 or respond to this email.
-                                   <br/>
-                                   
-                                   <div style="text-align: left;">
-                                        <a target="_blank" href="/unsubscribe-instock" style="color:#C4262E;font-weight: bold;">Unsubscribe</a>
-                                   </div>
-                                    """ )
+
 
                 if products:
                     product_list.extend(list(products.values()))
@@ -503,7 +500,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                     sort_col = True
                     self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                    product_list,
-                                                                   header, columnProps, closing_content,
+                                                                   header, columnProps, None,
                                                                    customr.email,
                                                                    email_list_cc, sort_col, is_employee=False,
                                                                    partner_id=customr)

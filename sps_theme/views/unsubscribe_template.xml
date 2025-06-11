@@ -10,8 +10,8 @@
 
                             <h3 class="title text-center">Manage Your In-Stock Email Subscriptions</h3>
                             <p class="sub-title text-center">
-                                Unchecked below are the email addresses set to receive in-stock reports for your company.<br/>
-                                Please check any email addresses below that you no longer wish to receive this report to and then click submit at the bottom to unsubscribe them.
+                                Please check any email addresses below that you no longer wish to receive this report to
+                                and then click submit at the bottom to unsubscribe them.
                             </p>
 
                             <form action="/unsubscribe-instock/submit" method="post"
@@ -32,6 +32,10 @@
                                                 <label class="form-check-label" t-att-for="'email_' + str(contact.id)">
                                                     <t t-esc="contact.email"/>
                                                 </label>
+                                                <br/>
+<!--                                                <label class="form-check-label" t-att-for="'email_' + str(company.id)">-->
+<!--                                                    <t t-esc="company.email"/>-->
+<!--                                                </label>-->
                                             </div>
                                         </t>
                                     </div>
