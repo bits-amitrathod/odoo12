@@ -39,6 +39,8 @@ class PurchaseOrderPopUp(models.TransientModel):
 
     weight = fields.Float('Weight', default=_get_default_weight)
     package_count = fields.Integer("Packages Count", default=1)
+    receiving_address = fields.Selection([('0', '3046 Penn Ave Pittsburgh'),
+                                         ('1', '3600 Liberty Ave Pittsburgh')], 'Receiving Address', required=True)
 
     @api.constrains('package_count')
     #@api.one

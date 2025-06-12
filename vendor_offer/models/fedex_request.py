@@ -126,7 +126,7 @@ class FedexRequest():
         self.RequestedShipment.Recipient.Contact = Contact
         self.RequestedShipment.Recipient.Address = Address
 
-    def set_recipient(self, recipient_partner,order):
+    def set_recipient(self, recipient_partner, order, **kwargs):
         Contact = self.factory.Contact()
 
         if recipient_partner.is_company:
@@ -140,7 +140,16 @@ class FedexRequest():
         Address = self.factory.Address()
 
         if order._name == "purchase.order":
-            Address.StreetLines = ['3046 Penn Ave', recipient_partner.street2 or '']
+            if 'address' in kwargs:
+                address = kwargs['address']
+                if address == '0':
+                    Address.StreetLines = ['3046 Penn Ave', '']
+                elif address == '1':
+                    Address.StreetLines = ['3600 Liberty Ave', recipient_partner.street2 or '']
+                else:
+                    Address.StreetLines = ['3046 Penn Ave', recipient_partner.street2 or '']
+            else:
+                Address.StreetLines = ['3046 Penn Ave', recipient_partner.street2 or '']
         else:
             Address.StreetLines = [recipient_partner.street or '', recipient_partner.street2 or '']
 
