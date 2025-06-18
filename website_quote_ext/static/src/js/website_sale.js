@@ -61,7 +61,11 @@ odoo.define('website_quote_ext._ex', function (require) {
             var product_id = $input[0]['attributes']['data-product-id']['value'];
             var quote_id = $input[0]['attributes']['data-quote-id']['value'];
             var line_id = $input[0]['attributes']['data-line-id']['value'];
-
+            $link.css({
+                            'cursor': 'not-allowed',
+                            'color': '#cacaca',
+                            'pointer-events': 'none'
+                        });
             ajax.jsonRpc("/shop/engine/count", 'call', {
                 'quote_id':quote_id,
                 'product_id': product_id
@@ -83,9 +87,9 @@ odoo.define('website_quote_ext._ex', function (require) {
                     'product_id': product_id,
                     'set_qty': new_qty
                 }).then(function (data) {
+                     window.location.reload(true);
                      console.log("inside update_json");
                      console.log(data);
-                     window.location.reload();
                 });
             });
             return false;
