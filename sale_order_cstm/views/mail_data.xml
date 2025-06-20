@@ -31,10 +31,10 @@
 
         <br/><br/>
         Do not hesitate to contact us if you have any questions.
-        <t t-if="not is_html_empty(object.user_id.signature)">
+        <!--<t t-if="not is_html_empty(object.user_id.signature)">
             <br/><br/>
-            <t t-out="object.user_id.signature or ''">--<br/></t>
-        </t>
+            <t t-out="object.user_id.signature or ''">&#45;&#45;<br/></t>
+        </t>-->
         <br/><br/>
     </p>
 <t t-if="hasattr(object, 'website_id') and object.website_id">
