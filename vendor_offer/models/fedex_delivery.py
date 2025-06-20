@@ -57,7 +57,7 @@ class FedexDelivery(models.Model):
         # srm.set_recipient(order.company_id.partner_id)
         super_user = self.env['res.users'].browse(1)
         # print(super_user.partner_id.name)
-        srm.set_recipient(super_user.partner_id,order)
+        srm.set_recipient(super_user.partner_id, order, address=popup.receiving_address)
         srm.shipping_charges_payment(superself.fedex_account_number)
         srm.shipment_label('COMMON2D', self.fedex_label_file_type, self.fedex_label_stock_type,
                            'TOP_EDGE_OF_TEXT_FIRST', 'SHIPPING_LABEL_FIRST')

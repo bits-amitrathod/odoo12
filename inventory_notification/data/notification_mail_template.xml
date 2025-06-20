@@ -162,7 +162,7 @@
     <record id="in_stock_scheduler_template" model="mail.template">
         <field name="name">Inventory Notification: Product In Stock Scheduler Email</field>
         <field name="model_id" ref="base.model_res_users"/>
-        <field name="email_from">{{ ctx['email_from'] }}</field>
+        <field name="email_from">"SPS Company" &lt;info@surgicalproductsolutions.com&gt;</field>
         <field name="email_to">{{ ctx['email_to'] }}</field>
         <field name="subject">{{ ctx['subject'] }}</field>
         <field name="email_cc">{{ ctx['email_cc'] }}</field>
@@ -266,7 +266,7 @@
     <record id="mail_template_vendor_offer_acceptance" model="mail.template">
         <field name="name">Vendor Offer Notification: Vendor Offer Acceptance Email</field>
         <field name="model_id" ref="base.model_res_users"/>
-        <field name="email_from">{{ ctx['email_from'] }}</field>
+        <field name="email_from">"SPS Company" &lt;info@surgicalproductsolutions.com&gt;</field>
         <field name="email_to">{{ ctx['email_to'] }}</field>
         <field name="subject">{{ ctx['subject'] }}</field>
         <field name="body_html" type="html">
