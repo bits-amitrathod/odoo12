@@ -17,12 +17,37 @@
                             <form action="/unsubscribe-instock/submit" method="post"
                                   enctype="multipart/form-data">
 
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                    const unsubscribeAll = document.getElementById('unsubscribe_all');
+                                    const contactCheckboxes = document.querySelectorAll('input[name="contact_ids"]');
+
+                                    unsubscribeAll.addEventListener('change', function () {
+                                    contactCheckboxes.forEach(cb => {
+                                    cb.checked = unsubscribeAll.checked;
+                                    });
+                                    });
+                                    });
+                                </script>
+
+
                                 <!-- CSRF Token -->
                                 <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
 
                                 <t t-if="contacts">
                                     <div class="form-group">
+
+                                        <!-- Unsubscribe all emails checkbox -->
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="unsubscribe_all"
+                                                   id="unsubscribe_all"
+                                                   style="border: 1px solid red; accent-color: red;"/>
+                                            <label class="form-check-label" for="unsubscribe_all">
+                                                <strong>Unsubscribe all emails</strong>
+                                            </label>
+                                        </div>
+
                                         <t t-foreach="contacts" t-as="contact">
                                             <div class="form-check mb-2">
                                                 <input class="form-check-input" type="checkbox" name="contact_ids"
@@ -33,9 +58,6 @@
                                                     <t t-esc="contact.email"/>
                                                 </label>
                                                 <br/>
-<!--                                                <label class="form-check-label" t-att-for="'email_' + str(company.id)">-->
-<!--                                                    <t t-esc="company.email"/>-->
-<!--                                                </label>-->
                                             </div>
                                         </t>
                                     </div>

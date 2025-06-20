@@ -390,40 +390,69 @@ class InventoryNotificationScheduler(models.TransientModel):
             _logger.info(customr.start_date)
             _logger.info("customr.end_date")
             _logger.info(customr.end_date)
-            if (customr.start_date == False and customr.end_date == False) \
-                    or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-                customr.end_date) >= today_start) \
-                    or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
-                customr.start_date) <= today_start) \
-                    or (
-                    customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-                customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                customr.end_date) >= today_start) \
-                    or (customr.end_date is None):
-                to_customer = customr
-                contacts = self.env['res.partner'].search(
-                    [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
-                _logger.info("contacts")
-                _logger.info(contacts)
-                product_list = []
-                cust_ids = []
-                cust_ids.append(customr.id)
-                email_list_cc = []
-                for contact in contacts:
-                    # if (contact.email not in email_queue):
-                    if (contact.email not in email_list_cc):
-                        if (contact.start_date == False and contact.end_date == False) \
-                                or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
-                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                            contact.end_date) >= today_start) \
-                                or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
-                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                            contact.start_date) <= today_start) \
-                                or (InventoryNotificationScheduler.string_to_date(
-                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                            contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                            contact.end_date) >= today_start):
+
+            # Check whether any child contact is still subscribed to notifications, even if the company's email is unsubscribed.
+            child_contacts_subscribed = self.env['res.partner'].search_count([
+                ('parent_id', '=', customr.id),
+                ('email', '!=', False),
+                ('instock_unsubscribe', '=', False),
+                ('active', '=', True)
+            ]) > 0
+
+            # Send email only to companies that are not entirely unsubscribed from email notifications.
+            # If the company's individual email is unsubscribed, check if any of its contacts are still subscribed.
+            # If at least one contact is still subscribed, proceed to send the email.
+
+            if not (customr.disable_all_instock_email or (customr.instock_unsubscribe and not child_contacts_subscribed)):
+
+                # if (customr.start_date == False and customr.end_date == False) \
+                #         or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+                #     customr.end_date) >= today_start) \
+                #         or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
+                #     customr.start_date) <= today_start) \
+                #         or (
+                #         customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+                #     customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                #     customr.end_date) >= today_start) \
+                #         or (customr.end_date is None):
+                #     to_customer = customr
+
+                # new condition to check start date is today or earlier and not in the future .
+                if not customr.start_date or InventoryNotificationScheduler.string_to_date(customr.start_date) <= today_start:
+                    contacts = self.env['res.partner'].search(
+                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+                    _logger.info("contacts")
+                    _logger.info(contacts)
+                    product_list = []
+                    cust_ids = []
+                    cust_ids.append(customr.id)
+                    email_list_cc = []
+                    for contact in contacts:
+                        # if (contact.email not in email_queue):
+                        if (contact.email not in email_list_cc):
+
+                            # Skip if contact has unsubscribed individually
+                            if contact.instock_unsubscribe:
+                                _logger.info("Skipping %s due to individual unsubscribe", contact.name)
+                                continue
+
+                        # if (contact.start_date == False and contact.end_date == False) \
+                        #         or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
+                        #     contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                        #     contact.end_date) >= today_start) \
+                        #         or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
+                        #     contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                        #     contact.start_date) <= today_start) \
+                        #         or (InventoryNotificationScheduler.string_to_date(
+                        #     contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                        #     contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                        #     contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                        #     contact.end_date) >= today_start):
+
+                        # new condition to check start date is today or earlier and not in the future .
+                        if not contact.start_date or InventoryNotificationScheduler.string_to_date(
+                                    contact.start_date) <= today_start:
+
                             cust_ids.extend(contact.ids)
                             _logger.info("cc Customer =")
                             _logger.info(contact.email)
@@ -432,6 +461,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                                 if contact.type not in ['other','invoice','delivery','private','followup']:
                                     email_list_cc.append(contact.email)
                         # email_queue.append(contact.email)
+
                 if (customr.historic_months > 0):
                     historic_day = customr.historic_months * 30
                     # _logger.info("historic_day :%r", historic_day)
@@ -498,10 +528,26 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if customr.customer_success and customr.customer_success.email:
                             email_list_cc.append(customr.customer_success.email)
                     sort_col = True
+
+
+
+
+                    # Avoid using the company's email address if it's unsubscribed; instead, use a subscribed contact's email.
+                    # Note: The email "To" field must not be empty — ensure at least one recipient.
+
+                    to_email = False
+                    if not customr.instock_unsubscribe and customr.email:
+                        to_email = customr.email
+                    elif email_list_cc:
+                        to_email = email_list_cc.pop(0)
+                    else:
+                        # Skip sending if there's no valid recipient
+                        return
+
                     self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                    product_list,
                                                                    header, columnProps, None,
-                                                                   customr.email,
+                                                                   to_email,
                                                                    email_list_cc, sort_col, is_employee=False,
                                                                    partner_id=customr)
             else:
@@ -559,15 +605,24 @@ class InventoryNotificationScheduler(models.TransientModel):
         #         _logger.exception(e)
 
         try:
+            # query = """ update res_partner set todays_notification = true
+            # where customer_rank >= 1 and is_parent = true
+            #     and email is not null and active = true
+            #     and ((todays_notification = false) or (todays_notification is Null))
+            #     and  """ + weekday + """ = true
+            #     and ( (start_date is null and end_date is null )
+            #             or  (end_date is not null and  end_date >= CURRENT_DATE)
+            #             or  (start_date is not null and  start_date <= CURRENT_DATE)
+            #         ) 	    """
+
             query = """ update res_partner set todays_notification = true 
-            where customer_rank >= 1 and is_parent = true
-                and email is not null and active = true 
-                and ((todays_notification = false) or (todays_notification is Null))  
-                and  """ + weekday + """ = true  
-                and ( (start_date is null and end_date is null ) 
-                        or  (end_date is not null and  end_date >= CURRENT_DATE)   
-                        or  (start_date is not null and  start_date <= CURRENT_DATE)    
-                    ) 	    """
+               where customer_rank >= 1 and is_parent = true
+                   and email is not null and active = true 
+                   and ((todays_notification = false) or (todays_notification is Null))  
+                   and  """ + weekday + """ = true     
+                   and (start_date IS NULL OR start_date <= CURRENT_DATE)
+                   and (disable_all_instock_email = false OR disable_all_instock_email IS NULL)
+                    """
 
             self.env.cr.execute(query)
         except Exception as e:

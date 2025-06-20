@@ -400,6 +400,27 @@ class NotificationSetting(models.Model):
     # added new field in contact in-stock notification page
     unsubscribe_feedback = fields.Text(string="Unsubscribe Feedback")
 
+    instock_unsubscribe = fields.Boolean(
+        string="Unsubscribed from In-Stock Emails",
+        help="If checked, this contact will not receive In-Stock notification emails.",
+        store=True
+    )
+
+    disable_all_instock_email = fields.Boolean(
+        string="Disable In-Stock email for entire company",
+        compute="_compute_disable_all_instock_email",
+        store=True
+    )
+
+    @api.depends('parent_id.disable_all_instock_email', 'is_company')
+    def _compute_disable_all_instock_email(self):
+        for rec in self:
+            if rec.is_company:
+                # Editable for companies; value should persist manually (we skip here)
+                pass
+            else:
+                # Read-only computed value for contacts
+                rec.disable_all_instock_email = rec.parent_id.disable_all_instock_email if rec.parent_id else False
 
 
 # Customer product level setting

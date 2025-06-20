@@ -371,6 +371,17 @@
             <field name="arch" type="xml">
                 <xpath expr="//sheet" position="inside">
                     <group>
+                        <field name="is_company" invisible="1"/>
+                        <!-- Company-wide unsubscribe checkbox -->
+                        <field name="disable_all_instock_email"
+                               attrs="{'readonly': [('is_company', '=', False)]}"/>
+
+
+                        <!-- Contact-only unsubscribe checkbox -->
+<!--                        attrs="{'invisible': [('is_company', '=', True)]}"-->
+                        <field name="instock_unsubscribe"/>
+
+
                         <field name="unsubscribe_feedback" placeholder="Enter unsubscribe reason..."/>
                     </group>
                 </xpath>
