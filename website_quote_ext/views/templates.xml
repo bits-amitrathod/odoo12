@@ -875,9 +875,11 @@
                                                         <a t-attf-id="allow_qty_plus_{{ol.product_id.id}}"
                                                            title="Add Quantity"
                                                            t-attf-href="#"
-                                                           t-att-class="'mb8 input-group-addon float_left js_add_cart_json btn ' + ('disabled' if ol.product_uom_qty >= ol.product_id.actual_quantity else '')"
-                                                           t-att-style="'background-color: #FFFFFF; border: 0px; margin-bottom: 0px!important; margin-left: auto; ' + ('cursor: not-allowed; color:#cacaca; pointer-events:none;' if ol.product_uom_qty >= ol.product_id.actual_quantity else '')">
-                                                            <i class="fa fa-plus" t-att-style="'color:' + ('#cacaca' if ol.product_uom_qty >= ol.product_id.actual_quantity else '#3d9cca')"></i>
+                                                           class="'mb8 input-group-addon float_left js_add_cart_json btn ' + ('disabled' if ol.product_uom_qty >= (ol.product_id.actual_quantity + ol.product_uom_qty) else '')"
+                                                           t-att-style="'background-color: #FFFFFF; border: 0px; margin-bottom: 0px!important; margin-left: auto; '
+                                                           + ('cursor: not-allowed; color:#cacaca; pointer-events:none;' if ol.product_uom_qty >= (ol.product_id.actual_quantity + ol.product_uom_qty) else '')
+                                                           + ('color:#cacaca;' if ol.product_uom_qty >= (ol.product_id.actual_quantity + ol.product_uom_qty) else 'color:#3d9cca;')">
+                                                            <i class="fa fa-plus " style="color: + ('#cacaca' if ol.product_uom_qty >= (ol.product_id.actual_quantity + ol.product_uom_qty) else '#3d9cca !important')"></i>
                                                         </a>
                                                     </div>
                                                 </td>
