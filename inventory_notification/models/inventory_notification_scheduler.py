@@ -523,23 +523,25 @@ class InventoryNotificationScheduler(models.TransientModel):
 
     @api.model
     # @api.multi
-    def process_notification_scheduler_everyday(self, custom_date=None):
+    def process_notification_scheduler_everyday(self, custom_date=None, time_zone="est"):
         """
             This is Everyday scheduler
         :param custom_date:
         :return:
         """
-        self.process_new_product_scheduler()
-        self.process_notify_available()
-        self.process_packing_list()
-        self.process_on_hold_customer()
+        if time_zone == "est":
+            self.process_new_product_scheduler()
+            self.process_notify_available()
+            self.process_packing_list()
+            self.process_on_hold_customer()
         if custom_date is not None:
             custom_date = datetime.strptime(custom_date, '%Y-%m-%d').date()
         else:
             custom_date = date.today()
-        self.process_todays_notification_flag_scheduler(custom_date)
 
-    def process_todays_notification_flag_scheduler(self, custom_date):
+        self.process_todays_notification_flag_scheduler(custom_date, time_zone=time_zone)
+
+    def process_todays_notification_flag_scheduler(self, custom_date , time_zone="est"):
         _logger.info('process_todays_notification_flag_scheduler called')
 
         today_date = custom_date
@@ -547,6 +549,12 @@ class InventoryNotificationScheduler(models.TransientModel):
         days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         dayName = today_date.weekday()
         weekday = days[dayName]
+
+        condition = ""
+        if time_zone == "est":
+            condition = " ( plt.time_zone NOT IN ('cst', 'mst', 'pst', 'hast') or plt.time_zone is Null )"
+        else:
+            condition = " plt.time_zone IN ( '" + time_zone + "')"
 
         # customers = self.env['res.partner'].search(
         #     [('customer_rank', '>=', 1), ('is_parent', '=', True), ('email', '!=', ''), ('active', '=', True),
@@ -579,13 +587,24 @@ class InventoryNotificationScheduler(models.TransientModel):
             #             or  (start_date is not null and  start_date <= CURRENT_DATE)
             #         ) 	    """
 
-            query = """ update res_partner set todays_notification = true 
-               where customer_rank >= 1 and is_parent = true
-                   and email is not null and active = true 
-                   and ((todays_notification = false) or (todays_notification is Null))  
-                   and  """ + weekday + """ = true     
-                   and (disable_all_instock_email = false OR disable_all_instock_email IS NULL)
-                    """
+
+            query = """ 
+                update res_partner rp
+                set todays_notification = true 
+                FROM partner_link_tracker plt
+                where 
+                rp.id = plt.partner_id
+                AND """ + condition + """
+                AND customer_rank >= 1
+                AND is_parent = true
+                AND email is not null
+                AND active = true 
+                AND (disable_all_instock_email = false OR disable_all_instock_email IS NULL)
+                AND ((todays_notification = false) or (todays_notification is Null))  
+                AND  """ + weekday + """ = true  
+                """
+
+            _logger.info(query)
 
             self.env.cr.execute(query)
         except Exception as e:
