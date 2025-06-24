@@ -345,14 +345,14 @@
                         </group>
                         <group>
                             <group>
-                                <field name="start_date"/>
+<!--                                <field name="start_date"/>-->
                                 <field name="monday"/>
                                 <field name="tuesday"/>
                                 <field name="wednesday"/>
                                 <field name="thursday"/>
                             </group>
                             <group>
-                                <field name="end_date"/>
+<!--                                <field name="end_date"/>-->
                                 <field name="friday"/>
                                 <field name="saturday"/>
                                 <field name="sunday"/>

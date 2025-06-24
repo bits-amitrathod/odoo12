@@ -386,10 +386,6 @@ class InventoryNotificationScheduler(models.TransientModel):
             _logger.info(str(count) + " / " + str(len(customers)))
             # if (customr.email not in email_queue):
             _logger.info(customr.email)
-            _logger.info("customr.start_date")
-            _logger.info(customr.start_date)
-            _logger.info("customr.end_date")
-            _logger.info(customr.end_date)
 
             # Check whether any child contact is still subscribed to notifications, even if the company's email is unsubscribed.
             child_contacts_subscribed = self.env['res.partner'].search_count([
@@ -405,62 +401,31 @@ class InventoryNotificationScheduler(models.TransientModel):
 
             if not (customr.disable_all_instock_email or (customr.instock_unsubscribe and not child_contacts_subscribed)):
 
-                # if (customr.start_date == False and customr.end_date == False) \
-                #         or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-                #     customr.end_date) >= today_start) \
-                #         or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
-                #     customr.start_date) <= today_start) \
-                #         or (
-                #         customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-                #     customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                #     customr.end_date) >= today_start) \
-                #         or (customr.end_date is None):
-                #     to_customer = customr
+                contacts = self.env['res.partner'].search(
+                    [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+                _logger.info("contacts")
+                _logger.info(contacts)
+                product_list = []
+                cust_ids = []
+                cust_ids.append(customr.id)
+                email_list_cc = []
+                for contact in contacts:
+                    # if (contact.email not in email_queue):
+                    if (contact.email not in email_list_cc):
 
-                # new condition to check start date is today or earlier and not in the future .
-                if not customr.start_date or InventoryNotificationScheduler.string_to_date(customr.start_date) <= today_start:
-                    contacts = self.env['res.partner'].search(
-                        [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
-                    _logger.info("contacts")
-                    _logger.info(contacts)
-                    product_list = []
-                    cust_ids = []
-                    cust_ids.append(customr.id)
-                    email_list_cc = []
-                    for contact in contacts:
-                        # if (contact.email not in email_queue):
-                        if (contact.email not in email_list_cc):
+                        # Skip if contact has unsubscribed individually
+                        if contact.instock_unsubscribe:
+                            _logger.info("Skipping %s due to individual unsubscribe", contact.name)
+                            continue
 
-                            # Skip if contact has unsubscribed individually
-                            if contact.instock_unsubscribe:
-                                _logger.info("Skipping %s due to individual unsubscribe", contact.name)
-                                continue
-
-                        # if (contact.start_date == False and contact.end_date == False) \
-                        #         or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
-                        #     contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                        #     contact.end_date) >= today_start) \
-                        #         or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
-                        #     contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                        #     contact.start_date) <= today_start) \
-                        #         or (InventoryNotificationScheduler.string_to_date(
-                        #     contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                        #     contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                        #     contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                        #     contact.end_date) >= today_start):
-
-                        # new condition to check start date is today or earlier and not in the future .
-                        if not contact.start_date or InventoryNotificationScheduler.string_to_date(
-                                    contact.start_date) <= today_start:
-
-                            cust_ids.extend(contact.ids)
-                            _logger.info("cc Customer =")
-                            _logger.info(contact.email)
-                            # Add this condition to include sales of all contact ticket 668
-                            if contact.email != customr.email:
-                                if contact.type not in ['other','invoice','delivery','private','followup']:
-                                    email_list_cc.append(contact.email)
-                        # email_queue.append(contact.email)
+                        cust_ids.extend(contact.ids)
+                        _logger.info("cc Customer =")
+                        _logger.info(contact.email)
+                        # Add this condition to include sales of all contact ticket 668
+                        if contact.email != customr.email:
+                            if contact.type not in ['other','invoice','delivery','private','followup']:
+                                email_list_cc.append(contact.email)
+                    # email_queue.append(contact.email)
 
                 if (customr.historic_months > 0):
                     historic_day = customr.historic_months * 30
@@ -555,7 +520,6 @@ class InventoryNotificationScheduler(models.TransientModel):
             customr.todays_notification = False
         end = time.time()
         _logger.info("Time for Execution")
-        _logger.info(end - start)
 
     @api.model
     # @api.multi
@@ -620,7 +584,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                    and email is not null and active = true 
                    and ((todays_notification = false) or (todays_notification is Null))  
                    and  """ + weekday + """ = true     
-                   and (start_date IS NULL OR start_date <= CURRENT_DATE)
                    and (disable_all_instock_email = false OR disable_all_instock_email IS NULL)
                     """
 
@@ -828,9 +791,19 @@ class InventoryNotificationScheduler(models.TransientModel):
         _logger.info("weekday: %r", weekday)
         custmer_user = self.env['res.users'].search([('partner_id.customer', '=', True), ('active', '=', True)])
         for customer in custmer_user:
-            user = self.env['res.partner'].search(
-                [(weekday, '=', True), ('customer', '=', True), ('start_date', '<=', today_start),
-                 ('end_date', '>=', today_start), ('id', '=', customer.partner_id.id)])
+            # user = self.env['res.partner'].search(
+            #     [(weekday, '=', True), ('customer', '=', True), ('start_date', '<=', today_start),
+            #      ('end_date', '>=', today_start), ('id', '=', customer.partner_id.id)])
+
+            # new updated logic
+            user = self.env['res.partner'].search([
+                (weekday, '=', True),
+                ('customer', '=', True),
+                ('disable_all_instock_email', '!=', True),
+                ('instock_unsubscribe', '!=', True),
+                ('id', '=', customer.partner_id.id)
+            ])
+
             if user and products:
                 _logger.info("user:%r ", user)
                 subject = "In Stock Product"
@@ -1644,52 +1617,52 @@ class InventoryNotificationScheduler(models.TransientModel):
             _logger.info(str(count) + " / " + str(len(customers)))
             # if (customr.email not in email_queue):
             _logger.info(customr.email)
-            _logger.info("customr.start_date")
-            _logger.info(customr.start_date)
-            _logger.info("customr.end_date")
-            _logger.info(customr.end_date)
-            if (customr.start_date == False and customr.end_date == False) \
-                    or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-                customr.end_date) >= today_start) \
-                    or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
-                customr.start_date) <= today_start) \
-                    or (
-                    customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-                customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                customr.end_date) >= today_start) \
-                    or (customr.end_date is None):
-                to_customer = customr
-                contacts = self.env['res.partner'].search(
-                    [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
-                _logger.info("contacts")
-                _logger.info(contacts)
-                product_list = []
-                cust_ids = []
-                cust_ids.append(customr.id)
-                email_list_cc = []
-                for contact in contacts:
-                    # if (contact.email not in email_queue):
-                    if (contact.email not in email_list_cc):
-                        if (contact.start_date == False and contact.end_date == False) \
-                                or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
-                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                            contact.end_date) >= today_start) \
-                                or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
-                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                            contact.start_date) <= today_start) \
-                                or (InventoryNotificationScheduler.string_to_date(
-                            contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                            contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                            contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                            contact.end_date) >= today_start):
-                            cust_ids.extend(contact.ids)
-                            _logger.info("cc Customer =")
-                            _logger.info(contact.email)
-                            # Add this condition to include sales of all contact ticket 668
-                            if contact.email != customr.email:
-                                if contact.type not in ['other', 'invoice', 'delivery', 'private', 'followup']:
-                                    email_list_cc.append(contact.email)
-                        # email_queue.append(contact.email)
+            # _logger.info("customr.start_date")
+            # _logger.info(customr.start_date)
+            # _logger.info("customr.end_date")
+            # _logger.info(customr.end_date)
+            # if (customr.start_date == False and customr.end_date == False) \
+            #         or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+            #     customr.end_date) >= today_start) \
+            #         or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
+            #     customr.start_date) <= today_start) \
+            #         or (
+            #         customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
+            #     customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+            #     customr.end_date) >= today_start) \
+            #         or (customr.end_date is None):
+            #     to_customer = customr
+            contacts = self.env['res.partner'].search(
+                [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+            _logger.info("contacts")
+            _logger.info(contacts)
+            product_list = []
+            cust_ids = []
+            cust_ids.append(customr.id)
+            email_list_cc = []
+            for contact in contacts:
+                # if (contact.email not in email_queue):
+                if (contact.email not in email_list_cc):
+                    # if (contact.start_date == False and contact.end_date == False) \
+                    #         or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
+                    #     contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                    #     contact.end_date) >= today_start) \
+                    #         or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
+                    #     contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                    #     contact.start_date) <= today_start) \
+                    #         or (InventoryNotificationScheduler.string_to_date(
+                    #     contact.start_date) and InventoryNotificationScheduler.string_to_date(
+                    #     contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
+                    #     contact.end_date) and InventoryNotificationScheduler.string_to_date(
+                    #     contact.end_date) >= today_start):
+                        cust_ids.extend(contact.ids)
+                        _logger.info("cc Customer =")
+                        _logger.info(contact.email)
+                        # Add this condition to include sales of all contact ticket 668
+                        if contact.email != customr.email:
+                            if contact.type not in ['other', 'invoice', 'delivery', 'private', 'followup']:
+                                email_list_cc.append(contact.email)
+                    # email_queue.append(contact.email)
                 if (customr.historic_months > 0):
                     historic_day = customr.historic_months * 30
                     # _logger.info("historic_day :%r", historic_day)

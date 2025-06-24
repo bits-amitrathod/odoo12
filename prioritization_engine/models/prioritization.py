@@ -401,13 +401,13 @@ class NotificationSetting(models.Model):
     unsubscribe_feedback = fields.Text(string="Unsubscribe Feedback")
 
     instock_unsubscribe = fields.Boolean(
-        string="Unsubscribed from In-Stock Emails",
+        string="Contact unsubscribed from In-Stock email",
         help="If checked, this contact will not receive In-Stock notification emails.",
         store=True
     )
 
     disable_all_instock_email = fields.Boolean(
-        string="Disable In-Stock email for entire company",
+        string="Company unsubscribed from In-Stock email",
         compute="_compute_disable_all_instock_email",
         store=True
     )
