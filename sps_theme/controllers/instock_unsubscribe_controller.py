@@ -121,6 +121,11 @@ class InStockUnsubscribe(http.Controller):
                         'instock_unsubscribe': True,
                         'unsubscribe_feedback': feedback
                     })
+                    contact.sudo().write({
+                        'instock_unsubscribe': is_checked,
+                        'unsubscribe_feedback': feedback
+
+                    })
 
         return request.render('sps_theme.instock_unsubscribe_success')
 
