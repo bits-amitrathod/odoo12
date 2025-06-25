@@ -1609,11 +1609,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         self.process_in_stock_scheduler_test(customer_ids)
 
     def process_in_stock_scheduler_test(self, customer_ids):
-        # email_queue = []
-        today_date = date.today()
-        today_start = today_date
-
-        # Ensure customer_ids is a list
         if isinstance(customer_ids, int):
             customer_ids = [customer_ids]
 
@@ -1636,52 +1631,47 @@ class InventoryNotificationScheduler(models.TransientModel):
             _logger.info(str(count) + " / " + str(len(customers)))
             # if (customr.email not in email_queue):
             _logger.info(customr.email)
-            # _logger.info("customr.start_date")
-            # _logger.info(customr.start_date)
-            # _logger.info("customr.end_date")
-            # _logger.info(customr.end_date)
-            # if (customr.start_date == False and customr.end_date == False) \
-            #         or (customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-            #     customr.end_date) >= today_start) \
-            #         or (customr.start_date != False and InventoryNotificationScheduler.string_to_date(
-            #     customr.start_date) <= today_start) \
-            #         or (
-            #         customr.start_date != False and customr.end_date != False and InventoryNotificationScheduler.string_to_date(
-            #     customr.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-            #     customr.end_date) >= today_start) \
-            #         or (customr.end_date is None):
-            #     to_customer = customr
-            contacts = self.env['res.partner'].search(
-                [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
-            _logger.info("contacts")
-            _logger.info(contacts)
-            product_list = []
-            cust_ids = []
-            cust_ids.append(customr.id)
-            email_list_cc = []
-            for contact in contacts:
-                # if (contact.email not in email_queue):
-                if (contact.email not in email_list_cc):
-                    # if (contact.start_date == False and contact.end_date == False) \
-                    #         or (contact.start_date == False and InventoryNotificationScheduler.string_to_date(
-                    #     contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                    #     contact.end_date) >= today_start) \
-                    #         or (contact.end_date == False and InventoryNotificationScheduler.string_to_date(
-                    #     contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                    #     contact.start_date) <= today_start) \
-                    #         or (InventoryNotificationScheduler.string_to_date(
-                    #     contact.start_date) and InventoryNotificationScheduler.string_to_date(
-                    #     contact.start_date) <= today_start and InventoryNotificationScheduler.string_to_date(
-                    #     contact.end_date) and InventoryNotificationScheduler.string_to_date(
-                    #     contact.end_date) >= today_start):
+
+            # Check whether any child contact is still subscribed to notifications, even if the company's email is unsubscribed.
+            child_contacts_subscribed = self.env['res.partner'].search_count([
+                ('parent_id', '=', customr.id),
+                ('email', '!=', False),
+                ('instock_unsubscribe', '=', False),
+                ('active', '=', True)
+            ]) > 0
+
+            # Send email only to companies that are not entirely unsubscribed from email notifications.
+            # If the company's individual email is unsubscribed, check if any of its contacts are still subscribed.
+            # If at least one contact is still subscribed, proceed to send the email.
+
+            if not (customr.disable_all_instock_email or (customr.instock_unsubscribe and not child_contacts_subscribed)):
+
+                contacts = self.env['res.partner'].search(
+                    [('parent_id', '=', customr.id), ('email', '!=', ''), ('active', '=', True)])
+                _logger.info("contacts")
+                _logger.info(contacts)
+                product_list = []
+                cust_ids = []
+                cust_ids.append(customr.id)
+                email_list_cc = []
+                for contact in contacts:
+                    # if (contact.email not in email_queue):
+                    if (contact.email not in email_list_cc):
+
+                        # Skip if contact has unsubscribed individually
+                        if contact.instock_unsubscribe:
+                            _logger.info("Skipping %s due to individual unsubscribe", contact.name)
+                            continue
+
                         cust_ids.extend(contact.ids)
                         _logger.info("cc Customer =")
                         _logger.info(contact.email)
                         # Add this condition to include sales of all contact ticket 668
                         if contact.email != customr.email:
-                            if contact.type not in ['other', 'invoice', 'delivery', 'private', 'followup']:
+                            if contact.type not in ['other','invoice','delivery','private','followup']:
                                 email_list_cc.append(contact.email)
                     # email_queue.append(contact.email)
+
                 if (customr.historic_months > 0):
                     historic_day = customr.historic_months * 30
                     # _logger.info("historic_day :%r", historic_day)
@@ -1703,101 +1693,32 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if line.product_id.actual_quantity and line.product_id.actual_quantity is not None and line.product_id.actual_quantity > 0 and line.product_id.product_tmpl_id.sale_ok and line.product_id.active and line.product_id.product_tmpl_id.active and line.product_id.product_tmpl_id.is_published:
                             products[line.product_id.id] = line.product_id
 
-                subject = "Your Custom In-Stock Products"
+                subject = "SPS – Personalized Items Available for You"
                 # href="https://www.shopsps.com/downloadCatalog"
-                descrption = Markup("""  
+                descrption = Markup(""" 
+                <strong>Good morning, """ + customr.name + """!</strong>
+                 <br/> <br/> Listed below are items you have previously requested or purchased with us that are currently in stock. <br/><br/>
 
-                 <strong>Good morning """ + customr.name + """,</strong>
-                  <br/> <br/> Listed below are items you have previously requested or purchased with us that are 
-                  currently in stock. You will also see two links to either download our
-                  <a href="https://www.shopsps.com/downloadCatalog" style='color:#C4262E;'> full catalog (Excel) </a> 
-                  or go directly to our <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E;"> 
-                  online portal </a> to place an order.
-                  Please reach out to your rep directly if there are any products they can add or remove from this report.
-                  <br/> 
-                  <br/><center>
-                  <br/><br/>
-                  <div class="text-center" style="text-align: center;">
-                  <a target="_blank" href="/shop/quote_my_report/" style="background-color:#C4262E; 
-                  border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px;
-                  font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" 
-                  class="o_default_snippet_text">Order Online Here</a>
-                                  </div>
-                                  </center><br/><br/>
-
-
-
-
+                 <ul style="list-style-type: disc; padding-left: 20px; margin-top: 0; margin-bottom: 20px;">
+                   <li>To reserve product, respond to this email</li>
+                   <li>To place order immediately, <a target="_blank" href="https://www.shopsps.com" style="color:#C4262E; font-weight: bold;">order online</a> </li>
+                   <li>To compare pricing and view our full product offering, <a href="https://www.shopsps.com/downloadCatalog" style="color:#C4262E;font-weight: bold;">click here</a> </li>
+                 </ul>
+                 
+                 <br/>
+                 To contact your Account Manager, please call (412) 564-1280 or respond to this email.
+                 <br/><br/>           
+                <div style="text-align: left; margin: 0; padding: 0;">
+                    <a target="_blank" href="/unsubscribe-instock" style="color:#C4262E; font-weight: bold; margin: 0; padding: 0; text-align: left;">Unsubscribe</a>
+                </div>
                 """)
                 header = ['Manufacturer', 'Catalog number', 'Description', 'Sales Price', 'Quantity On Hand',
                           'Min Exp. Date', 'Max Exp. Date', 'Unit Of Measure']
                 columnProps = ['product_brand_id.name', 'sku_code', 'name', 'customer_price_list', 'actual_quantity',
                                'str_min', 'str_max', 'uom_id.name']
-                closing_content = Markup("""
-                                    Please reply to this email or contact your Account Manager to hold product or place an order. If you would like to place an order on your own please click on the link "Order Online Here".
-                                    <br/> Thank you <br/>
 
-                                    <br/>
-                                    <table style="height: 96px; width: 601px;" border="0">
-                                    <tbody>
-                                    <tr style="height: 78px;">
 
-                                        <td style="width: 154px; height: 78px;">
-                                        <p><strong>Maddie Cotter</strong></p>
-                                        <p>412-240-4049&nbsp;</p>
-                                        </td>
 
-                                        <td style="width: 154px; height: 78px;">
-                                        <p><strong>Shannon Parker</strong></p>
-                                        <p>412-564-9011&nbsp;</p>
-                                        </td>
-
-                                        <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Phil Kemp</strong></p>
-                                        <p style="text-align: left;">412-745-1327</p>
-                                        </td>
-
-                                        <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Elizabeth Osterhaus</strong></p>
-                                        <p style="text-align: left;">412-745-0317</p>
-                                        </td>
-
-                                        <td style="width: 157px; height: 78px;">
-                                        <p style="text-align: left;"><strong>Hannah Kostyak</strong></p>
-                                        <p style="text-align: left;">412-643-3207</p>
-                                        </td>
-
-                                    </tr>
-                                    <tr style="height: 76px;">
-
-                                        <td style="width: 172px; height: 76px;">
-                                        <p><strong>Sasha Khripkova</strong></p>
-                                        <p>412-643-3816</p>
-                                        </td>
-
-                                        <td style="width: 156px; height: 76px;">
-                                        <p><strong>Theresa Carmody</strong></p>
-                                        <p>412-286-2212</p>
-                                        </td>
-
-                                        <td style="width: 157px; height: 76px;">
-                                        <p style="text-align: left;"><strong>Rachel Buck&nbsp;</strong></p>
-                                        <p style="text-align: left;">412-745-2343&nbsp;&nbsp;</p>
-                                        </td>
-
-                                        <td style="width: 172px; height: 76px;">
-                                        <p style="text-align: left;"><strong>Kristina Parsons&nbsp;</strong></p>
-                                        <p style="text-align: left;">412-248-1284</p>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                    </table>
-                                    <br/>
-                                    <div class="text-center" style="text-align: center;">
-                                        <a target="_blank" href="/shop/quote_my_report/" style="background-color:#C4262E; border-color: #c4262e; padding:15px 60px 15px 60px; text-decoration:none; color:#fff; border-radius:5px; font-size:25px; box-shadow: 0 8px 16px 0 #a29c9c, 0 6px 20px 0 #b2b0b0;" class="o_default_snippet_text">Order Online Here</a>
-                                    </div>
-
-                                    """)
                 if products:
                     product_list.extend(list(products.values()))
                     # Remove excluded product from list
@@ -1817,10 +1738,26 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if customr.customer_success and customr.customer_success.email:
                             email_list_cc.append(customr.customer_success.email)
                     sort_col = True
+
+
+
+
+                    # Avoid using the company's email address if it's unsubscribed; instead, use a subscribed contact's email.
+                    # Note: The email "To" field must not be empty — ensure at least one recipient.
+
+                    to_email = False
+                    if not customr.instock_unsubscribe and customr.email:
+                        to_email = customr.email
+                    elif email_list_cc:
+                        to_email = email_list_cc.pop(0)
+                    else:
+                        # Skip sending if there's no valid recipient
+                        return
+
                     self.process_email_in_stock_scheduler_template(super_user, customr, subject, descrption,
                                                                    product_list,
-                                                                   header, columnProps, closing_content,
-                                                                   customr.email,
+                                                                   header, columnProps, None,
+                                                                   to_email,
                                                                    email_list_cc, sort_col, is_employee=False,
                                                                    partner_id=customr)
             else:
