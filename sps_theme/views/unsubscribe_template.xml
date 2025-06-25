@@ -1,5 +1,5 @@
 <odoo>
-    <template id="instock_unsubscriber_page_template" name="Unsubscriber Page"
+    <template id="instock_unsubscriber_page_template" name="Unsubscribe Page"
               t-name="sps_theme.instock_unsubscriber_page_template">
 
         <t t-name="sps_theme.instock_unsubscriber_page_template">
