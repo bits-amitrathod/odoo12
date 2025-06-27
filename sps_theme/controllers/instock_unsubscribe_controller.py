@@ -1,16 +1,15 @@
 # controllers/main.py
 from pickle import FALSE
 
-from odoo import http
+from odoo import http , fields
 from odoo.http import request
 from datetime import date
 
 from odoo.addons.mrp.controller.main import logger
 
 
+
 class InStockUnsubscribe(http.Controller):
-
-
 
     # This method is written to load parent company and related contacts to template.
     @http.route('/unsubscribe-instock', type='http', auth='user', website=True)
@@ -79,7 +78,8 @@ class InStockUnsubscribe(http.Controller):
             for contact in related_contacts:
                 contact.sudo().write({
                     'instock_unsubscribe': True,
-                    'unsubscribe_feedback': feedback
+                    'unsubscribe_feedback': feedback,
+                    'unsubscribe_date': fields.Datetime.now()
                 })
 
         else:
@@ -93,7 +93,8 @@ class InStockUnsubscribe(http.Controller):
 
                 contact.sudo().write({
                     'instock_unsubscribe': is_checked,
-                    'unsubscribe_feedback': feedback
+                    'unsubscribe_feedback': feedback,
+                    'unsubscribe_date': fields.Datetime.now()
 
                 })
 
@@ -109,7 +110,8 @@ class InStockUnsubscribe(http.Controller):
                         logger.info('record %s', record)
                         record.sudo().write({
                             'instock_unsubscribe': True,
-                            'unsubscribe_feedback': feedback
+                            'unsubscribe_feedback': feedback,
+                            'unsubscribe_date': fields.Datetime.now()
                         })
 
 

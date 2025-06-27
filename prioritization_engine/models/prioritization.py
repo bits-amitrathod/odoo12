@@ -400,6 +400,9 @@ class NotificationSetting(models.Model):
     # added new field in contact in-stock notification page
     unsubscribe_feedback = fields.Text(string="Unsubscribe Feedback")
 
+    # we get updated on form submission show last modification date of feedback
+    unsubscribe_date = fields.Datetime("Unsubscribe Date")
+
     instock_unsubscribe = fields.Boolean(
         string="Contact unsubscribed from In-Stock email",
         help="If checked, this contact will not receive In-Stock notification emails.",
@@ -411,6 +414,13 @@ class NotificationSetting(models.Model):
         compute="_compute_disable_all_instock_email",
         store=True
     )
+
+    # when unsubscribed feedback updated from backend by admin then the unsubscribe date will also get modified .
+    @api.model
+    def write(self, vals):
+        if 'unsubscribe_feedback' in vals and vals['unsubscribe_feedback']:
+            vals['unsubscribe_date'] = fields.Datetime.now()
+        return super(NotificationSetting, self).write(vals)
 
     @api.depends('parent_id.disable_all_instock_email', 'is_company')
     def _compute_disable_all_instock_email(self):

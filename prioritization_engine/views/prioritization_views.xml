@@ -383,6 +383,7 @@
 
 
                         <field name="unsubscribe_feedback" placeholder="Enter unsubscribe reason..."/>
+                        <field name="unsubscribe_date"/>
                     </group>
                 </xpath>
             </field>
