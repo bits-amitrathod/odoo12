@@ -1,0 +1,98 @@
+<odoo>
+    <template id="instock_unsubscriber_page_template" name="Unsubscribe Page"
+              t-name="sps_theme.instock_unsubscriber_page_template">
+
+        <t t-name="sps_theme.instock_unsubscriber_page_template">
+            <t t-call="website.layout">
+                <div class="container mt-5 mb-5">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-9 col-md-10">
+
+                            <h3 class="title text-center">Manage Your In-Stock Email Subscriptions</h3>
+                            <p class="sub-title text-center">
+                                Please check any email addresses below that you no longer wish to receive this report to
+                                and then click submit at the bottom to unsubscribe them.
+                            </p>
+
+                            <form action="/unsubscribe-instock/submit" method="post"
+                                  enctype="multipart/form-data">
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function () {
+                                    const unsubscribeAll = document.getElementById('unsubscribe_all');
+                                    const contactCheckboxes = document.querySelectorAll('input[name="contact_ids"]');
+
+                                    unsubscribeAll.addEventListener('change', function () {
+                                    contactCheckboxes.forEach(cb => {
+                                    cb.checked = unsubscribeAll.checked;
+                                    });
+                                    });
+                                    });
+                                </script>
+
+
+                                <!-- CSRF Token -->
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+
+                                <t t-if="contacts">
+                                    <div class="form-group">
+
+                                        <!-- Unsubscribe all emails checkbox -->
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="unsubscribe_all"
+                                                   id="unsubscribe_all"
+                                                   style="border: 1px solid red; accent-color: red;"/>
+                                            <label class="form-check-label" for="unsubscribe_all">
+                                                <strong>Unsubscribe all emails</strong>
+                                            </label>
+                                        </div>
+
+                                        <t t-foreach="contacts" t-as="contact">
+                                            <div class="form-check mb-2">
+                                                <input class="form-check-input" type="checkbox" name="contact_ids"
+                                                       t-att-value="contact.id" id="email_[[ contact.id ]]"
+                                                       style="border: 1px solid red; accent-color: red;"
+                                                />
+                                                <label class="form-check-label" t-att-for="'email_' + str(contact.id)">
+                                                    <t t-esc="contact.email"/>
+                                                </label>
+                                                <br/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </t>
+                                <t t-if="not contacts">
+                                    <div class="alert alert-info">
+                                        No active in-stock email contacts found for your company.
+                                    </div>
+                                </t>
+
+                                <div class="form-group mt-4">
+                                    <div class="row">
+                                        <div class="col-md-4 d-flex align-items-center">
+                                            <label for="feedback" class="mb-0">
+                                                <strong>Unsubscribe Feedback *</strong>
+                                            </label>
+                                        </div>
+                                        <div class="col-md-8">
+                                            <textarea id="feedback" name="feedback" class="form-control"
+                                                      placeholder="Tell us why you're unsubscribing..." rows="5"
+                                                      required="true"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mt-4 text-center">
+                                    <button type="submit" class="btn btn-danger">Submit</button>
+                                </div>
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

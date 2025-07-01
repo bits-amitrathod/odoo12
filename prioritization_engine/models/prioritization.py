@@ -397,6 +397,41 @@ class NotificationSetting(models.Model):
     saturday = fields.Boolean("Saturday")
     sunday = fields.Boolean("Sunday")
 
+    # added new field in contact in-stock notification page
+    unsubscribe_feedback = fields.Text(string="Unsubscribe Feedback")
+
+    # we get updated on form submission show last modification date of feedback
+    unsubscribe_date = fields.Datetime("Unsubscribe Date")
+
+    instock_unsubscribe = fields.Boolean(
+        string="Contact unsubscribed from In-Stock email",
+        help="If checked, this contact will not receive In-Stock notification emails.",
+        store=True
+    )
+
+    disable_all_instock_email = fields.Boolean(
+        string="Company unsubscribed from In-Stock email",
+        compute="_compute_disable_all_instock_email",
+        store=True
+    )
+
+    # when unsubscribed feedback updated from backend by admin then the unsubscribe date will also get modified .
+    @api.model
+    def write(self, vals):
+        if 'unsubscribe_feedback' in vals and vals['unsubscribe_feedback']:
+            vals['unsubscribe_date'] = fields.Datetime.now()
+        return super(NotificationSetting, self).write(vals)
+
+    @api.depends('parent_id.disable_all_instock_email', 'is_company')
+    def _compute_disable_all_instock_email(self):
+        for rec in self:
+            if rec.is_company:
+                # Editable for companies; value should persist manually (we skip here)
+                pass
+            else:
+                # Read-only computed value for contacts
+                rec.disable_all_instock_email = rec.parent_id.disable_all_instock_email if rec.parent_id else False
+
 
 # Customer product level setting
 class Prioritization(models.Model):
