@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate = "0">
+    <data noupdate = "1">
             <record id="ir_cron_scheduler_notification_action" forcecreate="True" model="ir.cron">
             <field name="name">Notification Scheduler Every Minute</field>
             <field name="user_id" ref="base.user_root"/>
