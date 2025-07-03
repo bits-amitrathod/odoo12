@@ -591,7 +591,15 @@ class InventoryNotificationScheduler(models.TransientModel):
             query = """ 
                 update res_partner rp
                 set todays_notification = true 
-                FROM partner_link_tracker plt
+                FROM (Select * from 
+                        (SELECT
+                                id,
+                                partner_id,time_zone,  -- or another unique identifier if needed
+                                ROW_NUMBER() OVER (PARTITION BY partner_id ORDER BY id) AS row_num
+                            FROM partner_link_tracker
+                            ) as a
+                            
+                        where row_num = 1) plt
                 where 
                 rp.id = plt.partner_id
                 AND """ + condition + """
