@@ -139,6 +139,13 @@
                             <t t-if="new_receiving_item['short_date']"><b>Notes : </b><span t-raw="new_receiving_item['short_date']"/><br/></t>
                             <hr/>
                         </div>
+                        <!-- Custom Footer -->
+                        <div class="footer">
+                            <div class="text-center">
+                                <span class="page"/>
+                            </div>
+                        </div>
+
                     </t>
                 </div>
                  </t>
@@ -264,6 +271,12 @@
                             <t t-if="new_receiving_item['extra']"><b>Extra : </b><span t-raw="new_receiving_item['extra']"/><br/></t>
                             <t t-if="new_receiving_item['short_date']"><b>Notes : </b><span t-raw="new_receiving_item['short_date']"/><br/></t>
                             <hr/>
+                        </div>
+                        <!-- Custom Footer -->
+                        <div class="footer">
+                            <div class="text-center">
+                                <span class="page"/>
+                            </div>
                         </div>
                     </t>
                 </div>
