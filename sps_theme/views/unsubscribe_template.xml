@@ -21,11 +21,33 @@
                                     document.addEventListener('DOMContentLoaded', function () {
                                     const unsubscribeAll = document.getElementById('unsubscribe_all');
                                     const contactCheckboxes = document.querySelectorAll('input[name="contact_ids"]');
+                                    const form = document.querySelector('form[action="/unsubscribe-instock/submit"]');
+                                    const feedback = document.getElementById('feedback');
 
                                     unsubscribeAll.addEventListener('change', function () {
                                     contactCheckboxes.forEach(cb => {
                                     cb.checked = unsubscribeAll.checked;
                                     });
+                                    });
+
+                                    // Prevent submitting empty or whitespace feedback
+                                    form.addEventListener('submit', function(e) {
+                                        if (!feedback.value.trim()) {
+                                            e.preventDefault();
+                                            feedback.classList.add('is-invalid');
+                                            if (!document.getElementById('feedback-error')) {
+                                                const error = document.createElement('div');
+                                                error.id = 'feedback-error';
+                                                error.className = 'invalid-feedback';
+                                                error.innerText = 'Feedback is required and cannot be empty or spaces only.';
+                                                feedback.parentNode.appendChild(error);
+                                            }
+                                            feedback.focus();
+                                        } else {
+                                            feedback.classList.remove('is-invalid');
+                                            const error = document.getElementById('feedback-error');
+                                            if (error) error.remove();
+                                        }
                                     });
                                     });
                                 </script>
