@@ -27,13 +27,14 @@
     <template id="adjustment_report">
         <t t-call="web.html_container">
 <!--            <t t-call="web.external_layout">-->
-                 <div style="font-size:16px!important;">
-                    Surgical Product Solutions<br/>
-                    3046 Penn Ave<br/>
-                    Pittsburgh, PA 15201<br/>
-                    United States
-                 </div>
+
                 <div class="page">
+                    <div style="font-size:16px!important;">
+                        Surgical Product Solutions<br/>
+                        3046 Penn Ave<br/>
+                        Pittsburgh, PA 15201<br/>
+                        United States
+                    </div>
                     <center>
                         <b>
                             <h4>Surgical Product Solutions</h4>
@@ -139,6 +140,13 @@
                             <t t-if="new_receiving_item['short_date']"><b>Notes : </b><span t-raw="new_receiving_item['short_date']"/><br/></t>
                             <hr/>
                         </div>
+                        <!-- Custom Footer -->
+                        <div class="footer">
+                            <div class="text-center">
+                                <span class="page"/>
+                            </div>
+                        </div>
+
                     </t>
                 </div>
                  </t>
@@ -264,6 +272,12 @@
                             <t t-if="new_receiving_item['extra']"><b>Extra : </b><span t-raw="new_receiving_item['extra']"/><br/></t>
                             <t t-if="new_receiving_item['short_date']"><b>Notes : </b><span t-raw="new_receiving_item['short_date']"/><br/></t>
                             <hr/>
+                        </div>
+                        <!-- Custom Footer -->
+                        <div class="footer">
+                            <div class="text-center">
+                                <span class="page"/>
+                            </div>
                         </div>
                     </t>
                 </div>
