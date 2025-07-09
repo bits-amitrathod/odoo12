@@ -146,5 +146,33 @@
         </xpath>
     </template>
 
+    <!-- Inherit and change billing section in address_on_payment -->
+    <template id="address_on_payment_billing_custom" inherit_id="website_sale.address_on_payment">
+        <xpath expr="//div[@id='shipping_and_billing']/div[1]" position="replace">
+            <div>
+                <b>Billing<t t-if="same_shipping and not only_services"> &amp; Shipping</t>: </b>
+                <span t-esc="order.partner_invoice_id" t-options="dict(widget='contact', fields=['address'], no_marker=True, separator=', ')" class="address-inline"/>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Inherit and update billing address section in checkout page -->
+    <template id="checkout_billing_custom" inherit_id="website_sale.checkout">
+        <xpath expr="//t[@t-set='same_shipping']" position="replace">
+            <t t-set="same_shipping" t-value="bool(order.partner_shipping_id==order.partner_invoice_id or only_services)" />
+        </xpath>
+        <xpath expr="//div[@class='col-lg-6 one_kanban'][1]" position="replace">
+            <div class="col-lg-6 one_kanban">
+                <h4>Billing Address (Customized)</h4>
+                <t t-call="website_sale.address_kanban">
+                    <t t-set='contact' t-value="order.partner_invoice_id or order.partner_id"/>
+                    <t t-set='selected' t-value="1"/>
+                    <t t-set='readonly' t-value="1"/>
+                    <t t-set='allow_edit' t-value="1"/>
+                </t>
+                <!-- Add more custom content here if needed -->
+            </div>
+        </xpath>
+    </template>
 
 </odoo>
