@@ -157,13 +157,13 @@
     </template>
 
     <!-- Inherit and update billing address section in checkout page -->
+    <!-- Inherit and filter out AP Address from shipping addresses in checkout page -->
     <template id="checkout_billing_custom" inherit_id="website_sale.checkout">
         <xpath expr="//t[@t-set='same_shipping']" position="replace">
             <t t-set="same_shipping" t-value="bool(order.partner_shipping_id==order.partner_invoice_id or only_services)" />
         </xpath>
         <xpath expr="//div[@class='col-lg-6 one_kanban'][1]" position="replace">
             <div class="col-lg-6 one_kanban">
-                <h4>Billing Address (Customized)</h4>
                 <t t-call="website_sale.address_kanban">
                     <t t-set='contact' t-value="order.partner_invoice_id or order.partner_id"/>
                     <t t-set='selected' t-value="1"/>
@@ -172,6 +172,22 @@
                 </t>
                 <!-- Add more custom content here if needed -->
             </div>
+        </xpath>
+
+        <xpath expr="//t[@t-foreach='shippings']" position="replace">
+            <t t-foreach="shippings" t-as="ship">
+                <t t-if="ship.type != 'other'">
+                    <div class="col-md-12 col-lg-6 one_kanban mb-2">
+                        <t t-call="website_sale.address_kanban">
+                            <t t-set='contact' t-value="ship"/>
+                            <t t-set='selected' t-value="order.partner_shipping_id==ship"/>
+                            <t t-set='readonly' t-value="bool(len(shippings)==1)"/>
+                            <t t-set='edit_billing' t-value="bool(ship==order.partner_id)"/>
+                            <t t-set="allow_edit" t-value="not order.partner_id or (ship.id in order.partner_id.child_ids.ids)" />
+                        </t>
+                    </div>
+                </t>
+            </t>
         </xpath>
     </template>
 
