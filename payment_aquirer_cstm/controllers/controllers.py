@@ -508,8 +508,13 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
             tx_sudo = request.env['payment.transaction'].sudo().browse(tx_id)
 
         if tx_sudo and tx_sudo.reference and tx_sudo.reference.startswith("SO"):
-            self.action_send_mail_after_payment_final(tx_sudo)
-        return res
+            # Search for the sales order using the reference
+            sale_order = request.env['sale.order'].sudo().search([('name', '=', tx_sudo.reference)], limit=1)
+            if sale_order:
+                if not sale_order.is_payment_done:
+                    sale_order.is_payment_done = True
+                    self.action_send_mail_after_payment_final(tx_sudo)
+            return res
 
 
 class PaymentProcessing(PaymentPostProcessing):

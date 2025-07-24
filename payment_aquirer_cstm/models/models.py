@@ -43,6 +43,7 @@ class payment_provider_cstm(models.Model):
 class SalesOrder(models.Model):
     _inherit = 'sale.order'
 
+    is_payment_done = fields.Boolean(default=False)
     def _check_carrier_quotation(self, force_carrier_id=None, keep_carrier=False):
         self.ensure_one()
         DeliveryCarrier = self.env['delivery.carrier']
