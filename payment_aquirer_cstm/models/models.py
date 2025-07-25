@@ -43,7 +43,9 @@ class payment_provider_cstm(models.Model):
 class SalesOrder(models.Model):
     _inherit = 'sale.order'
 
-    is_payment_done = fields.Boolean(default=False)
+   email_send_flags = fields.Json(string="Email Send Flags",
+                                   default=lambda self: {'is_payment_done': False, 'is_online_order_placed': False,
+                                                         'online_so_confirmed': False})
     def _check_carrier_quotation(self, force_carrier_id=None, keep_carrier=False):
         self.ensure_one()
         DeliveryCarrier = self.env['delivery.carrier']
@@ -94,6 +96,3 @@ class SalesOrder(models.Model):
                     self.delivery_message = res['error_message']
 
         return bool(carrier)
-
-
-

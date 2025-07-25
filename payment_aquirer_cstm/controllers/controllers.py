@@ -511,8 +511,10 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
             # Search for the sales order using the reference
             sale_order = request.env['sale.order'].sudo().search([('name', '=', tx_sudo.reference)], limit=1)
             if sale_order:
-                if not sale_order.is_payment_done:
-                    sale_order.is_payment_done = True
+                flags = sale_order.email_send_flags or {}
+                if not flags.get('is_payment_done', False):
+                    flags['is_payment_done'] = True
+                    sale_order.email_send_flags = flags
                     self.action_send_mail_after_payment_final(tx_sudo)
             return res
 

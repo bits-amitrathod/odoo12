@@ -264,11 +264,19 @@ class WebsiteSales(WebsiteSale):
             order.team_id = original_team_id and original_team_id.id
 
         # template.email_from = '"SPS Company" &lt;info@surgicalproductsolutions.com&gt;'
-        template.send_mail(order.id, force_send=False)
-        (request.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm')
-         .sudo().send_mail(order.id, force_send=False))
-        msg = "Quotation Email Sent to: " + order.user_id.login
-        order.message_post(body=msg)
+        if order:
+            flags = order.email_send_flags or {}
+            if not flags.get('is_online_order_placed', False):
+                flags['is_online_order_placed'] = True
+                order.email_send_flags = flags
+                template.send_mail(order.id, force_send=False)
+            if not flags.get('online_so_confirmed', False):
+                flags['online_so_confirmed'] = True
+                order.email_send_flags = flags
+                (request.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm')
+                 .sudo().send_mail(order.id, force_send=False))
+                msg = "Quotation Email Sent to: " + order.user_id.login
+                order.message_post(body=msg)
         _logger.info('End In payment_confirmation')
         # custom code ends .........................................................................
         return responce
