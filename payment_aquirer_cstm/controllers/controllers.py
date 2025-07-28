@@ -514,7 +514,9 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
         _logger.info("tx_sudo values: reference := %s", tx_sudo.reference)
         if tx_sudo and tx_sudo.reference and tx_sudo.reference.startswith("SO"):
             # Search for the sales order using the reference
-            sale_order = request.env['sale.order'].sudo().search([('name', '=', tx_sudo.reference)], limit=1)
+            sale_order = request.env['sale.order'].sudo().search(
+                [('name', '=', str(tx_sudo.reference.split("-", 1)[0]))]
+                , limit=1)
             if sale_order:
                 flags = sale_order.email_send_flags or {}
                 if not flags.get('is_payment_done', False):
