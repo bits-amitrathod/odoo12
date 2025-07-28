@@ -505,9 +505,13 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
         _logger.info("After super call::= %s", res)
         tx_id = self._cast_as_int(tx_id)
         _logger.info("After tx_id cast::= %s", tx_id)
+        tx_sudo = None
         if tx_id:
+            _logger.info("After checking tx_id := %s", tx_id)
             tx_sudo = request.env['payment.transaction'].sudo().browse(tx_id)
+            _logger.info("After payment transaction fetch using tx_id := %s, tx_sudo := %s", tx_id, tx_sudo)
         _logger.info("Payment Confirm: tx_id := %s tx_sudo := %s", ", tx_id, tx_sudo")
+        _logger.info("tx_sudo values: reference := %s", tx_sudo.reference)
         if tx_sudo and tx_sudo.reference and tx_sudo.reference.startswith("SO"):
             # Search for the sales order using the reference
             sale_order = request.env['sale.order'].sudo().search([('name', '=', tx_sudo.reference)], limit=1)
