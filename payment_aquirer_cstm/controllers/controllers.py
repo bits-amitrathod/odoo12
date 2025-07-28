@@ -500,7 +500,7 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
 
     @http.route('/payment/confirmation', type='http', methods=['GET'], auth='public', website=True)
     def payment_confirm(self, tx_id, access_token, **kwargs):
-
+        _logger.info("Payment Confirm Inside Method: tx_id := %s", tx_id)
         res = super(PaymentPortalCustom,self).payment_confirm(tx_id=tx_id,access_token=access_token,**kwargs)
 
         tx_id = self._cast_as_int(tx_id)
