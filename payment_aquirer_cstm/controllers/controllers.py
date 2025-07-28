@@ -516,7 +516,7 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
                     flags['is_payment_done'] = True
                     sale_order.email_send_flags = flags
                     self.action_send_mail_after_payment_final(tx_sudo)
-            return res
+        return res
 
 
 class PaymentProcessing(PaymentPostProcessing):
