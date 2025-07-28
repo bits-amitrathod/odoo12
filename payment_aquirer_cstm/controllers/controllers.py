@@ -506,7 +506,7 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
         tx_id = self._cast_as_int(tx_id)
         if tx_id:
             tx_sudo = request.env['payment.transaction'].sudo().browse(tx_id)
-
+        _logger.info("Payment Confirm: tx_id := %s tx_sudo := %s", ", tx_id, tx_sudo")
         if tx_sudo and tx_sudo.reference and tx_sudo.reference.startswith("SO"):
             # Search for the sales order using the reference
             sale_order = request.env['sale.order'].sudo().search([('name', '=', tx_sudo.reference)], limit=1)
