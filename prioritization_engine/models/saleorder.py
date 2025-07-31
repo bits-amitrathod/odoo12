@@ -151,6 +151,12 @@ class SaleOrder(models.Model):
                 ctx['email_from'] = ctx['email_from'] + ',' + customer.customer_success.login
             else:
                 ctx['email_from'] = customer.customer_success.login
+        # Need to check if the user has already been set in the context
+        if self:
+            flags = self.email_send_flags or {}
+            if not flags.get('online_so_confirmed', False):
+                flags['online_so_confirmed'] = True
+                self.email_send_flags = flags
 
         return {
             'type': 'ir.actions.act_window',
