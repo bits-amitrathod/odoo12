@@ -106,6 +106,11 @@ class SaleOrder(models.Model):
         return self._get_common_confirmation_template()
 
     def _find_mail_template(self):
+        if self:
+            flags = self.email_send_flags or {}
+            if not flags.get('online_so_confirmed', False):
+                flags['online_so_confirmed'] = True
+                self.email_send_flags = flags
         return self._get_common_confirmation_template()
 
     def action_quotation_send(self):
