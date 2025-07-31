@@ -151,7 +151,7 @@ class SaleOrder(models.Model):
                 ctx['email_from'] = ctx['email_from'] + ',' + customer.customer_success.login
             else:
                 ctx['email_from'] = customer.customer_success.login
-        # Need to check if the user has already been set in the context
+        # set the flag to trigger online sales order confirmation to avoid sending duplicate emails
         if self:
             flags = self.email_send_flags or {}
             if not flags.get('online_so_confirmed', False):
