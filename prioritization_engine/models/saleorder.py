@@ -93,6 +93,11 @@ class SaleOrder(models.Model):
 
     def _get_common_confirmation_template(self):
         template_id = False
+        if self:
+            flags = self.email_send_flags or {}
+            if not flags.get('online_so_confirmed', False):
+                flags['online_so_confirmed'] = True
+                self.email_send_flags = flags
         if self.state == 'sale' and not self.env.context.get('proforma', False):
             if not template_id:
                 template_id = self.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm',
@@ -106,11 +111,6 @@ class SaleOrder(models.Model):
         return self._get_common_confirmation_template()
 
     def _find_mail_template(self):
-        if self:
-            flags = self.email_send_flags or {}
-            if not flags.get('online_so_confirmed', False):
-                flags['online_so_confirmed'] = True
-                self.email_send_flags = flags
         return self._get_common_confirmation_template()
 
     def action_quotation_send(self):
@@ -156,12 +156,6 @@ class SaleOrder(models.Model):
                 ctx['email_from'] = ctx['email_from'] + ',' + customer.customer_success.login
             else:
                 ctx['email_from'] = customer.customer_success.login
-        # set the flag to trigger online sales order confirmation to avoid sending duplicate emails
-        if self:
-            flags = self.email_send_flags or {}
-            if not flags.get('online_so_confirmed', False):
-                flags['online_so_confirmed'] = True
-                self.email_send_flags = flags
 
         return {
             'type': 'ir.actions.act_window',
