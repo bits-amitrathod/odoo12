@@ -273,10 +273,11 @@ class WebsiteSales(WebsiteSale):
             if not flags.get('online_so_confirmed', False):
                 flags['online_so_confirmed'] = True
                 order.email_send_flags = flags
-                (request.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm')
-                 .sudo().send_mail(order.id, force_send=False))
-                msg = "Quotation Email Sent to: " + order.user_id.login
-                order.message_post(body=msg)
+                if order.client_order_ref:
+                    (request.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm')
+                     .sudo().send_mail(order.id, force_send=False))
+                    msg = "Quotation Email Sent to: " + order.user_id.login
+                    order.message_post(body=msg)
         _logger.info('End In payment_confirmation')
         # custom code ends .........................................................................
         return responce
