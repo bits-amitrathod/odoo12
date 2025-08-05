@@ -500,15 +500,22 @@ class PaymentPortalCustom(odoo.addons.payment.controllers.portal.PaymentPortal):
 
     @http.route('/payment/confirmation', type='http', methods=['GET'], auth='public', website=True)
     def payment_confirm(self, tx_id, access_token, **kwargs):
-
-        res = super(PaymentPortalCustom,self).payment_confirm(tx_id=tx_id,access_token=access_token,**kwargs)
-
+        res = super(PaymentPortalCustom, self).payment_confirm(tx_id=tx_id,access_token=access_token,**kwargs)
         tx_id = self._cast_as_int(tx_id)
+        tx_sudo = None
         if tx_id:
             tx_sudo = request.env['payment.transaction'].sudo().browse(tx_id)
-
         if tx_sudo and tx_sudo.reference and tx_sudo.reference.startswith("SO"):
-            self.action_send_mail_after_payment_final(tx_sudo)
+            # Search for the sales order using the reference
+            sale_order = request.env['sale.order'].sudo().search(
+                [('name', '=', str(tx_sudo.reference.split("-", 1)[0]))]
+                , limit=1)
+            if sale_order:
+                flags = sale_order.email_send_flags or {}
+                if not flags.get('is_payment_done', False):
+                    flags['is_payment_done'] = True
+                    sale_order.email_send_flags = flags
+                    self.action_send_mail_after_payment_final(tx_sudo)
         return res
 
 

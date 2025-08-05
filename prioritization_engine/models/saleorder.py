@@ -93,6 +93,11 @@ class SaleOrder(models.Model):
 
     def _get_common_confirmation_template(self):
         template_id = False
+        if self:
+            flags = self.email_send_flags or {}
+            if not flags.get('online_so_confirmed', False):
+                flags['online_so_confirmed'] = True
+                self.email_send_flags = flags
         if self.state == 'sale' and not self.env.context.get('proforma', False):
             if not template_id:
                 template_id = self.env.ref('sale_order_cstm.mail_template_sale_confirmation_cstm',
