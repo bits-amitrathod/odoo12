@@ -84,7 +84,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Picking Done For Sale Order # " + picking.sale_id.name,
-            'description': Markup("Hi " + picking.sale_id.display_name +
+            'description': Markup("Hi " + picking.sale_id.partner_id.display_name +
                                   ",<br/> <br/>Please find detail Of Sale Order: "+ picking.sale_id.name),
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
@@ -805,7 +805,9 @@ class InventoryNotificationScheduler(models.TransientModel):
                 if green_products:
                     self.process_notify_green_product(green_products, user, super_user)
                 if yellow_products:
-                    self.process_notify_yellow_product(yellow_products, user, super_user)'''
+                    self.process_notify_yellow_product(yellow_products, user, super_user)
+                if red_product:
+                    self.process_notify_red_product(red_product, user, super_user)'''
 
     def process_notification_for_in_stock_report(self, products):
         _logger.info("process_notification_for_in_stock_report called....")
@@ -1306,17 +1308,16 @@ class InventoryNotificationScheduler(models.TransientModel):
         # Remove duplicate emails from CC list
         # Check if main recipient email is in CC list and remove it
         email_list_cc = vals['email_list_cc'][:]  # Create a copy to avoid modifying original
-        if email and email in email_list_cc:
-            email_list_cc.remove(email)
         
-        # Also check for email_to_team if it exists and remove from CC
-        if vals.get('email_to_team') and vals['email_to_team'] in email_list_cc:
-            email_list_cc.remove(vals['email_to_team'])
+        # Remove ALL occurrences of main recipient email from CC list
+        while email and email in email_list_cc:
+            email_list_cc.remove(email)
+
             
-        # Remove email_to_user email if it exists and is in CC list
-        if vals.get('email_to_user') and vals['email_to_user'].sudo().email:
-            user_email = vals['email_to_user'].sudo().email
-            if user_email in email_list_cc:
+        # Remove ALL occurrences of email_from_user email if it exists and is in CC list
+        if vals.get('email_from_user') and vals['email_from_user'].sudo().email:
+            user_email = vals['email_from_user'].sudo().email
+            while user_email in email_list_cc:
                 email_list_cc.remove(user_email)
 
         local_context = {
