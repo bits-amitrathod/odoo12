@@ -805,9 +805,7 @@ class InventoryNotificationScheduler(models.TransientModel):
                 if green_products:
                     self.process_notify_green_product(green_products, user, super_user)
                 if yellow_products:
-                    self.process_notify_yellow_product(yellow_products, user, super_user)
-                if red_product:
-                    self.process_notify_red_product(red_product, user, super_user)'''
+                    self.process_notify_yellow_product(yellow_products, user, super_user)'''
 
     def process_notification_for_in_stock_report(self, products):
         _logger.info("process_notification_for_in_stock_report called....")
