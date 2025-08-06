@@ -84,7 +84,7 @@ class InventoryNotificationScheduler(models.TransientModel):
         vals = {
             'sale_order_lines': sales_order,
             'subject': "Picking Done For Sale Order # " + picking.sale_id.name,
-            'description': Markup("Hi " + picking.sale_id.partner_id.display_name +
+            'description': Markup("Hi " + picking.sale_id.display_name +
                                   ",<br/> <br/>Please find detail Of Sale Order: "+ picking.sale_id.name),
             'header': ['Catalog number', 'Description', 'Quantity'],
             'columnProps': ['sku', 'Product', 'qty'],
@@ -1036,7 +1036,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                    is_employee=True,
                                                    type=False):
         template = self.env.ref(custom_template)
-
         product_dict = {}
         product_list = []
         coln_name = []
@@ -1304,22 +1303,34 @@ class InventoryNotificationScheduler(models.TransientModel):
         else:
             email = vals['email_to_user'].sudo().email
 
+        # Remove duplicate emails from CC list
+        # Check if main recipient email is in CC list and remove it
+        email_list_cc = vals['email_list_cc'][:]  # Create a copy to avoid modifying original
+        if email and email in email_list_cc:
+            email_list_cc.remove(email)
+        
+        # Also check for email_to_team if it exists and remove from CC
+        if vals.get('email_to_team') and vals['email_to_team'] in email_list_cc:
+            email_list_cc.remove(vals['email_to_team'])
+            
+        # Remove email_to_user email if it exists and is in CC list
+        if vals.get('email_to_user') and vals['email_to_user'].sudo().email:
+            user_email = vals['email_to_user'].sudo().email
+            if user_email in email_list_cc:
+                email_list_cc.remove(user_email)
+
         local_context = {
             'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
             'email_from': vals['email_from_user'].sudo().email,
             'email_to': email,
             'subject': vals['subject'],
             'descrption': vals['description'],
-            'email_cc': ",".join(vals['email_list_cc']),
+            'email_cc': ",".join(email_list_cc),
             'closing_content': vals['closing_content']
         }
         # UPG_ODOO16_NOTE below commented code is not in use ...................
         # html_file = self.env['inventory.notification.html'].search([])
         # finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],vals['headers'], vals['coln_name'])
-        # if hasattr(vals['email_to_user'], 'partner_ids'):
-        #     partner_ids = [vals['email_to_user'].partner_ids.id]
-        # else:
-        #     partner_ids = [vals['email_to_user'].id]
         # ........................................................................
 
         try:
@@ -1559,7 +1570,8 @@ class InventoryNotificationScheduler(models.TransientModel):
 
             data = None
             report_ref =  'vendor_offer.action_report_vendor_offer_accepted'
-            pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(report_ref, res_ids=purchase_order_id,data=data)[0]
+            pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(
+                report_ref, res_ids=purchase_order_id,data=data)[0]
             values1 = {}
             values1['attachment_ids'] = [(0, 0, {'name': 'Vendor_Offer_' + (purchase_order.name) + '.pdf',
                                                  'type': 'binary',
