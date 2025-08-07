@@ -487,9 +487,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if customr.user_id.name == "National Accounts" and customr.national_account_rep and not customr.account_manager_cust:
                             email_list_cc.append(customr.national_account_rep.email)
                         else:
-                            email_list_cc.append(customr.user_id.email)
+                            # Avoid adding the user's/BD email if it's the surgical product solutions
+                            if customr.user_id.name != "Surgical Product Solutions":
+                                email_list_cc.append(customr.user_id.email)
                     if customr.account_manager_cust.email:
-                        email_list_cc.append(customr.account_manager_cust.email)
+                        # Avoid adding the KA email if it's the surgical product solutions
+                        if customr.account_manager_cust.name != "Surgical Product Solutions":
+                            email_list_cc.append(customr.account_manager_cust.email)
                         if customr.customer_success and customr.customer_success.email:
                             email_list_cc.append(customr.customer_success.email)
                     sort_col = True
@@ -1302,21 +1306,6 @@ class InventoryNotificationScheduler(models.TransientModel):
             email = vals['email_to_team']
         else:
             email = vals['email_to_user'].sudo().email
-
-        # Remove duplicate emails from CC list
-        # Check if main recipient email is in CC list and remove it
-        email_list_cc = vals['email_list_cc'][:]  # Create a copy to avoid modifying original
-        
-        # Remove ALL occurrences of main recipient email from CC list
-        while email and email in email_list_cc:
-            email_list_cc.remove(email)
-
-            
-        # Remove ALL occurrences of email_from_user email if it exists and is in CC list
-        if vals.get('email_from_user') and vals['email_from_user'].sudo().email:
-            user_email = vals['email_from_user'].sudo().email
-            while user_email in email_list_cc:
-                email_list_cc.remove(user_email)
 
         local_context = {
             'products': vals['product_list'], 'headers': vals['headers'], 'columnProps': vals['coln_name'],
