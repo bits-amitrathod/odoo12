@@ -1313,7 +1313,7 @@ class InventoryNotificationScheduler(models.TransientModel):
             'email_to': email,
             'subject': vals['subject'],
             'descrption': vals['description'],
-            'email_cc': ",".join(email_list_cc),
+            'email_cc': ",".join(vals['email_list_cc']),
             'closing_content': vals['closing_content']
         }
         # UPG_ODOO16_NOTE below commented code is not in use ...................
