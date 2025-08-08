@@ -487,9 +487,13 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if customr.user_id.name == "National Accounts" and customr.national_account_rep and not customr.account_manager_cust:
                             email_list_cc.append(customr.national_account_rep.email)
                         else:
-                            email_list_cc.append(customr.user_id.email)
+                            # Avoid adding the user's/BD email if it's the surgical product solutions
+                            if customr.user_id.name != "Surgical Product Solutions":
+                                email_list_cc.append(customr.user_id.email)
                     if customr.account_manager_cust.email:
-                        email_list_cc.append(customr.account_manager_cust.email)
+                        # Avoid adding the KA email if it's the surgical product solutions
+                        if customr.account_manager_cust.name != "Surgical Product Solutions":
+                            email_list_cc.append(customr.account_manager_cust.email)
                         if customr.customer_success and customr.customer_success.email:
                             email_list_cc.append(customr.customer_success.email)
                     sort_col = True
@@ -1036,7 +1040,6 @@ class InventoryNotificationScheduler(models.TransientModel):
                                                    is_employee=True,
                                                    type=False):
         template = self.env.ref(custom_template)
-
         product_dict = {}
         product_list = []
         coln_name = []
@@ -1316,10 +1319,6 @@ class InventoryNotificationScheduler(models.TransientModel):
         # UPG_ODOO16_NOTE below commented code is not in use ...................
         # html_file = self.env['inventory.notification.html'].search([])
         # finalHTML = html_file.process_common_html(vals['subject'], vals['description'], vals['product_list'],vals['headers'], vals['coln_name'])
-        # if hasattr(vals['email_to_user'], 'partner_ids'):
-        #     partner_ids = [vals['email_to_user'].partner_ids.id]
-        # else:
-        #     partner_ids = [vals['email_to_user'].id]
         # ........................................................................
 
         try:
@@ -1559,7 +1558,8 @@ class InventoryNotificationScheduler(models.TransientModel):
 
             data = None
             report_ref =  'vendor_offer.action_report_vendor_offer_accepted'
-            pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(report_ref, res_ids=purchase_order_id,data=data)[0]
+            pdf = self.env['ir.actions.report'].sudo().with_context(force_report_rendering=True)._render_qweb_pdf(
+                report_ref, res_ids=purchase_order_id,data=data)[0]
             values1 = {}
             values1['attachment_ids'] = [(0, 0, {'name': 'Vendor_Offer_' + (purchase_order.name) + '.pdf',
                                                  'type': 'binary',
