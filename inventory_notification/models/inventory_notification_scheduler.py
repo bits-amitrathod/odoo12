@@ -494,8 +494,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                         # Avoid adding the KA email if it's the surgical product solutions
                         if customr.account_manager_cust.name != "Surgical Product Solutions":
                             email_list_cc.append(customr.account_manager_cust.email)
-                        if customr.customer_success and customr.customer_success.email:
-                            email_list_cc.append(customr.customer_success.email)
+                    if customr.customer_success:
+                        email_list_cc.append('csteam@shopsps.com')
                     sort_col = True
 
 
