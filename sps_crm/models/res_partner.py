@@ -311,8 +311,17 @@ class Partner(models.Model):
 
     def generic_char_search(self, operator, value, field):
         partner_link = self.env['partner.link.tracker']
+
+        query = """
+                    SELECT DISTINCT ON (partner_id) id, partner_id
+                    FROM partner_link_tracker
+                    ORDER BY partner_id, id;
+                """
+        self.env.cr.execute(query)
+        result = self.env.cr.fetchall()
+
         if operator in ['=', '!=', 'like', 'ilike', 'not ilike', 'not like','>=','<=','<','>']:
-            record = partner_link.search([(field, operator, value)], limit=None)
+            record = partner_link.search([(field, operator, value), ('id', 'in', [r[0] for r in result])], limit=None)
             return [('id', 'in', [a.partner_id.id for a in record])]
         else:
             return expression.FALSE_DOMAIN
