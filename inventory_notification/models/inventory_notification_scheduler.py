@@ -494,8 +494,8 @@ class InventoryNotificationScheduler(models.TransientModel):
                         # Avoid adding the KA email if it's the surgical product solutions
                         if customr.account_manager_cust.name != "Surgical Product Solutions":
                             email_list_cc.append(customr.account_manager_cust.email)
-                        if customr.customer_success and customr.customer_success.email:
-                            email_list_cc.append(customr.customer_success.email)
+                        if customr.customer_success:
+                            email_list_cc.append('csteam@shopsps.com')
                     sort_col = True
 
 
@@ -1740,11 +1740,15 @@ class InventoryNotificationScheduler(models.TransientModel):
                         if customr.user_id.name == "National Accounts" and customr.national_account_rep and not customr.account_manager_cust:
                             email_list_cc.append(customr.national_account_rep.email)
                         else:
-                            email_list_cc.append(customr.user_id.email)
+                            # Avoid adding the user's/BD email if it's the surgical product solutions
+                            if customr.user_id.name != "Surgical Product Solutions":
+                                email_list_cc.append(customr.user_id.email)
                     if customr.account_manager_cust.email:
-                        email_list_cc.append(customr.account_manager_cust.email)
-                        if customr.customer_success and customr.customer_success.email:
-                            email_list_cc.append(customr.customer_success.email)
+                        # Avoid adding the KA email if it's the surgical product solutions
+                        if customr.account_manager_cust.name != "Surgical Product Solutions":
+                            email_list_cc.append(customr.account_manager_cust.email)
+                        if customr.customer_success:
+                            email_list_cc.append('csteam@shopsps.com')
                     sort_col = True
 
 
