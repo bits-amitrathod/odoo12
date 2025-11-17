@@ -93,7 +93,7 @@ class ThemeController(http.Controller):
     def terms_of_purchase(self):
         return http.request.render('sps_theme.terms_of_purchase_template_new')
 
-    @http.route('/downloadCatalog', type='http', auth="public", website=True)
+    @http.route('/downloadCatalog', type='http', auth="public", website=True, sitemap=False)
     def downloadCatalog(self):
         # Search for the active product download catalog
         result = request.env['sps_theme.product_download_catelog'].search([('status', '=', 'active')], limit=1)
