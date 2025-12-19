@@ -23,9 +23,9 @@ class ResPartner(models.Model):
     _inherit = 'res.partner'
     portal_access_email_sent = fields.Boolean('Portal Access Email Sent', default=False)
 
-    signup_token = fields.Char(copy=False, groups="base.group_erp_manager, studio_customization.sales_9c67ce45-2615-44fa-9011-c3e5b646e740", compute='_compute_token', inverse='_inverse_token')
-    signup_type = fields.Char(string='Signup Token Type', copy=False, groups="base.group_erp_manager, studio_customization.sales_9c67ce45-2615-44fa-9011-c3e5b646e740")
-    signup_expiration = fields.Datetime(copy=False, groups="base.group_erp_manager, studio_customization.sales_9c67ce45-2615-44fa-9011-c3e5b646e740")
+    signup_token = fields.Char(copy=False, groups="base.group_erp_manager, base.group_user", compute='_compute_token', inverse='_inverse_token')
+    signup_type = fields.Char(string='Signup Token Type', copy=False, groups="base.group_erp_manager, base.group_user")
+    signup_expiration = fields.Datetime(copy=False, groups="base.group_erp_manager, base.group_user")
 
 
 class PortalAccessScheduler(models.TransientModel):
