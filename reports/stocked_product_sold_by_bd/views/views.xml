@@ -129,7 +129,7 @@
                     key2="client_action_multi"
                     id="product_sold_by_bd_act_window"/>-->
        <record id="product_sold_by_bd_act_window" model="ir.actions.act_window">
-            <field name="name">Export Short Date Products sold by Report</field>
+            <field name="name">Export Short Date Products sold by BD Report</field>
             <field name="res_model">report.product.sold.by.bd.export</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
