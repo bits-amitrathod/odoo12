@@ -58,7 +58,7 @@
       </record>
 
       <record id="view_popup_for_product_sold_by_bd" model="ir.ui.view">
-            <field name="name">Short date and over stocked product sold by BD</field>
+            <field name="name">Short Date Products sold by BD</field>
             <field name="model">popup.product.sold.by.bd</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
@@ -87,7 +87,7 @@
             <field name="name">report.product.sold.by.bd.export.popup</field>
             <field name="model">report.product.sold.by.bd.export</field>
             <field name="arch" type="xml">
-                <form string="Export Short date and over stocked product sold by BD Report">
+                <form string="Export Short Date Products sold by BD Report">
                     <sheet>
                         <group>
                             <group>
@@ -99,7 +99,7 @@
                                 <field name="business_development"/>
                             </group>
                         </group>
-                        <div><b>Click On ' Export To File ' button to export Short date and over stocked product sold by BD report file</b></div>
+                        <div><b>Click On ' Export To File ' button to export Short Date Products sold by BD report file</b></div>
                         <footer>
                             <button name="download_excel_product_sold_by_bd" string="Export To File" type="object"
                                     class="btn-primary"/>
@@ -112,7 +112,7 @@
 
         <!-- actions opening views on models -->
         <record id="action_short_date_and_over_stocked_product_sold_by_bd" model="ir.actions.act_window">
-            <field name="name">Short date and over stocked product sold by BD</field>
+            <field name="name">Short Date Products sold by BD</field>
             <field name="res_model">popup.product.sold.by.bd</field>
             <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
@@ -129,7 +129,7 @@
                     key2="client_action_multi"
                     id="product_sold_by_bd_act_window"/>-->
        <record id="product_sold_by_bd_act_window" model="ir.actions.act_window">
-            <field name="name">Export Short date and over stocked product sold by BD Report</field>
+            <field name="name">Export Short Date Products sold by Report</field>
             <field name="res_model">report.product.sold.by.bd.export</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
@@ -160,7 +160,7 @@
 
         <!-- Top menu item -->
         <menuitem id="menu_sale_report_short_date_and_over_stocked_product_sold_by_bd"
-                   name="Short date and over stocked product sold by BD"
+                   name="Short Date Products sold by BD"
                   action="action_short_date_and_over_stocked_product_sold_by_bd"
                   parent="account_closed_by_bd.business_development_reports"
                   sequence="4"/>

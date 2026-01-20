@@ -58,7 +58,7 @@
       </record>
 
       <record id="view_popup_for_product_sold_by_ka" model="ir.ui.view">
-            <field name="name">Short date and over stocked product sold by KA</field>
+            <field name="name">Short Date Products sold by KA</field>
             <field name="model">popup.product.sold.by.ka</field>
             <field name="arch" type="xml">
                 <form string="Choose your date">
@@ -87,7 +87,7 @@
             <field name="name">report.product.sold.by.ka.export.popup</field>
             <field name="model">report.product.sold.by.ka.export</field>
             <field name="arch" type="xml">
-                <form string="Export Short date and over stocked product sold by KA Report">
+                <form string="Export Short Date Products sold by KA Report">
                     <sheet>
                         <group>
                             <group>
@@ -99,7 +99,7 @@
                                 <field name="key_account"/>
                             </group>
                         </group>
-                        <div><b>Click On ' Export To File ' button to export Short date and over stocked product sold by KA report file</b></div>
+                        <div><b>Click On ' Export To File ' button to export Short Date Products sold by KA report file</b></div>
                         <footer>
                             <button name="download_excel_product_sold_by_ka" string="Export To File" type="object"
                                     class="btn-primary"/>
@@ -112,7 +112,7 @@
 
         <!-- actions opening views on models -->
         <record id="action_short_date_and_over_stocked_product_sold_by_ka" model="ir.actions.act_window">
-            <field name="name">Short date and over stocked product sold by KA</field>
+            <field name="name">Short Date Products sold by KA</field>
             <field name="res_model">popup.product.sold.by.ka</field>
             <!-- <field name="view_type">form</field> -->
             <field name="view_mode">form</field>
@@ -129,7 +129,7 @@
                     key2="client_action_multi"
                     id="product_sold_by_ka_act_window"/>-->
        <record id="product_sold_by_ka_act_window" model="ir.actions.act_window">
-            <field name="name">Export Short date and over stocked product sold by KA Report</field>
+            <field name="name">Export Short Date Products sold by KA Report</field>
             <field name="res_model">report.product.sold.by.ka.export</field>
             <field name="view_mode">form</field>
             <field name="target">new</field>
@@ -161,7 +161,7 @@
         <!-- Top menu item -->
       <menuitem id="key_account_reports" name="Key Account Reports" parent="sale.menu_sale_report" sequence="3"/>
       <menuitem id="menu_sale_report_short_date_and_over_stocked_product_sold_by_ka"
-              name="Short date and over stocked product sold by KA"
+              name="Short Date Products sold by KA"
               action="action_short_date_and_over_stocked_product_sold_by_ka" parent="stocked_product_sold_by_ka.key_account_reports" sequence="2"/>
     </data>
 </odoo>

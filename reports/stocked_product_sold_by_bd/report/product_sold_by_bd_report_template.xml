@@ -9,7 +9,7 @@
                         <center>
                             <b>
                                 <h2>Surgical Product Solutions</h2>
-                                <h4>Short date and over stocked product sold by BD</h4>
+                                <h4>Short Date Products sold by BD</h4>
                                 <h4 t-if="date">
                                    Date Range: <span t-esc="date"/>
                                </h4>
