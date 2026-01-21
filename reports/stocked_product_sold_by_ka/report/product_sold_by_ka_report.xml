@@ -2,7 +2,7 @@
 <odoo>
     <data>
         <record id="action_report_product_sold_by_ka" model="ir.actions.report">
-            <field name="name">Short Date and Over Stocked Product Sold by KA</field>
+            <field name="name">Short Date Products sold by KA</field>
             <field name="model">report.product.sold.by.ka</field>
             <field name="report_type">qweb-html</field>
             <field name="report_name">stocked_product_sold_by_ka.product_sold_by_ka_template</field>

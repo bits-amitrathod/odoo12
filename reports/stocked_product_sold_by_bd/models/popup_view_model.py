@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class ProductsSoldByBdPopUp(models.TransientModel):
     _name = 'popup.product.sold.by.bd'
-    _description = 'Short date and over stocked product sold by BD'
+    _description = 'Short Date Products sold by BD'
 
     start_date = fields.Date('Start Date', default=(fields.date.today() - datetime.timedelta(days=31)))
     end_date = fields.Date('End Date', default=fields.date.today())
@@ -35,7 +35,7 @@ class ProductsSoldByBdPopUp(models.TransientModel):
             'type': 'ir.actions.act_window',
             'views': [(tree_view_id, 'tree'), (form_view_id, 'form')],
             'view_mode': 'tree',
-            'name': 'Short date and over stocked product sold by BD',
+            'name': 'Short Date Products sold by BD',
             'res_model': res_model,
             # 'context': {'group_by': 'key_account', },
             # "context": {"search_default_group_by_location": 1},

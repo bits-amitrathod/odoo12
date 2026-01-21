@@ -10,7 +10,7 @@ _logger = logging.getLogger(__name__)
 
 class StockedProductSoldByBd(models.Model):
     _name = 'report.product.sold.by.bd'
-    _description = 'Short date and over stocked product sold by BD'
+    _description = 'Short Date Products sold by BD'
     _auto = False
 
     sale_order_id = fields.Many2one('sale.order', 'Sale Order#')
@@ -155,7 +155,7 @@ class StockedProductSoldByBd(models.Model):
 
 class StockedProductSoldByBdExport(models.TransientModel):
     _name = 'report.product.sold.by.bd.export'
-    _description = 'Short date and over stocked product sold by BD export'
+    _description = 'Short Date Products sold by BD export'
 
     compute_at_date = fields.Selection([
         ('0', 'Show All'),
